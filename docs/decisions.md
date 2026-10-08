@@ -22,6 +22,10 @@ Compare simple shared card/entity encoding with attention and explicit graph rel
 
 ## Research references
 
+- [DSK runtime tests and Witchcraft contribution scope — 2026-10-07](../experiments/engine_smoke/README.md). Current XMage passes a limited gameplay smoke test, but the packaged MageZero route is not DSK-ready. Consider current XMage as a reference while evaluating focused Witchcraft contributions; no final switch or contribution implementation is decided.
+
+- [Engine comparison, measured LOC and failing boundary probes — 2026-10-07](research/engine-comparison-2026-10-07.md). XMage remains tentative; the audit recommends testing its existing Python integration route first. No engine has passed this project's full DSK acceptance checks.
+
 - DSK guide: https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-prerelease-and-draft-guide
 - Public datasets: https://www.17lands.com/public_datasets
 - XMage: https://github.com/magefree/mage

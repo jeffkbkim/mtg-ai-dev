@@ -1,0 +1,27 @@
+{
+  "returncode": 0,
+  "elapsed_seconds": 13.198,
+  "runtime": "/private/tmp/mtg-xmage-current/xmage/mage-server",
+  "results": [
+    "BOOT_SECONDS 3.760",
+    "DECK_OK /Users/jkim/dev/mtg-ai/experiments/engine_smoke/dsk_ug.dck cards=40 distinct=13",
+    "DECK_OK /Users/jkim/dev/mtg-ai/experiments/engine_smoke/dsk_uw.dck cards=40 distinct=13",
+    "RESULT index=0 seed=20261007 first=UG terminal=true winner=Player UG is the winner turns=23 seconds=4.393 life_ug=20 life_uw=-5",
+    "DECK_OK /Users/jkim/dev/mtg-ai/experiments/engine_smoke/dsk_ug.dck cards=40 distinct=13",
+    "DECK_OK /Users/jkim/dev/mtg-ai/experiments/engine_smoke/dsk_uw.dck cards=40 distinct=13",
+    "RESULT index=1 seed=20261007 first=UW terminal=true winner=Player UG is the winner turns=26 seconds=1.210 life_ug=28 life_uw=-5",
+    "DECK_OK /Users/jkim/dev/mtg-ai/experiments/engine_smoke/dsk_ug.dck cards=40 distinct=13",
+    "DECK_OK /Users/jkim/dev/mtg-ai/experiments/engine_smoke/dsk_uw.dck cards=40 distinct=13",
+    "RESULT index=2 seed=20261008 first=UG terminal=true winner=Player UW is the winner turns=24 seconds=1.147 life_ug=-6 life_uw=73",
+    "DECK_OK /Users/jkim/dev/mtg-ai/experiments/engine_smoke/dsk_ug.dck cards=40 distinct=13",
+    "DECK_OK /Users/jkim/dev/mtg-ai/experiments/engine_smoke/dsk_uw.dck cards=40 distinct=13",
+    "RESULT index=3 seed=20261008 first=UW terminal=true winner=Player UG is the winner turns=26 seconds=1.725 life_ug=15 life_uw=-1"
+  ],
+  "deck_sha256": {
+    "dsk_ug.dck": "6fd90c3a5ec9ec19c5a73783552c43fbc49b1be096016b70874fa04ca94615ab",
+    "dsk_uw.dck": "e83b6ca9cdde9214d7dfbc070c74c27bcc8bf316e38b3a700df4aa2ada750ff6"
+  },
+  "resource_usage": [
+    "1187184640  maximum resident set size"
+  ]
+}

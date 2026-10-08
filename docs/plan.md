@@ -20,4 +20,4 @@
 
 ## Status
 
-Private GitHub repository created and scaffold uploaded. Laptop clone, data audit, engine integration and training remain pending. Research discussed in chat has not been validated by running the engines.
+Private GitHub repository created and scaffold is available locally. The [engine comparison](research/engine-comparison-2026-10-07.md) now has a [DSK runtime follow-up](../experiments/engine_smoke/README.md): current XMage completed four games with exact synthetic DSK decks, while the older MageZero bundle failed card coverage. Witchcraft's DSK parser/bridge was audited and a contribution sequence proposed. Python-controlled policy decisions, hidden-information validation, complete DSK coverage, data audit and training remain pending. No engine selection is final.
