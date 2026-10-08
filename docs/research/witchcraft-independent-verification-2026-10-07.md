@@ -1,9 +1,10 @@
 # Independent verification of Witchcraft boundary probes — 2026-10-07
 
-This report independently re-verifies the four Witchcraft boundary findings from
-[DSK engine feasibility tests](../../experiments/engine_smoke/README.md) and
-[engine comparison](engine-comparison-2026-10-07.md), because they gate the
-engine decision. Every load-bearing claim below was checked against the primary
+This report independently re-verifies four Witchcraft boundary findings that
+gate the engine decision: (1) opponent instant responses are driver-greedy,
+(2) combat enumeration is capped at five attackers, (3) face-down observation
+leaks printed power/toughness, and (4) later Room unlocking is unmodeled.
+Every load-bearing claim below was checked against the primary
 source (installed package source, executed locally) rather than relayed from
 another agent's screenshots. Verification level is labeled per finding:
 **dynamic** (executed a probe and observed behavior) or **static** (read the
@@ -39,11 +40,14 @@ fired all three of Bob's Bolts in response without any policy input: Alice
 installed, but the code path proves none could have been consulted — there is
 no `_choose` call on that path.
 
-**Nuance not in the earlier report.** The response's *mode* (`_choose_mode`
-routes through `_choose`) and *target* (target selection routes through
-`_choose` with a greedy default) are policy-overridable when a policy is
-installed. The bypass is specifically the two highest-leverage decisions:
-whether to respond at all, and with which spell.
+**Nuance not in the earlier report (refined by the runnable probe).** Whether
+to respond and with which spell never reach a policy. Target selection is not
+on the response path either: the response Bolt's target defaulted greedily
+with zero `_choose` calls (verified dynamically — spies on both seats recorded
+no `target`/`modes` calls while it resolved). Only a *modal* response's mode
+choice would reach `_choose` (via `_choose_mode`), and the `_policy` dispatch
+keys on the active player, so even that would consult the wrong seat's policy,
+not the responder's.
 
 **Corroborating note.** The `instant_speed` flag docstring in `mtg/game.py`
 states: "Reactive windows on the OPPONENT's turn need priority passing, not
@@ -80,8 +84,16 @@ _IDENTITY_RELS = frozenset({"instance_of", "printed_subtype", "printed_color", "
 `printed_power` and `printed_toughness` are real state relations (populated in
 `mtg/driver.py:880`) but are **not** in the scrub set, so a face-down card's
 printed stats survive redaction. A policy reading observations can effectively
-see morphs' and manifested cards' stats. The fix is small (add the two
-relations to the set); the finding is that no test covered it.
+see morphs' and manifested cards' stats. The redaction fix itself is small
+(add the two relations to the set), but that only closes this identity leak —
+it is not evidence that derived characteristics or gameplay involving
+face-down cards are correct. Modeling the applicable face-down characteristics
+is a separate requirement. I did not audit test coverage, so I make no claim
+about whether a test covers this; the finding is the leak itself. Acceptance
+checks for a real fix: changing an unknown face-down card's identity must not
+change the opponent's observation, its visible base characteristics must be
+correct, and its controller must retain only the knowledge they are entitled
+to.
 
 ## 4. Rooms: later paid unlocking unmodeled — CONFIRMED (static)
 
@@ -93,30 +105,41 @@ omissions despite missing behavior.
 
 ## Verdict on the earlier claims
 
-All four findings confirmed. Two nuances added: (a) response mode/target
-sub-choices *are* policy-steerable via `_choose` — the bypass is
-whether/which; (b) the combat cap is deliberate, not accidental.
+All four findings confirmed. Two nuances added: (a) the response bypass covers
+whether/which/target — target selection is not on the response path at all,
+and only a modal response's mode choice would reach `_choose` (and the
+`_policy` dispatch keys on the active player, not the responder);
+(b) the combat cap is deliberate, not accidental.
 
 ## Recommendation
 
-I agree with the revised recommendation in the feasibility notes (current
-XMage as reference while building a bounded Witchcraft contribution), with one
-reordering: **prototype the shared agent controls first**. Proper opponent
-response decisions and complete combat choices gate this project's training
-goal directly — the agent must control every meaningful decision before
-recorded games are worth training on. The correctness work (coverage tests,
-Rooms, impending/survival/manifest dread) only pays off if the agent-controls
-problem fits Witchcraft's architecture cleanly. Finding that out after weeks
-of card work instead of days would be the expensive ordering.
+**Recommendation (proposal, not a recorded decision).** Use current XMage as
+the reference engine while building a bounded Witchcraft contribution — but
+**prototype the shared agent controls first**. Proper opponent response
+decisions and complete combat choices gate this project's training goal
+directly: the agent must control every meaningful decision before recorded
+games are worth training on. The correctness work (coverage tests, Rooms,
+impending/survival/manifest dread) only pays off if the agent-controls problem
+fits Witchcraft's architecture cleanly. Finding that out after weeks of card
+work instead of days would be the expensive ordering.
 
 ## Reproducibility
 
 - `pip install python-mtg==0.1.1` (Python 3.12), no repo build required for
   these probes.
-- Response probe: `Game({"alice": [...], "bob": [...]}, starting_hand=
-  {"alice": ["Lightning Bolt"] + ["Mountain"]*6, "bob": [...]}, seed=1)`,
-  drive with `game.push`, cast via `legal_moves` kind `"cast"`, observe
-  `game.life()` / `game.hand("bob")` / `game.graveyard("bob")` before and
-  after the turn-2 cast.
+- Response probe: `experiments/response_probe.py` (`pip install
+  python-mtg==0.1.1`, Python 3.12). It plays a deterministic seed=1 line:
+  Alice bolts on turn 1 (Bob has no mana, so no response is possible —
+  Bob 20→17), both sides hold on Bob's turn 1, Alice bolts on turn 2.
+  It asserts Bob's Bolt fires in response (Alice 20→17, Bob 17→14, one Bolt
+  in Bob's graveyard) and replays the line with recording spy policies on
+  both seats, asserting the identical outcome with no policy call for the
+  response decision itself (only the game's routine `attackers`/`blocks`
+  checks appear). Mana note: the driver's mana pool has no public observable,
+  so the probe logs each side's battlefield lands before/after; Bob's single
+  Mountain is consistent with the single fired Bolt. (The three-Bolt
+  observation in §1 used a richer setup; the probe's minimal setup confirms
+  the same bypass mechanism — the response count follows from available
+  mana.)
 - Static findings: grep the cited files/lines in the installed package;
   `bridge_to_engine.py:252` in the source repo at `e35821c`.
