@@ -14,8 +14,20 @@ Reuse a rules engine, tentatively XMage, and integration/data tools where suitab
 
 The agent receives only information available to its seat. Opponent hands, hidden face-down identities and future library order must not leak into observations.
 
+## Setup
+
+Python dependencies are managed with [uv](https://docs.astral.sh/uv/). `pyproject.toml`, `uv.lock` and `.python-version` (3.12) are committed; `.venv/` is not.
+
+```bash
+uv sync                   # create .venv from the lockfile (installs Python 3.12 if needed)
+uv run pytest             # run tests inside the venv
+uv add <package>          # add a dependency and update uv.lock
+```
+
+The PyPI `torch` wheel supports MPS on Apple Silicon and CUDA on Linux, so the same lockfile works on the Mac and on rented GPU machines.
+
 ## Working across environments
 
-Use separate clones on the Mac and cloud machines. Start each task from updated main, work on separate branches, and commit/push before switching environments. Keep datasets, credentials and checkpoints out of Git.
+Use separate clones on the Mac and cloud machines. While prototyping, work directly on main; pull before starting and commit/push before switching environments. Keep datasets, credentials and checkpoints out of Git.
 
 See [the plan](docs/plan.md), [decisions](docs/decisions.md) and [Codex instructions](AGENTS.md). No engine integration or training is implemented yet.
