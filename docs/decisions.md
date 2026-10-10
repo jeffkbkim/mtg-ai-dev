@@ -22,7 +22,7 @@ Compare simple shared card/entity encoding with attention and explicit graph rel
 
 ### Interaction layer (2026-10-09)
 
-The interaction layer must accept any number of visible cards, ignore their order, and output one row per card so legal actions can point at card rows. Two families meet this and remain viable: attention (transformer blocks) and relation-style pairwise models (relation networks, or GNN message passing on explicit edges). DLRM-style flattened pairwise interaction, FM/DCN, RNN and CNN were ruled out for unordered zones. The user will build transformer blocks first, adapted from their LLM project, and keep a pooling (DeepSets) baseline for comparison. This is a hypothesis to test, not a settled winner.
+The interaction layer must accept any number of visible cards, ignore their order, and output one row per card so legal actions can point at card rows. Two families meet this and remain viable: attention (transformer blocks) and relation-style pairwise models (relation networks, or GNN message passing on explicit edges). DLRM-style flattened pairwise interaction, FM/DCN, RNN and CNN were ruled out for unordered zones. The user will build transformer blocks first, adapted from their LLM project, with a pooling (DeepSets) baseline to test whether interaction helps at all, and a relation network as the second contender to test which interaction works better. This is a hypothesis to test, not a settled winner.
 
 ## Research references
 
