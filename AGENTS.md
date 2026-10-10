@@ -6,6 +6,7 @@ The user is a beginner learning Python and ML, with an M4 Mac mini and 16 GB uni
 
 - For model representation, architecture, forward pass, loss and training-loop work, default to hints, explanations and review. Do not implement those parts unless the user asks.
 - For research, setup, data download/parsing, integration and routine infrastructure, implement directly when requested.
+- The user drives model design. Do not write design docs, diagrams, proposed architectures or option tables for the model unless explicitly asked; answer the question asked and let the user make each decision.
 - Explain design tradeoffs in plain language. Treat architecture choices as hypotheses, not established winners.
 
 ## Scope and correctness

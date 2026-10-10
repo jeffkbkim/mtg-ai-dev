@@ -20,6 +20,10 @@ The first player scores legal choices directly. A value head may aid training wi
 
 Compare simple shared card/entity encoding with attention and explicit graph relationships. Omit arbitrary positional encodings for unordered zones. Encode meaningful ordering for the stack/history and explicit ownership, zone and attachment relationships.
 
+### Interaction layer (2026-10-09)
+
+The interaction layer must accept any number of visible cards, ignore their order, and output one row per card so legal actions can point at card rows. Two families meet this and remain viable: attention (transformer blocks) and relation-style pairwise models (relation networks, or GNN message passing on explicit edges). DLRM-style flattened pairwise interaction, FM/DCN, RNN and CNN were ruled out for unordered zones. The user will build transformer blocks first, adapted from their LLM project, and keep a pooling (DeepSets) baseline for comparison. This is a hypothesis to test, not a settled winner.
+
 ## Research references
 
 - [DSK runtime tests and Witchcraft contribution scope — 2026-10-07](../experiments/engine_smoke/README.md). Current XMage passes a limited gameplay smoke test, but the packaged MageZero route is not DSK-ready. Consider current XMage as a reference while evaluating focused Witchcraft contributions; no final switch or contribution implementation is decided.
