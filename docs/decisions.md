@@ -24,6 +24,20 @@ Compare simple shared card/entity encoding with attention and explicit graph rel
 
 The interaction layer must accept any number of visible cards, ignore their order, and output one row per card so legal actions can point at card rows. Two families meet this and remain viable: attention (transformer blocks) and relation-style pairwise models (relation networks, or GNN message passing on explicit edges). DLRM-style flattened pairwise interaction, FM/DCN, RNN and CNN were ruled out for unordered zones. The user will build transformer blocks first, adapted from their LLM project, with a pooling (DeepSets) baseline to test whether interaction helps at all, and a relation network as the second contender to test which interaction works better. This is a hypothesis to test, not a settled winner.
 
+### Decisions are sequential steps (2026-10-10)
+
+A compound action is chosen as a sequence of single choices (for example: which spell or ability, then its target), each scored with its own softmax over the engine's legal options for that step. Actions point at card rows by index with explicit roles (source versus target). The engine integration must expose decisions at this granularity; whether XMage's player callbacks already do needs to be verified in its source.
+
+### v1 model shape (2026-10-11)
+
+- Input: each visible card's embedding is concatenated with its instance features and projected to D; global state is projected to D and appended as one extra entry (N+1 entries).
+- Encoder: start with one transformer block (single-head self-attention, then FFN, both residual) over cards plus global state; measure deeper stacks and more heads later.
+- Relations: engine-supplied directed edges `(edge_type, from_card, to_card)` add a learned scalar per edge type to the attention score of that pair. Both directions are separate types (for example blocks / blocked by). Upgrades to per-head and vector edge embeddings are later experiments.
+- Stack order: "resolves before" / "resolves after" edges between every pair of stack entries; no stack-position feature.
+- Decision context: the step type and whose decision it is go in the global state; a per-card flag marks the spell or ability currently being cast.
+- Abilities: abilities on the stack are their own entries with an ability embedding from a stable ability vocabulary built by the engine adapter (XMage runtime ability IDs are per-game). Unmapped abilities must be reported, never replaced.
+- Actions: fixed slots `[source card | target card | action type]` over the encoder outputs; empty card slots are filled with the global state's encoder output, so PASS-style actions see the situation. An MLP scores each action; softmax over legal actions; cross-entropy against the chosen action. Multi-target spells are separate sequential target steps.
+
 ## Research references
 
 - [DSK runtime tests and Witchcraft contribution scope — 2026-10-07](../experiments/engine_smoke/README.md). Current XMage passes a limited gameplay smoke test, but the packaged MageZero route is not DSK-ready. Consider current XMage as a reference while evaluating focused Witchcraft contributions; no final switch or contribution implementation is decided.
