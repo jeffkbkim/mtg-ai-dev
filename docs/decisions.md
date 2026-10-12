@@ -36,7 +36,7 @@ A compound action is chosen as a sequence of single choices (for example: which 
 - Stack order: "resolves before" / "resolves after" edges between every pair of stack entries; no stack-position feature.
 - Decision context: the step type and whose decision it is go in the global state; a per-card flag marks the spell or ability currently being cast.
 - Abilities: abilities on the stack are their own entries with an ability embedding from a stable ability vocabulary built by the engine adapter (XMage runtime ability IDs are per-game). Unmapped abilities must be reported, never replaced.
-- Actions: fixed slots `[source card | target card | action type]` over the encoder outputs; empty card slots are filled with the global state's encoder output, so PASS-style actions see the situation. An MLP scores each action; softmax over legal actions; cross-entropy against the chosen action. Multi-target spells are separate sequential target steps.
+- Actions: fixed slots `[source | target | global | action type]`, giving `(A, 3D + D_a)` per decision. Source and target are gathered from the encoder outputs by index; the global slot is the global state's encoder output for every action, so PASS-style actions see the situation; empty source/target slots are zeros. At a target step the source slot holds the spell or ability being cast. ACTIVATE puts the card in the source slot and the ability embedding in the target slot. Embeddings use width D throughout for v1. An MLP scores each action; softmax over legal actions; cross-entropy against the chosen action. Multi-target spells are separate sequential target steps.
 
 ## Research references
 
