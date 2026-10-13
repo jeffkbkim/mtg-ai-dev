@@ -1,0 +1,306 @@
+"""Turn XMage seat observations (JSON lines from engine/xmage) into batches that follow the batch contract.
+
+One decision line looks like {"kind", "prompt", "obs": {"entries", "edges"}, "options", "choice"}.
+See /mnt/project-files/notes/xmage-step3-observation.md for the format.
+
+Two steps:
+    example = encode_decision(line, vocab)   # one decision -> small per-example tensors, entry order kept
+    batch = collate([example, ...])          # pad and place entries as [global | cards (N) | abilities (N_a)]
+
+Nothing unknown is silently replaced. A card name, token name, ability key, step or action type that isn't
+in the vocabulary raises Unmapped; encode_file collects those into a report instead of dropping the game.
+
+Feature lists below are a first pass for the plumbing. Which features the model gets is a design choice:
+change them freely, the layout comments say what each column is.
+"""
+
+import json
+from dataclasses import dataclass, field
+from pathlib import Path
+
+import torch
+from torch import Tensor
+
+VOCAB_PATH = Path(__file__).parent / "vocab" / "dsk_vocab.json"
+
+PAD = 0
+FACE_DOWN = 1  # card id for a card whose identity this seat may not know
+EMPTY_IDX = -1
+
+ZONES = ["HAND", "BATTLEFIELD", "GRAVEYARD", "EXILE", "STACK", "REVEALED", "OFFERED", "CASTING"]
+CURRENT_TYPES = ["Creature", "Land", "Artifact", "Enchantment", "Instant", "Sorcery"]
+STEPS = ["Untap", "Upkeep", "Draw", "Precombat Main", "Begin Combat", "Declare Attackers", "Declare Blockers",
+         "First Combat Damage", "Combat Damage", "End Combat", "Postcombat Main", "End Turn", "Cleanup"]
+DECISION_KINDS = ["PRIORITY", "TARGET", "CHOOSE", "CHOOSE_CARDS", "TARGET_CARDS", "USE", "CHOICE", "MODE",
+                  "TRIGGER_ORDER", "ATTACK", "BLOCK"]
+# action type vocabulary; id = position, 0 = PAD
+ACTION_TYPES = ["PAD", "PASS", "PLAY_LAND", "CAST", "ACTIVATE", "SPECIAL", "TARGET", "CHOOSE", "CHOOSE_CARDS",
+                "TARGET_CARDS", "DONE", "ATTACK", "BLOCK", "YES", "NO", "MODE", "CHOICE", "TRIGGER_ORDER"]
+EDGE_TYPES = ["blocks", "blocked_by", "attached_to", "has_attached", "targets", "targeted_by",
+              "resolves_before", "resolves_after"]
+TARGET_PLAYER = {"me": 1, "opp": 2}  # action_target_players: 0 = not a player
+
+# card feature layout (F columns)
+CARD_FEATURES = (
+    [f"zone_{z.lower()}" for z in ZONES]
+    + ["mine", "face_down", "token", "tapped", "summoning_sick", "attacking", "blocking", "being_cast",
+       "room_left_unlocked", "room_right_unlocked"]
+    + [f"is_{t.lower()}" for t in CURRENT_TYPES]
+    + ["power/10", "toughness/10", "damage/10", "mana_value/10", "plus1_counters/5", "other_counters/5"]
+)
+# ability-on-the-stack feature layout (F_a columns)
+ABILITY_FEATURES = ["mine", "triggered", "activated"]
+# global feature layout (K columns)
+GLOBAL_FEATURES = (
+    ["my_turn"] + [f"step_{s}" for s in STEPS] + [f"decision_{k.lower()}" for k in DECISION_KINDS]
+    + ["my_life/20", "opp_life/20", "my_hand/7", "opp_hand/7", "my_library/40", "opp_library/40",
+       "my_graveyard/20", "opp_graveyard/20", "stack_size/5"]
+)
+
+
+class Unmapped(Exception):
+    """Something in the observation has no vocabulary id. Never replaced; reported."""
+
+
+@dataclass
+class Vocab:
+    card_ids: dict[str, int]
+    ability_ids: dict[str, int]
+    rooms: dict[str, tuple[str, str]]  # full Room name -> (left door, right door)
+    door_to_room: dict[str, str]
+
+    @classmethod
+    def load(cls, path: Path = VOCAB_PATH) -> "Vocab":
+        v = json.loads(Path(path).read_text())
+        names = sorted(v["cards"]) + sorted(v.get("tokens", []))
+        card_ids = {name: i + 2 for i, name in enumerate(names)}  # 0 PAD, 1 FACE_DOWN
+        ability_ids = {a["key"]: i + 1 for i, a in enumerate(v["abilities"])}  # 0 = none / PAD
+        rooms, door_to_room = {}, {}
+        for name in v["cards"]:
+            if " // " in name:
+                left, right = name.split(" // ")
+                rooms[name] = (left, right)
+                door_to_room[left] = door_to_room[right] = name
+        return cls(card_ids, ability_ids, rooms, door_to_room)
+
+    @property
+    def num_cards(self) -> int:
+        return max(self.card_ids.values()) + 1
+
+    @property
+    def num_abilities(self) -> int:
+        return max(self.ability_ids.values()) + 1
+
+    def card(self, name: str) -> int:
+        if name not in self.card_ids:
+            raise Unmapped(f"card name not in vocabulary: {name!r}")
+        return self.card_ids[name]
+
+    def ability(self, key: str) -> int:
+        if key not in self.ability_ids:
+            raise Unmapped(f"ability key not in vocabulary: {key!r}")
+        return self.ability_ids[key]
+
+
+def _num(x, default=0.0) -> float:
+    try:
+        return float(x)
+    except (TypeError, ValueError):
+        return default
+
+
+def _card_identity(e: dict, vocab: Vocab) -> tuple[int, bool, bool]:
+    """Card id plus Room door flags. Face-down cards I may not know -> FACE_DOWN."""
+    shown = e.get("name", "")
+    if e.get("face_down"):
+        # XMage shows "Manifest" to opponents and "Manifest: <real name>" to the controller
+        if ": " in shown:
+            return vocab.card(shown.split(": ", 1)[1]), False, False
+        return FACE_DOWN, False, False
+    full = e.get("card_name") or shown
+    if full in vocab.rooms:
+        left, right = vocab.rooms[full]
+        if shown == left:
+            return vocab.card(full), True, False
+        if shown == right:
+            return vocab.card(full), False, True
+        if shown == full:
+            return vocab.card(full), e.get("zone") == "BATTLEFIELD", e.get("zone") == "BATTLEFIELD"
+        return vocab.card(full), False, False  # empty name: no door unlocked
+    return vocab.card(full), False, False
+
+
+def _card_features(e: dict, left: bool, right: bool) -> list[float]:
+    zone = [1.0 if e.get("zone") == z else 0.0 for z in ZONES]
+    flags = [float(bool(e.get(k))) for k in
+             ("mine", "face_down", "token", "tapped", "summoning_sick", "attacking", "blocking", "being_cast")]
+    flags += [float(left), float(right)]
+    types = e.get("types") or ""
+    current = [1.0 if t in types else 0.0 for t in CURRENT_TYPES]
+    counters = e.get("counters", {})
+    plus1 = counters.get("+1/+1", 0)
+    other = sum(v for k, v in counters.items() if k != "+1/+1")
+    numbers = [_num(e.get("power")) / 10, _num(e.get("toughness")) / 10, _num(e.get("damage")) / 10,
+               _num(e.get("mana_value")) / 10, plus1 / 5, other / 5]
+    return zone + flags + current + numbers
+
+
+def _ability_features(e: dict) -> list[float]:
+    t = str(e.get("ability_type", ""))
+    return [float(bool(e.get("mine"))), float("Triggered" in t), float("Activated" in t)]
+
+
+def _global_features(g: dict, kind: str) -> list[float]:
+    if g["step"] not in STEPS:
+        raise Unmapped(f"step not in list: {g['step']!r}")
+    if kind not in DECISION_KINDS:
+        raise Unmapped(f"decision kind not in list: {kind!r}")
+    return ([float(g["my_turn"])] + [1.0 if g["step"] == s else 0.0 for s in STEPS]
+            + [1.0 if kind == k else 0.0 for k in DECISION_KINDS]
+            + [g["my_life"] / 20, g["opp_life"] / 20, g["my_hand"] / 7, g["opp_hand"] / 7,
+               g["my_library"] / 40, g["opp_library"] / 40, g["my_graveyard"] / 20, g["opp_graveyard"] / 20,
+               g["stack_size"] / 5])
+
+
+@dataclass
+class Example:
+    """One decision. Entry indices refer to `order`: 0 = global, then cards, then abilities (no padding yet)."""
+    card_ids: list[int]
+    card_features: list[list[float]]
+    ability_ids: list[int]
+    ability_features: list[list[float]]
+    global_state: list[float]
+    edges: list[tuple[int, int, int]]  # (edge type, from, to) in compact entry order
+    action_types: list[int]
+    action_sources: list[int]
+    action_targets: list[int]
+    action_abilities: list[int]
+    action_target_players: list[int]
+    action_choice_index: list[int]
+    label: int
+    meta: dict = field(default_factory=dict)
+
+
+def encode_decision(d: dict, vocab: Vocab) -> Example:
+    entries = d["obs"]["entries"]
+    if entries[0]["kind"] != "global":
+        raise ValueError("entry 0 must be the global entry")
+    cards = [e for e in entries[1:] if e["kind"] == "card"]
+    abilities = [e for e in entries[1:] if e["kind"] == "ability"]
+    # dump index -> compact index [global | cards | abilities]
+    remap = {0: 0}
+    for j, e in enumerate(cards):
+        remap[e["i"]] = 1 + j
+    for k, e in enumerate(abilities):
+        remap[e["i"]] = 1 + len(cards) + k
+
+    card_ids, card_features = [], []
+    for e in cards:
+        cid, left, right = _card_identity(e, vocab)
+        card_ids.append(cid)
+        card_features.append(_card_features(e, left, right))
+    ability_ids, ability_features = [], []
+    for e in abilities:
+        key = e.get("ability_key")
+        if key is None:
+            raise Unmapped(f"ability on the stack has no key: {e.get('source_name')!r}: {e.get('text', '')[:80]!r}")
+        ability_ids.append(vocab.ability(key))
+        ability_features.append(_ability_features(e))
+
+    edges = []
+    for etype, f, t in d["obs"].get("edges", []):
+        if etype not in EDGE_TYPES:
+            raise Unmapped(f"edge type not in list: {etype!r}")
+        edges.append((EDGE_TYPES.index(etype), remap[f], remap[t]))
+
+    types, sources, targets, abil, players, choice = [], [], [], [], [], []
+    for o in d["options"]:
+        if o["action"] not in ACTION_TYPES:
+            raise Unmapped(f"action type not in list: {o['action']!r}")
+        types.append(ACTION_TYPES.index(o["action"]))
+        src, tgt = o.get("source", {}), o.get("target", {})
+        for ref in (src, tgt):
+            if ref.get("unseen"):
+                raise Unmapped(f"option refers to an object not in the observation ({d['kind']}: {o['label'][:60]!r})")
+        sources.append(remap[src["entry"]] if "entry" in src else EMPTY_IDX)
+        targets.append(remap[tgt["entry"]] if "entry" in tgt else EMPTY_IDX)
+        players.append(TARGET_PLAYER.get(tgt.get("player"), 0))
+        abil.append(vocab.ability(o["ability_key"]) if o.get("ability_key") else PAD)
+        choice.append(o["choice_index"] + 1 if "choice_index" in o else 0)
+
+    return Example(card_ids, card_features, ability_ids, ability_features,
+                   _global_features(entries[0], d["kind"]), edges,
+                   types, sources, targets, abil, players, choice, d["choice"],
+                   meta={"kind": d["kind"]})
+
+
+def collate(examples: list[Example]) -> dict[str, Tensor]:
+    """Pad a list of examples into contract tensors. Card j -> entry 1 + j, ability k -> entry 1 + N + k."""
+    B = len(examples)
+    N = max(len(x.card_ids) for x in examples)
+    N_a = max(len(x.ability_ids) for x in examples)
+    A = max(len(x.action_types) for x in examples)
+    M = 1 + N + N_a
+    F, F_a, K = len(CARD_FEATURES), len(ABILITY_FEATURES), len(GLOBAL_FEATURES)
+
+    out = {
+        "card_ids": torch.zeros(B, N, dtype=torch.long),
+        "card_features": torch.zeros(B, N, F),
+        "ability_ids": torch.zeros(B, N_a, dtype=torch.long),
+        "ability_features": torch.zeros(B, N_a, F_a),
+        "global_state": torch.zeros(B, K),
+        "active_edges": torch.zeros(B, len(EDGE_TYPES), M, M, dtype=torch.bool),
+        "action_types": torch.zeros(B, A, dtype=torch.long),
+        "action_sources": torch.full((B, A), EMPTY_IDX, dtype=torch.long),
+        "action_targets": torch.full((B, A), EMPTY_IDX, dtype=torch.long),
+        "action_abilities": torch.zeros(B, A, dtype=torch.long),
+        "action_target_players": torch.zeros(B, A, dtype=torch.long),
+        "action_choice_index": torch.zeros(B, A, dtype=torch.long),
+        "card_mask": torch.zeros(B, N, dtype=torch.bool),
+        "ability_mask": torch.zeros(B, N_a, dtype=torch.bool),
+        "action_mask": torch.zeros(B, A, dtype=torch.bool),
+        "label": torch.zeros(B, dtype=torch.long),
+    }
+    for b, x in enumerate(examples):
+        n, n_a, a = len(x.card_ids), len(x.ability_ids), len(x.action_types)
+
+        def place(i: int) -> int:
+            # compact index -> padded entry index
+            if i <= 0:
+                return i
+            return i if i <= n else 1 + N + (i - 1 - n)
+
+        out["card_ids"][b, :n] = torch.tensor(x.card_ids, dtype=torch.long)
+        if n:
+            out["card_features"][b, :n] = torch.tensor(x.card_features)
+        out["card_mask"][b, :n] = True
+        if n_a:
+            out["ability_ids"][b, :n_a] = torch.tensor(x.ability_ids, dtype=torch.long)
+            out["ability_features"][b, :n_a] = torch.tensor(x.ability_features)
+        out["ability_mask"][b, :n_a] = True
+        out["global_state"][b] = torch.tensor(x.global_state)
+        for etype, f, t in x.edges:
+            out["active_edges"][b, etype, place(f), place(t)] = True
+        out["action_types"][b, :a] = torch.tensor(x.action_types, dtype=torch.long)
+        out["action_sources"][b, :a] = torch.tensor([place(i) for i in x.action_sources], dtype=torch.long)
+        out["action_targets"][b, :a] = torch.tensor([place(i) for i in x.action_targets], dtype=torch.long)
+        out["action_abilities"][b, :a] = torch.tensor(x.action_abilities, dtype=torch.long)
+        out["action_target_players"][b, :a] = torch.tensor(x.action_target_players, dtype=torch.long)
+        out["action_choice_index"][b, :a] = torch.tensor(x.action_choice_index, dtype=torch.long)
+        out["action_mask"][b, :a] = True
+        out["label"][b] = x.label
+    return out
+
+
+def encode_file(path: Path, vocab: Vocab) -> tuple[list[Example], dict[str, int]]:
+    """Encode every decision in a JSON-lines file. Returns examples and a report of unmapped items (by message)."""
+    examples, problems = [], {}
+    for line in Path(path).read_text().splitlines():
+        d = json.loads(line)
+        if d.get("type", "decision") != "decision":
+            continue
+        try:
+            examples.append(encode_decision(d, vocab))
+        except Unmapped as err:
+            problems[str(err)] = problems.get(str(err), 0) + 1
+    return examples, problems

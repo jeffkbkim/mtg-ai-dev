@@ -21,3 +21,5 @@
 ## Status
 
 Private GitHub repository created and scaffold is available locally. The [engine comparison](research/engine-comparison-2026-10-07.md) now has a [DSK runtime follow-up](../experiments/engine_smoke/README.md): current XMage completed four games with exact synthetic DSK decks, while the older MageZero bundle failed card coverage. Witchcraft's DSK parser/bridge was audited and a contribution sequence proposed. Python-controlled policy decisions, hidden-information validation, complete DSK coverage, data audit and training remain pending. No engine selection is final.
+
+Update 2026-10-13: XMage is now driven from Python through our own seat class on the release jars (`engine/xmage/`): decisions with per-seat observations, leak checks (0 leaks over 50+ recorded games, planted leaks caught), and an encoder (`engine/encode.py`) that turns recorded decisions into batch tensors passing `validate_batch`. Only two synthetic smoke decks have been played so far; real drafted decks, wider card coverage and data audit remain pending.

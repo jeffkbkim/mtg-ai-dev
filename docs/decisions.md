@@ -38,6 +38,10 @@ A compound action is chosen as a sequence of single choices (for example: which 
 - Abilities: abilities on the stack are their own entries with an ability embedding from a stable ability vocabulary built by the engine adapter (XMage runtime ability IDs are per-game). Unmapped abilities must be reported, never replaced.
 - Actions: fixed slots `[source | target | global | action type]`, giving `(A, 3D + D_a)` per decision. Source and target are gathered from the encoder outputs by index; the global slot is the global state's encoder output for every action, so PASS-style actions see the situation; empty source/target slots are zeros. At a target step the source slot holds the spell or ability being cast. ACTIVATE puts the card in the source slot and the ability embedding in the target slot. Embeddings use width D throughout for v1. An MLP scores each action; softmax over legal actions; cross-entropy against the chosen action. Multi-target spells are separate sequential target steps.
 
+## Engine integration: XMage release jars plus our own classes (2026-10-13)
+
+The user chose to build on the unmodified XMage 1.4.62 release jars with our own Java classes (`engine/xmage/`), rather than forking XMage or using the Playmat websocket client. A Java seat hands every real decision to Python as JSON lines with an observation built from XMage's per-seat view; every message is checked against full game state for hidden-information leaks. Fork XMage source only if a DSK card bug blocks us. Coverage is tracked per card through rejected moves and unmapped abilities reported in the run log. Write-ups: `/mnt/project-files/notes/xmage-step1-readiness.md` to `xmage-step4-encoder.md` (project files, not in Git).
+
 ## Research references
 
 - [DSK runtime tests and Witchcraft contribution scope — 2026-10-07](../experiments/engine_smoke/README.md). Current XMage passes a limited gameplay smoke test, but the packaged MageZero route is not DSK-ready. Consider current XMage as a reference while evaluating focused Witchcraft contributions; no final switch or contribution implementation is decided.

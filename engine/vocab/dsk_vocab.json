@@ -1,0 +1,1653 @@
+{
+ "set": "DSK",
+ "xmage": "1.4.62",
+ "cards": [
+  "Abandoned Campground",
+  "Abhorrent Oculus",
+  "Acrobatic Cheerleader",
+  "Altanak, the Thrice-Called",
+  "Anthropede",
+  "Appendage Amalgam",
+  "Arabella, Abandoned Doll",
+  "Attack-in-the-Box",
+  "Balemurk Leech",
+  "Balustrade Wurm",
+  "Baseball Bat",
+  "Bashful Beastie",
+  "Bear Trap",
+  "Beastie Beatdown",
+  "Bedhead Beastie",
+  "Betrayer's Bargain",
+  "Blazemire Verge",
+  "Bleeding Woods",
+  "Boilerbilges Ripper",
+  "Bottomless Pool // Locker Room",
+  "Break Down the Door",
+  "Broodspinner",
+  "Cackling Slasher",
+  "Cathartic Parting",
+  "Cautious Survivor",
+  "Central Elevator // Promising Stairs",
+  "Chainsaw",
+  "Charred Foyer // Warped Space",
+  "Clammy Prowler",
+  "Clockwork Percussionist",
+  "Come Back Wrong",
+  "Commune with Evil",
+  "Conductive Machete",
+  "Coordinated Clobbering",
+  "Cracked Skull",
+  "Creeping Peeper",
+  "Cryptid Inspector",
+  "Cult Healer",
+  "Cursed Recording",
+  "Cursed Windbreaker",
+  "Cynical Loner",
+  "Daggermaw Megalodon",
+  "Dashing Bloodsucker",
+  "Dazzling Theater // Prop Room",
+  "Defiant Survivor",
+  "Defiled Crypt // Cadaver Lab",
+  "Demonic Counsel",
+  "Derelict Attic // Widow's Walk",
+  "Dissection Tools",
+  "Disturbing Mirth",
+  "Diversion Specialist",
+  "Dollmaker's Shop // Porcelain Gallery",
+  "Don't Make a Sound",
+  "Doomsday Excruciator",
+  "Drag to the Roots",
+  "Duskmourn's Domination",
+  "Emerge from the Cocoon",
+  "Enduring Courage",
+  "Enduring Curiosity",
+  "Enduring Innocence",
+  "Enduring Tenacity",
+  "Enduring Vitality",
+  "Enter the Enigma",
+  "Entity Tracker",
+  "Erratic Apparition",
+  "Etched Cornfield",
+  "Ethereal Armor",
+  "Exorcise",
+  "Fanatic of the Harrowing",
+  "Fear of Abduction",
+  "Fear of Being Hunted",
+  "Fear of Burning Alive",
+  "Fear of Exposure",
+  "Fear of Failed Tests",
+  "Fear of Falling",
+  "Fear of Immobility",
+  "Fear of Impostors",
+  "Fear of Infinity",
+  "Fear of Isolation",
+  "Fear of Lost Teeth",
+  "Fear of Missing Out",
+  "Fear of Surveillance",
+  "Fear of the Dark",
+  "Final Vengeance",
+  "Flesh Burrower",
+  "Floodfarm Verge",
+  "Floodpits Drowner",
+  "Forest",
+  "Found Footage",
+  "Frantic Strength",
+  "Friendly Ghost",
+  "Friendly Teddy",
+  "Funeral Room // Awakening Hall",
+  "Get Out",
+  "Ghost Vacuum",
+  "Ghostly Dancers",
+  "Ghostly Keybearer",
+  "Give In to Violence",
+  "Glassworks // Shattered Yard",
+  "Glimmer Seeker",
+  "Glimmerburst",
+  "Glimmerlight",
+  "Gloomlake Verge",
+  "Grab the Prize",
+  "Grand Entryway // Elegant Rotunda",
+  "Grasping Longneck",
+  "Greenhouse // Rickety Gazebo",
+  "Gremlin Tamer",
+  "Grievous Wound",
+  "Growing Dread",
+  "Hand That Feeds",
+  "Hardened Escort",
+  "Haunted Screen",
+  "Hauntwoods Shrieker",
+  "Hedge Shredder",
+  "Horrid Vigor",
+  "House Cartographer",
+  "Hushwood Verge",
+  "Impossible Inferno",
+  "Infernal Phantom",
+  "Innocuous Rat",
+  "Inquisitive Glimmer",
+  "Insidious Fungus",
+  "Intruding Soulrager",
+  "Irreverent Gremlin",
+  "Island",
+  "Jump Scare",
+  "Kaito, Bane of Nightmares",
+  "Keys to the House",
+  "Killer's Mask",
+  "Kona, Rescue Beastie",
+  "Lakeside Shack",
+  "Let's Play a Game",
+  "Leyline of Hope",
+  "Leyline of Mutation",
+  "Leyline of Resonance",
+  "Leyline of Transformation",
+  "Leyline of the Void",
+  "Lionheart Glimmer",
+  "Live or Die",
+  "Living Phone",
+  "Malevolent Chandelier",
+  "Manifest Dread",
+  "Marina Vendrell",
+  "Marina Vendrell's Grimoire",
+  "Marvin, Murderous Mimic",
+  "Meat Locker // Drowned Diner",
+  "Meathook Massacre II",
+  "Miasma Demon",
+  "Midnight Mayhem",
+  "Mirror Room // Fractured Realm",
+  "Moldering Gym // Weight Room",
+  "Monstrous Emergence",
+  "Most Valuable Slayer",
+  "Mountain",
+  "Murder",
+  "Murky Sewer",
+  "Nashi, Searcher in the Dark",
+  "Neglected Manor",
+  "Niko, Light of Hope",
+  "Norin, Swift Survivalist",
+  "Nowhere to Run",
+  "Oblivious Bookworm",
+  "Omnivorous Flytrap",
+  "Optimistic Scavenger",
+  "Orphans of the Wheat",
+  "Osseous Sticktwister",
+  "Overgrown Zealot",
+  "Overlord of the Balemurk",
+  "Overlord of the Boilerbilges",
+  "Overlord of the Floodpits",
+  "Overlord of the Hauntwoods",
+  "Overlord of the Mistmoors",
+  "Painter's Studio // Defaced Gallery",
+  "Paranormal Analyst",
+  "Patched Plaything",
+  "Patchwork Beastie",
+  "Peculiar Lighthouse",
+  "Peer Past the Veil",
+  "Piggy Bank",
+  "Piranha Fly",
+  "Plains",
+  "Popular Egotist",
+  "Possessed Goat",
+  "Pyroclasm",
+  "Ragged Playmate",
+  "Rampaging Soulrager",
+  "Raucous Carnival",
+  "Razorkin Hordecaller",
+  "Razorkin Needlehead",
+  "Razortrap Gorge",
+  "Reluctant Role Model",
+  "Restricted Office // Lecture Hall",
+  "Resurrected Cultist",
+  "Rip, Spawn Hunter",
+  "Ripchain Razorkin",
+  "Rite of the Moth",
+  "Roaring Furnace // Steaming Sauna",
+  "Rootwise Survivor",
+  "Savior of the Small",
+  "Saw",
+  "Sawblade Skinripper",
+  "Say Its Name",
+  "Scorching Dragonfire",
+  "Scrabbling Skullcrab",
+  "Screaming Nemesis",
+  "Seized from Slumber",
+  "Shardmage's Rescue",
+  "Sheltered by Ghosts",
+  "Shepherding Spirits",
+  "Shrewd Storyteller",
+  "Shroudstomper",
+  "Silent Hallcreeper",
+  "Skullsnap Nuisance",
+  "Slavering Branchsnapper",
+  "Smoky Lounge // Misty Salon",
+  "Spectral Snatcher",
+  "Spineseeker Centipede",
+  "Split Up",
+  "Splitskin Doll",
+  "Sporogenic Infection",
+  "Stalked Researcher",
+  "Stay Hidden, Stay Silent",
+  "Strangled Cemetery",
+  "Surgical Suite // Hospital Room",
+  "Swamp",
+  "Terramorphic Expanse",
+  "The Jolly Balloon Man",
+  "The Mindskinner",
+  "The Rollercrusher Ride",
+  "The Swarmweaver",
+  "The Tale of Tamiyo",
+  "The Wandering Rescuer",
+  "Thornspire Verge",
+  "Threats Around Every Corner",
+  "Ticket Booth // Tunnel of Hate",
+  "Toby, Beastie Befriender",
+  "Trapped in the Screen",
+  "Trial of Agony",
+  "Tunnel Surveyor",
+  "Turn Inside Out",
+  "Twist Reality",
+  "Twitching Doll",
+  "Tyvar, the Pummeler",
+  "Unable to Scream",
+  "Undead Sprinter",
+  "Under the Skin",
+  "Underwater Tunnel // Slimy Aquarium",
+  "Unholy Annex // Ritual Chamber",
+  "Unidentified Hovership",
+  "Unnerving Grasp",
+  "Unsettling Twins",
+  "Unstoppable Slasher",
+  "Untimely Malfunction",
+  "Unwanted Remake",
+  "Unwilling Vessel",
+  "Valgavoth's Faithful",
+  "Valgavoth's Lair",
+  "Valgavoth's Onslaught",
+  "Valgavoth, Terror Eater",
+  "Vanish from Sight",
+  "Vengeful Possession",
+  "Veteran Survivor",
+  "Vicious Clown",
+  "Victor, Valgavoth's Seneschal",
+  "Vile Mutilator",
+  "Violent Urge",
+  "Walk-In Closet // Forgotten Cellar",
+  "Waltz of Rage",
+  "Wary Watchdog",
+  "Wickerfolk Thresher",
+  "Wildfire Wickerfolk",
+  "Winter's Intervention",
+  "Winter, Misanthropic Guide",
+  "Withering Torment",
+  "Zimone, All-Questioning"
+ ],
+ "abilities": [
+  {
+   "key": "Abhorrent Oculus#0",
+   "type": "Triggered",
+   "text": "At the beginning of each opponent's upkeep, manifest dread."
+  },
+  {
+   "key": "Acrobatic Cheerleader#0",
+   "type": "Triggered",
+   "text": "<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, put a flying counter on it. This ability triggers only once."
+  },
+  {
+   "key": "Altanak, the Thrice-Called#0",
+   "type": "Triggered",
+   "text": "Whenever {this} becomes the target of a spell or ability an opponent controls, draw a card."
+  },
+  {
+   "key": "Altanak, the Thrice-Called#1",
+   "type": "Activated",
+   "text": "{1}{G}, Discard this card: Return target land card from your graveyard to the battlefield tapped."
+  },
+  {
+   "key": "Anthropede#0",
+   "type": "Triggered",
+   "text": "When {this} enters, you may discard a card or pay {2}. When you do, destroy target Room."
+  },
+  {
+   "key": "Anthropede#g0",
+   "type": "Triggered",
+   "granted": true,
+   "text": "destroy target Room."
+  },
+  {
+   "key": "Appendage Amalgam#0",
+   "type": "Triggered",
+   "text": "Whenever {this} attacks, surveil 1. <i>(Look at the top card of your library. You may put that card into your graveyard.)</i>"
+  },
+  {
+   "key": "Arabella, Abandoned Doll#0",
+   "type": "Triggered",
+   "text": "Whenever {this} attacks, it deals X damage to each opponent and you gain X life, where X is the number of creatures you control with power 2 or less."
+  },
+  {
+   "key": "Attack-in-the-Box#0",
+   "type": "Triggered",
+   "text": "Whenever {this} attacks, you may have it get +4/+0 until end of turn. If you do, sacrifice it at the beginning of the next end step."
+  },
+  {
+   "key": "Attack-in-the-Box#g0",
+   "type": "Triggered",
+   "granted": true,
+   "text": "At the beginning of the next end step, sacrifice {this}."
+  },
+  {
+   "key": "Balemurk Leech#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, each opponent loses 1 life."
+  },
+  {
+   "key": "Balustrade Wurm#0",
+   "type": "Activated",
+   "text": "<i>Delirium</i> &mdash; {2}{G}{G}: Return this card from your graveyard to the battlefield with a finality counter on it. Activate only if there are four or more card types among cards in your graveyard and only as a sorcery."
+  },
+  {
+   "key": "Baseball Bat#0",
+   "type": "Triggered",
+   "text": "When {this} enters, attach it to target creature you control."
+  },
+  {
+   "key": "Baseball Bat#1",
+   "type": "Triggered",
+   "text": "Whenever equipped creature attacks, tap up to one target creature."
+  },
+  {
+   "key": "Baseball Bat#2",
+   "type": "Activated",
+   "text": "Equip {3} <i>({3}: Attach to target creature you control. Equip only as a sorcery.)</i>"
+  },
+  {
+   "key": "Bashful Beastie#0",
+   "type": "Triggered",
+   "text": "When {this} dies, manifest dread."
+  },
+  {
+   "key": "Bear Trap#0",
+   "type": "Activated",
+   "text": "{3}, {T}, Sacrifice {this}: It deals 3 damage to target creature."
+  },
+  {
+   "key": "Bedhead Beastie#0",
+   "type": "Activated",
+   "text": "Mountaincycling {2} <i>({2}, Discard this card: Search your library for a Mountain card, reveal it, put it into your hand, then shuffle.)</i>"
+  },
+  {
+   "key": "Boilerbilges Ripper#0",
+   "type": "Triggered",
+   "text": "When {this} enters, you may sacrifice another creature or enchantment. When you do, {this} deals 2 damage to any target."
+  },
+  {
+   "key": "Boilerbilges Ripper#g0",
+   "type": "Triggered",
+   "granted": true,
+   "text": "{this} deals 2 damage to any target."
+  },
+  {
+   "key": "Bottomless Pool // Locker Room#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, return up to one target creature to its owner's hand."
+  },
+  {
+   "key": "Bottomless Pool // Locker Room#1",
+   "type": "Triggered",
+   "text": "Whenever a creature you control deals combat damage to an opponent, draw a card."
+  },
+  {
+   "key": "Broodspinner#0",
+   "type": "Triggered",
+   "text": "When {this} enters, surveil 2. <i>(Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top in any order.)</i>"
+  },
+  {
+   "key": "Broodspinner#1",
+   "type": "Activated",
+   "text": "{4}{B}{G}, {T}, Sacrifice {this}: Create a number of 1/1 black and green Insect creature tokens with flying equal to the number of card types among cards in your graveyard."
+  },
+  {
+   "key": "Cautious Survivor#0",
+   "type": "Triggered",
+   "text": "<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, you gain 2 life."
+  },
+  {
+   "key": "Central Elevator // Promising Stairs#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, search your library for a Room card that doesn't have the same name as a Room you control, reveal it, put it into your hand, then shuffle."
+  },
+  {
+   "key": "Central Elevator // Promising Stairs#1",
+   "type": "Triggered",
+   "text": "At the beginning of your upkeep, surveil 1. <i>(Look at the top card of your library. You may put that card into your graveyard.)</i> If there are eight or more different names among unlocked doors of Rooms you control, you win the game."
+  },
+  {
+   "key": "Chainsaw#0",
+   "type": "Triggered",
+   "text": "When {this} enters, it deals 3 damage to up to one target creature."
+  },
+  {
+   "key": "Chainsaw#1",
+   "type": "Triggered",
+   "text": "Whenever one or more creatures die, put a rev counter on {this}."
+  },
+  {
+   "key": "Chainsaw#2",
+   "type": "Activated",
+   "text": "Equip {3}"
+  },
+  {
+   "key": "Charred Foyer // Warped Space#0",
+   "type": "Triggered",
+   "text": "At the beginning of your upkeep, exile the top card of your library. You may play that card this turn."
+  },
+  {
+   "key": "Clammy Prowler#0",
+   "type": "Triggered",
+   "text": "Whenever {this} attacks, another target attacking creature can't be blocked this turn."
+  },
+  {
+   "key": "Clockwork Percussionist#0",
+   "type": "Triggered",
+   "text": "When {this} dies, exile the top card of your library. You may play it until the end of your next turn."
+  },
+  {
+   "key": "Conductive Machete#0",
+   "type": "Triggered",
+   "text": "When {this} enters, manifest dread, then attach {this} to that creature."
+  },
+  {
+   "key": "Conductive Machete#1",
+   "type": "Activated",
+   "text": "Equip {4}"
+  },
+  {
+   "key": "Cracked Skull#0",
+   "type": "Triggered",
+   "text": "When {this} enters, look at target player's hand. You may choose a nonland card from it. That player discards that card."
+  },
+  {
+   "key": "Cracked Skull#1",
+   "type": "Triggered",
+   "text": "When enchanted creature is dealt damage, destroy it."
+  },
+  {
+   "key": "Cryptid Inspector#0",
+   "type": "Triggered",
+   "text": "Whenever a face-down permanent you control enters and whenever {this} or another permanent you control is turned face up, put a +1/+1 counter on {this}."
+  },
+  {
+   "key": "Cult Healer#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, {this} gains lifelink until end of turn."
+  },
+  {
+   "key": "Cursed Recording#0",
+   "type": "Triggered",
+   "text": "Whenever you cast an instant or sorcery spell, put a time counter on {this}. Then if there are seven or more time counters on it, remove those counters and it deals 20 damage to you."
+  },
+  {
+   "key": "Cursed Recording#1",
+   "type": "Activated",
+   "text": "{T}: When you next cast an instant or sorcery spell this turn, copy that spell. You may choose new targets for the copy."
+  },
+  {
+   "key": "Cursed Recording#g0",
+   "type": "Triggered",
+   "granted": true,
+   "text": "When you next cast an instant or sorcery spell this turn, copy that spell. You may choose new targets for the copy."
+  },
+  {
+   "key": "Cursed Windbreaker#0",
+   "type": "Triggered",
+   "text": "When {this} enters, manifest dread, then attach {this} to that creature."
+  },
+  {
+   "key": "Cursed Windbreaker#1",
+   "type": "Activated",
+   "text": "Equip {3}"
+  },
+  {
+   "key": "Cynical Loner#0",
+   "type": "Triggered",
+   "text": "<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, you may search your library for a card, put it into your graveyard, then shuffle."
+  },
+  {
+   "key": "Daggermaw Megalodon#0",
+   "type": "Activated",
+   "text": "Islandcycling {2} <i>({2}, Discard this card: Search your library for an Island card, reveal it, put it into your hand, then shuffle.)</i>"
+  },
+  {
+   "key": "Dashing Bloodsucker#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, {this} gets +2/+0 and gains lifelink until end of turn."
+  },
+  {
+   "key": "Defiant Survivor#0",
+   "type": "Triggered",
+   "text": "<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, manifest dread."
+  },
+  {
+   "key": "Defiled Crypt // Cadaver Lab#0",
+   "type": "Triggered",
+   "text": "Whenever one or more cards leave your graveyard, create a 2/2 black Horror enchantment creature token. This ability triggers only once each turn."
+  },
+  {
+   "key": "Defiled Crypt // Cadaver Lab#1",
+   "type": "Triggered",
+   "text": "When you unlock this door, return target creature card from your graveyard to your hand."
+  },
+  {
+   "key": "Derelict Attic // Widow's Walk#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, you draw two cards and you lose 2 life."
+  },
+  {
+   "key": "Derelict Attic // Widow's Walk#1",
+   "type": "Triggered",
+   "text": "Whenever a creature you control attacks alone, it gets +1/+0 and gains deathtouch until end of turn."
+  },
+  {
+   "key": "Dissection Tools#0",
+   "type": "Triggered",
+   "text": "When {this} enters, manifest dread, then attach {this} to that creature."
+  },
+  {
+   "key": "Dissection Tools#1",
+   "type": "Activated",
+   "text": "Equip&mdash;Sacrifice a creature."
+  },
+  {
+   "key": "Disturbing Mirth#0",
+   "type": "Triggered",
+   "text": "When {this} enters, you may sacrifice another enchantment or creature. If you do, draw two cards."
+  },
+  {
+   "key": "Disturbing Mirth#1",
+   "type": "Triggered",
+   "text": "When you sacrifice {this}, manifest dread."
+  },
+  {
+   "key": "Diversion Specialist#0",
+   "type": "Activated",
+   "text": "{1}, Sacrifice another creature or enchantment: Exile the top card of your library. You may play it this turn."
+  },
+  {
+   "key": "Dollmaker's Shop // Porcelain Gallery#0",
+   "type": "Triggered",
+   "text": "Whenever one or more non-Toy creatures you control attack a player, create a 1/1 white Toy artifact creature token."
+  },
+  {
+   "key": "Doomsday Excruciator#0",
+   "type": "Triggered",
+   "text": "When {this} enters, if you cast it, each player exiles all but the bottom six cards of their library face down."
+  },
+  {
+   "key": "Doomsday Excruciator#1",
+   "type": "Triggered",
+   "text": "At the beginning of your upkeep, draw a card."
+  },
+  {
+   "key": "Enduring Courage#0",
+   "type": "Triggered",
+   "text": "Whenever another creature you control enters, it gets +2/+0 and gains haste until end of turn."
+  },
+  {
+   "key": "Enduring Courage#1",
+   "type": "Triggered",
+   "text": "When {this} dies, if it was a creature, return it to the battlefield under its owner's control. It's an enchantment."
+  },
+  {
+   "key": "Enduring Curiosity#0",
+   "type": "Triggered",
+   "text": "Whenever a creature you control deals combat damage to a player, draw a card."
+  },
+  {
+   "key": "Enduring Curiosity#1",
+   "type": "Triggered",
+   "text": "When {this} dies, if it was a creature, return it to the battlefield under its owner's control. It's an enchantment."
+  },
+  {
+   "key": "Enduring Innocence#0",
+   "type": "Triggered",
+   "text": "Whenever one or more other creatures you control with power 2 or less enter, draw a card. This ability triggers only once each turn."
+  },
+  {
+   "key": "Enduring Innocence#1",
+   "type": "Triggered",
+   "text": "When {this} dies, if it was a creature, return it to the battlefield under its owner's control. It's an enchantment."
+  },
+  {
+   "key": "Enduring Tenacity#0",
+   "type": "Triggered",
+   "text": "Whenever you gain life, target opponent loses that much life."
+  },
+  {
+   "key": "Enduring Tenacity#1",
+   "type": "Triggered",
+   "text": "When {this} dies, if it was a creature, return it to the battlefield under its owner's control. It's an enchantment."
+  },
+  {
+   "key": "Enduring Vitality#0",
+   "type": "Triggered",
+   "text": "When {this} dies, if it was a creature, return it to the battlefield under its owner's control. It's an enchantment."
+  },
+  {
+   "key": "Entity Tracker#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, draw a card."
+  },
+  {
+   "key": "Erratic Apparition#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, {this} gets +1/+1 until end of turn."
+  },
+  {
+   "key": "Fanatic of the Harrowing#0",
+   "type": "Triggered",
+   "text": "When {this} enters, each player discards a card. If you discarded a card this way, draw a card."
+  },
+  {
+   "key": "Fear of Abduction#0",
+   "type": "Triggered",
+   "text": "When {this} enters, exile target creature an opponent controls."
+  },
+  {
+   "key": "Fear of Abduction#1",
+   "type": "Triggered",
+   "text": "When {this} leaves the battlefield, put each card exiled with it into its owner's hand."
+  },
+  {
+   "key": "Fear of Burning Alive#0",
+   "type": "Triggered",
+   "text": "When {this} enters, it deals 4 damage to each opponent."
+  },
+  {
+   "key": "Fear of Burning Alive#1",
+   "type": "Triggered",
+   "text": "<i>Delirium</i> &mdash; Whenever a source you control deals noncombat damage to an opponent, if there are four or more card types among cards in your graveyard, {this} deals that amount of damage to target creature that player controls."
+  },
+  {
+   "key": "Fear of Failed Tests#0",
+   "type": "Triggered",
+   "text": "Whenever {this} deals combat damage to a player, draw that many cards."
+  },
+  {
+   "key": "Fear of Falling#0",
+   "type": "Triggered",
+   "text": "Whenever {this} attacks, target creature defending player controls gets -2/-0 and loses flying until your next turn."
+  },
+  {
+   "key": "Fear of Immobility#0",
+   "type": "Triggered",
+   "text": "When {this} enters, tap up to one target creature. If an opponent controls that creature, put a stun counter on it."
+  },
+  {
+   "key": "Fear of Impostors#0",
+   "type": "Triggered",
+   "text": "When {this} enters, counter target spell. Its controller manifests dread."
+  },
+  {
+   "key": "Fear of Infinity#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, you may return this card from your graveyard to your hand."
+  },
+  {
+   "key": "Fear of Lost Teeth#0",
+   "type": "Triggered",
+   "text": "When {this} dies, it deals 1 damage to any target and you gain 1 life."
+  },
+  {
+   "key": "Fear of Missing Out#0",
+   "type": "Triggered",
+   "text": "When {this} enters, discard a card, then draw a card."
+  },
+  {
+   "key": "Fear of Missing Out#1",
+   "type": "Triggered",
+   "text": "<i>Delirium</i> &mdash; Whenever {this} attacks for the first time each turn, if there are four or more card types among cards in your graveyard, untap target creature. After this phase, there is an additional combat phase."
+  },
+  {
+   "key": "Fear of Surveillance#0",
+   "type": "Triggered",
+   "text": "Whenever {this} attacks, surveil 1. <i>(Look at the top card of your library. You may put that card into your graveyard.)</i>"
+  },
+  {
+   "key": "Fear of the Dark#0",
+   "type": "Triggered",
+   "text": "Whenever {this} attacks, if defending player controls no Glimmer creatures, it gains menace and deathtouch until end of turn."
+  },
+  {
+   "key": "Flesh Burrower#0",
+   "type": "Triggered",
+   "text": "Whenever {this} attacks, another target creature you control gains deathtouch until end of turn."
+  },
+  {
+   "key": "Floodpits Drowner#0",
+   "type": "Triggered",
+   "text": "When {this} enters, tap target creature an opponent controls and put a stun counter on it."
+  },
+  {
+   "key": "Floodpits Drowner#1",
+   "type": "Activated",
+   "text": "{1}{U}, {T}: Shuffle {this} and target creature with a stun counter on it into their owners' libraries."
+  },
+  {
+   "key": "Found Footage#0",
+   "type": "Activated",
+   "text": "{2}, Sacrifice {this}: Surveil 2, then draw a card."
+  },
+  {
+   "key": "Friendly Ghost#0",
+   "type": "Triggered",
+   "text": "When {this} enters, target creature gets +2/+4 until end of turn."
+  },
+  {
+   "key": "Friendly Teddy#0",
+   "type": "Triggered",
+   "text": "When {this} dies, each player draws a card."
+  },
+  {
+   "key": "Funeral Room // Awakening Hall#0",
+   "type": "Triggered",
+   "text": "Whenever a creature you control dies, each opponent loses 1 life and you gain 1 life."
+  },
+  {
+   "key": "Funeral Room // Awakening Hall#1",
+   "type": "Triggered",
+   "text": "When you unlock this door, return all creature cards from your graveyard to the battlefield."
+  },
+  {
+   "key": "Ghost Vacuum#0",
+   "type": "Activated",
+   "text": "{T}: Exile target card from a graveyard."
+  },
+  {
+   "key": "Ghost Vacuum#1",
+   "type": "Activated",
+   "text": "{6}, {T}, Sacrifice {this}: Put each creature card exiled with {this} onto the battlefield under your control with a flying counter on it. Each of them is a 1/1 Spirit in addition to its other types. Activate only as a sorcery."
+  },
+  {
+   "key": "Ghostly Dancers#0",
+   "type": "Triggered",
+   "text": "When {this} enters, return an enchantment card from your graveyard to your hand or unlock a locked door of a Room you control."
+  },
+  {
+   "key": "Ghostly Dancers#1",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, create a 3/1 white Spirit creature token with flying."
+  },
+  {
+   "key": "Ghostly Keybearer#0",
+   "type": "Triggered",
+   "text": "Whenever {this} deals combat damage to a player, unlock a locked door of up to one target Room you control."
+  },
+  {
+   "key": "Glassworks // Shattered Yard#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, {this} deals 4 damage to target creature an opponent controls."
+  },
+  {
+   "key": "Glassworks // Shattered Yard#1",
+   "type": "Triggered",
+   "text": "At the beginning of your end step, {this} deals 1 damage to each opponent."
+  },
+  {
+   "key": "Glimmer Seeker#0",
+   "type": "Triggered",
+   "text": "<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, draw a card if you control a Glimmer creature. If you don't control a Glimmer creature, create a 1/1 white Glimmer enchantment creature token."
+  },
+  {
+   "key": "Glimmerlight#0",
+   "type": "Triggered",
+   "text": "When {this} enters, create a 1/1 white Glimmer enchantment creature token."
+  },
+  {
+   "key": "Glimmerlight#1",
+   "type": "Activated",
+   "text": "Equip {1} <i>({1}: Attach to target creature you control. Equip only as a sorcery.)</i>"
+  },
+  {
+   "key": "Grand Entryway // Elegant Rotunda#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, create a 1/1 white Glimmer enchantment creature token."
+  },
+  {
+   "key": "Grand Entryway // Elegant Rotunda#1",
+   "type": "Triggered",
+   "text": "When you unlock this door, put a +1/+1 counter on each of up to two target creatures."
+  },
+  {
+   "key": "Grasping Longneck#0",
+   "type": "Triggered",
+   "text": "When {this} dies, you gain 2 life."
+  },
+  {
+   "key": "Greenhouse // Rickety Gazebo#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, mill four cards. You may put up to two permanent cards from among the milled cards into your hand."
+  },
+  {
+   "key": "Gremlin Tamer#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, create a 1/1 red Gremlin creature token."
+  },
+  {
+   "key": "Grievous Wound#0",
+   "type": "Triggered",
+   "text": "Whenever enchanted player is dealt damage, they lose half their life, rounded up."
+  },
+  {
+   "key": "Growing Dread#0",
+   "type": "Triggered",
+   "text": "When {this} enters, manifest dread."
+  },
+  {
+   "key": "Growing Dread#1",
+   "type": "Triggered",
+   "text": "Whenever you turn a permanent face up, put a +1/+1 counter on it."
+  },
+  {
+   "key": "Hand That Feeds#0",
+   "type": "Triggered",
+   "text": "<i>Delirium</i> &mdash; Whenever {this} attacks while there are four or more card types among cards in your graveyard, it gets +2/+0 and gains menace until end of turn."
+  },
+  {
+   "key": "Hardened Escort#0",
+   "type": "Triggered",
+   "text": "Whenever {this} attacks, another target creature you control gets +1/+0 and gains indestructible until end of turn."
+  },
+  {
+   "key": "Haunted Screen#0",
+   "type": "Activated",
+   "text": "{7}: Put seven +1/+1 counters on {this}. It becomes a 0/0 Spirit creature in addition to its other types. Activate only once."
+  },
+  {
+   "key": "Hauntwoods Shrieker#0",
+   "type": "Triggered",
+   "text": "Whenever {this} attacks, manifest dread."
+  },
+  {
+   "key": "Hauntwoods Shrieker#1",
+   "type": "Activated",
+   "text": "{1}{G}: Reveal target face-down permanent. If it's a creature card, you may turn it face up."
+  },
+  {
+   "key": "Hedge Shredder#0",
+   "type": "Triggered",
+   "text": "Whenever {this} attacks, you may mill two cards."
+  },
+  {
+   "key": "Hedge Shredder#1",
+   "type": "Triggered",
+   "text": "Whenever one or more land cards are put into your graveyard from your library, put them onto the battlefield tapped."
+  },
+  {
+   "key": "Hedge Shredder#2",
+   "type": "Activated",
+   "text": "Crew 1 <i>(Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)</i>"
+  },
+  {
+   "key": "House Cartographer#0",
+   "type": "Triggered",
+   "text": "<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, reveal cards from the top of your library until you reveal a land card. Put that card into your hand and the rest on the bottom of your library in a random order."
+  },
+  {
+   "key": "Infernal Phantom#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, {this} gets +2/+0 until end of turn."
+  },
+  {
+   "key": "Infernal Phantom#1",
+   "type": "Triggered",
+   "text": "When {this} dies, it deals damage equal to its power to any target."
+  },
+  {
+   "key": "Innocuous Rat#0",
+   "type": "Triggered",
+   "text": "When {this} dies, manifest dread."
+  },
+  {
+   "key": "Insidious Fungus#0",
+   "type": "Activated",
+   "text": "{2}, Sacrifice {this}: Choose one &mdash;<br>&bull Destroy target artifact.<br>&bull Destroy target enchantment.<br>&bull Draw a card. Then you may put a land card from your hand onto the battlefield tapped.<br>"
+  },
+  {
+   "key": "Intruding Soulrager#0",
+   "type": "Activated",
+   "text": "{T}, Sacrifice a Room: {this} deals 2 damage to each opponent. Draw a card."
+  },
+  {
+   "key": "Irreverent Gremlin#0",
+   "type": "Triggered",
+   "text": "Whenever another creature you control with power 2 or less enters, you may discard a card. If you do, draw a card. Do this only once each turn."
+  },
+  {
+   "key": "Kaito, Bane of Nightmares#0",
+   "type": "Activated",
+   "text": "Ninjutsu {1}{U}{B} <i>({1}{U}{B} Return an unblocked attacker you control to hand: Put this card onto the battlefield from your hand tapped and attacking.)</i>"
+  },
+  {
+   "key": "Kaito, Bane of Nightmares#1",
+   "type": "Activated",
+   "text": "+1: You get an emblem with \"Ninjas you control get +1/+1.\""
+  },
+  {
+   "key": "Kaito, Bane of Nightmares#2",
+   "type": "Activated",
+   "text": "0: Surveil 2. <i>(Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top in any order.)</i> Then draw a card for each opponent who lost life this turn."
+  },
+  {
+   "key": "Kaito, Bane of Nightmares#3",
+   "type": "Activated",
+   "text": "-2: Tap target creature. Put two stun counters on it."
+  },
+  {
+   "key": "Keys to the House#0",
+   "type": "Activated",
+   "text": "{1}, {T}, Sacrifice {this}: Search your library for a basic land card, reveal it, put it into your hand, then shuffle."
+  },
+  {
+   "key": "Keys to the House#1",
+   "type": "Activated",
+   "text": "{3}, {T}, Sacrifice {this}: Lock or unlock a door of target Room you control. Activate only as a sorcery."
+  },
+  {
+   "key": "Killer's Mask#0",
+   "type": "Triggered",
+   "text": "When {this} enters, manifest dread, then attach {this} to that creature."
+  },
+  {
+   "key": "Killer's Mask#1",
+   "type": "Activated",
+   "text": "Equip {2}"
+  },
+  {
+   "key": "Kona, Rescue Beastie#0",
+   "type": "Triggered",
+   "text": "<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, you may put a permanent card from your hand onto the battlefield."
+  },
+  {
+   "key": "Leyline of Resonance#0",
+   "type": "Triggered",
+   "text": "Whenever you cast an instant or sorcery spell that targets only a single creature you control, copy that spell. You may choose new targets for the copy."
+  },
+  {
+   "key": "Lionheart Glimmer#0",
+   "type": "Triggered",
+   "text": "ward {2} <i>(Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)</i>"
+  },
+  {
+   "key": "Lionheart Glimmer#1",
+   "type": "Triggered",
+   "text": "Whenever you attack, creatures you control get +1/+1 until end of turn."
+  },
+  {
+   "key": "Living Phone#0",
+   "type": "Triggered",
+   "text": "When {this} dies, look at the top five cards of your library. You may reveal a creature card with power 2 or less from among them and put it into your hand. Put the rest on the bottom of your library in a random order."
+  },
+  {
+   "key": "Malevolent Chandelier#0",
+   "type": "Activated",
+   "text": "{2}: Put target card from a graveyard on the bottom of its owner's library. Activate only as a sorcery."
+  },
+  {
+   "key": "Marina Vendrell#0",
+   "type": "Triggered",
+   "text": "When {this} enters, reveal the top seven cards of your library. Put all enchantment cards revealed this way into your hand and the rest on the bottom of your library in a random order."
+  },
+  {
+   "key": "Marina Vendrell#1",
+   "type": "Activated",
+   "text": "{T}: Lock or unlock a door of target Room you control. Activate only as a sorcery."
+  },
+  {
+   "key": "Marina Vendrell's Grimoire#0",
+   "type": "Triggered",
+   "text": "When {this} enters, if you cast it, draw five cards."
+  },
+  {
+   "key": "Marina Vendrell's Grimoire#1",
+   "type": "Triggered",
+   "text": "Whenever you gain life, draw that many cards."
+  },
+  {
+   "key": "Marina Vendrell's Grimoire#2",
+   "type": "Triggered",
+   "text": "Whenever you lose life, discard that many cards. Then if you have no cards in hand, you lose the game."
+  },
+  {
+   "key": "Meat Locker // Drowned Diner#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, tap up to one target creature and put two stun counters on it."
+  },
+  {
+   "key": "Meat Locker // Drowned Diner#1",
+   "type": "Triggered",
+   "text": "When you unlock this door, draw three cards, then discard a card."
+  },
+  {
+   "key": "Meathook Massacre II#0",
+   "type": "Triggered",
+   "text": "When {this} enters, each player sacrifices X creatures of their choice."
+  },
+  {
+   "key": "Meathook Massacre II#1",
+   "type": "Triggered",
+   "text": "Whenever a creature you control dies, you may pay 3 life. If you do, return that card under your control with a finality counter on it."
+  },
+  {
+   "key": "Meathook Massacre II#2",
+   "type": "Triggered",
+   "text": "Whenever a creature an opponent controls dies, they may pay 3 life. If they don't, return that card under your control with a finality counter on it."
+  },
+  {
+   "key": "Miasma Demon#0",
+   "type": "Triggered",
+   "text": "When {this} enters, you may discard any number of cards. When you do, up to that many target creatures each get -2/-2 until end of turn."
+  },
+  {
+   "key": "Mirror Room // Fractured Realm#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, create a token that's a copy of target creature you control, except it's a Reflection in addition to its other creature types."
+  },
+  {
+   "key": "Moldering Gym // Weight Room#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, search your library for a basic land card, put it onto the battlefield tapped, then shuffle."
+  },
+  {
+   "key": "Moldering Gym // Weight Room#1",
+   "type": "Triggered",
+   "text": "When you unlock this door, manifest dread, then put three +1/+1 counters on that creature."
+  },
+  {
+   "key": "Most Valuable Slayer#0",
+   "type": "Triggered",
+   "text": "Whenever you attack, target attacking creature gets +1/+0 and gains first strike until end of turn."
+  },
+  {
+   "key": "Nashi, Searcher in the Dark#0",
+   "type": "Triggered",
+   "text": "Whenever {this} deals combat damage to a player, you mill that many cards. You may put any number of legendary and/or enchantment cards from among them into your hand. If you put no cards into your hand this way, put a +1/+1 counter on {this}."
+  },
+  {
+   "key": "Niko, Light of Hope#0",
+   "type": "Triggered",
+   "text": "When {this} enters, create two Shard tokens."
+  },
+  {
+   "key": "Niko, Light of Hope#1",
+   "type": "Activated",
+   "text": "{2}, {T}: Exile target nonlegendary creature you control. Shards you control become copies of it until the next end step. Return it to the battlefield under its owner's control at the beginning of the next end step."
+  },
+  {
+   "key": "Niko, Light of Hope#g0",
+   "type": "Activated",
+   "granted": true,
+   "text": "{2}, Sacrifice this enchantment: Scry 1. <i>(Look at the top card of your library. You may put that card on the bottom.)</i>, then draw a card."
+  },
+  {
+   "key": "Norin, Swift Survivalist#0",
+   "type": "Triggered",
+   "text": "Whenever a creature you control becomes blocked, you may exile it. You may play that card from exile this turn."
+  },
+  {
+   "key": "Nowhere to Run#0",
+   "type": "Triggered",
+   "text": "When {this} enters, target creature an opponent controls gets -3/-3 until end of turn."
+  },
+  {
+   "key": "Oblivious Bookworm#0",
+   "type": "Triggered",
+   "text": "At the beginning of your end step, you may draw a card. If you do, discard a card unless a permanent entered the battlefield face down under your control this turn or you turned a permanent face up this turn."
+  },
+  {
+   "key": "Omnivorous Flytrap#0",
+   "type": "Triggered",
+   "text": "<i>Delirium</i> &mdash; Whenever {this} enters or attacks, if there are four or more card types among cards in your graveyard, distribute two +1/+1 counters among one or two target creatures. Then if there are six or more card types among cards in your graveyard, double the number of +1/+1 counters on those creatures."
+  },
+  {
+   "key": "Optimistic Scavenger#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, put a +1/+1 counter on target creature."
+  },
+  {
+   "key": "Orphans of the Wheat#0",
+   "type": "Triggered",
+   "text": "Whenever {this} attacks, tap any number of untapped creatures you control. {this} gets +1/+1 until end of turn for each creature tapped this way."
+  },
+  {
+   "key": "Osseous Sticktwister#0",
+   "type": "Triggered",
+   "text": "<i>Delirium</i> &mdash; At the beginning of your end step, if there are four or more card types among cards in your graveyard, each opponent may sacrifice a nonland permanent of their choice or discard a card. Then {this} deals damage equal to its power to each opponent who didn't sacrifice a permanent or discard a card this way."
+  },
+  {
+   "key": "Overlord of the Balemurk#0",
+   "type": "Triggered",
+   "text": "At the beginning of your end step, if instance, remove a time counter from {this}. Then if it has no time counters on it, it loses impending."
+  },
+  {
+   "key": "Overlord of the Balemurk#1",
+   "type": "Triggered",
+   "text": "Whenever {this} enters or attacks, mill four cards, then you may return a non-Avatar creature card or a planeswalker card from your graveyard to your hand."
+  },
+  {
+   "key": "Overlord of the Boilerbilges#0",
+   "type": "Triggered",
+   "text": "At the beginning of your end step, if instance, remove a time counter from {this}. Then if it has no time counters on it, it loses impending."
+  },
+  {
+   "key": "Overlord of the Boilerbilges#1",
+   "type": "Triggered",
+   "text": "Whenever {this} enters or attacks, it deals 4 damage to any target."
+  },
+  {
+   "key": "Overlord of the Floodpits#0",
+   "type": "Triggered",
+   "text": "At the beginning of your end step, if instance, remove a time counter from {this}. Then if it has no time counters on it, it loses impending."
+  },
+  {
+   "key": "Overlord of the Floodpits#1",
+   "type": "Triggered",
+   "text": "Whenever {this} enters or attacks, draw two cards, then discard a card."
+  },
+  {
+   "key": "Overlord of the Hauntwoods#0",
+   "type": "Triggered",
+   "text": "At the beginning of your end step, if instance, remove a time counter from {this}. Then if it has no time counters on it, it loses impending."
+  },
+  {
+   "key": "Overlord of the Hauntwoods#1",
+   "type": "Triggered",
+   "text": "Whenever {this} enters or attacks, create a tapped colorless land token named Everywhere that is every basic land type."
+  },
+  {
+   "key": "Overlord of the Mistmoors#0",
+   "type": "Triggered",
+   "text": "At the beginning of your end step, if instance, remove a time counter from {this}. Then if it has no time counters on it, it loses impending."
+  },
+  {
+   "key": "Overlord of the Mistmoors#1",
+   "type": "Triggered",
+   "text": "Whenever {this} enters or attacks, create two 2/1 white Insect creature tokens with flying."
+  },
+  {
+   "key": "Painter's Studio // Defaced Gallery#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, exile the top two cards of your library. Until the end of your next turn, you may play those cards."
+  },
+  {
+   "key": "Painter's Studio // Defaced Gallery#1",
+   "type": "Triggered",
+   "text": "Whenever you attack, attacking creatures you control get +1/+0 until end of turn."
+  },
+  {
+   "key": "Paranormal Analyst#0",
+   "type": "Triggered",
+   "text": "Whenever you manifest dread, put a card you put into your graveyard this way into your hand."
+  },
+  {
+   "key": "Patchwork Beastie#0",
+   "type": "Triggered",
+   "text": "At the beginning of your upkeep, you may mill a card."
+  },
+  {
+   "key": "Piggy Bank#0",
+   "type": "Triggered",
+   "text": "When {this} dies, create a Treasure token."
+  },
+  {
+   "key": "Popular Egotist#0",
+   "type": "Activated",
+   "text": "{1}{B}, Sacrifice another creature or enchantment: {this} gains indestructible until end of turn. Tap it."
+  },
+  {
+   "key": "Popular Egotist#1",
+   "type": "Triggered",
+   "text": "Whenever you sacrifice a permanent, target opponent loses 1 life and you gain 1 life."
+  },
+  {
+   "key": "Possessed Goat#0",
+   "type": "Activated",
+   "text": "{3}, Discard a card: Put three +1/+1 counters on {this} and it becomes a black Demon in addition to its other colors and types. Activate only once."
+  },
+  {
+   "key": "Ragged Playmate#0",
+   "type": "Activated",
+   "text": "{1}, {T}: Target creature with power 2 or less can't be blocked this turn."
+  },
+  {
+   "key": "Razorkin Hordecaller#0",
+   "type": "Triggered",
+   "text": "Whenever you attack, create a 1/1 red Gremlin creature token."
+  },
+  {
+   "key": "Razorkin Needlehead#0",
+   "type": "Triggered",
+   "text": "Whenever an opponent draws a card, {this} deals 1 damage to them."
+  },
+  {
+   "key": "Reluctant Role Model#0",
+   "type": "Triggered",
+   "text": "<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, put a flying, lifelink, or +1/+1 counter on it."
+  },
+  {
+   "key": "Reluctant Role Model#1",
+   "type": "Triggered",
+   "text": "Whenever {this} or another creature you control dies, if it had counters on it, put those counters on up to one target creature."
+  },
+  {
+   "key": "Restricted Office // Lecture Hall#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, destroy all creatures with power 3 or greater."
+  },
+  {
+   "key": "Resurrected Cultist#0",
+   "type": "Activated",
+   "text": "<i>Delirium</i> &mdash; {2}{B}{B}: Return this card from your graveyard to the battlefield with a finality counter on it. Activate only if there are four or more card types among cards in your graveyard and only as a sorcery."
+  },
+  {
+   "key": "Rip, Spawn Hunter#0",
+   "type": "Triggered",
+   "text": "<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, reveal the top X cards of your library, where X is its power. Put any number of creature and/or Vehicle cards with different powers from among them into your hand. Put the rest on the bottom of your library in a random order."
+  },
+  {
+   "key": "Ripchain Razorkin#0",
+   "type": "Activated",
+   "text": "{2}{R}, Sacrifice a land: Draw a card."
+  },
+  {
+   "key": "Roaring Furnace // Steaming Sauna#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, {this} deals 1 damage to target creature an opponent controls for each cards in your hand."
+  },
+  {
+   "key": "Roaring Furnace // Steaming Sauna#1",
+   "type": "Triggered",
+   "text": "At the beginning of your end step, draw a card."
+  },
+  {
+   "key": "Rootwise Survivor#0",
+   "type": "Triggered",
+   "text": "<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, put three +1/+1 counters on up to one target land you control. That land becomes a 0/0 Elemental creature in addition to its other types. It gains haste until your next turn."
+  },
+  {
+   "key": "Savior of the Small#0",
+   "type": "Triggered",
+   "text": "<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, return target creature card with mana value 3 or less from your graveyard to your hand."
+  },
+  {
+   "key": "Saw#0",
+   "type": "Triggered",
+   "text": "Whenever equipped creature attacks, you may sacrifice a permanent other than that creature or {this}. If you do, draw a card."
+  },
+  {
+   "key": "Saw#1",
+   "type": "Activated",
+   "text": "Equip {2} <i>({2}: Attach to target creature you control. Equip only as a sorcery.)</i>"
+  },
+  {
+   "key": "Sawblade Skinripper#0",
+   "type": "Activated",
+   "text": "{2}, Sacrifice another creature or enchantment: Put a +1/+1 counter on {this}."
+  },
+  {
+   "key": "Sawblade Skinripper#1",
+   "type": "Triggered",
+   "text": "At the beginning of your end step, if you sacrificed one or more permanents this turn, {this} deals that much damage to any target."
+  },
+  {
+   "key": "Say Its Name#0",
+   "type": "Activated",
+   "text": "Exile this card and two other cards named Say Its Name from your graveyard: Search your graveyard, hand, and/or library for a card named Altanak, the Thrice-Called and put it onto the battlefield. If you search your library this way, shuffle. Activate only as a sorcery."
+  },
+  {
+   "key": "Scrabbling Skullcrab#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, target player mills two cards."
+  },
+  {
+   "key": "Screaming Nemesis#0",
+   "type": "Triggered",
+   "text": "Whenever {this} is dealt damage, it deals that much damage to any other target. If a player is dealt damage this way, they can't gain life for the rest of the game."
+  },
+  {
+   "key": "Sheltered by Ghosts#0",
+   "type": "Triggered",
+   "text": "When {this} enters, exile target nonland permanent an opponent controls until {this} leaves the battlefield."
+  },
+  {
+   "key": "Sheltered by Ghosts#g0",
+   "type": "Triggered",
+   "granted": true,
+   "text": "ward {2} <i>(Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)</i>"
+  },
+  {
+   "key": "Shepherding Spirits#0",
+   "type": "Activated",
+   "text": "Plainscycling {2} <i>({2}, Discard this card: Search your library for a Plains card, reveal it, put it into your hand, then shuffle.)</i>"
+  },
+  {
+   "key": "Shrewd Storyteller#0",
+   "type": "Triggered",
+   "text": "<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, put a +1/+1 counter on target creature."
+  },
+  {
+   "key": "Shroudstomper#0",
+   "type": "Triggered",
+   "text": "Whenever {this} enters or attacks, each opponent loses 2 life. You gain 2 life and draw a card."
+  },
+  {
+   "key": "Silent Hallcreeper#0",
+   "type": "Triggered",
+   "text": "Whenever {this} deals combat damage to a player, choose one that hasn't been chosen &mdash;<br>&bull Put two +1/+1 counters on {this}.<br>&bull Draw a card.<br>&bull {this} becomes a copy of another target creature you control.<br>"
+  },
+  {
+   "key": "Skullsnap Nuisance#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, surveil 1. <i>(Look at the top card of your library. You may put that card into your graveyard.)</i>"
+  },
+  {
+   "key": "Slavering Branchsnapper#0",
+   "type": "Activated",
+   "text": "Forestcycling {2} <i>({2}, Discard this card: Search your library for a Forest card, reveal it, put it into your hand, then shuffle.)</i>"
+  },
+  {
+   "key": "Smoky Lounge // Misty Salon#0",
+   "type": "Triggered",
+   "text": "At the beginning of your first main phase, Add {R}{R}. Spend this mana only to cast Room spells and unlock doors."
+  },
+  {
+   "key": "Smoky Lounge // Misty Salon#1",
+   "type": "Triggered",
+   "text": "When you unlock this door, create an X/X blue Spirit creature token with flying, where X is the number of unlocked doors among Rooms you control."
+  },
+  {
+   "key": "Spectral Snatcher#0",
+   "type": "Triggered",
+   "text": "ward&mdash;Discard a card. <i>(Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player discard a card.)</i>"
+  },
+  {
+   "key": "Spectral Snatcher#1",
+   "type": "Activated",
+   "text": "Swampcycling {2} <i>({2}, Discard this card: Search your library for a Swamp card, reveal it, put it into your hand, then shuffle.)</i>"
+  },
+  {
+   "key": "Spineseeker Centipede#0",
+   "type": "Triggered",
+   "text": "When {this} enters, search your library for a basic land card, reveal it, put it into your hand, then shuffle."
+  },
+  {
+   "key": "Splitskin Doll#0",
+   "type": "Triggered",
+   "text": "When {this} enters, draw a card. Then discard a card unless you control another creature with power 2 or less."
+  },
+  {
+   "key": "Sporogenic Infection#0",
+   "type": "Triggered",
+   "text": "When {this} enters, target player sacrifices a creature of their choice other than enchanted creature."
+  },
+  {
+   "key": "Sporogenic Infection#1",
+   "type": "Triggered",
+   "text": "When enchanted creature is dealt damage, destroy it."
+  },
+  {
+   "key": "Stalked Researcher#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, {this} can attack this turn as though it didn't have defender."
+  },
+  {
+   "key": "Stay Hidden, Stay Silent#0",
+   "type": "Triggered",
+   "text": "When {this} enters, tap enchanted creature."
+  },
+  {
+   "key": "Stay Hidden, Stay Silent#1",
+   "type": "Activated",
+   "text": "{4}{U}{U}: Shuffle enchanted creature into its owner's library, then manifest dread. Activate only as a sorcery."
+  },
+  {
+   "key": "Surgical Suite // Hospital Room#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, return target creature card with mana value 3 or less from your graveyard to the battlefield."
+  },
+  {
+   "key": "Surgical Suite // Hospital Room#1",
+   "type": "Triggered",
+   "text": "Whenever you attack, put a +1/+1 counter on target attacking creature."
+  },
+  {
+   "key": "Terramorphic Expanse#0",
+   "type": "Activated",
+   "text": "{T}, Sacrifice {this}: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle."
+  },
+  {
+   "key": "The Jolly Balloon Man#0",
+   "type": "Activated",
+   "text": "{1}, {T}: Create a token that's a copy of another target creature you control, except it's a 1/1 red Balloon creature in addition to its other colors and types and it has flying and haste. Sacrifice it at the beginning of the next end step. Activate only as a sorcery."
+  },
+  {
+   "key": "The Rollercrusher Ride#0",
+   "type": "Triggered",
+   "text": "When {this} enters, it deals X damage to each of up to X target creatures."
+  },
+  {
+   "key": "The Swarmweaver#0",
+   "type": "Triggered",
+   "text": "When {this} enters, create two 1/1 black and green Insect creature tokens with flying."
+  },
+  {
+   "key": "The Tale of Tamiyo#0",
+   "type": "Triggered",
+   "text": "I, II, III - Mill two cards. If two cards that share a card type were milled this way, draw a card and repeat this process."
+  },
+  {
+   "key": "The Tale of Tamiyo#1",
+   "type": "Triggered",
+   "text": "II, III - Mill two cards. If two cards that share a card type were milled this way, draw a card and repeat this process."
+  },
+  {
+   "key": "The Tale of Tamiyo#2",
+   "type": "Triggered",
+   "text": "III - Mill two cards. If two cards that share a card type were milled this way, draw a card and repeat this process."
+  },
+  {
+   "key": "The Tale of Tamiyo#3",
+   "type": "Triggered",
+   "text": "IV - Exile any number of target instant, sorcery, and/or Tamiyo planeswalker cards from your graveyard. Copy them. You may cast any number of the copies."
+  },
+  {
+   "key": "Threats Around Every Corner#0",
+   "type": "Triggered",
+   "text": "When {this} enters, manifest dread."
+  },
+  {
+   "key": "Threats Around Every Corner#1",
+   "type": "Triggered",
+   "text": "Whenever a face-down permanent you control enters, search your library for a basic land card, put it onto the battlefield tapped, then shuffle."
+  },
+  {
+   "key": "Ticket Booth // Tunnel of Hate#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, manifest dread."
+  },
+  {
+   "key": "Ticket Booth // Tunnel of Hate#1",
+   "type": "Triggered",
+   "text": "Whenever you attack, target attacking creature gains double strike until end of turn."
+  },
+  {
+   "key": "Toby, Beastie Befriender#0",
+   "type": "Triggered",
+   "text": "When {this} enters, create a 4/4 white Beast creature token with \"This token can't attack or block alone.\""
+  },
+  {
+   "key": "Trapped in the Screen#0",
+   "type": "Triggered",
+   "text": "ward {2} <i>(Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)</i>"
+  },
+  {
+   "key": "Trapped in the Screen#1",
+   "type": "Triggered",
+   "text": "When {this} enters, exile target artifact, creature, or enchantment an opponent controls until {this} leaves the battlefield."
+  },
+  {
+   "key": "Tunnel Surveyor#0",
+   "type": "Triggered",
+   "text": "When {this} enters, create a 1/1 white Glimmer enchantment creature token."
+  },
+  {
+   "key": "Turn Inside Out#g0",
+   "type": "Triggered",
+   "granted": true,
+   "text": "When it dies this turn, manifest dread."
+  },
+  {
+   "key": "Twitching Doll#0",
+   "type": "Activated",
+   "text": "{T}, Sacrifice {this}: Create a 2/2 green Spider creature token with reach for each counter on {this}. Activate only as a sorcery."
+  },
+  {
+   "key": "Tyvar, the Pummeler#0",
+   "type": "Activated",
+   "text": "Tap another untapped creature you control: {this} gains indestructible until end of turn. Tap it."
+  },
+  {
+   "key": "Tyvar, the Pummeler#1",
+   "type": "Activated",
+   "text": "{3}{G}{G}: Creatures you control get +X/+X until end of turn, where X is the greatest power among creatures you control."
+  },
+  {
+   "key": "Underwater Tunnel // Slimy Aquarium#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, surveil 2. <i>(Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top in any order.)</i>"
+  },
+  {
+   "key": "Underwater Tunnel // Slimy Aquarium#1",
+   "type": "Triggered",
+   "text": "When you unlock this door, manifest dread, then put a +1/+1 counter on that creature."
+  },
+  {
+   "key": "Unholy Annex // Ritual Chamber#0",
+   "type": "Triggered",
+   "text": "At the beginning of your end step, draw a card. If you control a Demon, each opponent loses 2 life and you gain 2 life. Otherwise, you lose 2 life."
+  },
+  {
+   "key": "Unholy Annex // Ritual Chamber#1",
+   "type": "Triggered",
+   "text": "When you unlock this door, create a 6/6 black Demon creature token with flying."
+  },
+  {
+   "key": "Unidentified Hovership#0",
+   "type": "Triggered",
+   "text": "When {this} enters, exile up to one target creature with toughness 5 or less."
+  },
+  {
+   "key": "Unidentified Hovership#1",
+   "type": "Triggered",
+   "text": "When {this} leaves the battlefield, the exiled card's owner manifests dread."
+  },
+  {
+   "key": "Unidentified Hovership#2",
+   "type": "Activated",
+   "text": "Crew 1 <i>(Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)</i>"
+  },
+  {
+   "key": "Unsettling Twins#0",
+   "type": "Triggered",
+   "text": "When {this} enters, manifest dread."
+  },
+  {
+   "key": "Unstoppable Slasher#0",
+   "type": "Triggered",
+   "text": "Whenever {this} deals combat damage to a player, they lose half their life, rounded up."
+  },
+  {
+   "key": "Unstoppable Slasher#1",
+   "type": "Triggered",
+   "text": "When {this} dies, if it had no counters on it, return it to the battlefield tapped under its owner's control with two stun counters on it."
+  },
+  {
+   "key": "Unwilling Vessel#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, put a possession counter on {this}."
+  },
+  {
+   "key": "Unwilling Vessel#1",
+   "type": "Triggered",
+   "text": "When {this} dies, create an X/X blue Spirit creature token with flying, where X is the number of counters on {this}."
+  },
+  {
+   "key": "Valgavoth's Faithful#0",
+   "type": "Activated",
+   "text": "{3}{B}, Sacrifice {this}: Return target creature card from your graveyard to the battlefield. Activate only as a sorcery."
+  },
+  {
+   "key": "Valgavoth, Terror Eater#0",
+   "type": "Triggered",
+   "text": "ward&mdash;Sacrifice three nonland permanents."
+  },
+  {
+   "key": "Veteran Survivor#0",
+   "type": "Triggered",
+   "text": "<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, exile up to one target card from a graveyard."
+  },
+  {
+   "key": "Vicious Clown#0",
+   "type": "Triggered",
+   "text": "Whenever another creature you control with power 2 or less enters, {this} gets +2/+0 until end of turn."
+  },
+  {
+   "key": "Victor, Valgavoth's Seneschal#0",
+   "type": "Triggered",
+   "text": "<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, surveil 2 if this is the first time this ability has resolved this turn. If it's the second time, each opponent discards a card. If it's the third time, put a creature card from a graveyard onto the battlefield under your control."
+  },
+  {
+   "key": "Vile Mutilator#0",
+   "type": "Triggered",
+   "text": "When {this} enters, each opponent sacrifices a nontoken enchantment of their choice, then sacrifices a nontoken creature of their choice."
+  },
+  {
+   "key": "Walk-In Closet // Forgotten Cellar#0",
+   "type": "Triggered",
+   "text": "When you unlock this door, you may cast spells from your graveyard this turn, and if a card would be put into your graveyard from anywhere this turn, exile it instead."
+  },
+  {
+   "key": "Waltz of Rage#g0",
+   "type": "Triggered",
+   "granted": true,
+   "text": "Until end of turn, whenever a creature you control dies, exile the top card of your library. You may play it until the end of your next turn."
+  },
+  {
+   "key": "Wary Watchdog#0",
+   "type": "Triggered",
+   "text": "When {this} enters or dies, surveil 1. <i>(Look at the top card of your library. You may put that card into your graveyard.)</i>"
+  },
+  {
+   "key": "Wickerfolk Thresher#0",
+   "type": "Triggered",
+   "text": "<i>Delirium</i> &mdash; Whenever {this} attacks, if there are four or more card types among cards in your graveyard, look at the top card of your library. If it's a land card, you may put it onto the battlefield. If you don't put the card onto the battlefield, put it into your hand."
+  },
+  {
+   "key": "Winter, Misanthropic Guide#0",
+   "type": "Triggered",
+   "text": "ward {2}"
+  },
+  {
+   "key": "Winter, Misanthropic Guide#1",
+   "type": "Triggered",
+   "text": "At the beginning of your upkeep, each player draws two cards."
+  },
+  {
+   "key": "Zimone, All-Questioning#0",
+   "type": "Triggered",
+   "text": "At the beginning of your end step, if a land entered the battlefield under your control this turn and you control a prime number of lands, create Primo, the Indivisible, a legendary 0/0 green and blue Fractal creature token, then put that many +1/+1 counters on it."
+  }
+ ],
+ "tokens": [
+  "Everywhere",
+  "Glimmer Token",
+  "Gremlin Token"
+ ],
+ "tokens_note": "Token names seen so far in recorded games. Not complete: an unseen token name is reported by the encoder, never replaced."
+}
