@@ -37,7 +37,8 @@ def test_vocab_ids(vocab):
 
 def test_fixture_encodes_and_passes_validate_batch(vocab, examples):
     batch = collate(examples)
-    cfg = FakeBatchConfig(vocab_card=vocab.num_cards, vocab_ability=vocab.num_abilities, vocab_action=len(ACTION_TYPES))
+    cfg = FakeBatchConfig(vocab_card=vocab.num_cards, vocab_ability=vocab.num_abilities, vocab_action=len(ACTION_TYPES),
+                          vocab_choice=vocab.num_choices)
     validate_batch(batch, cfg)
     assert batch["active_edges"].shape[1] == len(EDGE_TYPES)
 

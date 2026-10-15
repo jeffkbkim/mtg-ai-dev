@@ -45,3 +45,16 @@ def test_validator_catches_a_broken_batch():
     t["label"] = t["action_mask"].sum(dim=1)  # one past the last real action
     with pytest.raises(AssertionError):
         validate_batch(t, cfg)
+
+
+def test_player_targets_only_where_there_is_no_target_entry():
+    cfg = FakeBatchConfig()
+    t = fake_batch_tensors(cfg, batch_size=32, seed=0)
+    players = t["action_target_players"]
+    assert (players == 1).any() and (players == 2).any()
+    assert (players[t["action_targets"] != -1] == 0).all()
+    assert (t["action_choices"] > 0).any()
+
+    t["action_target_players"][~t["action_mask"]] = 1  # a padded action that targets me
+    with pytest.raises(AssertionError):
+        validate_batch(t, cfg)
