@@ -58,6 +58,7 @@ public class SeatSpike {
         System.out.println("LEAKS " + link.leaks);
         System.out.println("UNSEEN_REFS " + link.unseenRefs);
         System.out.println("UNMAPPED_ABILITIES " + link.unmappedAbilities);
+        System.out.println("UNMAPPED_CHOICES " + link.unmappedChoices);
         System.out.println("GRANTED_ON_BOARD " + link.grantedOnBoard);
         System.out.println("UNKEYED_ON_BOARD " + link.unkeyedOnBoard);
         System.out.printf("OBSERVE mean_ms=%.3f mean_bytes=%d%n", link.roundTrips == 0 ? 0 : link.observeNanos / 1e6 / link.roundTrips, link.roundTrips == 0 ? 0 : link.bytes / link.roundTrips);

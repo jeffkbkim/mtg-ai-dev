@@ -39,6 +39,7 @@ ACTION_TYPES = ["PAD", "PASS", "PLAY_LAND", "CAST", "ACTIVATE", "SPECIAL", "TARG
 EDGE_TYPES = ["blocks", "blocked_by", "attached_to", "has_attached", "targets", "targeted_by",
               "resolves_before", "resolves_after"]
 TARGET_PLAYER = {"me": 1, "opp": 2}  # action_target_players: 0 = not a player
+NAMED_CHOICE_ACTIONS = {"CHOICE", "MODE"}  # options whose meaning is a named choice, not a card
 
 # card feature layout (F columns)
 CARD_FEATURES = (
@@ -66,6 +67,7 @@ class Unmapped(Exception):
 class Vocab:
     card_ids: dict[str, int]
     ability_ids: dict[str, int]
+    choice_ids: dict[str, int]  # named non-card answers, e.g. "alt_cost:ImpendingAbility", "Get Out#mode1"
     rooms: dict[str, tuple[str, str]]  # full Room name -> (left door, right door)
     door_to_room: dict[str, str]
 
@@ -75,13 +77,14 @@ class Vocab:
         names = sorted(v["cards"]) + sorted(v.get("tokens", []))
         card_ids = {name: i + 2 for i, name in enumerate(names)}  # 0 PAD, 1 FACE_DOWN
         ability_ids = {a["key"]: i + 1 for i, a in enumerate(v["abilities"])}  # 0 = none / PAD
+        choice_ids = {c: i + 1 for i, c in enumerate(v.get("choices", []))}  # 0 = not a named choice
         rooms, door_to_room = {}, {}
         for name in v["cards"]:
             if " // " in name:
                 left, right = name.split(" // ")
                 rooms[name] = (left, right)
                 door_to_room[left] = door_to_room[right] = name
-        return cls(card_ids, ability_ids, rooms, door_to_room)
+        return cls(card_ids, ability_ids, choice_ids, rooms, door_to_room)
 
     @property
     def num_cards(self) -> int:
@@ -90,6 +93,15 @@ class Vocab:
     @property
     def num_abilities(self) -> int:
         return max(self.ability_ids.values()) + 1
+
+    @property
+    def num_choices(self) -> int:
+        return max(self.choice_ids.values(), default=0) + 1
+
+    def choice(self, key: str) -> int:
+        if key not in self.choice_ids:
+            raise Unmapped(f"choice not in vocabulary: {key!r}")
+        return self.choice_ids[key]
 
     def card(self, name: str) -> int:
         if name not in self.card_ids:
@@ -176,7 +188,7 @@ class Example:
     action_targets: list[int]
     action_abilities: list[int]
     action_target_players: list[int]
-    action_choice_index: list[int]
+    action_choices: list[int]
     label: int
     meta: dict = field(default_factory=dict)
 
@@ -226,7 +238,9 @@ def encode_decision(d: dict, vocab: Vocab) -> Example:
         targets.append(remap[tgt["entry"]] if "entry" in tgt else EMPTY_IDX)
         players.append(TARGET_PLAYER.get(tgt.get("player"), 0))
         abil.append(vocab.ability(o["ability_key"]) if o.get("ability_key") else PAD)
-        choice.append(o["choice_index"] + 1 if "choice_index" in o else 0)
+        if o["action"] in NAMED_CHOICE_ACTIONS and not o.get("choice_key"):
+            raise Unmapped(f"{o['action']} option has no choice key: {o['label'][:60]!r}")
+        choice.append(vocab.choice(o["choice_key"]) if o.get("choice_key") else 0)
 
     return Example(card_ids, card_features, ability_ids, ability_features,
                    _global_features(entries[0], d["kind"]), edges,
@@ -255,7 +269,7 @@ def collate(examples: list[Example]) -> dict[str, Tensor]:
         "action_targets": torch.full((B, A), EMPTY_IDX, dtype=torch.long),
         "action_abilities": torch.zeros(B, A, dtype=torch.long),
         "action_target_players": torch.zeros(B, A, dtype=torch.long),
-        "action_choice_index": torch.zeros(B, A, dtype=torch.long),
+        "action_choices": torch.zeros(B, A, dtype=torch.long),
         "card_mask": torch.zeros(B, N, dtype=torch.bool),
         "ability_mask": torch.zeros(B, N_a, dtype=torch.bool),
         "action_mask": torch.zeros(B, A, dtype=torch.bool),
@@ -286,7 +300,7 @@ def collate(examples: list[Example]) -> dict[str, Tensor]:
         out["action_targets"][b, :a] = torch.tensor([place(i) for i in x.action_targets], dtype=torch.long)
         out["action_abilities"][b, :a] = torch.tensor(x.action_abilities, dtype=torch.long)
         out["action_target_players"][b, :a] = torch.tensor(x.action_target_players, dtype=torch.long)
-        out["action_choice_index"][b, :a] = torch.tensor(x.action_choice_index, dtype=torch.long)
+        out["action_choices"][b, :a] = torch.tensor(x.action_choices, dtype=torch.long)
         out["action_mask"][b, :a] = True
         out["label"][b] = x.label
     return out

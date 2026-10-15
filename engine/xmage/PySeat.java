@@ -7,6 +7,7 @@ import mage.abilities.ActivatedAbility;
 import mage.abilities.Mode;
 import mage.abilities.Modes;
 import mage.abilities.TriggeredAbility;
+import mage.cards.Card;
 import mage.cards.Cards;
 import mage.choices.Choice;
 import mage.constants.Outcome;
@@ -39,6 +40,7 @@ public class PySeat extends ComputerPlayer {
         final Map<String, Integer> leaks = new TreeMap<>();
         final Map<String, Integer> unseenRefs = new TreeMap<>();
         final Map<String, Integer> unmappedAbilities = new TreeMap<>();
+        final Map<String, Integer> unmappedChoices = new TreeMap<>();
         // coverage: abilities on permanents keyed through a grant, and ones with no key (would be unmapped if used)
         final Map<String, Integer> grantedOnBoard = new TreeMap<>();
         final Map<String, Integer> unkeyedOnBoard = new TreeMap<>();
@@ -58,13 +60,13 @@ public class PySeat extends ComputerPlayer {
         final Runnable onPick;
         String action;      // action type name for the encoder
         String abilityKey;  // stable ability key for ACTIVATE / trigger options
-        int choiceIndex = -1; // position among otherwise identical options (modes, choices, yes/no)
+        String choiceKey;   // named non-card answer (alternative cost, mode, named choice), not its list position
         Option(String label, UUID source, UUID target, Runnable onPick) {
             this.label = label; this.source = source; this.target = target; this.onPick = onPick;
         }
         Option as(String action) { this.action = action; return this; }
         Option key(String k) { this.abilityKey = k; return this; }
-        Option idx(int i) { this.choiceIndex = i; return this; }
+        Option choice(String k) { this.choiceKey = k; return this; }
     }
 
     final transient Link link;
@@ -149,7 +151,7 @@ public class PySeat extends ComputerPlayer {
             j.add("target", ref(obs, o.target, kind + "/target", game));
             j.addProperty("action", o.action == null ? kind : o.action);
             if (o.abilityKey != null) j.addProperty("ability_key", o.abilityKey);
-            if (o.choiceIndex >= 0) j.addProperty("choice_index", o.choiceIndex);
+            if (o.choiceKey != null) j.addProperty("choice_key", o.choiceKey);
             opts.add(j);
         }
         msg.add("options", opts);
@@ -295,16 +297,44 @@ public class PySeat extends ComputerPlayer {
             return super.choose(outcome, choice, game);
         }
         List<Option> opts = new ArrayList<>();
-        if (choice.isKeyChoice()) {
+        if (choice.isKeyChoice() && altCostPrompt(choice)) {
+            // XMage keys these by list position; the texts name the card ("(source: ... object_id='...')")
+            Card card = null;
+            for (String v : choice.getKeyChoices().values()) {
+                java.util.regex.Matcher m = OBJECT_ID.matcher(v);
+                if (card == null && m.find()) card = game.getCard(UUID.fromString(m.group(1)));
+            }
+            if (card instanceof mage.cards.SubCard) card = ((mage.cards.SubCard<?>) card).getParentCard();
+            List<Ability> altCosts = new ArrayList<>();
+            if (card != null) for (Ability a : card.getAbilities()) if (a instanceof mage.abilities.costs.AlternativeSourceCosts) altCosts.add(a);
+            UUID cardId = card == null ? null : card.getId();
+            for (Map.Entry<String, String> e : choice.getKeyChoices().entrySet()) {
+                String text = e.getValue(), key = null;
+                if (text.startsWith("Cast with no alternative cost")) key = AbilityKeys.NO_ALT_COST;
+                else if (altCosts.size() == 1) key = AbilityKeys.altCostKey(altCosts.get(0));
+                else for (Ability a : altCosts) {
+                    if (text.contains(a.getClass().getSimpleName().replace("Ability", ""))) key = AbilityKeys.altCostKey(a);
+                }
+                if (key == null) link.unmappedChoices.merge("alt cost: " + text.replaceAll("<[^>]+>", ""), 1, Integer::sum);
+                opts.add(new Option(text, cardId, null, () -> choice.setChoiceByKey(e.getKey())).as("CHOICE").choice(key));
+            }
+        } else if (choice.isKeyChoice()) {
             for (Map.Entry<String, String> e : choice.getKeyChoices().entrySet())
-                opts.add(new Option(e.getValue(), null, null, () -> choice.setChoiceByKey(e.getKey())).as("CHOICE").idx(opts.size()));
+                opts.add(new Option(e.getValue(), null, null, () -> choice.setChoiceByKey(e.getKey())).as("CHOICE").choice("choice:" + e.getValue()));
         } else {
-            for (String c : choice.getChoices()) opts.add(new Option(c, null, null, () -> choice.setChoice(c)).as("CHOICE").idx(opts.size()));
+            for (String c : choice.getChoices()) opts.add(new Option(c, null, null, () -> choice.setChoice(c)).as("CHOICE").choice("choice:" + c));
         }
         if (opts.isEmpty()) return super.choose(outcome, choice, game);
         pick("CHOICE", choice.getMessage(), game, opts, null);
         return choice.isChosen();
     }
+
+    private static boolean altCostPrompt(Choice choice) {
+        String m = choice.getMessage();
+        return m != null && m.toLowerCase().contains("alternative cost");
+    }
+
+    private static final java.util.regex.Pattern OBJECT_ID = java.util.regex.Pattern.compile("object_id='([0-9a-f-]{36})'");
 
     @Override
     public Mode chooseMode(Modes modes, Ability source, Game game) {
@@ -316,7 +346,9 @@ public class PySeat extends ComputerPlayer {
         for (Mode m : modes.getAvailableModes(source, game)) {
             if ((modes.isMayChooseSameModeMoreThanOnce() || !modes.getSelectedModes().contains(m.getId()))
                     && m.getTargets().canChoose(source.getControllerId(), source, game)) {
-                opts.add(new Option(m.getEffects().getText(m), source.getSourceId(), null, () -> picked[0] = m).as("MODE").idx(modes.getAvailableModes(source, game).indexOf(m)));
+                String key = AbilityKeys.modeKey(game, source, m);
+                if (key == null) link.unmappedChoices.merge("mode: " + label(game, source.getSourceId()) + ": " + m.getEffects().getText(m), 1, Integer::sum);
+                opts.add(new Option(m.getEffects().getText(m), source.getSourceId(), null, () -> picked[0] = m).as("MODE").choice(key));
             }
         }
         if (opts.isEmpty()) return null;

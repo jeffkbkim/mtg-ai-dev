@@ -15,6 +15,9 @@ public class VocabDump {
         Map<String, CardInfo> byName = new TreeMap<>();
         for (CardInfo ci : CardRepository.instance.findCards(new CardCriteria().setCodes("DSK"))) byName.putIfAbsent(ci.getName(), ci);
         JsonArray cards = new JsonArray(), abilities = new JsonArray();
+        // named choices (non-card answers): alternative costs and modes
+        Set<String> choices = new TreeSet<>();
+        choices.add(AbilityKeys.NO_ALT_COST);
         for (CardInfo ci : byName.values()) {
             Card card = ci.createCard();
             cards.add(card.getName());
@@ -26,6 +29,10 @@ public class VocabDump {
                 a.addProperty("text", AbilityKeys.text(list.get(i)));
                 abilities.add(a);
             }
+            for (Ability a : card.getAbilities()) {
+                if (a instanceof mage.abilities.costs.AlternativeSourceCosts) choices.add(AbilityKeys.altCostKey(a));
+            }
+            choices.addAll(AbilityKeys.modeKeys(card));
             List<Ability> granted = AbilityKeys.grantedAbilities(card);
             for (int i = 0; i < granted.size(); i++) {
                 JsonObject a = new JsonObject();
@@ -41,6 +48,9 @@ public class VocabDump {
         out.addProperty("xmage", "1.4.62");
         out.add("cards", cards);
         out.add("abilities", abilities);
+        JsonArray choiceArr = new JsonArray();
+        for (String c : choices) choiceArr.add(c);
+        out.add("choices", choiceArr);
         // token names come from recorded games, not the card list: keep them from the existing file
         Path path = Path.of(args[0]);
         if (Files.exists(path)) {
@@ -48,7 +58,7 @@ public class VocabDump {
             for (String k : new String[]{"tokens", "tokens_note"}) if (old.has(k)) out.add(k, old.get(k));
         }
         Files.writeString(path, new GsonBuilder().setPrettyPrinting().create().toJson(out));
-        System.out.println("VOCAB cards=" + cards.size() + " abilities=" + abilities.size());
+        System.out.println("VOCAB cards=" + cards.size() + " abilities=" + abilities.size() + " choices=" + choices.size());
         System.exit(0);
     }
 }

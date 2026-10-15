@@ -10,11 +10,13 @@ Built against the **unmodified XMage 1.4.62 release jars** (build option 1); not
   entries in contract order `[global | cards | stack abilities]`, plus edges. Checks every message against the
   full game state for hidden-information leaks.
 - `AbilityKeys.java`: stable ability keys `"<card name>#<i>"` (printed) and `"<card name>#g<i>"` (granted to
-  another object or put on a token).
-- `VocabDump.java`: writes `engine/vocab/dsk_vocab.json` (276 DSK card names, ability keys and texts).
+  another object or put on a token), and named choices: `alt_cost:none` / `alt_cost:ImpendingAbility` for an
+  alternative-cost prompt, `"<card name>#mode<i>"` for a mode of a modal card (printed order), `choice:<text>`
+  for other named prompts.
+- `VocabDump.java`: writes `engine/vocab/dsk_vocab.json` (276 DSK card names, ability keys and texts, named choices).
 - `SeatSpike.java`: runs N games, our seat vs XMage's AI.
 - `run_games.py`: Python side, a random-move bot that records every decision to JSON lines.
-- `decks/`: the two smoke-test decks.
+- `decks/`: smoke-test decks; `dsk_ug_modal.dck` swaps in modal spells to exercise MODE prompts.
 
 Decision format and the leak checks: `/mnt/project-files/notes/xmage-step3-observation.md`.
 Turning the JSON lines into batch tensors: `engine/encode.py`.
@@ -41,7 +43,8 @@ mkdir -p /tmp/xmage-cls && javac -cp "$CP" -d /tmp/xmage-cls *.java
 python3 run_games.py $R /tmp/xmage-cls $PWD/decks/dsk_ug.dck $PWD/decks/dsk_uw.dck 4 1 /tmp/games.jsonl
 ```
 
-Decisions go to `/tmp/games.jsonl`, the JVM log (leaks, unmapped abilities, rejected moves) to
+Decisions go to `/tmp/games.jsonl`, the JVM log (leaks, unmapped abilities and choices, abilities on the board
+with no key, rejected moves) to
 `/tmp/games.jvm.log`. `LEAKTEST=1` plants deliberate leaks to show the checker catches them.
 
 Note: VocabDump keeps `tokens` and `tokens_note` only if you merge them back by hand (token names come from

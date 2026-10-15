@@ -145,3 +145,27 @@ def test_encode_file_collects_problems(vocab, decisions, tmp_path):
     examples, problems = encode_file(path, vocab)
     assert len(examples) == 1
     assert problems == {"step not in list: 'Not A Step'": 1}
+
+
+def test_named_choices(vocab, decisions, examples):
+    """CHOICE / MODE options carry a named choice id (meaning, not list position); other options carry 0."""
+    batch = collate(examples)
+    seen = 0
+    for b, d in enumerate(decisions):
+        for a, o in enumerate(d["options"]):
+            got = batch["action_choices"][b, a].item()
+            if o["action"] in ("CHOICE", "MODE"):
+                assert got == vocab.choice(o["choice_key"])
+                seen += 1
+            else:
+                assert got == 0
+    assert seen > 0
+    assert "alt_cost:ImpendingAbility" in vocab.choice_ids and "alt_cost:none" in vocab.choice_ids
+
+    d = copy.deepcopy(next(d for d in decisions if d["kind"] == "CHOICE"))
+    d["options"][0]["choice_key"] = "alt_cost:NotARealCost"
+    with pytest.raises(Unmapped):
+        encode_decision(d, vocab)
+    del d["options"][0]["choice_key"]
+    with pytest.raises(Unmapped):
+        encode_decision(d, vocab)
