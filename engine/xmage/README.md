@@ -47,7 +47,6 @@ Decisions go to `/tmp/games.jsonl`, the JVM log (leaks, unmapped abilities and c
 with no key, rejected moves) to
 `/tmp/games.jvm.log`. `LEAKTEST=1` plants deliberate leaks to show the checker catches them.
 
-Note: VocabDump keeps `tokens` and `tokens_note` only if you merge them back by hand (token names come from
-recorded games, not from the card list).
+VocabDump keeps the `tokens` list already in the file (token names come from recorded games, not the card list).
 
 Same seed does not reproduce the same game (XMage's own randomness), so every action is logged.
