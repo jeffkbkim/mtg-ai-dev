@@ -1,0 +1,1562 @@
+{
+ "games": 1011949,
+ "win_rate": 0.5448189582676597,
+ "cards": {
+  "Abandoned Campground": {
+   "gih_games": 47339,
+   "gih_wr": 0.5471809712921692,
+   "deck_games": 103565
+  },
+  "Abhorrent Oculus": {
+   "gih_games": 11142,
+   "gih_wr": 0.593520014360079,
+   "deck_games": 25656
+  },
+  "Acrobatic Cheerleader": {
+   "gih_games": 66630,
+   "gih_wr": 0.535344439441693,
+   "deck_games": 141519
+  },
+  "Altanak, the Thrice-Called": {
+   "gih_games": 33370,
+   "gih_wr": 0.5392867845370093,
+   "deck_games": 81274
+  },
+  "Anthropede": {
+   "gih_games": 19487,
+   "gih_wr": 0.5028480525478524,
+   "deck_games": 46844
+  },
+  "Appendage Amalgam": {
+   "gih_games": 38377,
+   "gih_wr": 0.5156995075175235,
+   "deck_games": 82722
+  },
+  "Arabella, Abandoned Doll": {
+   "gih_games": 38357,
+   "gih_wr": 0.5959016607138201,
+   "deck_games": 83155
+  },
+  "Attack-in-the-Box": {
+   "gih_games": 8139,
+   "gih_wr": 0.5041159847647131,
+   "deck_games": 19712
+  },
+  "Balemurk Leech": {
+   "gih_games": 32230,
+   "gih_wr": 0.5056469128141483,
+   "deck_games": 64478
+  },
+  "Balustrade Wurm": {
+   "gih_games": 20658,
+   "gih_wr": 0.5851002033110659,
+   "deck_games": 48872
+  },
+  "Baseball Bat": {
+   "gih_games": 13595,
+   "gih_wr": 0.5118058109599117,
+   "deck_games": 30739
+  },
+  "Bashful Beastie": {
+   "gih_games": 82562,
+   "gih_wr": 0.5491267168915481,
+   "deck_games": 179508
+  },
+  "Bear Trap": {
+   "gih_games": 11600,
+   "gih_wr": 0.5154310344827586,
+   "deck_games": 27504
+  },
+  "Beastie Beatdown": {
+   "gih_games": 38131,
+   "gih_wr": 0.5756208858933676,
+   "deck_games": 83335
+  },
+  "Bedhead Beastie": {
+   "gih_games": 31145,
+   "gih_wr": 0.5107079788087976,
+   "deck_games": 73837
+  },
+  "Betrayer's Bargain": {
+   "gih_games": 55743,
+   "gih_wr": 0.5786197370073373,
+   "deck_games": 128112
+  },
+  "Blazemire Verge": {
+   "gih_games": 8814,
+   "gih_wr": 0.5451554345359655,
+   "deck_games": 20216
+  },
+  "Bleeding Woods": {
+   "gih_games": 42830,
+   "gih_wr": 0.5358627130515994,
+   "deck_games": 98439
+  },
+  "Boilerbilges Ripper": {
+   "gih_games": 21358,
+   "gih_wr": 0.5319318288229234,
+   "deck_games": 50328
+  },
+  "Bottomless Pool // Locker Room": {
+   "gih_games": 52390,
+   "gih_wr": 0.5733918686772285,
+   "deck_games": 112493
+  },
+  "Break Down the Door": {
+   "gih_games": 45187,
+   "gih_wr": 0.5569743510301636,
+   "deck_games": 103718
+  },
+  "Broodspinner": {
+   "gih_games": 42498,
+   "gih_wr": 0.58953362511177,
+   "deck_games": 87698
+  },
+  "Cackling Slasher": {
+   "gih_games": 6691,
+   "gih_wr": 0.4646540128530862,
+   "deck_games": 15611
+  },
+  "Cathartic Parting": {
+   "gih_games": 29339,
+   "gih_wr": 0.5390095095265688,
+   "deck_games": 69285
+  },
+  "Cautious Survivor": {
+   "gih_games": 28645,
+   "gih_wr": 0.5256763833129691,
+   "deck_games": 67092
+  },
+  "Central Elevator // Promising Stairs": {
+   "gih_games": 8036,
+   "gih_wr": 0.5169238427078149,
+   "deck_games": 17106
+  },
+  "Chainsaw": {
+   "gih_games": 22655,
+   "gih_wr": 0.601015228426396,
+   "deck_games": 53965
+  },
+  "Charred Foyer // Warped Space": {
+   "gih_games": 6196,
+   "gih_wr": 0.4975790832795352,
+   "deck_games": 14874
+  },
+  "Clammy Prowler": {
+   "gih_games": 21093,
+   "gih_wr": 0.5137723415351064,
+   "deck_games": 46651
+  },
+  "Clockwork Percussionist": {
+   "gih_games": 111153,
+   "gih_wr": 0.5712756290878339,
+   "deck_games": 218841
+  },
+  "Collected Company": {
+   "gih_games": 779,
+   "gih_wr": 0.5353016688061617,
+   "deck_games": 1907
+  },
+  "Come Back Wrong": {
+   "gih_games": 16271,
+   "gih_wr": 0.5626574887837257,
+   "deck_games": 37803
+  },
+  "Commune with Evil": {
+   "gih_games": 24959,
+   "gih_wr": 0.5630834568692656,
+   "deck_games": 55342
+  },
+  "Conductive Machete": {
+   "gih_games": 48396,
+   "gih_wr": 0.5528556079014795,
+   "deck_games": 113052
+  },
+  "Coordinated Clobbering": {
+   "gih_games": 34774,
+   "gih_wr": 0.5556162650255938,
+   "deck_games": 81127
+  },
+  "Cracked Skull": {
+   "gih_games": 17064,
+   "gih_wr": 0.5212728551336147,
+   "deck_games": 37877
+  },
+  "Creeping Peeper": {
+   "gih_games": 54566,
+   "gih_wr": 0.5171901916944618,
+   "deck_games": 112316
+  },
+  "Cryptid Inspector": {
+   "gih_games": 55863,
+   "gih_wr": 0.525302973345506,
+   "deck_games": 111452
+  },
+  "Cult Healer": {
+   "gih_games": 39289,
+   "gih_wr": 0.5310137697574384,
+   "deck_games": 86582
+  },
+  "Cursed Recording": {
+   "gih_games": 4003,
+   "gih_wr": 0.500624531601299,
+   "deck_games": 9042
+  },
+  "Cursed Windbreaker": {
+   "gih_games": 42633,
+   "gih_wr": 0.5694180564351559,
+   "deck_games": 90876
+  },
+  "Cynical Loner": {
+   "gih_games": 28062,
+   "gih_wr": 0.5483928444159362,
+   "deck_games": 60737
+  },
+  "Daggermaw Megalodon": {
+   "gih_games": 49243,
+   "gih_wr": 0.5253335499461852,
+   "deck_games": 108090
+  },
+  "Damnation": {
+   "gih_games": 1551,
+   "gih_wr": 0.5938104448742747,
+   "deck_games": 3657
+  },
+  "Dashing Bloodsucker": {
+   "gih_games": 18747,
+   "gih_wr": 0.5209366832026457,
+   "deck_games": 41055
+  },
+  "Dazzling Theater // Prop Room": {
+   "gih_games": 2228,
+   "gih_wr": 0.3985637342908438,
+   "deck_games": 5658
+  },
+  "Defiant Survivor": {
+   "gih_games": 40250,
+   "gih_wr": 0.5483726708074534,
+   "deck_games": 90694
+  },
+  "Defiled Crypt // Cadaver Lab": {
+   "gih_games": 29587,
+   "gih_wr": 0.5325649778618988,
+   "deck_games": 65394
+  },
+  "Demonic Counsel": {
+   "gih_games": 1531,
+   "gih_wr": 0.51208360548661,
+   "deck_games": 3766
+  },
+  "Derelict Attic // Widow's Walk": {
+   "gih_games": 31417,
+   "gih_wr": 0.5312410478403412,
+   "deck_games": 69744
+  },
+  "Dissection Tools": {
+   "gih_games": 26505,
+   "gih_wr": 0.6249764195434824,
+   "deck_games": 63014
+  },
+  "Disturbing Mirth": {
+   "gih_games": 31787,
+   "gih_wr": 0.5841067102903703,
+   "deck_games": 63126
+  },
+  "Diversion Specialist": {
+   "gih_games": 29532,
+   "gih_wr": 0.5342001896248137,
+   "deck_games": 70340
+  },
+  "Dollmaker's Shop // Porcelain Gallery": {
+   "gih_games": 10700,
+   "gih_wr": 0.623177570093458,
+   "deck_games": 25433
+  },
+  "Don't Make a Sound": {
+   "gih_games": 38309,
+   "gih_wr": 0.5507061003941632,
+   "deck_games": 81544
+  },
+  "Doomsday Excruciator": {
+   "gih_games": 2768,
+   "gih_wr": 0.43713872832369943,
+   "deck_games": 6747
+  },
+  "Drag to the Roots": {
+   "gih_games": 35709,
+   "gih_wr": 0.5671679408552466,
+   "deck_games": 75504
+  },
+  "Duskmourn's Domination": {
+   "gih_games": 24838,
+   "gih_wr": 0.5485948949190756,
+   "deck_games": 56691
+  },
+  "Emerge from the Cocoon": {
+   "gih_games": 32627,
+   "gih_wr": 0.5386949459036994,
+   "deck_games": 67923
+  },
+  "Enduring Courage": {
+   "gih_games": 18954,
+   "gih_wr": 0.562889099926137,
+   "deck_games": 46737
+  },
+  "Enduring Curiosity": {
+   "gih_games": 22420,
+   "gih_wr": 0.6051739518287244,
+   "deck_games": 50468
+  },
+  "Enduring Innocence": {
+   "gih_games": 19458,
+   "gih_wr": 0.5985712817350191,
+   "deck_games": 46908
+  },
+  "Enduring Tenacity": {
+   "gih_games": 8574,
+   "gih_wr": 0.5172614882202006,
+   "deck_games": 19930
+  },
+  "Enduring Vitality": {
+   "gih_games": 17567,
+   "gih_wr": 0.5652074913189503,
+   "deck_games": 42007
+  },
+  "Enter the Enigma": {
+   "gih_games": 10100,
+   "gih_wr": 0.505940594059406,
+   "deck_games": 22476
+  },
+  "Entity Tracker": {
+   "gih_games": 23918,
+   "gih_wr": 0.6122585500459905,
+   "deck_games": 52607
+  },
+  "Erratic Apparition": {
+   "gih_games": 41824,
+   "gih_wr": 0.5273766258607498,
+   "deck_games": 84250
+  },
+  "Etched Cornfield": {
+   "gih_games": 28923,
+   "gih_wr": 0.5243577775472807,
+   "deck_games": 65705
+  },
+  "Ethereal Armor": {
+   "gih_games": 35835,
+   "gih_wr": 0.5759173991907354,
+   "deck_games": 80412
+  },
+  "Exorcise": {
+   "gih_games": 40343,
+   "gih_wr": 0.5662692412562278,
+   "deck_games": 94703
+  },
+  "Expropriate": {
+   "gih_games": 346,
+   "gih_wr": 0.5635838150289018,
+   "deck_games": 837
+  },
+  "Fanatic of the Harrowing": {
+   "gih_games": 36466,
+   "gih_wr": 0.543437722810289,
+   "deck_games": 75972
+  },
+  "Fear of Abduction": {
+   "gih_games": 35633,
+   "gih_wr": 0.5623158308309713,
+   "deck_games": 86113
+  },
+  "Fear of Being Hunted": {
+   "gih_games": 47067,
+   "gih_wr": 0.5696560222661312,
+   "deck_games": 107617
+  },
+  "Fear of Burning Alive": {
+   "gih_games": 46615,
+   "gih_wr": 0.5747077121098358,
+   "deck_games": 111163
+  },
+  "Fear of Exposure": {
+   "gih_games": 32506,
+   "gih_wr": 0.5270103980803544,
+   "deck_games": 75388
+  },
+  "Fear of Failed Tests": {
+   "gih_games": 11166,
+   "gih_wr": 0.5092244313093319,
+   "deck_games": 26154
+  },
+  "Fear of Falling": {
+   "gih_games": 43036,
+   "gih_wr": 0.554953992006692,
+   "deck_games": 94755
+  },
+  "Fear of Immobility": {
+   "gih_games": 61750,
+   "gih_wr": 0.5491012145748988,
+   "deck_games": 142056
+  },
+  "Fear of Impostors": {
+   "gih_games": 29638,
+   "gih_wr": 0.5381267291990013,
+   "deck_games": 65050
+  },
+  "Fear of Infinity": {
+   "gih_games": 24230,
+   "gih_wr": 0.5326454808089146,
+   "deck_games": 47233
+  },
+  "Fear of Isolation": {
+   "gih_games": 57904,
+   "gih_wr": 0.5931369162752141,
+   "deck_games": 120400
+  },
+  "Fear of Lost Teeth": {
+   "gih_games": 53663,
+   "gih_wr": 0.5433538937442931,
+   "deck_games": 109244
+  },
+  "Fear of Missing Out": {
+   "gih_games": 22565,
+   "gih_wr": 0.5977841790383337,
+   "deck_games": 53756
+  },
+  "Fear of Surveillance": {
+   "gih_games": 98692,
+   "gih_wr": 0.5551209824504519,
+   "deck_games": 203312
+  },
+  "Fear of the Dark": {
+   "gih_games": 22675,
+   "gih_wr": 0.508710033076075,
+   "deck_games": 52227
+  },
+  "Final Vengeance": {
+   "gih_games": 74731,
+   "gih_wr": 0.5645448341384433,
+   "deck_games": 150353
+  },
+  "Flesh Burrower": {
+   "gih_games": 80350,
+   "gih_wr": 0.5423397635345364,
+   "deck_games": 172440
+  },
+  "Floodfarm Verge": {
+   "gih_games": 11584,
+   "gih_wr": 0.5492058011049724,
+   "deck_games": 26328
+  },
+  "Floodpits Drowner": {
+   "gih_games": 58526,
+   "gih_wr": 0.5857738441034753,
+   "deck_games": 120396
+  },
+  "Forest": {
+   "gih_games": 452560,
+   "gih_wr": 0.5469528902245007,
+   "deck_games": 485421
+  },
+  "Found Footage": {
+   "gih_games": 15299,
+   "gih_wr": 0.539447022681221,
+   "deck_games": 35309
+  },
+  "Frantic Strength": {
+   "gih_games": 21899,
+   "gih_wr": 0.5348189415041783,
+   "deck_games": 52952
+  },
+  "Friendly Ghost": {
+   "gih_games": 52073,
+   "gih_wr": 0.553799473815605,
+   "deck_games": 118825
+  },
+  "Friendly Teddy": {
+   "gih_games": 25164,
+   "gih_wr": 0.5134318868224448,
+   "deck_games": 57812
+  },
+  "Funeral Room // Awakening Hall": {
+   "gih_games": 7197,
+   "gih_wr": 0.5570376545782965,
+   "deck_games": 16657
+  },
+  "Get Out": {
+   "gih_games": 32405,
+   "gih_wr": 0.5517049837987965,
+   "deck_games": 71331
+  },
+  "Ghost Vacuum": {
+   "gih_games": 18138,
+   "gih_wr": 0.5611423530709009,
+   "deck_games": 43489
+  },
+  "Ghostly Dancers": {
+   "gih_games": 22270,
+   "gih_wr": 0.6429726088908846,
+   "deck_games": 52073
+  },
+  "Ghostly Keybearer": {
+   "gih_games": 30239,
+   "gih_wr": 0.5307384503455802,
+   "deck_games": 64621
+  },
+  "Give In to Violence": {
+   "gih_games": 9497,
+   "gih_wr": 0.5075286932715595,
+   "deck_games": 22607
+  },
+  "Glassworks // Shattered Yard": {
+   "gih_games": 115919,
+   "gih_wr": 0.5683796444068703,
+   "deck_games": 238798
+  },
+  "Glimmer Seeker": {
+   "gih_games": 39304,
+   "gih_wr": 0.5675249338489721,
+   "deck_games": 90723
+  },
+  "Glimmerburst": {
+   "gih_games": 103198,
+   "gih_wr": 0.571890928118762,
+   "deck_games": 207922
+  },
+  "Glimmerlight": {
+   "gih_games": 120532,
+   "gih_wr": 0.5668950983971062,
+   "deck_games": 250759
+  },
+  "Gloomlake Verge": {
+   "gih_games": 8963,
+   "gih_wr": 0.5335267209639629,
+   "deck_games": 19572
+  },
+  "Grab the Prize": {
+   "gih_games": 24188,
+   "gih_wr": 0.531337853481065,
+   "deck_games": 58211
+  },
+  "Grand Entryway // Elegant Rotunda": {
+   "gih_games": 90973,
+   "gih_wr": 0.5469095226056082,
+   "deck_games": 182495
+  },
+  "Grasping Longneck": {
+   "gih_games": 52759,
+   "gih_wr": 0.5366288216228511,
+   "deck_games": 118766
+  },
+  "Greenhouse // Rickety Gazebo": {
+   "gih_games": 9577,
+   "gih_wr": 0.49754620444815706,
+   "deck_games": 22015
+  },
+  "Gremlin Tamer": {
+   "gih_games": 45418,
+   "gih_wr": 0.5971200845479766,
+   "deck_games": 91121
+  },
+  "Grievous Wound": {
+   "gih_games": 1412,
+   "gih_wr": 0.43413597733711046,
+   "deck_games": 3426
+  },
+  "Growing Dread": {
+   "gih_games": 40997,
+   "gih_wr": 0.5763592457984731,
+   "deck_games": 79691
+  },
+  "Hallowed Haunting": {
+   "gih_games": 990,
+   "gih_wr": 0.5151515151515151,
+   "deck_games": 2300
+  },
+  "Hand That Feeds": {
+   "gih_games": 82374,
+   "gih_wr": 0.5475149925947508,
+   "deck_games": 170335
+  },
+  "Hardened Escort": {
+   "gih_games": 42806,
+   "gih_wr": 0.5356024856328552,
+   "deck_games": 97916
+  },
+  "Haunted Screen": {
+   "gih_games": 14500,
+   "gih_wr": 0.5187586206896552,
+   "deck_games": 32476
+  },
+  "Hauntwoods Shrieker": {
+   "gih_games": 9674,
+   "gih_wr": 0.5738060781476122,
+   "deck_games": 23202
+  },
+  "Hedge Shredder": {
+   "gih_games": 15379,
+   "gih_wr": 0.5285779309447949,
+   "deck_games": 37300
+  },
+  "Horrid Vigor": {
+   "gih_games": 26423,
+   "gih_wr": 0.5355561442682512,
+   "deck_games": 64494
+  },
+  "House Cartographer": {
+   "gih_games": 34597,
+   "gih_wr": 0.5441223227447467,
+   "deck_games": 79671
+  },
+  "Hushwood Verge": {
+   "gih_games": 7400,
+   "gih_wr": 0.5316216216216216,
+   "deck_games": 17462
+  },
+  "Impossible Inferno": {
+   "gih_games": 47164,
+   "gih_wr": 0.5397124925790857,
+   "deck_games": 112553
+  },
+  "Infernal Phantom": {
+   "gih_games": 23743,
+   "gih_wr": 0.5160678936949837,
+   "deck_games": 55030
+  },
+  "Innocuous Rat": {
+   "gih_games": 71489,
+   "gih_wr": 0.5533578592510736,
+   "deck_games": 139740
+  },
+  "Inquisitive Glimmer": {
+   "gih_games": 37685,
+   "gih_wr": 0.5739949582061828,
+   "deck_games": 76830
+  },
+  "Insidious Fungus": {
+   "gih_games": 44706,
+   "gih_wr": 0.5650919339685948,
+   "deck_games": 102878
+  },
+  "Intruding Soulrager": {
+   "gih_games": 16729,
+   "gih_wr": 0.5302169884631478,
+   "deck_games": 32424
+  },
+  "Irreverent Gremlin": {
+   "gih_games": 54458,
+   "gih_wr": 0.5725696867310588,
+   "deck_games": 122795
+  },
+  "Island": {
+   "gih_games": 444021,
+   "gih_wr": 0.5476295040099455,
+   "deck_games": 487191
+  },
+  "Jump Scare": {
+   "gih_games": 50927,
+   "gih_wr": 0.5556973707463625,
+   "deck_games": 119093
+  },
+  "Kaito, Bane of Nightmares": {
+   "gih_games": 7302,
+   "gih_wr": 0.5758696247603396,
+   "deck_games": 16597
+  },
+  "Keys to the House": {
+   "gih_games": 18196,
+   "gih_wr": 0.5076390415475929,
+   "deck_games": 41437
+  },
+  "Killer's Mask": {
+   "gih_games": 11739,
+   "gih_wr": 0.512394582162024,
+   "deck_games": 27092
+  },
+  "Kona, Rescue Beastie": {
+   "gih_games": 10096,
+   "gih_wr": 0.5034667194928685,
+   "deck_games": 24595
+  },
+  "Lakeside Shack": {
+   "gih_games": 49905,
+   "gih_wr": 0.550986875062619,
+   "deck_games": 107490
+  },
+  "Let's Play a Game": {
+   "gih_games": 17407,
+   "gih_wr": 0.5574768771184007,
+   "deck_games": 40779
+  },
+  "Leyline of Hope": {
+   "gih_games": 118,
+   "gih_wr": 0.423728813559322,
+   "deck_games": 512
+  },
+  "Leyline of Mutation": {
+   "gih_games": 14,
+   "gih_wr": 0.42857142857142855,
+   "deck_games": 51
+  },
+  "Leyline of Resonance": {
+   "gih_games": 137,
+   "gih_wr": 0.36496350364963503,
+   "deck_games": 566
+  },
+  "Leyline of Transformation": {
+   "gih_games": 55,
+   "gih_wr": 0.4,
+   "deck_games": 212
+  },
+  "Leyline of the Void": {
+   "gih_games": 115,
+   "gih_wr": 0.40869565217391307,
+   "deck_games": 470
+  },
+  "Lionheart Glimmer": {
+   "gih_games": 32546,
+   "gih_wr": 0.5545074663553125,
+   "deck_games": 79077
+  },
+  "Live or Die": {
+   "gih_games": 33999,
+   "gih_wr": 0.5515162210653255,
+   "deck_games": 75296
+  },
+  "Living Phone": {
+   "gih_games": 18808,
+   "gih_wr": 0.5153658017864738,
+   "deck_games": 42153
+  },
+  "Maddening Hex": {
+   "gih_games": 690,
+   "gih_wr": 0.47391304347826085,
+   "deck_games": 1862
+  },
+  "Malevolent Chandelier": {
+   "gih_games": 21579,
+   "gih_wr": 0.5111450947680616,
+   "deck_games": 51133
+  },
+  "Manifest Dread": {
+   "gih_games": 106989,
+   "gih_wr": 0.5617493387170643,
+   "deck_games": 210842
+  },
+  "Marina Vendrell": {
+   "gih_games": 2567,
+   "gih_wr": 0.493961823139852,
+   "deck_games": 5530
+  },
+  "Marina Vendrell's Grimoire": {
+   "gih_games": 205,
+   "gih_wr": 0.3463414634146341,
+   "deck_games": 426
+  },
+  "Marvin, Murderous Mimic": {
+   "gih_games": 4093,
+   "gih_wr": 0.5018323967749817,
+   "deck_games": 10307
+  },
+  "Meat Locker // Drowned Diner": {
+   "gih_games": 98640,
+   "gih_wr": 0.5539030819140308,
+   "deck_games": 201809
+  },
+  "Meathook Massacre II": {
+   "gih_games": 3807,
+   "gih_wr": 0.49592855266614133,
+   "deck_games": 8968
+  },
+  "Miasma Demon": {
+   "gih_games": 21649,
+   "gih_wr": 0.5359600905353596,
+   "deck_games": 51281
+  },
+  "Midnight Mayhem": {
+   "gih_games": 39185,
+   "gih_wr": 0.6075539109353069,
+   "deck_games": 85120
+  },
+  "Mirror Room // Fractured Realm": {
+   "gih_games": 8499,
+   "gih_wr": 0.551594305212378,
+   "deck_games": 19320
+  },
+  "Moldering Gym // Weight Room": {
+   "gih_games": 73292,
+   "gih_wr": 0.5420646182393712,
+   "deck_games": 155001
+  },
+  "Monstrous Emergence": {
+   "gih_games": 101958,
+   "gih_wr": 0.561486102120481,
+   "deck_games": 211145
+  },
+  "Most Valuable Slayer": {
+   "gih_games": 98132,
+   "gih_wr": 0.5485978070354217,
+   "deck_games": 208991
+  },
+  "Mountain": {
+   "gih_games": 468518,
+   "gih_wr": 0.5512466970319176,
+   "deck_games": 515302
+  },
+  "Murder": {
+   "gih_games": 69945,
+   "gih_wr": 0.5505897490885696,
+   "deck_games": 141369
+  },
+  "Murky Sewer": {
+   "gih_games": 35698,
+   "gih_wr": 0.5375651296991428,
+   "deck_games": 75986
+  },
+  "Nashi, Searcher in the Dark": {
+   "gih_games": 9109,
+   "gih_wr": 0.5354045449555385,
+   "deck_games": 19686
+  },
+  "Neglected Manor": {
+   "gih_games": 30725,
+   "gih_wr": 0.5291781936533767,
+   "deck_games": 67234
+  },
+  "Niko, Light of Hope": {
+   "gih_games": 10374,
+   "gih_wr": 0.5995758627337575,
+   "deck_games": 24166
+  },
+  "Norin, Swift Survivalist": {
+   "gih_games": 29596,
+   "gih_wr": 0.5458845789971618,
+   "deck_games": 71065
+  },
+  "Nowhere to Run": {
+   "gih_games": 43288,
+   "gih_wr": 0.5744086120864905,
+   "deck_games": 92034
+  },
+  "Noxious Revival": {
+   "gih_games": 366,
+   "gih_wr": 0.4098360655737705,
+   "deck_games": 925
+  },
+  "Oblivious Bookworm": {
+   "gih_games": 49478,
+   "gih_wr": 0.5988722260398561,
+   "deck_games": 99993
+  },
+  "Omnivorous Flytrap": {
+   "gih_games": 21165,
+   "gih_wr": 0.5766123316796599,
+   "deck_games": 49517
+  },
+  "Optimistic Scavenger": {
+   "gih_games": 49118,
+   "gih_wr": 0.6050124190724379,
+   "deck_games": 107098
+  },
+  "Orphans of the Wheat": {
+   "gih_games": 27016,
+   "gih_wr": 0.5336837429671306,
+   "deck_games": 62641
+  },
+  "Osseous Sticktwister": {
+   "gih_games": 42082,
+   "gih_wr": 0.5635663704196568,
+   "deck_games": 89710
+  },
+  "Overgrown Zealot": {
+   "gih_games": 38232,
+   "gih_wr": 0.5470286670851643,
+   "deck_games": 87136
+  },
+  "Overlord of the Balemurk": {
+   "gih_games": 10157,
+   "gih_wr": 0.6183912572610023,
+   "deck_games": 23549
+  },
+  "Overlord of the Boilerbilges": {
+   "gih_games": 11477,
+   "gih_wr": 0.6400627341639802,
+   "deck_games": 27898
+  },
+  "Overlord of the Floodpits": {
+   "gih_games": 11308,
+   "gih_wr": 0.6308807923593915,
+   "deck_games": 25596
+  },
+  "Overlord of the Hauntwoods": {
+   "gih_games": 8975,
+   "gih_wr": 0.5662395543175488,
+   "deck_games": 21408
+  },
+  "Overlord of the Mistmoors": {
+   "gih_games": 11250,
+   "gih_wr": 0.6812444444444444,
+   "deck_games": 26860
+  },
+  "Painter's Studio // Defaced Gallery": {
+   "gih_games": 49208,
+   "gih_wr": 0.5728540074784588,
+   "deck_games": 114137
+  },
+  "Paranormal Analyst": {
+   "gih_games": 40070,
+   "gih_wr": 0.5636635887197404,
+   "deck_games": 82366
+  },
+  "Patched Plaything": {
+   "gih_games": 35761,
+   "gih_wr": 0.5387153603087163,
+   "deck_games": 82716
+  },
+  "Patchwork Beastie": {
+   "gih_games": 47973,
+   "gih_wr": 0.5759698163550331,
+   "deck_games": 104738
+  },
+  "Peculiar Lighthouse": {
+   "gih_games": 36837,
+   "gih_wr": 0.5325623693568966,
+   "deck_games": 79704
+  },
+  "Peer Past the Veil": {
+   "gih_games": 9777,
+   "gih_wr": 0.5323718932187788,
+   "deck_games": 24617
+  },
+  "Phantasmal Image": {
+   "gih_games": 1692,
+   "gih_wr": 0.5750591016548463,
+   "deck_games": 3882
+  },
+  "Piggy Bank": {
+   "gih_games": 54429,
+   "gih_wr": 0.5768248543974719,
+   "deck_games": 122515
+  },
+  "Piranha Fly": {
+   "gih_games": 48773,
+   "gih_wr": 0.5426978041129313,
+   "deck_games": 95393
+  },
+  "Plains": {
+   "gih_games": 469103,
+   "gih_wr": 0.5518915888408302,
+   "deck_games": 515192
+  },
+  "Popular Egotist": {
+   "gih_games": 26319,
+   "gih_wr": 0.5453474676089517,
+   "deck_games": 57349
+  },
+  "Possessed Goat": {
+   "gih_games": 21430,
+   "gih_wr": 0.5218852076528231,
+   "deck_games": 45850
+  },
+  "Pyroclasm": {
+   "gih_games": 14236,
+   "gih_wr": 0.5239533576847429,
+   "deck_games": 31372
+  },
+  "Ragged Playmate": {
+   "gih_games": 75736,
+   "gih_wr": 0.5462659765501214,
+   "deck_games": 162280
+  },
+  "Rampaging Soulrager": {
+   "gih_games": 20327,
+   "gih_wr": 0.4959413587838835,
+   "deck_games": 38832
+  },
+  "Raucous Carnival": {
+   "gih_games": 41161,
+   "gih_wr": 0.5409732513787323,
+   "deck_games": 96786
+  },
+  "Razorkin Hordecaller": {
+   "gih_games": 53615,
+   "gih_wr": 0.5872796791942554,
+   "deck_games": 125641
+  },
+  "Razorkin Needlehead": {
+   "gih_games": 16221,
+   "gih_wr": 0.5643918377411997,
+   "deck_games": 39275
+  },
+  "Razortrap Gorge": {
+   "gih_games": 37080,
+   "gih_wr": 0.532740021574973,
+   "deck_games": 82397
+  },
+  "Reluctant Role Model": {
+   "gih_games": 18275,
+   "gih_wr": 0.5675512995896033,
+   "deck_games": 43339
+  },
+  "Restricted Office // Lecture Hall": {
+   "gih_games": 12895,
+   "gih_wr": 0.5533152384645211,
+   "deck_games": 30696
+  },
+  "Resurrected Cultist": {
+   "gih_games": 31459,
+   "gih_wr": 0.5166407069519057,
+   "deck_games": 67716
+  },
+  "Rip, Spawn Hunter": {
+   "gih_games": 8875,
+   "gih_wr": 0.5363380281690141,
+   "deck_games": 21367
+  },
+  "Ripchain Razorkin": {
+   "gih_games": 21416,
+   "gih_wr": 0.5289503175196115,
+   "deck_games": 51548
+  },
+  "Rite of the Moth": {
+   "gih_games": 21591,
+   "gih_wr": 0.544764022046223,
+   "deck_games": 45472
+  },
+  "Roaring Furnace // Steaming Sauna": {
+   "gih_games": 20922,
+   "gih_wr": 0.6000382372622121,
+   "deck_games": 46855
+  },
+  "Rootwise Survivor": {
+   "gih_games": 22981,
+   "gih_wr": 0.5435794786997955,
+   "deck_games": 55122
+  },
+  "Sacrifice": {
+   "gih_games": 82,
+   "gih_wr": 0.45121951219512196,
+   "deck_games": 198
+  },
+  "Savior of the Small": {
+   "gih_games": 19603,
+   "gih_wr": 0.5098199255216038,
+   "deck_games": 48075
+  },
+  "Saw": {
+   "gih_games": 8804,
+   "gih_wr": 0.5241935483870968,
+   "deck_games": 22210
+  },
+  "Sawblade Skinripper": {
+   "gih_games": 29151,
+   "gih_wr": 0.5551782100099482,
+   "deck_games": 57930
+  },
+  "Say Its Name": {
+   "gih_games": 79466,
+   "gih_wr": 0.5505247527244356,
+   "deck_games": 156087
+  },
+  "Scorching Dragonfire": {
+   "gih_games": 126765,
+   "gih_wr": 0.5737466966433953,
+   "deck_games": 256798
+  },
+  "Scrabbling Skullcrab": {
+   "gih_games": 23805,
+   "gih_wr": 0.5081285444234405,
+   "deck_games": 46473
+  },
+  "Screaming Nemesis": {
+   "gih_games": 11245,
+   "gih_wr": 0.6168074699866607,
+   "deck_games": 27274
+  },
+  "Seized from Slumber": {
+   "gih_games": 67114,
+   "gih_wr": 0.5598533837947373,
+   "deck_games": 146719
+  },
+  "Shardmage's Rescue": {
+   "gih_games": 40659,
+   "gih_wr": 0.5656066307582577,
+   "deck_games": 96595
+  },
+  "Sheltered by Ghosts": {
+   "gih_games": 49222,
+   "gih_wr": 0.6164723091300638,
+   "deck_games": 112808
+  },
+  "Shepherding Spirits": {
+   "gih_games": 40222,
+   "gih_wr": 0.5197653025707324,
+   "deck_games": 92364
+  },
+  "Shrewd Storyteller": {
+   "gih_games": 14282,
+   "gih_wr": 0.5148438594034449,
+   "deck_games": 31370
+  },
+  "Shroudstomper": {
+   "gih_games": 21079,
+   "gih_wr": 0.5459936429621899,
+   "deck_games": 45377
+  },
+  "Silent Hallcreeper": {
+   "gih_games": 23517,
+   "gih_wr": 0.602372751626483,
+   "deck_games": 52091
+  },
+  "Skullsnap Nuisance": {
+   "gih_games": 16707,
+   "gih_wr": 0.5218770575207997,
+   "deck_games": 32287
+  },
+  "Slavering Branchsnapper": {
+   "gih_games": 72718,
+   "gih_wr": 0.5397563189306637,
+   "deck_games": 164638
+  },
+  "Smoky Lounge // Misty Salon": {
+   "gih_games": 25991,
+   "gih_wr": 0.5216421068831518,
+   "deck_games": 48026
+  },
+  "Soul Warden": {
+   "gih_games": 449,
+   "gih_wr": 0.5367483296213809,
+   "deck_games": 1100
+  },
+  "Spectral Snatcher": {
+   "gih_games": 52038,
+   "gih_wr": 0.5235981398209001,
+   "deck_games": 114331
+  },
+  "Spineseeker Centipede": {
+   "gih_games": 113407,
+   "gih_wr": 0.5703175289003324,
+   "deck_games": 225990
+  },
+  "Split Up": {
+   "gih_games": 14876,
+   "gih_wr": 0.5750201667114816,
+   "deck_games": 35841
+  },
+  "Splitskin Doll": {
+   "gih_games": 49931,
+   "gih_wr": 0.5850473653642027,
+   "deck_games": 110994
+  },
+  "Sporogenic Infection": {
+   "gih_games": 32960,
+   "gih_wr": 0.5555825242718446,
+   "deck_games": 72676
+  },
+  "Stalked Researcher": {
+   "gih_games": 68247,
+   "gih_wr": 0.5402288745292834,
+   "deck_games": 134554
+  },
+  "Stay Hidden, Stay Silent": {
+   "gih_games": 57763,
+   "gih_wr": 0.585443969322923,
+   "deck_games": 121198
+  },
+  "Strangled Cemetery": {
+   "gih_games": 44885,
+   "gih_wr": 0.5360810961345661,
+   "deck_games": 100446
+  },
+  "Surgical Suite // Hospital Room": {
+   "gih_games": 40577,
+   "gih_wr": 0.5727875397392611,
+   "deck_games": 95812
+  },
+  "Swamp": {
+   "gih_games": 357730,
+   "gih_wr": 0.5349956671232494,
+   "deck_games": 415574
+  },
+  "Terramorphic Expanse": {
+   "gih_games": 143338,
+   "gih_wr": 0.5509285744185073,
+   "deck_games": 310366
+  },
+  "The Jolly Balloon Man": {
+   "gih_games": 15276,
+   "gih_wr": 0.5395391463733962,
+   "deck_games": 37639
+  },
+  "The Mindskinner": {
+   "gih_games": 11964,
+   "gih_wr": 0.5568371782012704,
+   "deck_games": 26396
+  },
+  "The Rollercrusher Ride": {
+   "gih_games": 12534,
+   "gih_wr": 0.6026807084729535,
+   "deck_games": 30116
+  },
+  "The Swarmweaver": {
+   "gih_games": 23495,
+   "gih_wr": 0.6434986167269632,
+   "deck_games": 52921
+  },
+  "The Tale of Tamiyo": {
+   "gih_games": 536,
+   "gih_wr": 0.4906716417910448,
+   "deck_games": 1240
+  },
+  "The Wandering Rescuer": {
+   "gih_games": 9188,
+   "gih_wr": 0.58837614279495,
+   "deck_games": 22496
+  },
+  "Thornspire Verge": {
+   "gih_games": 10619,
+   "gih_wr": 0.5428948111874942,
+   "deck_games": 25381
+  },
+  "Threats Around Every Corner": {
+   "gih_games": 48294,
+   "gih_wr": 0.5838199362239616,
+   "deck_games": 105505
+  },
+  "Ticket Booth // Tunnel of Hate": {
+   "gih_games": 70976,
+   "gih_wr": 0.5516512623985572,
+   "deck_games": 157433
+  },
+  "Toby, Beastie Befriender": {
+   "gih_games": 20461,
+   "gih_wr": 0.613655246566639,
+   "deck_games": 48593
+  },
+  "Trapped in the Screen": {
+   "gih_games": 105966,
+   "gih_wr": 0.5735896419606289,
+   "deck_games": 221135
+  },
+  "Trial of Agony": {
+   "gih_games": 27930,
+   "gih_wr": 0.5394557823129251,
+   "deck_games": 68072
+  },
+  "Tunnel Surveyor": {
+   "gih_games": 92810,
+   "gih_wr": 0.556384010343713,
+   "deck_games": 177689
+  },
+  "Turn Inside Out": {
+   "gih_games": 88145,
+   "gih_wr": 0.5708548414544217,
+   "deck_games": 191537
+  },
+  "Twist Reality": {
+   "gih_games": 56917,
+   "gih_wr": 0.5532969060210482,
+   "deck_games": 116083
+  },
+  "Twitching Doll": {
+   "gih_games": 20197,
+   "gih_wr": 0.5811754220923899,
+   "deck_games": 47391
+  },
+  "Tyvar, the Pummeler": {
+   "gih_games": 10864,
+   "gih_wr": 0.6299705449189985,
+   "deck_games": 26043
+  },
+  "Unable to Scream": {
+   "gih_games": 117937,
+   "gih_wr": 0.5674385476991953,
+   "deck_games": 225198
+  },
+  "Undead Sprinter": {
+   "gih_games": 14125,
+   "gih_wr": 0.5716106194690266,
+   "deck_games": 31590
+  },
+  "Under the Skin": {
+   "gih_games": 59259,
+   "gih_wr": 0.5965169847618084,
+   "deck_games": 129905
+  },
+  "Underwater Tunnel // Slimy Aquarium": {
+   "gih_games": 94567,
+   "gih_wr": 0.5470407224507492,
+   "deck_games": 187664
+  },
+  "Unholy Annex // Ritual Chamber": {
+   "gih_games": 22560,
+   "gih_wr": 0.6469858156028369,
+   "deck_games": 50451
+  },
+  "Unholy Heat": {
+   "gih_games": 1716,
+   "gih_wr": 0.5792540792540792,
+   "deck_games": 4328
+  },
+  "Unidentified Hovership": {
+   "gih_games": 19391,
+   "gih_wr": 0.6073951833324738,
+   "deck_games": 46698
+  },
+  "Unnerving Grasp": {
+   "gih_games": 63509,
+   "gih_wr": 0.6027649624462674,
+   "deck_games": 130585
+  },
+  "Unsettling Twins": {
+   "gih_games": 80289,
+   "gih_wr": 0.5675621816189017,
+   "deck_games": 170776
+  },
+  "Unstoppable Slasher": {
+   "gih_games": 20687,
+   "gih_wr": 0.6142504954802533,
+   "deck_games": 47103
+  },
+  "Untimely Malfunction": {
+   "gih_games": 10334,
+   "gih_wr": 0.5303851364428102,
+   "deck_games": 26565
+  },
+  "Unwanted Remake": {
+   "gih_games": 8041,
+   "gih_wr": 0.479791070762343,
+   "deck_games": 19626
+  },
+  "Unwilling Vessel": {
+   "gih_games": 40006,
+   "gih_wr": 0.5339449082637604,
+   "deck_games": 84824
+  },
+  "Valgavoth's Faithful": {
+   "gih_games": 26235,
+   "gih_wr": 0.5381360777587193,
+   "deck_games": 57061
+  },
+  "Valgavoth's Lair": {
+   "gih_games": 18522,
+   "gih_wr": 0.5331497678436454,
+   "deck_games": 42892
+  },
+  "Valgavoth's Onslaught": {
+   "gih_games": 26682,
+   "gih_wr": 0.6591334982385129,
+   "deck_games": 61245
+  },
+  "Valgavoth, Terror Eater": {
+   "gih_games": 6060,
+   "gih_wr": 0.5425742574257426,
+   "deck_games": 14734
+  },
+  "Vanish from Sight": {
+   "gih_games": 82849,
+   "gih_wr": 0.5678764982075825,
+   "deck_games": 170372
+  },
+  "Vengeful Possession": {
+   "gih_games": 26596,
+   "gih_wr": 0.5687697398104978,
+   "deck_games": 61017
+  },
+  "Veteran Survivor": {
+   "gih_games": 31681,
+   "gih_wr": 0.5652599349767999,
+   "deck_games": 73951
+  },
+  "Vicious Clown": {
+   "gih_games": 49911,
+   "gih_wr": 0.539159704273607,
+   "deck_games": 106508
+  },
+  "Victor, Valgavoth's Seneschal": {
+   "gih_games": 9222,
+   "gih_wr": 0.5084580351333767,
+   "deck_games": 20830
+  },
+  "Vile Mutilator": {
+   "gih_games": 29545,
+   "gih_wr": 0.5486545946860721,
+   "deck_games": 69162
+  },
+  "Violent Urge": {
+   "gih_games": 22179,
+   "gih_wr": 0.529960773704856,
+   "deck_games": 55491
+  },
+  "Walk-In Closet // Forgotten Cellar": {
+   "gih_games": 1651,
+   "gih_wr": 0.49788007268322226,
+   "deck_games": 3912
+  },
+  "Waltz of Rage": {
+   "gih_games": 16508,
+   "gih_wr": 0.563120911073419,
+   "deck_games": 40831
+  },
+  "Wary Watchdog": {
+   "gih_games": 100589,
+   "gih_wr": 0.5565022020300431,
+   "deck_games": 207846
+  },
+  "Wickerfolk Thresher": {
+   "gih_games": 45124,
+   "gih_wr": 0.5469594894069675,
+   "deck_games": 103044
+  },
+  "Wildfire Wickerfolk": {
+   "gih_games": 37387,
+   "gih_wr": 0.5865407762056329,
+   "deck_games": 77625
+  },
+  "Winter's Intervention": {
+   "gih_games": 60467,
+   "gih_wr": 0.5489109762349711,
+   "deck_games": 125792
+  },
+  "Winter, Misanthropic Guide": {
+   "gih_games": 3081,
+   "gih_wr": 0.4784160986692632,
+   "deck_games": 7391
+  },
+  "Withering Torment": {
+   "gih_games": 37448,
+   "gih_wr": 0.5424321726126896,
+   "deck_games": 82452
+  },
+  "Zimone, All-Questioning": {
+   "gih_games": 22875,
+   "gih_wr": 0.6172677595628415,
+   "deck_games": 51307
+  }
+ },
+ "colors": {
+  "BR": {
+   "games": 83146,
+   "wr": 0.5491665263512375
+  },
+  "WU": {
+   "games": 151906,
+   "wr": 0.5644609166194884
+  },
+  "RG": {
+   "games": 116043,
+   "wr": 0.5533896917521953
+  },
+  "UB": {
+   "games": 40863,
+   "wr": 0.5165553189927318
+  },
+  "WR": {
+   "games": 140873,
+   "wr": 0.5692077261079128
+  },
+  "UBG": {
+   "games": 17194,
+   "wr": 0.5237292078632081
+  },
+  "BG": {
+   "games": 81880,
+   "wr": 0.542733268197362
+  },
+  "WBR": {
+   "games": 4345,
+   "wr": 0.4678941311852704
+  },
+  "U": {
+   "games": 4488,
+   "wr": 0.5570409982174688
+  },
+  "WB": {
+   "games": 54755,
+   "wr": 0.5202082001643685
+  },
+  "WG": {
+   "games": 48718,
+   "wr": 0.5257810254936574
+  },
+  "UR": {
+   "games": 52177,
+   "wr": 0.5208616823504609
+  },
+  "UBR": {
+   "games": 4222,
+   "wr": 0.4936049265750829
+  },
+  "UG": {
+   "games": 117510,
+   "wr": 0.5549910645902476
+  },
+  "W": {
+   "games": 1438,
+   "wr": 0.5952712100139083
+  },
+  "WRG": {
+   "games": 5846,
+   "wr": 0.4810126582278481
+  },
+  "URG": {
+   "games": 12906,
+   "wr": 0.5139470013947002
+  },
+  "G": {
+   "games": 3495,
+   "wr": 0.547925608011445
+  },
+  "BRG": {
+   "games": 18878,
+   "wr": 0.5215594872338172
+  },
+  "WBG": {
+   "games": 11599,
+   "wr": 0.5146995430640573
+  },
+  "WURG": {
+   "games": 519,
+   "wr": 0.4393063583815029
+  },
+  "WUB": {
+   "games": 11569,
+   "wr": 0.4869910968968796
+  },
+  "WUR": {
+   "games": 9108,
+   "wr": 0.49879227053140096
+  },
+  "WUG": {
+   "games": 10643,
+   "wr": 0.5084092830968712
+  },
+  "R": {
+   "games": 3518,
+   "wr": 0.5690733371233655
+  },
+  "UBRG": {
+   "games": 1063,
+   "wr": 0.4863593603010348
+  },
+  "WUBG": {
+   "games": 885,
+   "wr": 0.4610169491525424
+  },
+  "B": {
+   "games": 1398,
+   "wr": 0.4907010014306152
+  },
+  "WUBRG": {
+   "games": 374,
+   "wr": 0.3663101604278075
+  },
+  "WBRG": {
+   "games": 305,
+   "wr": 0.4557377049180328
+  },
+  "WUBR": {
+   "games": 285,
+   "wr": 0.4245614035087719
+  }
+ }
+}

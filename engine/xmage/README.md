@@ -15,6 +15,8 @@ Built against the **unmodified XMage 1.4.62 release jars** (build option 1); not
   for other named prompts.
 - `VocabDump.java`: writes `engine/vocab/dsk_vocab.json` (276 DSK card names, ability keys and texts, named choices).
 - `SeatSpike.java`: runs N games, our seat vs XMage's AI.
+- `TwoSeatMatch.java`: runs N games with both seats driven from Python (used by `play/match.py`).
+- `CardTextDump.java`: writes `engine/vocab/dsk_card_text.json` (rules text of every DSK card as XMage implements it).
 - `run_games.py`: Python side, a random-move bot that records every decision to JSON lines.
 - `decks/`: smoke-test decks; `dsk_ug_modal.dck` swaps in modal spells to exercise MODE prompts.
 
