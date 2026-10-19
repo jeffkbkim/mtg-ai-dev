@@ -92,8 +92,12 @@ public final class Observer {
         // ---- cards ----
         for (CardView c : view.getMyHand().values()) addCard(game, obs, c, "HAND", true, attacking, blocking);
         for (PlayerView p : view.getPlayers()) {
-            boolean mine = me.equals(p.getPlayerId());
-            for (PermanentView c : p.getBattlefield().values()) addCard(game, obs, c, "BATTLEFIELD", mine, attacking, blocking);
+            // the view files an Aura under the enchanted permanent's player; "mine" means I control it
+            for (PermanentView c : p.getBattlefield().values()) {
+                UUID controller = game.getControllerId(c.getId());
+                boolean mine = controller == null ? me.equals(p.getPlayerId()) : me.equals(controller);
+                addCard(game, obs, c, "BATTLEFIELD", mine, attacking, blocking);
+            }
         }
         for (PlayerView p : view.getPlayers()) {
             boolean mine = me.equals(p.getPlayerId());
