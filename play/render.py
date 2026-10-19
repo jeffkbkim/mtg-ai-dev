@@ -11,7 +11,10 @@ CARD_TEXT_PATH = Path(__file__).resolve().parent.parent / "engine" / "vocab" / "
 
 def clean(text):
     """XMage text can carry GUI markup and HTML entities (e.g. '<i>Eerie</i> &mdash;')."""
-    return html.unescape(re.sub(r"<[^>]+>", "", text or ""))
+    text = html.unescape(re.sub(r"<[^>]+>", "", text or ""))
+    # XMage's condition hints: "ICON_GOOD<text>" (condition met) / "ICON_BAD<text>" (not met)
+    text = re.sub(r"ICON_GOOD(.*)$", r"[currently true: \1]", text)
+    return re.sub(r"ICON_BAD(.*)$", r"[currently false: \1]", text)
 
 
 def load_card_text(path=CARD_TEXT_PATH):
@@ -47,6 +50,8 @@ def _entry(e):
         if "Land" not in e["types"]:
             parts.append(f"mv {e['mana_value']}")
     flags = [f for f in ("face_down", "token", "tapped", "summoning_sick", "attacking", "blocking", "being_cast") if e.get(f)]
+    if "Creature" not in e.get("types", ""):
+        flags = [f for f in flags if f != "summoning_sick"]  # only matters for creatures
     if e.get("damage"):
         flags.append(f"damage {e['damage']}")
     if e.get("counters"):
@@ -96,5 +101,8 @@ def render(msg, new_cards=()):
     lines.append(f"Decision: {msg['kind']}. {clean(msg['prompt'])}")
     for k, o in enumerate(msg["options"]):
         extra = [x for x in (_ref(o.get("source"), entries), _ref(o.get("target"), entries)) if x]
-        lines.append(f"{k}: {clean(o['label'])}" + (f"   ({' -> '.join(extra)})" if extra else ""))
+        label = clean(o["label"])
+        if label == "?" and "player" in (o.get("target") or {}):
+            label = "target " + _ref(o["target"], entries)
+        lines.append(f"{k}: {label}" + (f"   ({' -> '.join(extra)})" if extra else ""))
     return "\n".join(lines)

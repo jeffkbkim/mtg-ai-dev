@@ -7,7 +7,7 @@ import json, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from render import render
+from render import clean, render
 
 last = {}
 for line in open(sys.argv[1]):
@@ -22,4 +22,4 @@ for line in open(sys.argv[1]):
     print(state if last.get(r["seat"]) != state else "(state unchanged)")
     last[r["seat"]] = state
     print("Decision: " + decision)
-    print(f">>> picked {r['choice']}: {r['options'][r['choice']]['label']}  | reason: {r.get('reason', '')}\n")
+    print(f">>> picked {r['choice']}: {clean(r['options'][r['choice']]['label'])}  | reason: {r.get('reason', '')}\n")

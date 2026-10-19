@@ -41,7 +41,7 @@ public class SeatSpike {
                 match.addPlayer(seats[s], deck);
             }
             GameOptions options = new GameOptions();
-            options.testMode = true;
+            options.testMode = false; // true skips the opening hands (every game started with 0 cards)
             options.stopOnTurn = 100;
             options.stopAtStep = PhaseStep.END_TURN;
             game.setGameOptions(options);
