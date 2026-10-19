@@ -3,10 +3,15 @@
 Only fields of the seat's own observation are used, so the text carries no more than the seat may know.
 Card rules text comes from engine/vocab/dsk_card_text.json (public card text, as XMage implements it).
 """
-import json
+import html, json, re
 from pathlib import Path
 
 CARD_TEXT_PATH = Path(__file__).resolve().parent.parent / "engine" / "vocab" / "dsk_card_text.json"
+
+
+def clean(text):
+    """XMage text can carry GUI markup and HTML entities (e.g. '<i>Eerie</i> &mdash;')."""
+    return html.unescape(re.sub(r"<[^>]+>", "", text or ""))
 
 
 def load_card_text(path=CARD_TEXT_PATH):
@@ -29,7 +34,7 @@ def _entry(e):
                 f"Opponent: life {e['opp_life']}, hand {e['opp_hand']}, library {e['opp_library']}, graveyard {e['opp_graveyard']}. "
                 f"Stack size {e['stack_size']}.")
     if e["kind"] == "ability":
-        return f"{'my' if e['mine'] else 'opp'} STACK ability of {e['source_name']}: {e['text']}"
+        return f"{'my' if e['mine'] else 'opp'} STACK ability of {e['source_name']}: {clean(e['text'])}"
     who = "my" if e["mine"] else "opp"
     name = e.get("name") or "face-down card"
     if e.get("card_name") and e["card_name"] != name:
@@ -88,8 +93,8 @@ def render(msg, new_cards=()):
     if new_cards:
         lines.append("Card text (first time you see these cards):")
         lines += ["  " + card_text(c) for c in new_cards]
-    lines.append(f"Decision: {msg['kind']}. {msg['prompt']}")
+    lines.append(f"Decision: {msg['kind']}. {clean(msg['prompt'])}")
     for k, o in enumerate(msg["options"]):
         extra = [x for x in (_ref(o.get("source"), entries), _ref(o.get("target"), entries)) if x]
-        lines.append(f"{k}: {o['label']}" + (f"   ({' -> '.join(extra)})" if extra else ""))
+        lines.append(f"{k}: {clean(o['label'])}" + (f"   ({' -> '.join(extra)})" if extra else ""))
     return "\n".join(lines)
