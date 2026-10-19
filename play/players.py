@@ -84,6 +84,7 @@ class ClaudePlayer:
         self.workdir = tempfile.mkdtemp(prefix="claude-seat-")
         Path(self.workdir, "system.txt").write_text(system_prompt(deck_path, self.texts))
         env = {k: v for k, v in os.environ.items() if k not in ("CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_REMOTE_SESSION_ID")}
+        env["CLAUDE_EFFORT"] = self.effort  # an inherited default (e.g. a cloud session's "medium") must not compete with --effort
         self.proc = subprocess.Popen(
             ["claude", "-p", "--input-format", "stream-json", "--output-format", "stream-json", "--verbose",
              "--model", self.model, "--effort", self.effort, "--system-prompt-file", "system.txt",
