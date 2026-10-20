@@ -2,7 +2,7 @@
 import json, os, random, re, subprocess, tempfile, time
 from pathlib import Path
 
-from render import card_text, load_card_text, names_in, render
+from render import card_text, clean, events, load_card_text, names_in, render
 
 PRIMER_DIR = Path(__file__).resolve().parent / "primer"
 
@@ -38,10 +38,16 @@ How the game talks to you:
   Casting a spell and choosing its targets are separate decisions; targets come right after you pick the cast.
 - ATTACK and BLOCK are declared one creature at a time; pick DONE when finished.
 - You may be asked about the same window several times (e.g. after each spell you cast).
-- You cannot see what happened between your decisions except through the state; remember the game from earlier messages.
+- Each message starts with what changed since your previous decision (life, cards entering or leaving zones).
+  At the start of each of your turns the conversation is restarted with a log of the game so far and your recent
+  decisions, so keep your reasons informative: they are your notes to yourself.
+- Keywords a permanent currently has (including ones granted by Auras) are listed after "has".
 
 Reply with exactly one line of JSON and nothing else:
-{"choice": <option number>, "reason": "<one short sentence explaining the move>"}"""
+{"choice": <option number>, "reason": "<one short sentence explaining the move>"}
+When you PASS priority and want to keep passing while nothing happens, add "pass_until": "end_of_turn" (you will
+be asked again at the end step of the opponent's turn, e.g. to cast an instant then) or "my_turn". You are always
+asked again when anything goes on the stack and for attacks, blocks and other choices."""
 
 
 def gih_table(stats_path=PRIMER_DIR / "dsk_17lands_stats.json", min_games=2000):
@@ -69,7 +75,15 @@ def system_prompt(deck_path, texts):
 
 
 class ClaudePlayer:
-    """Headless Claude Code (`claude -p`, stream-json) with no tools. One conversation per game, so it remembers the game."""
+    """Headless Claude Code (`claude -p`, stream-json) with no tools.
+
+    The conversation restarts at the start of each of the player's own turns with a log of the game so far, so a
+    long game doesn't re-read its whole history on every move. "pass_until" lets the player skip empty priority
+    windows; those auto-passes are recorded with "auto" and no tokens.
+    """
+
+    LOG_LINES = 80
+    PASS_TARGETS = ("end_of_turn", "my_turn")
 
     def __init__(self, model="claude-opus-5-5", effort="high", timeout_s=600):
         self.model, self.effort, self.timeout_s = model, effort, timeout_s
@@ -79,10 +93,14 @@ class ClaudePlayer:
 
     def start_game(self, game, deck_path):
         self.seen = set()
-        self.decisions = 0
-        self.cost_so_far = 0.0
+        self.log = []          # game log lines this seat can see, plus its own decisions
+        self.prev_obs = None
+        self.round_turn = None
+        self.pass_until = None
         self.workdir = tempfile.mkdtemp(prefix="claude-seat-")
         Path(self.workdir, "system.txt").write_text(system_prompt(deck_path, self.texts))
+
+    def _spawn(self):
         env = {k: v for k, v in os.environ.items() if k not in ("CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_REMOTE_SESSION_ID")}
         env["CLAUDE_EFFORT"] = self.effort  # an inherited default (e.g. a cloud session's "medium") must not compete with --effort
         self.proc = subprocess.Popen(
@@ -90,6 +108,17 @@ class ClaudePlayer:
              "--model", self.model, "--effort", self.effort, "--system-prompt-file", "system.txt",
              "--tools", "", "--strict-mcp-config", "--setting-sources", "", "--no-session-persistence"],
             cwd=self.workdir, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, bufsize=1)
+        self.cost_so_far = 0.0
+        self.conv_decisions = 0
+
+    def _close(self):
+        if self.proc:
+            self.proc.stdin.close()
+            try:
+                self.proc.wait(timeout=30)
+            except subprocess.TimeoutExpired:
+                self.proc.kill()
+            self.proc = None
 
     def _ask(self, text):
         """Send one user turn, return (result text, per-turn usage, cost of this turn, seconds)."""
@@ -111,6 +140,7 @@ class ClaudePlayer:
 
     @staticmethod
     def _parse(text, n):
+        """(choice, reason, pass_until) from the reply, or (None, None, None)."""
         # whole reply, then each line, from the last; reasons can hold mana symbols like {3}{G}, so no brace regex
         candidates = [text.strip()] + [l.strip() for l in reversed(text.splitlines())]
         for cand in candidates:
@@ -123,35 +153,63 @@ class ClaudePlayer:
                 continue
             c = j.get("choice") if isinstance(j, dict) else None
             if isinstance(c, int) and 0 <= c < n:
-                return c, str(j.get("reason", ""))
-        return None, None
+                return c, str(j.get("reason", "")), j.get("pass_until")
+        return None, None, None
+
+    def _auto_pass(self, msg, g):
+        """True if this decision is an empty priority window the player asked to skip."""
+        if not self.pass_until:
+            return False
+        if msg["kind"] != "PRIORITY" or msg["options"][0]["label"] != "PASS":
+            return False  # attacks, blocks, targets... are always asked; pass_until stays for later windows
+        reached = g["my_turn"] if self.pass_until == "my_turn" else (not g["my_turn"] and g["step"] == "End Turn")
+        if reached or g["stack_size"] > 0:
+            self.pass_until = None
+            return False
+        return True
 
     def choose(self, msg):
+        g = msg["obs"]["entries"][0]
+        for line in events(self.prev_obs, msg["obs"]):
+            self.log.append(f"turn {g['turn']}: {line}")
+        changes = events(self.prev_obs, msg["obs"])
+        self.prev_obs = msg["obs"]
+        if self._auto_pass(msg, g):
+            return 0, {"auto": f"pass_until:{self.pass_until}"}
+
+        # restart the conversation at the start of each of my turns, carrying the game log
+        if g["my_turn"] and g["turn"] != self.round_turn:
+            self.round_turn = g["turn"]
+            self._close()
         names = names_in(msg["obs"])
+        if self.proc is None:
+            fresh = not self.log or self.seen == set()
+            self._spawn()
+            self.seen = set()  # a new conversation hasn't seen any card text yet
+            head = ("A new game starts." if fresh else
+                    "The game continues (your conversation was restarted at the start of your turn). Game log so far:\n"
+                    + "\n".join(self.log[-self.LOG_LINES:]))
+        else:
+            head = "Since your previous decision: " + ("; ".join(changes) if changes else "nothing visible changed.")
         new = [self.texts[x] for x in sorted(names - self.seen) if x in self.texts]
         self.seen |= names
-        self.decisions += 1
-        text = render(msg, new)
-        if self.decisions == 1:
-            text = "A new game starts.\n" + text
-        info = {"prompt_text": text, "turns": []}
+        self.conv_decisions += 1
+        text = head + "\n" + render(msg, new)
+        info = {"prompt_text": text, "turns": [], "conversation_decision": self.conv_decisions}
         n = len(msg["options"])
         for attempt in range(2):
             out, usage, cost, secs = self._ask(text if attempt == 0 else
                                                f"That was not a valid reply. Answer with one line of JSON, choice between 0 and {n - 1}.")
             info["turns"].append({"reply": out, "usage": usage, "cost_usd": cost, "seconds": round(secs, 2)})
-            choice, reason = self._parse(out, n)
+            choice, reason, until = self._parse(out, n)
             if choice is not None:
                 info["reason"] = reason
+                if until in self.PASS_TARGETS and msg["kind"] == "PRIORITY" and msg["options"][choice]["label"] == "PASS":
+                    self.pass_until = info["pass_until"] = until
+                self.log.append(f"turn {g['turn']}: you chose \"{clean(msg['options'][choice]['label'])}\" ({reason})")
                 return choice, info
         info["invalid"] = True  # recorded, never hidden: fall back to option 0 (PASS / DONE / first option)
         return 0, info
 
     def end_game(self, result):
-        if self.proc:
-            self.proc.stdin.close()
-            try:
-                self.proc.wait(timeout=30)
-            except subprocess.TimeoutExpired:
-                self.proc.kill()
-            self.proc = None
+        self._close()

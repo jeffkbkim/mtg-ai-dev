@@ -414,7 +414,15 @@ public class PySeat extends ComputerPlayer {
     }
 
     @Override
-    public boolean chooseMulligan(Game game) { fallback("MULLIGAN"); return super.chooseMulligan(game); }
+    public boolean chooseMulligan(Game game) {
+        // sent as a yes/no decision (USE) so it fits the existing decision and action vocabularies
+        boolean[] mulligan = {false};
+        List<Option> opts = List.of(
+                new Option("YES mulligan", null, null, () -> mulligan[0] = true).as("YES"),
+                new Option("NO keep this hand", null, null, () -> {}).as("NO"));
+        pick("USE", "Mulligan? Your hand has " + getHand().size() + " cards", game, opts, null);
+        return mulligan[0];
+    }
 
     @Override
     public boolean chooseTargetAmount(Outcome outcome, mage.target.TargetAmount target, Ability source, Game game) { fallback("TARGET_AMOUNT"); return super.chooseTargetAmount(outcome, target, source, game); }

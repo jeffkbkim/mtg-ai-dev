@@ -32,10 +32,13 @@ def card_text(c):
 
 def _entry(e):
     if e["kind"] == "global":
-        return (f"turn {e['turn']}, {e['step']}, {'your' if e['my_turn'] else 'the opponent' + chr(39) + 's'} turn. "
+        step = e['step'] if e['step'] != 'null' else 'before the game'
+        return (f"turn {e['turn']}, {step}, {'your' if e['my_turn'] else 'the opponent' + chr(39) + 's'} turn. "
                 f"Me: life {e['my_life']}, hand {e['my_hand']}, library {e['my_library']}, graveyard {e['my_graveyard']}. "
                 f"Opponent: life {e['opp_life']}, hand {e['opp_hand']}, library {e['opp_library']}, graveyard {e['opp_graveyard']}. "
-                f"Stack size {e['stack_size']}.")
+                f"Stack size {e['stack_size']}."
+                + (f" WARNING: only {e['my_library']} cards left in your library; drawing from an empty library loses the game."
+                   if e["my_library"] <= 8 else ""))
     if e["kind"] == "ability":
         return f"{'my' if e['mine'] else 'opp'} STACK ability of {e['source_name']}: {clean(e['text'])}"
     who = "my" if e["mine"] else "opp"
@@ -56,6 +59,8 @@ def _entry(e):
         flags.append(f"damage {e['damage']}")
     if e.get("counters"):
         flags.append("counters " + ", ".join(f"{k} x{v}" for k, v in e["counters"].items()))
+    if e.get("keywords"):
+        flags.append("has " + ", ".join(clean(k) for k in e["keywords"]))
     if flags:
         parts.append("(" + ", ".join(flags) + ")")
     return " ".join(parts)
@@ -85,6 +90,50 @@ def names_in(obs):
     return out - BASICS
 
 
+_TEXTS = None
+
+
+def _door_label(label, src):
+    """'Unlock the left half. (...)' -> 'Unlock door Slimy Aquarium: <its text>' using the Room's card text."""
+    global _TEXTS
+    m = re.search(r"Unlock the (left|right) half", label)
+    if not m or not src or not src.get("card_name"):
+        return label
+    _TEXTS = _TEXTS or load_card_text()
+    c = _TEXTS.get(src["card_name"])
+    if not c or "left" not in c:
+        return label
+    door = c[m.group(1)]
+    cost = label.split("|")[2].split(":")[0].strip() if label.count("|") >= 2 else door["cost"]
+    return f"Unlock door {door['name']} for {cost} (sorcery speed): {' '.join(door['rules'])}"
+
+
+def events(prev, cur):
+    """What changed between two observations of the same seat, as short lines (only things this seat can see)."""
+    if prev is None:
+        return []
+    out = []
+    g0, g1 = prev["entries"][0], cur["entries"][0]
+    for who in ("my", "opp"):
+        if g0[f"{who}_life"] != g1[f"{who}_life"]:
+            out.append(f"{'your' if who == 'my' else 'opponent'} life {g0[who + '_life']} -> {g1[who + '_life']}")
+    def bag(obs):
+        b = {}
+        for e in obs["entries"][1:]:
+            if e["kind"] != "card" or e["zone"] in ("OFFERED", "CASTING", "REVEALED"):
+                continue
+            k = ("your" if e["mine"] else "opponent's", e["zone"].lower(), e.get("card_name") or e.get("name") or "face-down card")
+            b[k] = b.get(k, 0) + 1
+        return b
+    b0, b1 = bag(prev), bag(cur)
+    for k in sorted(set(b0) | set(b1)):
+        d = b1.get(k, 0) - b0.get(k, 0)
+        if d:
+            who, zone, name = k
+            out.append(f"{name} {'entered' if d > 0 else 'left'} {who} {zone}" + (f" (x{abs(d)})" if abs(d) > 1 else ""))
+    return out
+
+
 def render(msg, new_cards=()):
     """Text for one decision. new_cards: card text dicts to show (cards this seat sees for the first time)."""
     entries = msg["obs"]["entries"]
@@ -102,6 +151,8 @@ def render(msg, new_cards=()):
     for k, o in enumerate(msg["options"]):
         extra = [x for x in (_ref(o.get("source"), entries), _ref(o.get("target"), entries)) if x]
         label = clean(o["label"])
+        if "source" in o and "entry" in (o.get("source") or {}):
+            label = _door_label(label, entries[o["source"]["entry"]])
         if label == "?" and "player" in (o.get("target") or {}):
             label = "target " + _ref(o["target"], entries)
         lines.append(f"{k}: {label}" + (f"   ({' -> '.join(extra)})" if extra else ""))

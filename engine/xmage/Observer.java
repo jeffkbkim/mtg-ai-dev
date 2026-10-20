@@ -240,6 +240,19 @@ public final class Observer {
             e.addProperty("summoning_sick", p.hasSummoningSickness());
             e.addProperty("attacking", attacking.contains(c.getId()));
             e.addProperty("blocking", blocking.contains(c.getId()));
+            // keyword abilities it has right now, including granted ones (e.g. first strike from an Aura);
+            // nothing for an opponent's face-down permanent
+            Permanent perm = game.getPermanent(c.getId());
+            if (perm != null && !(c.isFaceDown() && !mine)) {
+                JsonArray kw = new JsonArray();
+                for (mage.abilities.Ability a : perm.getAbilities(game)) {
+                    if (!a.getClass().getName().startsWith("mage.abilities.keyword.")) continue;
+                    String rule = a.getRule().replaceAll("<[^>]+>", "").replaceAll(" ?\\(.*\\)", "").trim();
+                    if (rule.startsWith("Enchant") || rule.startsWith("Impending")) continue; // printed card text, not a keyword
+                    if (!rule.isEmpty() && !kw.contains(new com.google.gson.JsonPrimitive(rule))) kw.add(rule);
+                }
+                if (kw.size() > 0) e.add("keywords", kw);
+            }
         }
         // printed name of a face-up card (public): a Room's displayed name is its unlocked door(s), or empty if none
         if (!c.isFaceDown()) {
