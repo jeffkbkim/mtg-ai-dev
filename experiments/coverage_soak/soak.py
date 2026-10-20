@@ -11,6 +11,7 @@ is reported as untested, not as fine.
 """
 import argparse, collections, gzip, itertools, json, os, random, re, socket, subprocess, sys, time
 from concurrent.futures import ThreadPoolExecutor
+import threading
 from pathlib import Path
 
 HERE = Path(__file__).parent
@@ -86,6 +87,10 @@ def choose(msg, rng):
     return rng.randrange(n)
 
 
+# JVMs share XMage's card database (mage-server/db); two opening it at once fail with "Lock file recently
+# modified" and never connect, so only one JVM boots at a time
+BOOT_LOCK = threading.Lock()
+
 COUNTER_LINES = ("ASKED", "FORCED", "LEAKS", "UNSEEN_REFS", "UNMAPPED_ABILITIES", "UNMAPPED_CHOICES",
                  "GRANTED_ON_BOARD", "UNKEYED_ON_BOARD", "FALLBACK", "REJECTED")
 
@@ -99,7 +104,7 @@ def parse_jvm_log(text):
         elif line.split(" ", 1)[0] in COUNTER_LINES:
             k, _, v = line.partition(" ")
             out["counters"][k] = v
-        elif re.search(r"(Exception|Error)\b", line) and not line.startswith(("INFO", "DEBUG")):
+        elif re.search(r"(Exception|Error)\b", line) and not line.startswith(("INFO", "DEBUG")) and not re.search(r"h2|SQLException|[Dd]atabase", line):
             # the exception line plus the frames under it, so the card class (mage.cards.x.Name) is kept
             frames = [l.strip() for l in lines[i + 1:i + 40] if l.strip().startswith("at ")]
             out["exceptions"].append({"line": line.strip()[:400], "card_frames": sorted({m for f in frames for m in re.findall(r"mage\.cards\.[a-z]\.(\w+)", f)}), "frames": frames[:12]})
@@ -117,13 +122,17 @@ def play_run(run_id, deck_a, deck_b, args):
     srv = socket.socket(); srv.bind(("127.0.0.1", 0)); srv.listen(1); srv.settimeout(args.timeout)
     jars = sorted(str(p) for p in Path(args.runtime).rglob("*.jar"))
     jvm_log = out / "jvm.log"
+    BOOT_LOCK.acquire()
     jvm = subprocess.Popen(["java", f"-Xmx{args.heap}", "-Djava.awt.headless=true", "--add-opens=java.base/java.lang=ALL-UNNAMED",
                             "-cp", ":".join([args.classes] + jars), "SeatSpike", str(srv.getsockname()[1]), *paths, str(args.games)],
                            cwd=args.runtime, stdout=open(jvm_log, "w"), stderr=subprocess.STDOUT)
     status, decisions, seen = "ok", 0, collections.Counter()
     started = time.time()
     try:
-        conn, _ = srv.accept()
+        try:
+            conn, _ = srv.accept()
+        finally:
+            BOOT_LOCK.release()
         conn.settimeout(args.timeout)
         f = conn.makefile("rw")
         with gzip.open(out / "decisions.jsonl.gz", "wt") as log:
