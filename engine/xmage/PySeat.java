@@ -232,7 +232,10 @@ public class PySeat extends ComputerPlayer {
     // ---------- targets ----------
 
     private boolean chooseTargets(String kind, Target target, Ability source, Game game, boolean isTargeting, Cards fromCards) {
-        UUID controller = source == null ? playerId : source.getControllerId();
+        // whose cards and permissions the choice is about: this seat, unless the target names another player, as in
+        // XMage's HumanPlayer. Not the source's controller: an opponent's ability can make this seat pay a cost
+        // (Osseous Sticktwister's "discard a card"), and that used to list the opponent's hand.
+        UUID controller = target.getAffectedAbilityControllerId(playerId);
         UUID sourceId = source == null ? null : source.getSourceId();
         while (target.getTargets().size() < target.getMaxNumberOfTargets()) {
             Set<UUID> possible = new LinkedHashSet<>(fromCards == null

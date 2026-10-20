@@ -18,6 +18,8 @@ Built against the **unmodified XMage 1.4.62 release jars** (build option 1); not
 - `TwoSeatMatch.java`: runs N games with both seats driven from Python (used by `play/match.py`).
 - `CardTextDump.java`: writes `engine/vocab/dsk_card_text.json` (rules text of every DSK card as XMage implements it).
 - `run_games.py`: Python side, a random-move bot that records every decision to JSON lines.
+- `SeatChoiceCheck.java`: regression check that a cost an opponent's ability makes this seat pay (Osseous Sticktwister's
+  discard) offers this seat's own hand. Prints PASS or FAIL.
 - `decks/`: smoke-test decks; `dsk_ug_modal.dck` swaps in modal spells to exercise MODE prompts.
 
 Decision format and the leak checks: `/mnt/project-files/notes/xmage-step3-observation.md`.
@@ -50,6 +52,10 @@ with no key, rejected moves) to
 `/tmp/games.jvm.log`. `LEAKTEST=1` plants deliberate leaks to show the checker catches them.
 
 VocabDump keeps the `tokens` list already in the file (token names come from recorded games, not the card list).
+
+```sh
+(cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP SeatChoiceCheck)   # expect PASS
+```
 
 Same seed does not reproduce the same game (XMage's own randomness), so every action is logged.
 
