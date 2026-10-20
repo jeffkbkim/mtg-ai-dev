@@ -19,11 +19,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from players import ClaudePlayer, RandomPlayer
 
 
-def make_player(kind, seed, args, lessons=None):
+def make_player(kind, seed, args, lessons=None, plan=False):
     if kind == "random":
         return RandomPlayer(seed)
     if kind == "claude":
-        return ClaudePlayer(model=args.model, effort=args.effort, lessons=lessons)
+        return ClaudePlayer(model=args.model, effort=args.effort, lessons=lessons, plan=plan)
     raise ValueError(kind)
 
 
@@ -81,6 +81,7 @@ def main():
     p.add_argument("--games", type=int, default=1); p.add_argument("--seed", type=int, default=0)
     p.add_argument("--model", default="claude-opus-5-5"); p.add_argument("--effort", default="high")
     p.add_argument("--lessons-a"); p.add_argument("--lessons-b")  # lessons file for a Claude seat (play/primer/lessons_v*.md)
+    p.add_argument("--plan-a", action="store_true"); p.add_argument("--plan-b", action="store_true")  # plan updated in every reply
     p.add_argument("--out", required=True)
     args = p.parse_args()
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
@@ -102,7 +103,8 @@ def main():
         c, _ = s.accept()
         c.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         conns.append(c)
-    players = [make_player(args.a, args.seed, args, args.lessons_a), make_player(args.b, args.seed + 1, args, args.lessons_b)]
+    players = [make_player(args.a, args.seed, args, args.lessons_a, args.plan_a),
+               make_player(args.b, args.seed + 1, args, args.lessons_b, args.plan_b)]
     lock, results = threading.Lock(), {}
     local = Path(tempfile.mkdtemp(prefix="match-"))
 

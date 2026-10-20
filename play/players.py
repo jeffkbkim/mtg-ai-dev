@@ -55,6 +55,23 @@ your next turn). You are always asked again when anything goes on the stack, in 
 and for attacks, blocks and other choices."""
 
 
+PLAN_RULES = """## Your plan
+Keep a plan and update it in every reply. Each message shows your current plan. Before choosing, check the plan against
+everything that changed since your previous decision, above all what the opponent did (spells, attacks, blocks, cards
+revealed), then write the updated plan: revise what the new information changes, keep what still holds. Your choice
+should follow the plan; when it doesn't, the reason says why.
+In this game every reply is one line of JSON with the plan first:
+{"plan": {"role": "...", "win_condition": "...", "race": "...", "opponent_read": "...", "this_turn": "...", "next_turn": "..."}, "choice": <option number>, "reason": "..."}
+- role: beatdown or control in this matchup right now, and why.
+- win_condition: how you expect to win this game.
+- race: turns until you can kill them and until they can kill you, from the board and life totals (libraries too in a long game).
+- opponent_read: their colors and likely archetype from what you have seen, and the tricks, removal or flash plays to
+  expect and the mana they need.
+- this_turn: what you intend for the rest of this turn.
+- next_turn: what you intend for your next turn.
+Keep each field to one short sentence."""
+
+
 def gih_table(stats_path=PRIMER_DIR / "dsk_17lands_stats.json", min_games=2000):
     s = json.loads(Path(stats_path).read_text())
     rows = sorted(((v["gih_wr"], k) for k, v in s["cards"].items()
@@ -73,11 +90,12 @@ def read_deck(deck_path):
     return out
 
 
-def system_prompt(deck_path, texts, lessons=None):
-    """lessons: text of a lessons file (play/primer/lessons_v*.md) placed right after the rules, or None."""
+def system_prompt(deck_path, texts, lessons=None, plan=False):
+    """lessons: text of a lessons file (play/primer/lessons_v*.md) placed right after the rules, or None.
+    plan: ask for a plan that is updated in every reply (PLAN_RULES)."""
     deck = read_deck(deck_path)
     deck_lines = [f"{n}x {card_text(texts[name])}" if name in texts else f"{n}x {name}" for n, name in deck]
-    return "\n\n".join([RULES] + ([lessons] if lessons else []) + [(PRIMER_DIR / "dsk_meta.md").read_text(), gih_table(),
+    return "\n\n".join([RULES] + ([PLAN_RULES] if plan else []) + ([lessons] if lessons else []) + [(PRIMER_DIR / "dsk_meta.md").read_text(), gih_table(),
                         "Your deck (the opponent's deck is unknown to you):\n" + "\n".join(deck_lines)])
 
 
@@ -101,10 +119,11 @@ class ClaudePlayer:
     PASS_TARGETS = ("end_of_turn", "my_turn")
     MAX_ERRORS = 2
 
-    def __init__(self, model="claude-opus-5-5", effort="high", lessons=None, timeout_s=600):
+    def __init__(self, model="claude-opus-5-5", effort="high", lessons=None, plan=False, timeout_s=600):
         self.model, self.effort, self.timeout_s = model, effort, timeout_s
         self.lessons = Path(lessons).read_text() if lessons else None
-        self.name = f"claude:{model}:{effort}" + (f":{Path(lessons).stem}" if lessons else "")
+        self.plan_mode = plan
+        self.name = f"claude:{model}:{effort}" + (f":{Path(lessons).stem}" if lessons else "") + (":plan" if plan else "")
         self.texts = load_card_text()
         self.proc = None
 
@@ -117,8 +136,9 @@ class ClaudePlayer:
         self.pass_until = None  # {"target", "turn", "my_turn"} at the time it was set
         self.asked_any = False
         self.conv_pregame = False  # the current conversation has only seen pre-game (mulligan) decisions
+        self.plan = None           # latest plan from the player's replies (plan mode)
         self.workdir = tempfile.mkdtemp(prefix="claude-seat-")
-        system = system_prompt(deck_path, self.texts, self.lessons)
+        system = system_prompt(deck_path, self.texts, self.lessons, self.plan_mode)
         self.prompt_sha = hashlib.sha256(system.encode()).hexdigest()[:12]  # recorded per decision: prompt versions must not be pooled
         Path(self.workdir, "system.txt").write_text(system)
 
@@ -171,7 +191,7 @@ class ClaudePlayer:
 
     @staticmethod
     def _parse(text, n):
-        """(choice, reason, pass_until) from the reply, or (None, None, None)."""
+        """(choice, reason, pass_until, plan) from the reply, or Nones."""
         # whole reply, then each line, from the last; reasons can hold mana symbols like {3}{G}, so no brace regex
         candidates = [text.strip()] + [l.strip() for l in reversed(text.splitlines())]
         for cand in candidates:
@@ -184,8 +204,8 @@ class ClaudePlayer:
                 continue
             c = j.get("choice") if isinstance(j, dict) else None
             if isinstance(c, int) and 0 <= c < n:
-                return c, str(j.get("reason", "")), j.get("pass_until")
-        return None, None, None
+                return c, str(j.get("reason", "")), j.get("pass_until"), j.get("plan")
+        return None, None, None, None
 
     def _auto_pass(self, msg, g):
         """True if this decision is an empty priority window the player asked to skip."""
@@ -228,7 +248,10 @@ class ClaudePlayer:
         new = [self.texts[x] for x in sorted(names - self.seen) if x in self.texts]
         self.seen |= names
         self.conv_decisions += 1
-        return head + "\n" + render(msg, new)
+        plan = ""
+        if self.plan_mode:
+            plan = ("Your current plan: " + json.dumps(self.plan) if self.plan else "You have no plan yet: write one.") + "\n"
+        return head + "\n" + plan + render(msg, new)
 
     def choose(self, msg):
         g = msg["obs"]["entries"][0]
@@ -261,9 +284,14 @@ class ClaudePlayer:
                 ask = info["prompt_text"] = self._prompt(msg, g)
                 continue
             info["turns"].append({"reply": out, "usage": usage, "cost_usd": cost, "seconds": round(secs, 2)})
-            choice, reason, until = self._parse(out, n)
+            choice, reason, until, plan = self._parse(out, n)
             if choice is not None:
                 info["reason"] = reason
+                if self.plan_mode:
+                    if isinstance(plan, dict) and plan:
+                        self.plan = info["plan"] = plan
+                    else:
+                        info["plan_missing"] = True  # the previous plan stays
                 if until in self.PASS_TARGETS and msg["kind"] == "PRIORITY" and msg["options"][choice]["label"] == "PASS":
                     self.pass_until = {"target": until, "turn": g["turn"], "my_turn": g["my_turn"]}
                     info["pass_until"] = until

@@ -23,4 +23,7 @@ for line in open(sys.argv[1]):
     last[r["seat"]] = state
     print("Decision: " + decision)
     how = f"[auto-pass, {r['auto']}]" if r.get("auto") else f"reason: {r.get('reason', '')}"
-    print(f">>> picked {r['choice']}: {clean(r['options'][r['choice']]['label'])}  | {how}\n")
+    print(f">>> picked {r['choice']}: {clean(r['options'][r['choice']]['label'])}  | {how}")
+    if r.get("plan"):
+        print(">>> plan: " + "; ".join(f"{k}: {v}" for k, v in r["plan"].items()))
+    print()
