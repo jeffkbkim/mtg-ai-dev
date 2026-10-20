@@ -52,3 +52,15 @@ with no key, rejected moves) to
 VocabDump keeps the `tokens` list already in the file (token names come from recorded games, not the card list).
 
 Same seed does not reproduce the same game (XMage's own randomness), so every action is logged.
+
+## Known XMage bugs (1.4.62)
+
+- **Layer timestamps after a face-down permanent appears** (found 2026-10-20 in a Claude-vs-Claude review, reproduced
+  on the unmodified jars; report `/mnt/project-files/claude-games/reviews/xmage-first-strike-check-2026-10-20.md`).
+  `ContinuousEffects.apply()` only re-reads the layer-1 effect group while copy or face-down effects exist, so its
+  snapshot can be many turns old. When a manifest later enters, every effect missing from that stale snapshot gets a
+  fresh timestamp in the order the decks were loaded (seat A first), not the order the cards entered. Example: Ethereal
+  Armor, then Unable to Scream on the same creature correctly removes first strike, but once a manifest enters the
+  creature has first strike again. Rare (needs two conflicting layer effects plus a later face-down permanent); the
+  observation's `keywords` show what the engine applies, so the seat sees the engine's (wrong) answer. Not fixed: under
+  build option 1 we fork only if a DSK bug blocks us.

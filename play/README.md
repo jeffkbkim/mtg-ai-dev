@@ -7,14 +7,18 @@ using as extra training data or as an opponent.
 - `match.py`: runs N games with both seats driven from Python (`engine/xmage/TwoSeatMatch.java`). Each seat has its own
   socket and its own player, so a player only ever sees its own seat's view (the hidden-info-checked observation).
 - `players.py`: `RandomPlayer` (same policy as `engine/xmage/run_games.py`) and `ClaudePlayer`: headless Claude Code
-  (`claude -p`, stream-json, no tools), one conversation per seat per game so it remembers the game. Replies are one
-  JSON line `{"choice": n, "reason": "..."}`; an invalid reply gets one retry, then option 0 is played and the decision
-  is flagged `invalid`.
+  (`claude -p`, stream-json, no tools). The conversation restarts at the start of each of the seat's own turns with a
+  log of the game so far. Replies are one JSON line `{"choice": n, "reason": "..."}`, optionally with `"pass_until"` to
+  skip empty priority windows (never its own main phases); an invalid reply gets one retry, then option 0 is played and
+  the decision is flagged `invalid`.
 - `render.py`: observation and options as text. Card rules text is shown the first time a seat sees a card
   (`engine/vocab/dsk_card_text.json`, dumped from XMage by `engine/xmage/CardTextDump.java`).
 - `primer/`: what the Claude player is told about the format: `dsk_meta.md` (mechanics, archetypes, strong commons, with
   sources), a 17lands games-in-hand win rate per card (`dsk_17lands_stats.json`, computed by `card_stats_17lands.py`
   from the public DSK Premier Draft game data), and its own decklist with card text. It is not told the opponent's deck.
+  `lessons_v*.md` are optional card-agnostic play habits drawn from reviewed games, added per seat with
+  `--lessons-a` / `--lessons-b`. The player name in each record carries the lessons version and each decision the
+  system prompt's hash (`prompt_sha`), so games from different prompts are never pooled by accident.
 - `summarize.py`: results, and per decision / per game time, tokens and cost.
 
 ## Run
@@ -39,7 +43,6 @@ engine's own log (leaks, rejected moves, fallbacks).
 
 ## Known limits
 
-- Claude sees the state at each decision, not a log of what happened between decisions.
-- Mulligans, mana payment, X values and damage assignment use XMage's built-in defaults (counted as FALLBACK in the log).
+- Mana payment, X values and damage assignment use XMage's built-in defaults (counted as FALLBACK in the log).
 - Costs in the summary are API list-price equivalents reported by Claude Code; on a subscription the run counts
   against plan usage instead.

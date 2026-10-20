@@ -30,19 +30,35 @@ def card_text(c):
     return head + ": " + " ".join(c["rules"])
 
 
-def _entry(e):
+LOW_LIBRARY = 15
+
+
+def _untapped_lands(entries, mine):
+    lands = [e for e in entries if e["kind"] == "card" and e["zone"] == "BATTLEFIELD" and e["mine"] == mine
+             and "Land" in e.get("types", "")]
+    return f"untapped lands {sum(not e.get('tapped') for e in lands)} of {len(lands)}"
+
+
+def _entry(e, entries=()):
     if e["kind"] == "global":
-        step = e['step'] if e['step'] != 'null' else 'before the game'
-        return (f"turn {e['turn']}, {step}, {'your' if e['my_turn'] else 'the opponent' + chr(39) + 's'} turn. "
-                f"Me: life {e['my_life']}, hand {e['my_hand']}, library {e['my_library']}, graveyard {e['my_graveyard']}. "
-                f"Opponent: life {e['opp_life']}, hand {e['opp_hand']}, library {e['opp_library']}, graveyard {e['opp_graveyard']}. "
-                f"Stack size {e['stack_size']}."
-                + (f" WARNING: only {e['my_library']} cards left in your library; drawing from an empty library loses the game."
-                   if e["my_library"] <= 8 else ""))
+        # mulligans happen before the game: no step, and my_turn is false for both seats
+        when = ("before the game (mulligan)" if e["step"] == "null" else
+                f"turn {e['turn']}, {e['step']}, {'your' if e['my_turn'] else 'the opponent' + chr(39) + 's'} turn")
+        warn = ""
+        if e["my_library"] <= LOW_LIBRARY:
+            warn += f" WARNING: only {e['my_library']} cards left in your library; drawing from an empty library loses the game."
+        if e["opp_library"] <= LOW_LIBRARY:
+            warn += f" The opponent has only {e['opp_library']} cards left in their library."
+        return (f"{when}. Me: life {e['my_life']}, hand {e['my_hand']}, library {e['my_library']}, graveyard {e['my_graveyard']}, "
+                f"{_untapped_lands(entries, True)}. "
+                f"Opponent: life {e['opp_life']}, hand {e['opp_hand']}, library {e['opp_library']}, graveyard {e['opp_graveyard']}, "
+                f"{_untapped_lands(entries, False)}. "
+                f"Stack size {e['stack_size']}." + warn)
     if e["kind"] == "ability":
         return f"{'my' if e['mine'] else 'opp'} STACK ability of {e['source_name']}: {clean(e['text'])}"
     who = "my" if e["mine"] else "opp"
-    name = e.get("name") or "face-down card"
+    # a Room with no unlocked door has an empty name but is face up
+    name = e.get("name") or (e.get("card_name") if not e.get("face_down") else None) or "face-down card"
     if e.get("card_name") and e["card_name"] != name:
         name += f" (card: {e['card_name']})"
     parts = [f"{who} {e['zone']} {name}"]
@@ -73,7 +89,8 @@ def _ref(r, entries):
         return "me" if r["player"] == "me" else "opponent"
     if "entry" in r:
         e = entries[r["entry"]]
-        return f"[{r['entry']}] " + (e.get("name") or e.get("source_name") or "face-down card")
+        return f"[{r['entry']}] " + (e.get("name") or e.get("source_name")
+                                     or (e.get("card_name") if not e.get("face_down") else None) or "face-down card")
     return "unseen object"
 
 
@@ -137,7 +154,7 @@ def events(prev, cur):
 def render(msg, new_cards=()):
     """Text for one decision. new_cards: card text dicts to show (cards this seat sees for the first time)."""
     entries = msg["obs"]["entries"]
-    lines = ["State: " + _entry(entries[0])]
+    lines = ["State: " + _entry(entries[0], entries)]
     for e in entries[1:]:
         lines.append(f"[{e['i']}] {_entry(e)}")
     edge_words = {"blocks": "blocks", "attached_to": "is attached to", "targets": "targets", "resolves_before": "resolves before"}
@@ -147,12 +164,16 @@ def render(msg, new_cards=()):
     if new_cards:
         lines.append("Card text (first time you see these cards):")
         lines += ["  " + card_text(c) for c in new_cards]
-    lines.append(f"Decision: {msg['kind']}. {clean(msg['prompt'])}")
+    prompt = clean(msg["prompt"])
+    lines.append(f"Decision: {msg['kind']}." + (f" {prompt}" if prompt.lower() != msg["kind"].lower() else ""))
     for k, o in enumerate(msg["options"]):
         extra = [x for x in (_ref(o.get("source"), entries), _ref(o.get("target"), entries)) if x]
         label = clean(o["label"])
         if "source" in o and "entry" in (o.get("source") or {}):
             label = _door_label(label, entries[o["source"]["entry"]])
+        parts = label.split(" | ")
+        if len(parts) == 3 and parts[0] in ("Spell", "Play land"):
+            label = parts[2]  # "Spell | Glimmerburst | Cast Glimmerburst" -> "Cast Glimmerburst"
         if label == "?" and "player" in (o.get("target") or {}):
             label = "target " + _ref(o["target"], entries)
         lines.append(f"{k}: {label}" + (f"   ({' -> '.join(extra)})" if extra else ""))

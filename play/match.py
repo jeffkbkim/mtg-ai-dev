@@ -8,50 +8,69 @@ Each seat has its own socket and its own player object, so a player only ever se
 
 Writes <out>/game<N>.jsonl (one line per real decision, both seats), <out>/games.jsonl (one line per game),
 <out>/jvm.log and <out>/config.json. Seat A starts even games, seat B odd games.
+games.jsonl is rewritten after every game, so a crash keeps the finished games. A failure in either seat (model error,
+a hidden-information leak reported by the engine) is written to <out>/errors.log and stops the whole run; the
+unfinished game's decisions are kept in its game<N>.jsonl but it has no line in games.jsonl.
 """
-import argparse, json, shutil, socket, subprocess, sys, tempfile, threading, time
+import argparse, json, shutil, socket, subprocess, sys, tempfile, threading, time, traceback
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from players import ClaudePlayer, RandomPlayer
 
 
-def make_player(kind, seed, args):
+def make_player(kind, seed, args, lessons=None):
     if kind == "random":
         return RandomPlayer(seed)
     if kind == "claude":
-        return ClaudePlayer(model=args.model, effort=args.effort)
+        return ClaudePlayer(model=args.model, effort=args.effort, lessons=lessons)
     raise ValueError(kind)
 
 
-def seat_loop(seat, conn, player, deck, local, out, lock, results):
+def seat_loop(seat, conn, player, deck, local, out, lock, results, write_games, abort, stopped):
     f = conn.makefile("rw")
     game, idx, started = 0, 0, False
-    for line in f:
-        msg = json.loads(line)
-        if msg["type"] == "end":
-            break
-        if msg["type"] == "game_end":
-            player.end_game(msg)
-            with lock:
-                results.setdefault(msg["game"], msg)
-                if (local / f"game{game}.jsonl").exists():
-                    shutil.copyfile(local / f"game{game}.jsonl", out / f"game{game}.jsonl")
-            game, idx, started = msg["game"] + 1, 0, False
-            continue
-        if not started:
-            player.start_game(game, deck)
-            started = True
-        t0 = time.time()
-        choice, info = player.choose(msg)
-        rec = {"game": game, "seat": seat, "player": player.name, "idx": idx, "kind": msg["kind"], "prompt": msg["prompt"],
-               "obs": msg["obs"], "options": msg["options"], "leaks": msg.get("leaks", []), "choice": choice,
-               "seconds": round(time.time() - t0, 3), **info}
-        idx += 1
-        # record locally first (appends to the network-mounted project folder lost a line once), copied at game end
-        with lock, (local / f"game{game}.jsonl").open("a") as g:
-            g.write(json.dumps(rec) + "\n")
-        f.write(json.dumps({"choice": choice}) + "\n"); f.flush()
+    try:
+        for line in f:
+            msg = json.loads(line)
+            if msg["type"] == "end":
+                break
+            if msg["type"] == "game_end":
+                player.end_game(msg)
+                with lock:
+                    results.setdefault(msg["game"], msg)
+                    if (local / f"game{game}.jsonl").exists():
+                        shutil.copyfile(local / f"game{game}.jsonl", out / f"game{game}.jsonl")
+                    write_games()
+                game, idx, started = msg["game"] + 1, 0, False
+                continue
+            if msg.get("leaks"):
+                # fail closed: a decision the engine flagged as exposing hidden information never reaches a player
+                raise RuntimeError(f"hidden-information leak flagged by the engine: {msg['leaks']}")
+            if not started:
+                player.start_game(game, deck)
+                started = True
+            t0 = time.time()
+            choice, info = player.choose(msg)
+            rec = {"game": game, "seat": seat, "player": player.name, "idx": idx, "kind": msg["kind"], "prompt": msg["prompt"],
+                   "obs": msg["obs"], "options": msg["options"], "leaks": msg.get("leaks", []), "choice": choice,
+                   "seconds": round(time.time() - t0, 3), **info}
+            idx += 1
+            # record locally first (appends to the network-mounted project folder lost a line once), copied at game end
+            with lock, (local / f"game{game}.jsonl").open("a") as g:
+                g.write(json.dumps(rec) + "\n")
+            f.write(json.dumps({"choice": choice}) + "\n"); f.flush()
+    except Exception:
+        with lock:
+            if not stopped.is_set():  # the first failure stops the run; the other seat then just sees its socket close
+                with (out / "errors.log").open("a") as e:
+                    e.write(f"seat {seat}, game {game}, decision {idx}:\n{traceback.format_exc()}\n")
+        abort()
+    finally:
+        player.end_game({})
+        with lock:
+            if (local / f"game{game}.jsonl").exists():  # an unfinished game's decisions, kept for inspection
+                shutil.copyfile(local / f"game{game}.jsonl", out / f"game{game}.jsonl")
 
 
 def main():
@@ -61,6 +80,7 @@ def main():
     p.add_argument("--deck-a", required=True); p.add_argument("--deck-b", required=True)
     p.add_argument("--games", type=int, default=1); p.add_argument("--seed", type=int, default=0)
     p.add_argument("--model", default="claude-opus-5-5"); p.add_argument("--effort", default="high")
+    p.add_argument("--lessons-a"); p.add_argument("--lessons-b")  # lessons file for a Claude seat (play/primer/lessons_v*.md)
     p.add_argument("--out", required=True)
     args = p.parse_args()
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
@@ -82,18 +102,40 @@ def main():
         c, _ = s.accept()
         c.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         conns.append(c)
-    players = [make_player(args.a, args.seed, args), make_player(args.b, args.seed + 1, args)]
+    players = [make_player(args.a, args.seed, args, args.lessons_a), make_player(args.b, args.seed + 1, args, args.lessons_b)]
     lock, results = threading.Lock(), {}
     local = Path(tempfile.mkdtemp(prefix="match-"))
-    threads = [threading.Thread(target=seat_loop, args=("AB"[i], conns[i], players[i], decks[i], local, out, lock, results)) for i in range(2)]
+
+    def write_games():  # called under the lock after every game
+        (local / "games.jsonl").write_text("".join(
+            json.dumps({**results[k], "a": players[0].name, "b": players[1].name,
+                        "deck_a": Path(decks[0]).name, "deck_b": Path(decks[1]).name}) + "\n" for k in sorted(results)))
+        shutil.copyfile(local / "games.jsonl", out / "games.jsonl")
+
+    stopped = threading.Event()
+
+    def abort():
+        stopped.set()
+        jvm.kill()
+        for c in conns:
+            try:
+                c.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+
+    threads = [threading.Thread(target=seat_loop, args=("AB"[i], conns[i], players[i], decks[i], local, out, lock, results,
+                                                        write_games, abort, stopped)) for i in range(2)]
     for t in threads: t.start()
     for t in threads: t.join()
-    jvm.wait(timeout=120)
-    with (out / "games.jsonl").open("w") as g:
-        for k in sorted(results):
-            g.write(json.dumps({**results[k], "a": players[0].name, "b": players[1].name,
-                                "deck_a": Path(decks[0]).name, "deck_b": Path(decks[1]).name}) + "\n")
+    with lock:
+        write_games()
+    try:
+        jvm.wait(timeout=120)
+    except subprocess.TimeoutExpired:
+        jvm.kill()
     print(json.dumps([results[k] for k in sorted(results)]))
+    if stopped.is_set():
+        sys.exit(f"run stopped early, see {out / 'errors.log'}")
 
 
 if __name__ == "__main__":
