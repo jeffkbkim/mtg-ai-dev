@@ -20,6 +20,8 @@ using as extra training data or as an opponent.
   `--lessons-a` / `--lessons-b`. The player name in each record carries the lessons version and each decision the
   system prompt's hash (`prompt_sha`), so games from different prompts are never pooled by accident.
 - `summarize.py`: results, and per decision / per game time, tokens and cost.
+- `ab_report.py`: compares player variants (e.g. lessons on vs off) across runs: wins with a 95% interval, per
+  deck, and behaviour numbers a lesson might move (decking losses, attacks per turn, lands left untapped, cost).
 
 ## Run
 
