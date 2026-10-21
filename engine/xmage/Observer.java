@@ -335,9 +335,27 @@ public final class Observer {
         for (Map.Entry<String, String> s : secret.entrySet()) {
             String name = s.getKey();
             if (name.isEmpty() || visible.contains(name) || isBasic(name)) continue;
-            if (text.contains(name)) hits.add(s.getValue() + " name in message: " + name);
+            if (containsName(text, name)) hits.add(s.getValue() + " name in message: " + name);
         }
         return hits;
+    }
+
+    /**
+     * Whole-name match: "Saw" must not match inside "Sawblade Skinripper", nor "Murder" inside "Marvin, Murderous
+     * Mimic", nor "Marina Vendrell" inside "Marina Vendrell's Grimoire" (an apostrophe continues the word).
+     */
+    static boolean containsName(String text, String name) {
+        for (int i = text.indexOf(name); i >= 0; i = text.indexOf(name, i + 1)) {
+            int end = i + name.length();
+            boolean startOk = i == 0 || !wordChar(text.charAt(i - 1));
+            boolean endOk = end == text.length() || !(wordChar(text.charAt(end)) || text.charAt(end) == '\'');
+            if (startOk && endOk) return true;
+        }
+        return false;
+    }
+
+    private static boolean wordChar(char c) {
+        return Character.isLetterOrDigit(c);
     }
 
     private static boolean isBasic(String name) {

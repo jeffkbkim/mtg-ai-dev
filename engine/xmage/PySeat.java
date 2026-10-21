@@ -72,6 +72,9 @@ public class PySeat extends ComputerPlayer {
     final transient Link link;
     private transient Set<UUID> failedThisWindow = new HashSet<>();
     private transient String windowKey = "";
+    // abilities XMage lists as playable but refused without asking this seat anything (e.g. Crew with no other
+    // untapped creature): skip them until the board, hand, life or stack changes, instead of re-offering every step
+    private transient Map<UUID, String> refusedAt = new HashMap<>();
 
     public PySeat(String name, Link link) {
         super(name, RangeOfInfluence.ONE);
@@ -205,6 +208,7 @@ public class PySeat extends ComputerPlayer {
         opts.add(new Option("PASS", null, null, () -> passed[0] = true).as("PASS"));
         for (ActivatedAbility a : getPlayable(game, true)) {
             if (a.isManaAbility() || failedThisWindow.contains(a.getId())) continue;
+            if (resources(game).equals(refusedAt.get(a.getId()))) continue;
             Option o = new Option(a.getAbilityType() + " | " + label(game, a.getSourceId()) + " | " + a, a.getSourceId(), null, () -> chosen[0] = a);
             switch (a.getAbilityType()) {
                 case PLAY_LAND: o.as("PLAY_LAND"); break;
@@ -222,11 +226,26 @@ public class PySeat extends ComputerPlayer {
             pass(game);
             return false;
         }
+        String before = resources(game);
+        int askedBefore = link.asked.values().stream().mapToInt(Integer::intValue).sum();
         if (!activateAbility(chosen[0], game)) {
-            failedThisWindow.add(chosen[0].getId());
-            link.rejected.add("turn " + game.getTurnNum() + " " + opts.get(i).label);
+            boolean askedSomething = link.asked.values().stream().mapToInt(Integer::intValue).sum() > askedBefore;
+            // refused after this seat made choices (a target, a cost option): another choice might work, so only
+            // drop it for this window. Refused with no choices: it can't work until something changes.
+            if (askedSomething) failedThisWindow.add(chosen[0].getId());
+            else refusedAt.put(chosen[0].getId(), before);
+            link.rejected.add("turn " + game.getTurnNum() + " " + opts.get(i).label + (askedSomething ? " (after choices)" : ""));
         }
         return true;
+    }
+
+    /** What paying a cost can depend on: every permanent and whether it's tapped, this seat's hand, life and graveyard, the stack. */
+    private String resources(Game game) {
+        StringBuilder sb = new StringBuilder();
+        for (Permanent p : game.getBattlefield().getAllActivePermanents()) sb.append(p.getId()).append(p.isTapped() ? 'T' : 'U');
+        sb.append('|').append(getHand()).append('|').append(getLife()).append('|').append(getGraveyard().size());
+        sb.append('|').append(game.getStack().size()).append('|').append(getManaPool().getMana());
+        return sb.toString();
     }
 
     // ---------- targets ----------
