@@ -38,6 +38,10 @@ public class TwoSeatMatch {
             String[] decks = {deckA, deckB};
             for (int s = 0; s < 2; s++) {
                 seats[s].setTestMode(true);
+                // test mode turns some XMage warnings into exceptions that end the whole match, e.g. its AI failing
+                // to find a legal block against menace ("AI can't find good blocker combination"). A real XMage
+                // server logs that and skips the block; do the same.
+                seats[s].setFastFailInTestMode(false);
                 Deck deck = Deck.load(DeckImporter.importDeckFromFile(decks[s], true), false, false);
                 game.loadCards(deck.getCards(), seats[s].getId());
                 game.addPlayer(seats[s], deck);
