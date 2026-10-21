@@ -104,6 +104,38 @@ public class PySeat extends ComputerPlayer {
         return true;
     }
 
+    /**
+     * Mana is paid automatically by ComputerPlayer, which taps its lowest-scored source first; with Enduring Vitality
+     * a creature can score as low as a land, so it tapped attackers and blockers for mana while lands stood untapped
+     * (ManaCheck). Each payment step first tries without creatures, and uses them only when nothing else can pay.
+     */
+    private transient boolean skipCreatureMana = false;
+
+    @Override
+    protected boolean playManaHandling(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game) {
+        skipCreatureMana = true;
+        try {
+            if (super.playManaHandling(ability, unpaid, game)) return true;  // false means nothing was activated
+        } finally {
+            skipCreatureMana = false;
+        }
+        return super.playManaHandling(ability, unpaid, game);
+    }
+
+    @Override
+    public List<MageObject> getAvailableManaProducers(Game game) {
+        List<MageObject> producers = super.getAvailableManaProducers(game);
+        if (skipCreatureMana) producers.removeIf(o -> o.isCreature(game));
+        return producers;
+    }
+
+    @Override
+    public List<Permanent> getAvailableManaProducersWithCost(Game game) {
+        List<Permanent> producers = super.getAvailableManaProducersWithCost(game);
+        if (skipCreatureMana) producers.removeIf(o -> o.isCreature(game));
+        return producers;
+    }
+
     private JsonObject ref(Observer.Obs obs, UUID id, String kind, Game game) {
         JsonObject r = new JsonObject();
         if (id == null) return r;

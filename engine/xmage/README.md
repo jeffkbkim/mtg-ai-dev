@@ -22,6 +22,8 @@ Built against the **unmodified XMage 1.4.62 release jars** (build option 1); not
   discard) offers this seat's own hand. Prints PASS or FAIL.
 - `SimulationCheck.java`: regression check that questions XMage's AI asks inside its own simulations of the game
   are answered in Java and never reach Python. Prints PASS or FAIL.
+- `ManaCheck.java`: regression check that automatic mana payment taps lands before creatures (Enduring Vitality
+  lets creatures tap for mana; XMage's scoring used to tap them while lands stood untapped). Prints PASS or FAIL.
 - `BlockCheck.java`: builds a combat board directly and asks XMage's AI to block (for chasing block bugs).
 - `decks/`: smoke-test decks; `dsk_ug_modal.dck` swaps in modal spells to exercise MODE prompts.
 
@@ -59,6 +61,7 @@ VocabDump keeps the `tokens` list already in the file (token names come from rec
 ```sh
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP SeatChoiceCheck)   # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP SimulationCheck)  # expect PASS
+(cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP ManaCheck)        # expect PASS
 ```
 
 Same seed does not reproduce the same game (XMage's own randomness), so every action is logged.
