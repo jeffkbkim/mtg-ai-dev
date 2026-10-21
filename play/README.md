@@ -22,6 +22,7 @@ using as extra training data or as an opponent.
 - `--plan-a` / `--plan-b` make a Claude seat keep a plan (role, win condition, race, opponent read, this turn, next
   turn) that it rewrites in every reply; the latest plan is shown in each prompt and recorded with each decision.
 - `summarize.py`: results, and per decision / per game time, tokens and cost.
+- `deck_pool.py`: builds real drafted decks from 17lands game data (`engine/xmage/decks/17lands/`).
 - `ab_report.py`: compares player variants (e.g. lessons on vs off) across runs: wins with a 95% interval, per
   deck, and behaviour numbers a lesson might move (decking losses, attacks per turn, lands left untapped, cost).
 
