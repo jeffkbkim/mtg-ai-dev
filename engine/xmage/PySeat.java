@@ -105,14 +105,20 @@ public class PySeat extends ComputerPlayer {
     }
 
     /**
-     * Mana is paid automatically by ComputerPlayer, which taps its lowest-scored source first; with Enduring Vitality
-     * a creature can score as low as a land, so it tapped attackers and blockers for mana while lands stood untapped
-     * (ManaCheck). Each payment step first tries without creatures, and uses them only when nothing else can pay.
+     * Mana is paid automatically. ComputerPlayer's payer had three faults that cost our players real plays (ManaCheck):
+     * with Enduring Vitality it tapped creatures while lands stood untapped; it tries a source's biggest mana ability
+     * first, so Overgrown Zealot made its two face-up-only mana and the spell was rolled back; and it spent the only
+     * Island on a generic cost while the player held a blue instant. Each payment step here pays one symbol, coloured
+     * symbols before generic, from the source that matters least: lands before creatures (creatures only when nothing
+     * else can pay, and never the permanent whose own {T} the ability needs), then the source whose colours the
+     * other cards in hand need least, then the one with fewer colours. Mana that can't be spent on this ability is
+     * skipped. Anything this can't pay (X, phyrexian, convoke, ...) falls back to XMage's payer, lands first.
      */
     private transient boolean skipCreatureMana = false;
 
     @Override
     protected boolean playManaHandling(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game) {
+        if (payStep(ability, unpaid, game, false) || payStep(ability, unpaid, game, true)) return true;
         skipCreatureMana = true;
         try {
             if (super.playManaHandling(ability, unpaid, game)) return true;  // false means nothing was activated
@@ -120,6 +126,59 @@ public class PySeat extends ComputerPlayer {
             skipCreatureMana = false;
         }
         return super.playManaHandling(ability, unpaid, game);
+    }
+
+    private static final mage.constants.ColoredManaSymbol[] COLOURS = mage.constants.ColoredManaSymbol.values();
+
+    private static int amount(mage.Mana m, mage.constants.ColoredManaSymbol c) {
+        return m.getAny() > 0 ? 1 : m.getColor(c);
+    }
+
+    private boolean payStep(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game, boolean creatures) {
+        List<mage.abilities.costs.mana.ManaCost> symbols = new ArrayList<>();
+        if (unpaid instanceof mage.abilities.costs.mana.ManaCosts) symbols.addAll((mage.abilities.costs.mana.ManaCosts<mage.abilities.costs.mana.ManaCost>) unpaid);
+        else symbols.add(unpaid);
+        symbols.removeIf(c -> c.isPaid() || c instanceof mage.abilities.costs.mana.VariableManaCost || c.isPhyrexian());
+        symbols.sort(Comparator.comparingInt(c -> c instanceof mage.abilities.costs.mana.GenericManaCost ? 1 : 0));
+        if (symbols.isEmpty()) return false;
+        boolean tapsSource = ability.getCosts().stream().anyMatch(c -> c instanceof mage.abilities.costs.common.TapSourceCost);
+        int[] need = new int[COLOURS.length];  // coloured symbols of the other cards in hand, per colour
+        for (Card c : getHand().getCards(game)) {
+            if (c.getId().equals(ability.getSourceId())) continue;
+            mage.Mana m = c.getManaCost().getMana();
+            for (int i = 0; i < COLOURS.length; i++) need[i] += m.getColor(COLOURS[i]);
+        }
+        Map<MageObject, int[]> keys = new HashMap<>();  // [need of its colours, colours it makes]
+        List<MageObject> sources = new ArrayList<>();
+        for (MageObject o : super.getAvailableManaProducers(game)) {
+            if (o.isCreature(game) != creatures) continue;
+            if (tapsSource && o.getId().equals(ability.getSourceId())) continue;
+            int needed = 0, colours = 0;
+            for (int i = 0; i < COLOURS.length; i++) {
+                final int k = i;
+                boolean makes = o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game).stream()
+                        .anyMatch(ma -> ma.getNetMana(game).stream().anyMatch(m -> amount(m, COLOURS[k]) > 0));
+                if (makes) { needed += need[i]; colours++; }
+            }
+            keys.put(o, new int[]{needed, colours});
+            sources.add(o);
+        }
+        sources.sort(Comparator.<MageObject>comparingInt(o -> keys.get(o)[0]).thenComparingInt(o -> keys.get(o)[1]));
+        for (mage.abilities.costs.mana.ManaCost symbol : symbols) {
+            for (MageObject o : sources) {
+                List<mage.abilities.mana.ActivatedManaAbilityImpl> abilities = new ArrayList<>(
+                        o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game));
+                abilities.sort(Comparator.comparingInt(ma -> ma.getNetMana(game).stream().mapToInt(mage.Mana::count).max().orElse(0)));
+                for (mage.abilities.mana.ActivatedManaAbilityImpl ma : abilities) {
+                    for (mage.Mana net : ma.getNetMana(game)) {
+                        if (net instanceof mage.ConditionalMana && !((mage.ConditionalMana) net).apply(ability, game, playerId, symbol)) continue;
+                        if (!symbol.testPay(net)) continue;
+                        if (activateAbility(ma, game)) return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -296,7 +355,22 @@ public class PySeat extends ComputerPlayer {
 
     // ---------- targets ----------
 
+    /**
+     * XMage calls chooseTarget again whenever the previous call added a target and the choice isn't complete
+     * (TargetImpl.chooseTarget), so after DONE the same prompt came back once more and the player had to say DONE
+     * twice (or, thinking the first DONE was lost, picked another target). That follow-up call is answered here with
+     * nothing added, which ends XMage's loop.
+     */
+    private transient Target doneTarget = null;
+    private transient int doneSize = -1;
+
     private boolean chooseTargets(String kind, Target target, Ability source, Game game, boolean isTargeting, Cards fromCards) {
+        if (target == doneTarget && target.getTargets().size() == doneSize) {
+            doneTarget = null;
+            return target.isChosen(game);
+        }
+        doneTarget = null;
+        int sizeBefore = target.getTargets().size();
         // whose cards and permissions the choice is about: this seat, unless the target names another player, as in
         // XMage's HumanPlayer. Not the source's controller: an opponent's ability can make this seat pay a cost
         // (Osseous Sticktwister's "discard a card"), and that used to list the opponent's hand.
@@ -319,7 +393,10 @@ public class PySeat extends ComputerPlayer {
                 }).as(kind));
             }
             pick(kind, target.getMessage(game), game, opts, fromCards);
-            if (done[0]) break;
+            if (done[0]) {
+                if (target.getTargets().size() > sizeBefore) { doneTarget = target; doneSize = target.getTargets().size(); }
+                break;
+            }
         }
         return target.isChosen(game);
     }
@@ -365,8 +442,8 @@ public class PySeat extends ComputerPlayer {
     @Override
     public boolean choose(Outcome outcome, Choice choice, Game game) {
         if (simulated(game)) return super.choose(outcome, choice, game);
-        // mana colour choices belong to the autopayer (v1: autotap)
-        if (choice.getMessage() != null && choice.getMessage().toLowerCase().contains("mana")) {
+        // mana colour choices belong to the autopayer (v1: autotap); "Choose color" for a mana ability is one too
+        if (choice.isManaColorChoice() || choice.getMessage() != null && choice.getMessage().toLowerCase().contains("mana")) {
             link.fallback.merge("CHOICE (mana)", 1, Integer::sum);
             return super.choose(outcome, choice, game);
         }
