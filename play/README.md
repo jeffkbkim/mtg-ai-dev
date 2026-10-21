@@ -22,9 +22,13 @@ using as extra training data or as an opponent.
 - `--plan-a` / `--plan-b` make a Claude seat keep a plan (role, win condition, race, opponent read, this turn, next
   turn) that it rewrites in every reply; the latest plan is shown in each prompt and recorded with each decision.
 - `summarize.py`: results, and per decision / per game time, tokens and cost.
-- `deck_pool.py`: builds real drafted decks from 17lands game data (`engine/xmage/decks/17lands/`).
+- `deck_pool.py`: builds real drafted decks from 17lands game data (`engine/xmage/decks/17lands/`, `17lands-r2/`).
 - `ab_report.py`: compares player variants (e.g. lessons on vs off) across runs: wins with a 95% interval, per
   deck, and behaviour numbers a lesson might move (decking losses, attacks per turn, lands left untapped, cost).
+- `review.py`: a reviewer (`claude -p`, no tools) reads each seat's game as that seat saw it and flags clear errors
+  ("blunder" or "mistake", judged only on what was visible then) plus suspected engine or harness bugs. Flags go to
+  `<game>.review-<seat>.json` next to the game; nothing is deleted, so filtering is chosen when building a training
+  set. `--summary` prints flag rates per player variant. About $0.80 per seat-game at Opus high.
 
 ## Run
 
