@@ -1,12 +1,13 @@
 """Build a pool of real drafted DSK decks from 17lands' public game data, as XMage .dck files.
 
   python3 play/deck_pool.py <game_data_public.DSK.PremierDraft.csv.gz> <xmage numbers .tsv> <out dir> [--n 20] [--seed 7]
+      [--exclude <earlier manifest.json> ...]
 
 Each draft's deck is its most-played build (17lands logs the main deck of every game). Two kinds:
 - typical: drafts sampled uniformly, so archetypes appear as often as people draft them;
 - trophy: drafts that reached 7 wins (at most 2 losses).
 Only 40-card decks whose every card is in XMage's DSK set are kept; decks with other cards (e.g. Special Guests) are
-skipped and counted, never patched. The numbers file maps names to XMage collector numbers ("number<TAB>name").
+skipped and counted, never patched. Drafts listed in --exclude manifests (an earlier pool) are not picked again. The numbers file maps names to XMage collector numbers ("number<TAB>name").
 Writes <out>/<kind>_<nn>.dck and <out>/manifest.json (draft id, record, colors, rank, card counts per deck).
 """
 import argparse, csv, gzip, json, random
@@ -16,6 +17,7 @@ from pathlib import Path
 p = argparse.ArgumentParser()
 p.add_argument("data"); p.add_argument("numbers"); p.add_argument("out")
 p.add_argument("--n", type=int, default=20); p.add_argument("--seed", type=int, default=7)
+p.add_argument("--exclude", nargs="*", default=[])
 args = p.parse_args()
 
 numbers = {}
@@ -61,6 +63,8 @@ for d, info in drafts.items():
     info.update(build_index=b, build_games=n, losses=info["games"] - info["wins"], deck=deck)
     ok.append(info)
 
+excluded = {d["draft_id"] for m in args.exclude for d in json.loads(Path(m).read_text())["decks"]}
+ok = [i for i in ok if i["draft_id"] not in excluded]
 rng = random.Random(args.seed)
 typical = rng.sample([i for i in ok if i["games"] >= 3], args.n)  # played at least 3 games with it
 trophy = rng.sample([i for i in ok if i["wins"] >= 7 and i["losses"] <= 2 and i not in typical], args.n)
@@ -77,7 +81,7 @@ for kind, picked in (("typical", typical), ("trophy", trophy)):
             "draft_id", "build_index", "build_games", "games", "wins", "losses", "main_colors", "splash_colors",
             "rank", "user_win_rate_bucket")}, "deck": info["deck"]})
 (out / "manifest.json").write_text(json.dumps({
-    "source": Path(args.data).name, "seed": args.seed, "drafts": len(drafts), "eligible": len(ok),
+    "source": Path(args.data).name, "seed": args.seed, "excluded_drafts": len(excluded), "drafts": len(drafts), "eligible": len(ok),
     "skipped": dict(skipped), "unsupported_cards": dict(unsupported.most_common()), "decks": manifest}, indent=1))
 print(f"{len(drafts)} drafts, {len(ok)} eligible, skipped {dict(skipped)}; unsupported cards: {unsupported.most_common(10)}")
 print(f"typical colors: {Counter(i['main_colors'] for i in typical).most_common()}")
