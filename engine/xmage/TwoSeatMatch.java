@@ -73,7 +73,7 @@ public class TwoSeatMatch {
         }
         for (int s = 0; s < 2; s++) {
             PySeat.Link l = links[s];
-            System.out.println("SEAT " + names[s] + " ASKED " + l.asked + " FORCED " + l.forced + " FALLBACK " + l.fallback);
+            System.out.println("SEAT " + names[s] + " ASKED " + l.asked + " FORCED " + l.forced +  " FALLBACK " + l.fallback + " SIMULATED " + l.simulated);
             System.out.println("SEAT " + names[s] + " LEAKS " + l.leaks + " UNSEEN_REFS " + l.unseenRefs);
             System.out.println("SEAT " + names[s] + " UNMAPPED_ABILITIES " + l.unmappedAbilities + " UNMAPPED_CHOICES " + l.unmappedChoices);
             System.out.println("SEAT " + names[s] + " REJECTED " + l.rejected.size() + " " + l.rejected);

@@ -44,6 +44,7 @@ public class PySeat extends ComputerPlayer {
         // coverage: abilities on permanents keyed through a grant, and ones with no key (would be unmapped if used)
         final Map<String, Integer> grantedOnBoard = new TreeMap<>();
         final Map<String, Integer> unkeyedOnBoard = new TreeMap<>();
+        long simulated = 0;  // decisions inside XMage AI simulations, answered in Java (see PySeat.simulated)
         long roundTripNanos = 0, observeNanos = 0;
         int roundTrips = 0, bytes = 0;
 
@@ -89,6 +90,18 @@ public class PySeat extends ComputerPlayer {
     @Override
     public PySeat copy() {
         return new PySeat(this);
+    }
+
+    /**
+     * XMage's AI tries moves on copies of the game (createSimulationForAI), and the copies hold a copy of this seat
+     * that shares the same link. Questions from those make-believe games must not reach Python: they show states
+     * that never happen (often the AI's own candidate blocks) and their answers change nothing real. In a
+     * simulation this seat decides like XMage's ComputerPlayer instead.
+     */
+    private boolean simulated(Game game) {
+        if (!game.isSimulation()) return false;
+        link.simulated++;
+        return true;
     }
 
     private JsonObject ref(Observer.Obs obs, UUID id, String kind, Game game) {
@@ -195,6 +208,7 @@ public class PySeat extends ComputerPlayer {
 
     @Override
     public boolean priority(Game game) {
+        if (simulated(game)) return super.priority(game);
         game.getState().setPriorityPlayerId(playerId);
         game.firePriorityEvent(playerId);
         String key = game.getTurnNum() + "/" + game.getTurnStepType() + "/" + game.getStack().size();
@@ -280,21 +294,25 @@ public class PySeat extends ComputerPlayer {
 
     @Override
     public boolean chooseTarget(Outcome outcome, Target target, Ability source, Game game) {
+        if (simulated(game)) return super.chooseTarget(outcome, target, source, game);
         return chooseTargets("TARGET", target, source, game, true, null);
     }
 
     @Override
     public boolean choose(Outcome outcome, Target target, Ability source, Game game, Map<String, Serializable> options) {
+        if (simulated(game)) return super.choose(outcome, target, source, game, options);
         return chooseTargets("CHOOSE", target, source, game, false, null);
     }
 
     @Override
     public boolean choose(Outcome outcome, Cards cards, TargetCard target, Ability source, Game game) {
+        if (simulated(game)) return super.choose(outcome, cards, target, source, game);
         return chooseTargets("CHOOSE_CARDS", target, source, game, false, cards);
     }
 
     @Override
     public boolean chooseTarget(Outcome outcome, Cards cards, TargetCard target, Ability source, Game game) {
+        if (simulated(game)) return super.chooseTarget(outcome, cards, target, source, game);
         return chooseTargets("TARGET_CARDS", target, source, game, true, cards);
     }
 
@@ -302,6 +320,7 @@ public class PySeat extends ComputerPlayer {
 
     @Override
     public boolean chooseUse(Outcome outcome, String message, String secondMessage, String trueText, String falseText, Ability source, Game game) {
+        if (simulated(game)) return super.chooseUse(outcome, message, secondMessage, trueText, falseText, source, game);
         boolean[] yes = {false};
         UUID sourceId = source == null ? null : source.getSourceId();
         List<Option> opts = List.of(
@@ -313,6 +332,7 @@ public class PySeat extends ComputerPlayer {
 
     @Override
     public boolean choose(Outcome outcome, Choice choice, Game game) {
+        if (simulated(game)) return super.choose(outcome, choice, game);
         // mana colour choices belong to the autopayer (v1: autotap)
         if (choice.getMessage() != null && choice.getMessage().toLowerCase().contains("mana")) {
             link.fallback.merge("CHOICE (mana)", 1, Integer::sum);
@@ -360,6 +380,7 @@ public class PySeat extends ComputerPlayer {
 
     @Override
     public Mode chooseMode(Modes modes, Ability source, Game game) {
+        if (simulated(game)) return super.chooseMode(modes, source, game);
         if (modes.getMode() != null && modes.getMaxModes(game, source) == modes.getSelectedModes().size()) {
             return modes.getMode();
         }
@@ -380,6 +401,7 @@ public class PySeat extends ComputerPlayer {
 
     @Override
     public TriggeredAbility chooseTriggeredAbility(List<TriggeredAbility> abilities, Game game) {
+        if (simulated(game)) return super.chooseTriggeredAbility(abilities, game);
         if (abilities.isEmpty()) return null;
         TriggeredAbility[] picked = {null};
         List<Option> opts = new ArrayList<>();
@@ -392,6 +414,7 @@ public class PySeat extends ComputerPlayer {
 
     @Override
     public void selectAttackers(Game game, UUID attackingPlayerId) {
+        if (simulated(game)) { super.selectAttackers(game, attackingPlayerId); return; }
         UUID defender = game.getOpponents(playerId).iterator().next();
         while (true) {
             boolean[] done = {false};
@@ -410,6 +433,7 @@ public class PySeat extends ComputerPlayer {
 
     @Override
     public void selectBlockers(Ability source, Game game, UUID defendingPlayerId) {
+        if (simulated(game)) { super.selectBlockers(source, game, defendingPlayerId); return; }
         while (true) {
             boolean[] done = {false};
             List<Option> opts = new ArrayList<>();
@@ -437,6 +461,7 @@ public class PySeat extends ComputerPlayer {
 
     @Override
     public boolean chooseMulligan(Game game) {
+        if (simulated(game)) return super.chooseMulligan(game);
         // sent as a yes/no decision (USE) so it fits the existing decision and action vocabularies
         boolean[] mulligan = {false};
         List<Option> opts = List.of(

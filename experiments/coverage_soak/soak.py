@@ -92,7 +92,7 @@ def choose(msg, rng):
 BOOT_LOCK = threading.Lock()
 
 COUNTER_LINES = ("ASKED", "FORCED", "LEAKS", "UNSEEN_REFS", "UNMAPPED_ABILITIES", "UNMAPPED_CHOICES",
-                 "GRANTED_ON_BOARD", "UNKEYED_ON_BOARD", "FALLBACK", "REJECTED")
+                 "GRANTED_ON_BOARD", "UNKEYED_ON_BOARD", "FALLBACK", "REJECTED", "SIMULATED")
 
 
 def parse_jvm_log(text):

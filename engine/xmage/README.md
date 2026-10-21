@@ -20,6 +20,9 @@ Built against the **unmodified XMage 1.4.62 release jars** (build option 1); not
 - `run_games.py`: Python side, a random-move bot that records every decision to JSON lines.
 - `SeatChoiceCheck.java`: regression check that a cost an opponent's ability makes this seat pay (Osseous Sticktwister's
   discard) offers this seat's own hand. Prints PASS or FAIL.
+- `SimulationCheck.java`: regression check that questions XMage's AI asks inside its own simulations of the game
+  are answered in Java and never reach Python. Prints PASS or FAIL.
+- `BlockCheck.java`: builds a combat board directly and asks XMage's AI to block (for chasing block bugs).
 - `decks/`: smoke-test decks; `dsk_ug_modal.dck` swaps in modal spells to exercise MODE prompts.
 
 Decision format and the leak checks: `/mnt/project-files/notes/xmage-step3-observation.md`.
@@ -55,6 +58,7 @@ VocabDump keeps the `tokens` list already in the file (token names come from rec
 
 ```sh
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP SeatChoiceCheck)   # expect PASS
+(cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP SimulationCheck)  # expect PASS
 ```
 
 Same seed does not reproduce the same game (XMage's own randomness), so every action is logged.

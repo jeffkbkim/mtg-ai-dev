@@ -67,6 +67,7 @@ public class SeatSpike {
         System.out.println("UNKEYED_ON_BOARD " + link.unkeyedOnBoard);
         System.out.printf("OBSERVE mean_ms=%.3f mean_bytes=%d%n", link.roundTrips == 0 ? 0 : link.observeNanos / 1e6 / link.roundTrips, link.roundTrips == 0 ? 0 : link.bytes / link.roundTrips);
         System.out.println("FALLBACK " + link.fallback);
+        System.out.println("SIMULATED " + link.simulated);
         System.out.println("REJECTED " + link.rejected.size() + " " + link.rejected);
         System.out.printf("ROUND_TRIPS %d mean_ms=%.3f%n", link.roundTrips, link.roundTrips == 0 ? 0 : link.roundTripNanos / 1e6 / link.roundTrips);
         link.out.println("{\"type\":\"end\"}");
