@@ -1,0 +1,54 @@
+# 17lands DSK data
+
+Public 17lands datasets for Duskmourn Premier Draft (game, draft and replay data), downloaded on the Mac mini to
+`~/mtg-data/17lands/DSK` by `scripts/download_17lands.sh`, outside Git. Checksums: `SHA256SUMS` in that folder.
+
+- `prepare.py convert`: csv.gz to Parquet (`parquet/`, about 300 MB).
+- `prepare.py audit`: row counts, duplicate keys, missing values, card names against XMage's DSK list, deck sizes,
+  and whether games, replays and drafts line up. Writes `audit.json`.
+- `prepare.py split`: freezes `splits.parquet` (draft_id to train/validation/test) and `splits.json`.
+- `replay_check.py`: how much of a replay is an exact record of the player's decisions. Writes `replay_check.json`.
+
+## Audit, 2026-10-22
+
+| | rows | drafts |
+|---|---:|---:|
+| game data | 1,011,949 games | 173,545 |
+| replay data | 1,011,949 games | 173,545 |
+| draft data | 7,082,745 picks | 169,666 |
+
+Games played 2024-09-24 to 2024-10-28. No duplicate keys. Every game has a replay and every replay a game.
+Every deck has 40 to 61 cards. 2,363 drafts have picks but no games, and 6,242 games' drafts have no pick data.
+Rank is missing for 5,163 games and 483,690 picks; splash colours are mostly empty (no splash).
+
+**Cards:** 17lands lists 286 cards and XMage's DSK list 276. The 10 extra are Duskmourn's Special Guests (Collected
+Company, Damnation, Expropriate, Hallowed Haunting, Maddening Hex, Noxious Revival, Phantasmal Image, Sacrifice,
+Soul Warden, Unholy Heat). XMage implements all 10 under other set codes, so no card is unsupported. But our
+vocabulary (`engine/vocab/dsk_vocab.json`) only has the 276, and 20,928 games (2.1%) have a Special Guest in the deck.
+Those games need the vocabulary extended, or have to be set aside explicitly. They're not dropped or replaced here.
+
+**Split** (`splits.json`): by draft, `sha256("mtg-ai-dsk-split-v1:" + draft_id)`, 80/10/10. Every row of a draft,
+in all three datasets, lands in the same split. 140,619 / 17,731 / 17,558 drafts; games 809,318 / 102,031 / 100,600.
+17lands records one player's side per game, and opponents are anonymous, so two recordings of the same game can't be
+paired. If both players logged a game, the two rows may land in different splits.
+
+## Replay check, 2026-10-22 (20,000 random games, seed 0)
+
+| Decision | What the replay records | Measured |
+|---|---|---|
+| Mulligan | every candidate hand | exact in 100% of games |
+| Land drop | which land | exact |
+| Attack | which creatures attacked | exact |
+| Spells on your turn | which cards, not order, timing within the turn, or targets | 15.1% of turns have 2+ spells (order unknown); 37.5% of spells have "target" in their text (target unknown) |
+| Blocks | which creatures blocked, not what each blocked | 57.0% of block turns face 2+ attackers (assignment unknown) |
+| Cards in hand | end-of-turn hand | rebuilt hand matches the record on 94.6% of your turns and 91.3% of opponent turns; whole game in 26.6% of games |
+
+Why the rebuilt hand drifts (most common unrecorded moves): permanents with flash cast on the opponent's turn
+(Floodpits Drowner, Appendage Amalgam, Growing Dread, Fear of Impostors); the replay only lists instants and
+sorceries there. Also cards returning to hand (Fear of Infinity, bounce) and basic lands moving without a record. After a
+mismatch the check resyncs on the recorded hand, so each turn's starting hand is known even when a move in
+between isn't.
+
+So the exact, ready-to-use labels are mulligans, land drops and attack sets. Spell choices are exact as sets but
+need order, timing and targets inferred, and block assignments need inferring in over half of block turns. Any
+training data built from replays should mark which parts are exact and which are inferred.
