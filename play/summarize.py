@@ -28,7 +28,9 @@ for g in games:
             continue
         tot = {f: sum(t["usage"].get(f, 0) for r in mine for t in r["turns"]) for f in FIELDS}
         tot.update(game=g["game"], seat=seat, decisions=len(mine), invalid=sum(bool(r.get("invalid")) for r in mine),
-                   retries=sum(len(r["turns"]) - 1 for r in mine), seconds=sum(r["seconds"] for r in mine),
+                   retries=sum(len([t for t in r["turns"] if not t.get("self_check")]) - 1 for r in mine),
+                   checks=sum("self_check" in r for r in mine),
+                   checks_changed=sum(bool(r.get("self_check", {}).get("changed")) for r in mine), seconds=sum(r["seconds"] for r in mine),
                    cost_usd=sum(t["cost_usd"] for r in mine for t in r["turns"]))
         per_game.append(tot)
         dec += mine
@@ -39,7 +41,8 @@ print("\nper Claude seat per game:")
 for p in per_game:
     print(f"  g{p['game']} seat {p['seat']}: {p['decisions']} decisions, {p['seconds'] / 60:.1f} min, "
           f"input {p['input_tokens']}, cache write {p['cache_creation_input_tokens']}, cache read {p['cache_read_input_tokens']}, "
-          f"output {p['output_tokens']}, ${p['cost_usd']:.2f}, invalid {p['invalid']}, retries {p['retries']}")
+          f"output {p['output_tokens']}, ${p['cost_usd']:.2f}, invalid {p['invalid']}, retries {p['retries']}"
+          + (f", self-checks {p['checks']} ({p['checks_changed']} changed)" if p["checks"] else ""))
 n = len(per_game)
 mean = lambda k: sum(p[k] for p in per_game) / n
 print(f"\nmean per seat-game: {mean('decisions'):.0f} decisions, {mean('seconds') / 60:.1f} min, "
