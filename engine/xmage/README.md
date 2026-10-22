@@ -81,3 +81,8 @@ Same seed does not reproduce the same game (XMage's own randomness), so every ac
   creature has first strike again. Rare (needs two conflicting layer effects plus a later face-down permanent); the
   observation's `keywords` show what the engine applies, so the seat sees the engine's (wrong) answer. Not fixed: under
   build option 1 we fork only if a DSK bug blocks us.
+- **Face-down Rooms keep their doors' abilities** (found 2026-10-22 by the game reviewer, reproduced on the
+  unmodified jars by `FaceDownRoomRepro.java`). A Room manifested face down should be a vanilla 2/2, but it keeps
+  both doors' abilities, locked doors included: a face-down Ticket Booth // Tunnel of Hate still gives an attacker
+  double strike whenever its controller attacks (plan-pairs batch01 part11 game1, where it decided a combat). Seen in
+  4 of 117 recorded Claude games (an own face-down Room on the battlefield). Not fixed (build option 1).
