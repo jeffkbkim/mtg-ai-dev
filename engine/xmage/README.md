@@ -29,6 +29,8 @@ Built against the **unmodified XMage 1.4.62 release jars** (build option 1); not
   (XMage re-asks after any call that added a target; DONE used to be asked twice). Prints PASS or FAIL.
 - `PlayableCheck.java`: regression check that two copies of a permanent each offer their activated ability (XMage's
   `getPlayable(game, true)` keeps one per rules text, so two Glimmerlights offered one Equip). Prints PASS or FAIL.
+- `XSpellCheck.java`: regression check that a {X}{X} spell (Valgavoth's Onslaught) is cast with the largest affordable
+  X (XMage's AI counted X once, asked for too much mana and the cast was refused). Prints PASS or FAIL.
 - `BlockCheck.java`: builds a combat board directly and asks XMage's AI to block (for chasing block bugs).
 - `decks/`: smoke-test decks; `dsk_ug_modal.dck` swaps in modal spells to exercise MODE prompts.
 
@@ -69,6 +71,7 @@ VocabDump keeps the `tokens` list already in the file (token names come from rec
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP ManaCheck)        # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP TargetCheck)      # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP PlayableCheck)    # expect PASS
+(cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP XSpellCheck)      # expect PASS
 ```
 
 Same seed does not reproduce the same game (XMage's own randomness), so every action is logged.

@@ -54,6 +54,8 @@ engine's own log (leaks, rejected moves, fallbacks).
 
 ## Known limits
 
-- Mana payment, X values and damage assignment use XMage's built-in defaults (counted as FALLBACK in the log).
+- Mana is paid automatically by the seat (lands before creatures, keeping the colours the hand needs). X (the
+  largest affordable), combat damage among several blockers and "distribute" amounts (TARGET_AMOUNT, e.g. Omnivorous
+  Flytrap's counters, targets included) are XMage AI choices, not asked (counted as FALLBACK in the log).
 - Costs in the summary are API list-price equivalents reported by Claude Code; on a subscription the run counts
   against plan usage instead.

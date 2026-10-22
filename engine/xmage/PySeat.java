@@ -704,8 +704,21 @@ public class PySeat extends ComputerPlayer {
     @Override
     public boolean chooseTargetAmount(Outcome outcome, mage.target.TargetAmount target, Ability source, Game game) { fallback("TARGET_AMOUNT"); return super.chooseTargetAmount(outcome, target, source, game); }
 
+    /**
+     * X for a mana cost is still XMage's AI choice (the most the untapped sources cover), but its formula takes X =
+     * sources minus the rest of the cost, as if X appeared once: with 7 Forests Valgavoth's Onslaught ({X}{X}{G}) got
+     * X = 6, needing 13 mana, so every cast was refused. Divided by the number of X symbols here.
+     */
     @Override
-    public int announceX(int min, int max, String message, Game game, Ability source, boolean isManaPay) { fallback("ANNOUNCE_X"); return super.announceX(min, max, message, game, source, isManaPay); }
+    public int announceX(int min, int max, String message, Game game, Ability source, boolean isManaPay) {
+        fallback("ANNOUNCE_X");
+        int x = super.announceX(min, max, message, game, source, isManaPay);
+        if (!isManaPay || source == null) return x;
+        int instances = 0;
+        for (mage.abilities.costs.VariableCost v : source.getManaCostsToPay().getVariableCosts())
+            if (v instanceof mage.abilities.costs.mana.VariableManaCost) instances += ((mage.abilities.costs.mana.VariableManaCost) v).getXInstancesCount();
+        return instances > 1 ? Math.max(min, x / instances) : x;
+    }
 
     @Override
     public int getAmount(int min, int max, String message, Ability source, Game game) { fallback("AMOUNT"); return super.getAmount(min, max, message, source, game); }
