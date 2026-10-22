@@ -2,6 +2,7 @@
 import hashlib, json, os, random, re, subprocess, tempfile, threading, time
 from pathlib import Path
 
+from facts import facts_block
 from render import BASICS, card_text, clean, events, load_card_text, names_in, option_label, render
 
 PRIMER_DIR = Path(__file__).resolve().parent / "primer"
@@ -72,6 +73,15 @@ In this game every reply is one line of JSON with the plan first:
 Keep each field to one short sentence."""
 
 
+FACTS_RULES = """## Facts
+Some messages end with "Facts:", lines the game computes from the board you see: your untapped mana and that lands
+only untap in your own untap step, which of your creatures can block on the opponent's next turn, how much damage at
+least gets through if every creature attacks and the defender blocks as well as possible, and how each possible block
+or attack ends if nothing else happens. They are exact for the board as it is, but they know nothing that isn't on
+the board: tricks, instant-speed removal, flash creatures, face-down creatures being turned up, and abilities that
+aren't listed keywords (e.g. "can't block", or a trigger that taps a blocker). Use them as a check on your own reading."""
+
+
 def gih_table(stats_path=PRIMER_DIR / "dsk_17lands_stats.json", min_games=2000):
     s = json.loads(Path(stats_path).read_text())
     rows = sorted(((v["gih_wr"], k) for k, v in s["cards"].items()
@@ -90,12 +100,12 @@ def read_deck(deck_path):
     return out
 
 
-def system_prompt(deck_path, texts, lessons=None, plan=False):
+def system_prompt(deck_path, texts, lessons=None, plan=False, facts=False):
     """lessons: text of a lessons file (play/primer/lessons_v*.md) placed right after the rules, or None.
-    plan: ask for a plan that is updated in every reply (PLAN_RULES)."""
+    plan: ask for a plan that is updated in every reply (PLAN_RULES). facts: explain the "Facts:" block (FACTS_RULES)."""
     deck = read_deck(deck_path)
     deck_lines = [f"{n}x {card_text(texts[name])}" if name in texts else f"{n}x {name}" for n, name in deck]
-    return "\n\n".join([RULES] + ([PLAN_RULES] if plan else []) + ([lessons] if lessons else []) + [(PRIMER_DIR / "dsk_meta.md").read_text(), gih_table(),
+    return "\n\n".join([RULES] + ([PLAN_RULES] if plan else []) + ([FACTS_RULES] if facts else []) + ([lessons] if lessons else []) + [(PRIMER_DIR / "dsk_meta.md").read_text(), gih_table(),
                         "Your deck (the opponent's deck is unknown to you):\n" + "\n".join(deck_lines)])
 
 
@@ -119,11 +129,14 @@ class ClaudePlayer:
     PASS_TARGETS = ("end_of_turn", "my_turn")
     MAX_ERRORS = 2
 
-    def __init__(self, model="claude-opus-5-5", effort="high", lessons=None, plan=False, timeout_s=600):
+    def __init__(self, model="claude-opus-5-5", effort="high", lessons=None, plan=False, facts=False, check=False,
+                 timeout_s=600):
         self.model, self.effort, self.timeout_s = model, effort, timeout_s
         self.lessons = Path(lessons).read_text() if lessons else None
         self.plan_mode = plan
-        self.name = f"claude:{model}:{effort}" + (f":{Path(lessons).stem}" if lessons else "") + (":plan" if plan else "")
+        self.facts = facts
+        self.check = check  # a second look at combat and near-lethal decisions (_check_gate)
+        self.name = f"claude:{model}:{effort}" + (f":{Path(lessons).stem}" if lessons else "") + (":plan" if plan else "") + (":facts" if facts else "") + (":check" if check else "")
         self.texts = load_card_text()
         self.proc = None
 
@@ -137,8 +150,9 @@ class ClaudePlayer:
         self.asked_any = False
         self.conv_pregame = False  # the current conversation has only seen pre-game (mulligan) decisions
         self.plan = None           # latest plan from the player's replies (plan mode)
+        self.checked_combat = None  # (turn, ATTACK/BLOCK) of the last combat that got its self-check
         self.workdir = tempfile.mkdtemp(prefix="claude-seat-")
-        system = system_prompt(deck_path, self.texts, self.lessons, self.plan_mode)
+        system = system_prompt(deck_path, self.texts, self.lessons, self.plan_mode, self.facts)
         self.prompt_sha = hashlib.sha256(system.encode()).hexdigest()[:12]  # recorded per decision: prompt versions must not be pooled
         Path(self.workdir, "system.txt").write_text(system)
 
@@ -251,7 +265,7 @@ class ClaudePlayer:
         plan = ""
         if self.plan_mode:
             plan = ("Your current plan: " + json.dumps(self.plan) if self.plan else "You have no plan yet: write one.") + "\n"
-        return head + "\n" + plan + render(msg, new)
+        return head + "\n" + plan + render(msg, new, facts_block(msg) if self.facts else ())
 
     def choose(self, msg):
         g = msg["obs"]["entries"][0]
@@ -285,6 +299,8 @@ class ClaudePlayer:
                 continue
             info["turns"].append({"reply": out, "usage": usage, "cost_usd": cost, "seconds": round(secs, 2)})
             choice, reason, until, plan = self._parse(out, n)
+            if choice is not None and self.check and self._check_gate(msg, g, choice):
+                choice, reason, until, plan = self._self_check(msg, info, choice, reason, until, plan)
             if choice is not None:
                 info["reason"] = reason
                 if self.plan_mode:
@@ -303,6 +319,43 @@ class ClaudePlayer:
             ask = f"That was not a valid reply. Answer with one line of JSON, choice between 0 and {n - 1}."
         info["invalid"] = True  # recorded, never hidden: fall back to option 0 (PASS / DONE / first option)
         return 0, info
+
+    CHECK_LIFE = 8
+    CHECK_TEXT = ("Before this is played, check it once. What is the opponent's best answer: their blocks or attacks, "
+                  "tricks or removal they could cast with their untapped mana, and their swing back on their next turn? "
+                  "Does anything in the state or Facts contradict your reason? Is there a better line, including lethal "
+                  "for you? Then reply with the final one line of JSON, the same choice or a different one.")
+
+    def _check_gate(self, msg, g, choice):
+        """The decisions that get a second look: the first attack or block declaration of a combat (the whole
+        attack or block is planned there), and any non-PASS choice while either player is at CHECK_LIFE or less."""
+        if msg["kind"] in ("ATTACK", "BLOCK"):
+            key = (g["turn"], msg["kind"])
+            first = key != self.checked_combat
+            self.checked_combat = key
+            return first
+        low = min(g["my_life"], g["opp_life"]) <= self.CHECK_LIFE
+        return low and msg["options"][choice]["label"] not in ("PASS", "DONE")
+
+    def _self_check(self, msg, info, choice, reason, until, plan):
+        """One more model turn in the same conversation; keeps the first answer if the check fails or is invalid."""
+        info["self_check"] = {"first_choice": choice, "first_reason": reason}
+        t0 = time.time()
+        try:
+            out, usage, cost, secs = self._ask(self.CHECK_TEXT)
+        except ClaudeError as e:
+            info["turns"].append({"error": str(e), "usage": {}, "cost_usd": e.cost, "seconds": round(time.time() - t0, 2),
+                                  "self_check": True})
+            self._close()  # the next decision starts a fresh conversation with the game log
+            info["self_check"]["error"] = True
+            return choice, reason, until, plan
+        info["turns"].append({"reply": out, "usage": usage, "cost_usd": cost, "seconds": round(secs, 2), "self_check": True})
+        c2, r2, u2, p2 = self._parse(out, len(msg["options"]))
+        if c2 is None:
+            info["self_check"]["invalid"] = True
+            return choice, reason, until, plan
+        info["self_check"]["changed"] = c2 != choice
+        return c2, r2, u2, (p2 if p2 else plan)
 
     def end_game(self, result):
         self._close()

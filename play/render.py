@@ -151,8 +151,9 @@ def events(prev, cur):
     return out
 
 
-def render(msg, new_cards=()):
-    """Text for one decision. new_cards: card text dicts to show (cards this seat sees for the first time)."""
+def render(msg, new_cards=(), extra=()):
+    """Text for one decision. new_cards: card text dicts to show (cards this seat sees for the first time).
+    extra: lines placed after the state, before the decision (e.g. play/facts.py's block)."""
     entries = msg["obs"]["entries"]
     lines = ["State: " + _entry(entries[0], entries)]
     for e in entries[1:]:
@@ -164,6 +165,7 @@ def render(msg, new_cards=()):
     if new_cards:
         lines.append("Card text (first time you see these cards):")
         lines += ["  " + card_text(c) for c in new_cards]
+    lines += list(extra)
     prompt = clean(msg["prompt"])
     lines.append(f"Decision: {msg['kind']}." + (f" {prompt}" if prompt.lower() != msg["kind"].lower() else ""))
     for k, o in enumerate(msg["options"]):

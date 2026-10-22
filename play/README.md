@@ -21,6 +21,15 @@ using as extra training data or as an opponent.
   system prompt's hash (`prompt_sha`), so games from different prompts are never pooled by accident.
 - `--plan-a` / `--plan-b` make a Claude seat keep a plan (role, win condition, race, opponent read, this turn, next
   turn) that it rewrites in every reply; the latest plan is shown in each prompt and recorded with each decision.
+- `--facts-a` / `--facts-b` add a "Facts:" block to each decision (`facts.py`), computed from the seat's own
+  observation: untapped mana and that lands untap only in the seat's own untap step, which creatures can block on the
+  opponent's next turn (attackers stay tapped), the least damage that gets through if everything attacks and the
+  defender blocks as well as possible (both directions), and how each possible single or double block, or each
+  attacker, ends with no tricks. Aimed at the reviewer's most common flags (rules timing and combat arithmetic).
+- `--check-a` / `--check-b` give a second look: after the first attack or block declaration of a combat, and after
+  any non-PASS choice while either player is at 8 life or less, the player is asked (same conversation) for the
+  opponent's best answer and a final choice. Each such decision records `self_check` (first choice, whether it
+  changed); about 19% of model decisions in the plan-pairs batches would have been checked.
 - `summarize.py`: results, and per decision / per game time, tokens and cost.
 - `deck_pool.py`: builds real drafted decks from 17lands game data (`engine/xmage/decks/17lands/`, `17lands-r2/`).
 - `ab_report.py`: compares player variants (e.g. lessons on vs off) across runs: wins with a 95% interval, per
