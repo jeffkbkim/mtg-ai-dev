@@ -54,3 +54,7 @@ The user chose to build on the unmodified XMage 1.4.62 release jars with our own
 - MageZero: https://github.com/WillWroble/MageZero
 - DraftZero: https://github.com/danieljbrooks/draft-zero
 - Graph experiments: https://github.com/danieljbrooks/draft-zero/blob/main/docs/024-gnn-local-layers-and-games.md
+
+## 17lands DSK split (2026-10-22)
+
+Train/validation/test is frozen by draft: `sha256("mtg-ai-dsk-split-v1:" + draft_id)[:8] % 100`, below 80 train, below 90 validation, else test (`seventeenlands/prepare.py split`, `~/mtg-data/17lands/DSK/splits.parquet` on the mini). Every pick, game and replay of a draft shares its split. Changing it means a new salt and version, not editing this one.
