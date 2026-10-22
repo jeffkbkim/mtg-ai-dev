@@ -418,7 +418,7 @@ public class PySeat extends ComputerPlayer {
         boolean[] passed = {false};
         ActivatedAbility[] chosen = {null};
         opts.add(new Option("PASS", null, null, () -> passed[0] = true).as("PASS"));
-        for (ActivatedAbility a : getPlayable(game, true)) {
+        for (ActivatedAbility a : playable(game)) {
             if (a.isManaAbility() || failedThisWindow.contains(a.getId())) continue;
             if (resources(game).equals(refusedAt.get(a.getId()))) continue;
             Option o = new Option(a.getAbilityType() + " | " + label(game, a.getSourceId()) + " | " + a, a.getSourceId(), null, () -> chosen[0] = a);
@@ -449,6 +449,20 @@ public class PySeat extends ComputerPlayer {
             link.rejected.add("turn " + game.getTurnNum() + " " + opts.get(i).label + (askedSomething ? " (after choices)" : ""));
         }
         return true;
+    }
+
+    /**
+     * getPlayable(game, true) keeps one ability per rules text (meant for the UI), so with two Glimmerlights on the
+     * battlefield only one Equip was offered, often the attached one. The abilities it dropped from other permanents
+     * are added back after its list; cards in hand and elsewhere are listed as before.
+     */
+    private List<ActivatedAbility> playable(Game game) {
+        List<ActivatedAbility> list = new ArrayList<>(getPlayable(game, true));
+        Set<UUID> ids = new HashSet<>();
+        for (ActivatedAbility a : list) ids.add(a.getId());
+        for (ActivatedAbility a : getPlayable(game, true, mage.constants.Zone.ALL, false))
+            if (game.getPermanent(a.getSourceId()) != null && ids.add(a.getId())) list.add(a);
+        return list;
     }
 
     /** What paying a cost can depend on: every permanent and whether it's tapped, this seat's hand, life and graveyard, the stack. */
