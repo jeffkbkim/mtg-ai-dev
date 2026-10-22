@@ -1,7 +1,8 @@
 # XMage seat
 
 A Java player class that sits in a seat of a real XMage game and hands every decision to Python.
-Built against the **unmodified XMage 1.4.62 release jars** (build option 1); nothing in XMage is patched.
+Built against the **unmodified XMage 1.4.62 release jars** (build option 1), plus one patched XMage class compiled
+with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
 
 - `PySeat.java`: the seat. Subclasses XMage's `ComputerPlayer`, sends each real decision as one JSON line
   over a localhost socket and plays the option Python picks. Forced decisions (only one legal option) are
@@ -29,6 +30,9 @@ Built against the **unmodified XMage 1.4.62 release jars** (build option 1); not
   (XMage re-asks after any call that added a target; DONE used to be asked twice). Prints PASS or FAIL.
 - `PlayableCheck.java`: regression check that two copies of a permanent each offer their activated ability (XMage's
   `getPlayable(game, true)` keeps one per rules text, so two Glimmerlights offered one Equip). Prints PASS or FAIL.
+- `BecomesFaceDownCreatureEffect.java`: our patched copy of that XMage class (see "Our patches to XMage").
+- `FaceDownRoomCheck.java`: regression check for that patch: a face-down Room is a vanilla 2/2, a gained ability
+  stays, and a face-up Room keeps only its unlocked doors' abilities. Prints PASS or FAIL.
 - `XSpellCheck.java`: regression check that a {X}{X} spell (Valgavoth's Onslaught) is cast with the largest affordable
   X (XMage's AI counted X once, asked for too much mana and the cast was refused). Prints PASS or FAIL.
 - `BlockCheck.java`: builds a combat board directly and asks XMage's AI to block (for chasing block bugs).
@@ -50,7 +54,7 @@ unzip -q mage.zip
 cd /path/to/mtg-ai/engine/xmage
 R=~/xmage/xmage/mage-server
 CP=$(find $R -name '*.jar' | tr '\n' ':')
-mkdir -p /tmp/xmage-cls && javac -cp "$CP" -d /tmp/xmage-cls *.java
+mkdir -p /tmp/xmage-cls && javac -cp "$CP" -d /tmp/xmage-cls *.java   # our classes first on the classpath (the runners do)
 
 # vocabulary (only when the XMage version changes)
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP VocabDump $OLDPWD/../vocab/dsk_vocab.json)
@@ -72,6 +76,7 @@ VocabDump keeps the `tokens` list already in the file (token names come from rec
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP TargetCheck)      # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP PlayableCheck)    # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP XSpellCheck)      # expect PASS
+(cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP FaceDownRoomCheck) # expect PASS
 ```
 
 Same seed does not reproduce the same game (XMage's own randomness), so every action is logged.
@@ -85,10 +90,20 @@ Same seed does not reproduce the same game (XMage's own randomness), so every ac
   fresh timestamp in the order the decks were loaded (seat A first), not the order the cards entered. Example: Ethereal
   Armor, then Unable to Scream on the same creature correctly removes first strike, but once a manifest enters the
   creature has first strike again. Rare (needs two conflicting layer effects plus a later face-down permanent); the
-  observation's `keywords` show what the engine applies, so the seat sees the engine's (wrong) answer. Not fixed: under
-  build option 1 we fork only if a DSK bug blocks us.
-- **Face-down Rooms keep their doors' abilities** (found 2026-10-22 by the game reviewer, reproduced on the
-  unmodified jars by `FaceDownRoomRepro.java`). A Room manifested face down should be a vanilla 2/2, but it keeps
-  both doors' abilities, locked doors included: a face-down Ticket Booth // Tunnel of Hate still gives an attacker
-  double strike whenever its controller attacks (plan-pairs batch01 part11 game1, where it decided a combat). Seen in
-  4 of 117 recorded Claude games (an own face-down Room on the battlefield). Not fixed (build option 1).
+  observation's `keywords` show what the engine applies, so the seat sees the engine's (wrong) answer. Not patched.
+
+## Our patches to XMage
+
+Each patch is a copy of one XMage 1.4.62 source file (tag `xmage_1.4.62V1`, MIT License) with the change marked
+`PATCH (mtg-ai)`. It is compiled with our classes, which come first on the classpath, so it replaces the class in the
+release jar; the jars themselves stay unmodified. When the XMage version changes, re-copy the file from the new tag
+and re-apply the marked change, or drop the patch if upstream fixed it.
+
+- `BecomesFaceDownCreatureEffect.java`: **face-down Rooms kept their doors' abilities** (found 2026-10-22 by the game
+  reviewer). A Room manifested face down should be a vanilla 2/2, but it kept both doors' abilities, locked doors
+  included: a face-down Ticket Booth // Tunnel of Hate still gave an attacker double strike whenever its controller
+  attacked (plan-pairs batch01 part11 game1, where it decided a combat). The face-down effect removes only the card's
+  own abilities and keeps those gained from other sources; a Room's door abilities live on its halves, not in the
+  card's ability list, so they counted as gained. The patch also treats abilities of a split card's halves as its own.
+  Seen in 4 of 117 recorded Claude games before the patch (an own face-down Room on the battlefield). Check:
+  `FaceDownRoomCheck` (FAIL on the unpatched class, PASS patched).
