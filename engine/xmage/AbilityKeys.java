@@ -153,7 +153,32 @@ public final class AbilityKeys {
                 }
             }
         }
-        return granted(game).get(ability.getOriginalId());
+        String g = granted(game).get(ability.getOriginalId());
+        return g != null ? g : borrowed(game, ability);
+    }
+
+    /**
+     * Fallback for an ability running on an object that neither prints nor was granted it by id:
+     * - Marvin, Murderous Mimic "has all activated abilities of creatures you control": the ability is another
+     *   creature's, so it gets that card's key ("Tyvar, the Pummeler#1"), looked up among the controller's permanents.
+     * - a token made by a card (Niko's Shard tokens): the running token's abilities are fresh objects, so match the
+     *   granting card's "#g" abilities by class and rules text.
+     */
+    private static String borrowed(Game game, Ability ability) {
+        for (mage.game.permanent.Permanent p : game.getBattlefield().getAllActivePermanents(ability.getControllerId())) {
+            if (p.getId().equals(ability.getSourceId()) || p.isFaceDown(game)) continue;
+            Card card = game.getCard(p.getId());
+            if (card instanceof SubCard) card = ((SubCard<?>) card).getParentCard();
+            if (card == null) continue;
+            List<Ability> list = keyedAbilities(card);
+            for (int i = 0; i < list.size(); i++) if (sameAbility(list.get(i), ability, false)) return card.getName() + "#" + i;
+        }
+        for (Card card : game.getCards()) {
+            if (card instanceof SubCard) continue;
+            List<Ability> list = grantedAbilities(card);
+            for (int i = 0; i < list.size(); i++) if (sameAbility(list.get(i), ability, false)) return card.getName() + "#g" + i;
+        }
+        return null;
     }
 
     // ---- named choices: what a non-card answer means, independent of the order XMage lists it in ----

@@ -348,7 +348,8 @@ public final class Observer {
         for (int i = text.indexOf(name); i >= 0; i = text.indexOf(name, i + 1)) {
             int end = i + name.length();
             boolean startOk = i == 0 || !wordChar(text.charAt(i - 1));
-            boolean endOk = end == text.length() || !(wordChar(text.charAt(end)) || text.charAt(end) == '\'');
+            // Gson writes an apostrophe as \u0027, so "Marina Vendrell\u0027s Grimoire" continues the word too
+            boolean endOk = end == text.length() || !(wordChar(text.charAt(end)) || text.charAt(end) == '\'' || text.startsWith("\\u0027", end));
             if (startOk && endOk) return true;
         }
         return false;

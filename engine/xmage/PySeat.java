@@ -421,6 +421,7 @@ public class PySeat extends ComputerPlayer {
         for (ActivatedAbility a : playable(game)) {
             if (a.isManaAbility() || failedThisWindow.contains(a.getId())) continue;
             if (resources(game).equals(refusedAt.get(a.getId()))) continue;
+            if (a instanceof mage.abilities.keyword.CrewAbility && !canCrew(a, game)) continue;
             Option o = new Option(a.getAbilityType() + " | " + label(game, a.getSourceId()) + " | " + a, a.getSourceId(), null, () -> chosen[0] = a);
             switch (a.getAbilityType()) {
                 case PLAY_LAND: o.as("PLAY_LAND"); break;
@@ -463,6 +464,23 @@ public class PySeat extends ComputerPlayer {
         for (ActivatedAbility a : getPlayable(game, true, mage.constants.Zone.ALL, false))
             if (game.getPermanent(a.getSourceId()) != null && ids.add(a.getId())) list.add(a);
         return list;
+    }
+
+    /**
+     * XMage's CrewCost.canPay checks "another untapped creature you control" without the vehicle as source, so a
+     * crewed, untapped vehicle counts toward its own Crew and the ability is listed as playable, then refused when
+     * paid (soak: Hedge Shredder, Unidentified Hovership). Check it properly: other untapped creatures' total power.
+     */
+    private boolean canCrew(ActivatedAbility a, Game game) {
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("Crew (\\d+)").matcher(a.getRule());
+        if (!m.find()) return true;  // unknown wording: leave it to XMage
+        int need = Integer.parseInt(m.group(1)), power = 0;
+        for (Permanent p : game.getBattlefield().getAllActivePermanents(playerId)) {
+            if (p.getId().equals(a.getSourceId()) || p.isTapped() || !p.isCreature(game)) continue;
+            power += Math.max(0, p.getPower().getValue());
+            if (power >= need) return true;
+        }
+        return false;
     }
 
     /** What paying a cost can depend on: every permanent and whether it's tapped, this seat's hand, life and graveyard, the stack. */
