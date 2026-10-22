@@ -7,7 +7,7 @@ import json, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from render import clean, render
+from render import clean, option_label, render
 
 last = {}
 for line in open(sys.argv[1]):
@@ -23,7 +23,7 @@ for line in open(sys.argv[1]):
     last[r["seat"]] = state
     print("Decision: " + decision)
     how = f"[auto-pass, {r['auto']}]" if r.get("auto") else f"reason: {r.get('reason', '')}"
-    print(f">>> picked {r['choice']}: {clean(r['options'][r['choice']]['label'])}  | {how}")
+    print(f">>> picked {r['choice']}: {option_label(r['options'][r['choice']], r['obs']['entries'])}  | {how}")
     if r.get("plan"):
         print(">>> plan: " + "; ".join(f"{k}: {v}" for k, v in r["plan"].items()))
     print()

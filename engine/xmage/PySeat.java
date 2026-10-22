@@ -163,7 +163,9 @@ public class PySeat extends ComputerPlayer {
             keys.put(o, new int[]{needed, colours});
             sources.add(o);
         }
-        sources.sort(Comparator.<MageObject>comparingInt(o -> keys.get(o)[0]).thenComparingInt(o -> keys.get(o)[1]));
+        Set<MageObject> plan = planPayment(ability, symbols, sources, keys, game);
+        if (plan.isEmpty()) sources.sort(Comparator.<MageObject>comparingInt(o -> keys.get(o)[0]).thenComparingInt(o -> keys.get(o)[1]));
+        else sources.sort(Comparator.<MageObject>comparingInt(o -> plan.contains(o) ? 0 : 1).thenComparingInt(o -> keys.get(o)[1]));
         for (mage.abilities.costs.mana.ManaCost symbol : symbols) {
             for (MageObject o : sources) {
                 List<mage.abilities.mana.ActivatedManaAbilityImpl> abilities = new ArrayList<>(
@@ -179,6 +181,111 @@ public class PySeat extends ComputerPlayer {
             }
         }
         return false;
+    }
+
+    /** Colours a source can make for this ability as a bitmask (W U B R G), or -1 if it makes more than one mana at once. */
+    private int colourMask(MageObject o, Ability ability, mage.abilities.costs.mana.ManaCost symbol, Game game) {
+        int mask = 0;
+        for (mage.abilities.mana.ActivatedManaAbilityImpl ma : o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game))
+            for (mage.Mana net : ma.getNetMana(game)) {
+                if (net instanceof mage.ConditionalMana && !((mage.ConditionalMana) net).apply(ability, game, playerId, symbol)) continue;
+                if (net.count() > 1) return -1;
+                for (int i = 0; i < COLOURS.length; i++) if (amount(net, COLOURS[i]) > 0) mask |= 1 << i;
+            }
+        return mask;
+    }
+
+    /** {W, U, B, R, G, generic} of a cost, or null for symbols the planner doesn't handle (hybrid, {C}, snow, X). */
+    private static int[] split(Collection<? extends mage.abilities.costs.mana.ManaCost> costs) {
+        int[] r = new int[COLOURS.length + 1];
+        for (mage.abilities.costs.mana.ManaCost c : costs) {
+            mage.abilities.costs.mana.ManaCost u = c.getUnpaid();
+            if (c instanceof mage.abilities.costs.mana.GenericManaCost) r[COLOURS.length] += u.getMana().getGeneric();
+            else if (c instanceof mage.abilities.costs.mana.ColoredManaCost)
+                for (int i = 0; i < COLOURS.length; i++) r[i] += u.getMana().getColor(COLOURS[i]);
+            else return null;
+        }
+        return r;
+    }
+
+    /** Can these sources (one mana each, colour bitmasks) pay {pips..., generic}? Pips are matched by backtracking. */
+    private static boolean canPay(int[] cost, List<Integer> masks) {
+        List<Integer> pips = new ArrayList<>();
+        for (int i = 0; i < COLOURS.length; i++) for (int k = 0; k < cost[i]; k++) pips.add(i);
+        if (pips.size() + cost[COLOURS.length] > masks.size()) return false;
+        return match(pips, 0, masks, new boolean[masks.size()]);
+    }
+
+    private static boolean match(List<Integer> pips, int at, List<Integer> masks, boolean[] used) {
+        if (at == pips.size()) return true;
+        for (int j = 0; j < masks.size(); j++)
+            if (!used[j] && (masks.get(j) & (1 << pips.get(at))) != 0) {
+                used[j] = true;
+                if (match(pips, at + 1, masks, used)) return true;
+                used[j] = false;
+            }
+        return false;
+    }
+
+    /**
+     * Which sources to tap for what is still unpaid: of the ways to pay it with one mana per source, the one whose
+     * untapped remainder leaves the most cards in hand castable (instants and flash cards count three times), then the
+     * one tapping sources whose colours the hand needs least, then fewer colours. Empty when it can't plan (a source
+     * making two mana, symbols other than coloured and generic, too many sources); the caller then uses its own order.
+     */
+    private Set<MageObject> planPayment(Ability ability, List<mage.abilities.costs.mana.ManaCost> symbols, List<MageObject> sources,
+                                        Map<MageObject, int[]> keys, Game game) {
+        int[] cost = split(symbols);
+        if (cost == null || sources.size() > 14) return Collections.emptySet();
+        int total = Arrays.stream(cost).sum();
+        if (total == 0 || total > sources.size()) return Collections.emptySet();
+        List<Integer> masks = new ArrayList<>();
+        for (MageObject o : sources) {
+            int m = colourMask(o, ability, symbols.get(0), game);
+            if (m < 0) return Collections.emptySet();
+            masks.add(m);
+        }
+        List<List<int[]>> hand = new ArrayList<>();  // per other card in hand: the costs of its ways to be cast
+        List<Integer> weights = new ArrayList<>();
+        for (Card c : getHand().getCards(game)) {
+            if (c.isLand(game) || c.getId().equals(ability.getSourceId())) continue;
+            List<Card> ways = c instanceof mage.cards.SplitCard  // a Room's doors are cast separately
+                    ? Arrays.asList(((mage.cards.SplitCard) c).getLeftHalfCard(), ((mage.cards.SplitCard) c).getRightHalfCard())
+                    : Collections.singletonList(c);
+            List<int[]> costs = new ArrayList<>();
+            for (Card w : ways) {
+                int[] wc = split(w.getManaCost());
+                if (wc != null) costs.add(wc);
+            }
+            if (costs.isEmpty()) continue;
+            hand.add(costs);
+            weights.add(c.isInstant(game) || c.getAbilities(game).containsClass(mage.abilities.keyword.FlashAbility.class) ? 3 : 1);
+        }
+        int n = sources.size();
+        long best = Long.MIN_VALUE;
+        int bestSet = -1;
+        for (int set = 0; set < (1 << n); set++) {
+            if (Integer.bitCount(set) != total) continue;
+            List<Integer> tapped = new ArrayList<>(), rest = new ArrayList<>();
+            int neededSum = 0, coloursSum = 0;
+            for (int j = 0; j < n; j++) {
+                if ((set & (1 << j)) != 0) {
+                    tapped.add(masks.get(j));
+                    neededSum += keys.get(sources.get(j))[0];
+                    coloursSum += keys.get(sources.get(j))[1];
+                } else rest.add(masks.get(j));
+            }
+            if (!canPay(cost, tapped)) continue;
+            int keep = 0;
+            for (int h = 0; h < hand.size(); h++)
+                if (hand.get(h).stream().anyMatch(way -> canPay(way, rest))) keep += weights.get(h);
+            long score = ((long) keep << 32) - ((long) neededSum << 16) - coloursSum;
+            if (score > best) { best = score; bestSet = set; }
+        }
+        if (bestSet < 0) return Collections.emptySet();
+        Set<MageObject> plan = new HashSet<>();
+        for (int j = 0; j < n; j++) if ((bestSet & (1 << j)) != 0) plan.add(sources.get(j));
+        return plan;
     }
 
     @Override

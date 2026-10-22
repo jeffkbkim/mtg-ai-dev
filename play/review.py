@@ -16,7 +16,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from players import read_deck
-from render import card_text, clean, load_card_text, names_in, render
+from render import card_text, clean, load_card_text, names_in, option_label, render
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -74,7 +74,7 @@ def seat_transcript(records, seat, deck_path, texts, result_line):
         lines.append(state if state != last_state else "(state unchanged)")
         last_state = state
         lines.append("Decision: " + decision)
-        lines.append(f">>> picked {r['choice']}: {clean(r['options'][r['choice']]['label'])} | reason: {r.get('reason', '')}")
+        lines.append(f">>> picked {r['choice']}: {option_label(r['options'][r['choice']], r['obs']['entries'])} | reason: {r.get('reason', '')}")
         if r.get("plan"):
             lines.append(">>> plan: " + "; ".join(f"{k}: {v}" for k, v in r["plan"].items()))
         lines.append("")

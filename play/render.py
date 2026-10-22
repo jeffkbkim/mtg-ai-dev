@@ -168,13 +168,18 @@ def render(msg, new_cards=()):
     lines.append(f"Decision: {msg['kind']}." + (f" {prompt}" if prompt.lower() != msg["kind"].lower() else ""))
     for k, o in enumerate(msg["options"]):
         extra = [x for x in (_ref(o.get("source"), entries), _ref(o.get("target"), entries)) if x]
-        label = clean(o["label"])
-        if "source" in o and "entry" in (o.get("source") or {}):
-            label = _door_label(label, entries[o["source"]["entry"]])
-        parts = label.split(" | ")
-        if len(parts) == 3 and parts[0] in ("Spell", "Play land"):
-            label = parts[2]  # "Spell | Glimmerburst | Cast Glimmerburst" -> "Cast Glimmerburst"
-        if label == "?" and "player" in (o.get("target") or {}):
-            label = "target " + _ref(o["target"], entries)
-        lines.append(f"{k}: {label}" + (f"   ({' -> '.join(extra)})" if extra else ""))
+        lines.append(f"{k}: {option_label(o, entries)}" + (f"   ({' -> '.join(extra)})" if extra else ""))
     return "\n".join(lines)
+
+
+def option_label(o, entries):
+    """An option's label as the player reads it (also used for the picked option in logs and transcripts)."""
+    label = clean(o["label"])
+    if "source" in o and "entry" in (o.get("source") or {}):
+        label = _door_label(label, entries[o["source"]["entry"]])
+    parts = label.split(" | ")
+    if len(parts) == 3 and parts[0] in ("Spell", "Play land"):
+        label = parts[2]  # "Spell | Glimmerburst | Cast Glimmerburst" -> "Cast Glimmerburst"
+    if label == "?" and "player" in (o.get("target") or {}):
+        label = "target " + _ref(o["target"], entries)  # a player target has no label of its own
+    return label

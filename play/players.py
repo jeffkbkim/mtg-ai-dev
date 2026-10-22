@@ -2,7 +2,7 @@
 import hashlib, json, os, random, re, subprocess, tempfile, threading, time
 from pathlib import Path
 
-from render import BASICS, card_text, clean, events, load_card_text, names_in, render
+from render import BASICS, card_text, clean, events, load_card_text, names_in, option_label, render
 
 PRIMER_DIR = Path(__file__).resolve().parent / "primer"
 
@@ -295,7 +295,7 @@ class ClaudePlayer:
                 if until in self.PASS_TARGETS and msg["kind"] == "PRIORITY" and msg["options"][choice]["label"] == "PASS":
                     self.pass_until = {"target": until, "turn": g["turn"], "my_turn": g["my_turn"]}
                     info["pass_until"] = until
-                self.log.append(f"turn {g['turn']}: you chose \"{clean(msg['options'][choice]['label'])}\" ({reason})")
+                self.log.append(f"turn {g['turn']}: you chose \"{option_label(msg['options'][choice], msg['obs']['entries'])}\" ({reason})")
                 return choice, info
             invalid += 1
             if invalid == 2:

@@ -24,7 +24,10 @@ import java.util.*;
  * that can only turn permanents face up; XMage's payer tries the bigger ability first, and casts paid with Zealot
  * were rolled back (seen by the reviewer in five games). Board: Zealot and two Swamps, paying {2}{G}.
  * Colours in hand: paying {1}{G} from Island + 3 Forest while holding Don't Make a Sound ({1}{U}) must leave the
- * Island untapped (the reviewer saw the payer strand the only blue source in four games).
+ * Island untapped (the reviewer saw the payer strand the only blue source in four games). Two boards from batch 2
+ * games, where a colour-demand count still chose badly: {2}{W} from 3 Plains + 2 Mountain holding Jump Scare ({W}),
+ * Irreverent Gremlin ({1}{R}) and Vengeful Possession ({2}{R}) must leave a Plains and a Mountain; {4}{G} from
+ * 4 Forest + 3 Island holding House Cartographer ({1}{G}) and two {3}{U} instants must leave a Forest.
  * Prints PASS or FAIL and exits 1 on FAIL.
  */
 public class ManaCheck {
@@ -69,6 +72,7 @@ public class ManaCheck {
     }
 
     static String[] hand = {};
+    static List<String> untapped = new ArrayList<>();  // land names left untapped by the last trial
 
     /** [creatures tapped, lands left untapped, paid?, Islands left untapped] after paying cost on a fresh board. */
     static int[] trial(String cost, String... cards) throws IOException {
@@ -94,7 +98,9 @@ public class ManaCheck {
         sa.setControllerId(py.getId());
         boolean paid = new ManaCostsImpl<ManaCost>(cost).pay(sa, game, sa, py.getId(), false, null);
         int creaturesTapped = 0, landsUntapped = 0, islandsUntapped = 0;
+        untapped = new ArrayList<>();
         for (Permanent p : board) {
+            if (p.isLand(game) && !p.isTapped()) untapped.add(p.getName());
             if (p.isCreature(game) && p.isTapped()) creaturesTapped++;
             if (p.isLand(game) && !p.isTapped()) landsUntapped++;
             if (p.getName().equals("Island") && !p.isTapped()) islandsUntapped++;
@@ -107,7 +113,7 @@ public class ManaCheck {
         CardScanner.scan();
         String[] vitality = {"Enduring Vitality", "Bashful Beastie", "Bashful Beastie", "Bashful Beastie",
                 "Strangled Cemetery", "Strangled Cemetery", "Forest", "Forest"};
-        int trials = 20, badFour = 0, unpaid = 0, badSix = 0, zealotUnpaid = 0, islandSpent = 0;
+        int trials = 20, badFour = 0, unpaid = 0, badSix = 0, zealotUnpaid = 0, islandSpent = 0, badKeep = 0;
         for (int t = 0; t < trials; t++) {
             int[] r = trial("{4}", vitality);
             if (r[2] == 0) unpaid++;
@@ -120,13 +126,21 @@ public class ManaCheck {
             int[] k = trial("{1}{G}", "Island", "Forest", "Forest", "Forest");
             hand = new String[]{};
             if (k[2] == 0 || k[3] == 0) islandSpent++;
+            hand = new String[]{"Jump Scare", "Irreverent Gremlin", "Vengeful Possession"};
+            int[] w = trial("{2}{W}", "Plains", "Plains", "Plains", "Mountain", "Mountain");
+            if (w[2] == 0 || !untapped.contains("Plains") || !untapped.contains("Mountain")) badKeep++;
+            hand = new String[]{"House Cartographer", "Vanish from Sight", "Glimmerburst"};
+            int[] g = trial("{4}{G}", "Forest", "Forest", "Forest", "Forest", "Island", "Island", "Island");
+            if (g[2] == 0 || !untapped.contains("Forest")) badKeep++;
+            hand = new String[]{};
         }
         System.out.println("{4} with 4 lands: a creature was tapped in " + badFour + "/" + trials + " trials");
         System.out.println("{6} with 4 lands: not exactly 4 lands + 2 creatures in " + badSix + "/" + trials + " trials; unpaid " + unpaid);
         System.out.println("{2}{G} with Overgrown Zealot + 2 Swamps: unpaid in " + zealotUnpaid + "/" + trials + " trials");
         System.out.println("{1}{G} from Island + 3 Forest holding a blue instant: Island spent (or unpaid) in " + islandSpent + "/" + trials + " trials");
+        System.out.println("batch-2 boards: the colour a card in hand needs was spent in " + badKeep + "/" + (2 * trials) + " trials");
         System.out.println("asked Python: " + new TreeSet<>(asked));
-        boolean ok = badFour == 0 && badSix == 0 && unpaid == 0 && zealotUnpaid == 0 && islandSpent == 0;
+        boolean ok = badFour == 0 && badSix == 0 && unpaid == 0 && zealotUnpaid == 0 && islandSpent == 0 && badKeep == 0;
         System.out.println(ok ? "PASS" : "FAIL");
         System.exit(ok ? 0 : 1);
     }
