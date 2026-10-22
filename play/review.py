@@ -36,6 +36,16 @@ Severity:
   while a much bigger threat stands; skipping a land drop or an obviously good play for no reason.
 - "mistake": clearly worse than an available option, with a smaller cost.
 
+Category, the main reason the decision was wrong:
+- "rules": a rules, timing or card-text misread (e.g. thinking a creature or land untaps before the opponent's turn,
+  that mana spent now is available on their turn, or what a card does);
+- "combat_math": combat or lethal arithmetic (a block or attack that loses on the numbers, missing lethal, miscounting
+  damage that gets through);
+- "crack_back": an attack or tap that leaves too little defence against the opponent's swing back;
+- "hidden_info": ignoring a clearly signalled risk from cards the player can't see (open mana for a likely trick,
+  the opponent passing with mana up);
+- "other": anything else.
+
 Do not flag:
 - judgment calls where reasonable players differ, or where you are unsure;
 - decisions that only look bad because of information the player could not see at that moment (the opponent's hand,
@@ -49,7 +59,7 @@ have been offered and wasn't, a choice that didn't do what its label said, a sta
 card text, or information this player should not have been able to see.
 
 Reply with one JSON object and nothing else:
-{"flags": [{"idx": <decision number after '#'>, "severity": "blunder" or "mistake", "what": "<what the player did and why it was clearly wrong, from what was visible then>", "better": "<the better option>"}], "bugs": [{"idx": <decision number>, "what": "<what looks wrong>"}]}"""
+{"flags": [{"idx": <decision number after '#'>, "severity": "blunder" or "mistake", "category": "rules", "combat_math", "crack_back", "hidden_info" or "other", "what": "<what the player did and why it was clearly wrong, from what was visible then>", "better": "<the better option>"}], "bugs": [{"idx": <decision number>, "what": "<what looks wrong>"}]}"""
 
 SYSTEM_SHA = hashlib.sha256(REVIEW_RULES.encode()).hexdigest()[:12]
 
@@ -171,6 +181,9 @@ def game_files(paths):
             yield p
 
 
+CATEGORIES = ("rules", "combat_math", "crack_back", "hidden_info", "other")
+
+
 def summary(paths):
     per = defaultdict(Counter)
     for gf in game_files(paths):
@@ -180,11 +193,15 @@ def summary(paths):
             c["reviews"] += 1; c["asked"] += r["asked"]; c["bugs"] += len(r["bugs"]); c["cost_cents"] += round(100 * r["cost_usd"])
             for f in r["flags"]:
                 c[f.get("severity", "?")] += 1
+                c["cat:" + (f.get("category") if f.get("category") in CATEGORIES else "uncategorized")] += 1
     for player, c in sorted(per.items()):
         n = max(c["asked"], 1)
         print(f"{player}: {c['reviews']} seat-games, {c['asked']} decisions; blunders {c['blunder']} "
               f"({100 * c['blunder'] / n:.1f}%), mistakes {c['mistake']} ({100 * c['mistake'] / n:.1f}%), "
               f"suspected bugs {c['bugs']}; review cost ${c['cost_cents'] / 100 / max(c['reviews'], 1):.2f} per seat-game")
+        cats = [(k[4:], v) for k, v in c.items() if k.startswith("cat:") and v]
+        if cats:
+            print("  flags per 1,000 decisions: " + ", ".join(f"{k} {1000 * v / n:.1f}" for k, v in sorted(cats)))
 
 
 if __name__ == "__main__":

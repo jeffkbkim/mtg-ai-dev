@@ -37,9 +37,10 @@ using as extra training data or as an opponent.
 - `launch_pairs.sh`: runs plan-vs-no-plan deck pairs (each pair twice, the plan on seat A then on seat B, 2 games each),
   6 parts at a time, e.g. `play/launch_pairs.sh <out> engine/xmage/decks/17lands-r2 600 b03 trophy_10/trophy_11 ...`.
 - `review.py`: a reviewer (`claude -p`, no tools) reads each seat's game as that seat saw it and flags clear errors
-  ("blunder" or "mistake", judged only on what was visible then) plus suspected engine or harness bugs. Flags go to
+  ("blunder" or "mistake", judged only on what was visible then, with a category: rules, combat_math, crack_back,
+  hidden_info or other) plus suspected engine or harness bugs. Flags go to
   `<game>.review-<seat>.json` next to the game; nothing is deleted, so filtering is chosen when building a training
-  set. `--summary` prints flag rates per player variant. About $0.80 per seat-game at Opus high.
+  set. `--summary` prints flag rates per player variant, by category per 1,000 decisions. About $0.80 per seat-game at Opus high.
 
 ## Run
 
