@@ -413,6 +413,7 @@ public class PySeat extends ComputerPlayer {
         leaks.addAll(Observer.scanText(text, game, obs));
         for (String l : leaks) link.leaks.merge(l, 1, Integer::sum);
         msg.add("leaks", link.gson.toJsonTree(leaks));
+        decorate(msg, game);
         text = link.gson.toJson(msg);
         link.observeNanos += System.nanoTime() - t0;
         link.bytes += text.length();
@@ -428,11 +429,19 @@ public class PySeat extends ComputerPlayer {
         link.roundTripNanos += System.nanoTime() - t1;
         link.roundTrips++;
         if (line == null) throw new IllegalStateException("python closed the pipe");
-        int choice = link.gson.fromJson(line, JsonObject.class).get("choice").getAsInt();
+        JsonObject reply = link.gson.fromJson(line, JsonObject.class);
+        onReply(reply, game);
+        int choice = reply.get("choice").getAsInt();
         if (choice < 0 || choice >= options.size()) throw new IllegalStateException("bad choice " + choice + " for " + kind);
         options.get(choice).onPick.run();
         return choice;
     }
+
+    /** Hook for subclasses: add fields to an outgoing decision message (after the leak checks). */
+    protected void decorate(JsonObject msg, Game game) { }
+
+    /** Hook for subclasses: read extra fields of Python's reply before its choice is applied. */
+    protected void onReply(JsonObject reply, Game game) { }
 
     private static String label(Game game, UUID id) {
         // labels are for humans reading logs; the model uses the entry indices. Never read names of hidden objects here.
