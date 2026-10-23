@@ -67,8 +67,8 @@ engine's own log (leaks, rejected moves, fallbacks).
 
 `python3 play/manifest.py` rebuilds `<recordings>/manifest.jsonl`, one line per finished game with a verdict:
 `unusable` (a seat-version bug that corrupts every game, or an unfinished game), `suspect` (XMage decided something
-for the player, a reviewer bug note, or the pre-payer seat), `clean`. `cautions` lists weaker signals (a buggy card
-that appeared, moves offered then refused); `flags` lists the reviewer's player errors; `reviewed` says whether both
+for the player, a reviewer bug note that changed the board, or the pre-payer seat), `clean`. `cautions` lists weaker
+signals (a buggy card that appeared, moves offered then refused or rolled back, repeated prompts); `flags` lists the reviewer's player errors; `reviewed` says whether both
 seats were reviewed. It is a view over config.json, jvm.log and the review files, rebuilt from scratch each run; what
 to filter on is decided when building a training set.
 

@@ -8,8 +8,10 @@ One line per finished game, combining three signals that every recording already
 - the engine's end-of-match counters in jvm.log: FALLBACK (XMage decided for the player: X values, mana colours,
   counter or damage splits), REJECTED (moves offered, then refused), LEAKS, UNMAPPED_*. One JVM serves every game of
   a part, so these attach to all games of the part;
-- the reviewer's notes (play/review.py): "bugs" are suspected engine or harness problems, "flags" are the player's
-  own errors and are listed separately, since they are a quality filter rather than a bug.
+- the reviewer's notes (play/review.py): "bugs" are suspected engine or harness problems (a note about a move
+  offered then refused, a repeated prompt or a display glitch only counts as a caution, since the board did not
+  change), "flags" are the player's own errors and are listed separately, since they are a quality filter rather
+  than a bug.
 
 Verdicts: "unusable" (a bug that corrupts every game on that seat version, or the game did not finish), "suspect"
 (something decided or changed the board that the player never chose, or the reviewer reported a bug), "clean"
@@ -38,6 +40,24 @@ FIXES = [
     ("da20d51", "caution", {"Overgrown Zealot"}, "the payer could spend Overgrown Zealot's mana on a cost it can't pay, so the move was refused (fixed da20d51)"),
 ]
 LEVELS = {"clean": 0, "caution": 0, "suspect": 1, "unusable": 2}
+
+# A reviewer's bug note is "suspect" when the board changed in a way the player never chose, and only a "caution"
+# when nothing did (Jeff 2026-10-23): a move offered then refused or rolled back, a prompt repeated after DONE, a
+# display or label glitch. Read in this order: a missing option or a changed board wins over the harmless phrasing.
+MISSING = re.compile(r"not offered|never offered|no (?:\w+[- ])?(?:choice|decision|option)s? (?:was |were )?(?:offered|shown)|not among"
+                     r"|only one .{0,30}(?:option|Equip)|missing option|offered no|never (?:got|produced)|(?:was )?never asked", re.I)
+BOARD = re.compile(r"auto-?pay|automatic(?:ally)? (?:mana )?pay|mana payer|auto-?target|on the stack|resolved without|how to (?:assign|split)"
+                   r"|damage|applied anyway|should have been|zone change|left the battlefield|put back|counter \(|reversed|put the counters"
+                   r"|went onto|paid by tapping|was paid \(|distribute|double strike|still (?:shows|is|was|has)|stays", re.I)
+HARMLESS = re.compile(r"refus|revert|roll(?:ed)? ?back|was undone|silently|cast failed|did nothing|not cast|dropped out|vanished"
+                      r"|same .{0,60}prompt|identical .{0,60}prompt|re-?asked|came back|shown again|reappeared|label|'\?'|being_cast"
+                      r"|clarity|(?:was|were|still|again) offered|offered (?:'|its|as|three)", re.I | re.S)
+
+
+def reviewer_level(what):
+    if MISSING.search(what) or BOARD.search(what):
+        return "suspect"
+    return "caution" if HARMLESS.search(what) else "suspect"
 
 
 @lru_cache(None)
@@ -122,7 +142,9 @@ def one_game(part, cfg, end, counters, part_games, root):
             continue
         rev = json.loads(rf.read_text())
         for b in rev.get("bugs", []):
-            row["reasons"].append({"source": "reviewer", "seat": seat, "idx": b.get("idx"), "level": "suspect", "what": b.get("what", "")})
+            level = reviewer_level(b.get("what", ""))
+            (row["reasons"] if level == "suspect" else row["cautions"]).append(
+                {"source": "reviewer", "seat": seat, "idx": b.get("idx"), "level": level, "what": b.get("what", "")})
         for f in rev.get("flags", []):
             row["flags"].append({"seat": seat, "idx": f.get("idx"), "severity": f.get("severity"), "category": f.get("category"), "what": f.get("what", "")})
     row["verdict"] = max((r["level"] for r in row["reasons"]), key=LEVELS.get, default="clean")
