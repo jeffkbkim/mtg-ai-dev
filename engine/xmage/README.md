@@ -1,7 +1,7 @@
 # XMage seat
 
 A Java player class that sits in a seat of a real XMage game and hands every decision to Python.
-Built against the **unmodified XMage 1.4.62 release jars** (build option 1), plus one patched XMage class compiled
+Built against the **unmodified XMage 1.4.62 release jars** (build option 1), plus two patched XMage classes compiled
 with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
 
 - `PySeat.java`: the seat. Subclasses XMage's `ComputerPlayer`, sends each real decision as one JSON line
@@ -24,8 +24,9 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
 - `SimulationCheck.java`: regression check that questions XMage's AI asks inside its own simulations of the game
   are answered in Java and never reach Python. Prints PASS or FAIL.
 - `ManaCheck.java`: regression checks for automatic mana payment: lands before creatures (Enduring Vitality lets
-  creatures tap for mana), Overgrown Zealot's any-colour mana pays spells (not its face-up-only mana), and generic
-  costs don't spend the colour an instant in hand needs. Prints PASS or FAIL.
+  creatures tap for mana), Overgrown Zealot's any-colour mana pays spells (not its face-up-only mana) while its
+  face-up-only mana pays for turning a manifest face up, and generic costs don't spend the colour an instant in hand
+  needs. Prints PASS or FAIL.
 - `TargetCheck.java`: regression check that picking one of "one or two" targets and then DONE takes two prompts
   (XMage re-asks after any call that added a target; DONE used to be asked twice). Prints PASS or FAIL.
 - `PlayableCheck.java`: regression check that two copies of a permanent each offer their activated ability (XMage's
@@ -35,6 +36,12 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   stays, and a face-up Room keeps only its unlocked doors' abilities. Prints PASS or FAIL.
 - `XSpellCheck.java`: regression check that a {X}{X} spell (Valgavoth's Onslaught) is cast with the largest affordable
   X (XMage's AI counted X once, asked for too much mana and the cast was refused). Prints PASS or FAIL.
+- `ColorChoiceCheck.java`: regression check that "As this land enters, choose a color" (Valgavoth's Lair) is asked of
+  the player (XMage flags every colour choice as a mana colour choice, which the seat answers in Java). Prints PASS or
+  FAIL.
+- `VeteranSurvivor.java`: our patched copy of that XMage card (see "Our patches to XMage").
+- `VeteranSurvivorCheck.java`: regression check for that patch: after exiling three cards it is 5/4 with hexproof.
+  Prints PASS or FAIL.
 - `BlockCheck.java`: builds a combat board directly and asks XMage's AI to block (for chasing block bugs).
 - `decks/`: smoke-test decks; `dsk_ug_modal.dck` swaps in modal spells to exercise MODE prompts.
 
@@ -77,6 +84,8 @@ VocabDump keeps the `tokens` list already in the file (token names come from rec
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP PlayableCheck)    # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP XSpellCheck)      # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP FaceDownRoomCheck) # expect PASS
+(cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP ColorChoiceCheck) # expect PASS
+(cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP VeteranSurvivorCheck) # expect PASS
 ```
 
 Same seed does not reproduce the same game (XMage's own randomness), so every action is logged.
@@ -107,3 +116,9 @@ and re-apply the marked change, or drop the patch if upstream fixed it.
   card's ability list, so they counted as gained. The patch also treats abilities of a split card's halves as its own.
   Seen in 4 of 117 recorded Claude games before the patch (an own face-down Room on the battlefield). Check:
   `FaceDownRoomCheck` (FAIL on the unpatched class, PASS patched).
+- `VeteranSurvivor.java`: **Veteran Survivor never got +3/+3 and hexproof** (found 2026-10-23 by the game reviewer).
+  Its static ability looked for "cards exiled with this" under the ability's own zone change counter (0), while the
+  Survival trigger exiles under the permanent's, so the bonus never turned on (facts-check-pairs batch01 part13: three
+  cards exiled, still 3/2, then Scorching Dragonfire targeted it). The patch is the fix XMage's master branch already
+  has (count by the permanent's current zone change counter). Check: `VeteranSurvivorCheck` (FAIL unpatched, PASS
+  patched).

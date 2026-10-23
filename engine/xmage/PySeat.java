@@ -112,20 +112,27 @@ public class PySeat extends ComputerPlayer {
      * symbols before generic, from the source that matters least: lands before creatures (creatures only when nothing
      * else can pay, and never the permanent whose own {T} the ability needs), then the source whose colours the
      * other cards in hand need least, then the one with fewer colours. Mana that can't be spent on this ability is
-     * skipped. Anything this can't pay (X, phyrexian, convoke, ...) falls back to XMage's payer, lands first.
+     * skipped, and a source's restricted mana that this ability may spend is used before its other mana. Anything this can't pay (X, phyrexian, convoke, ...) falls back to XMage's payer, lands first.
      */
     private transient boolean skipCreatureMana = false;
+    private transient boolean payingMana = false;  // colour choices of the mana abilities it activates are the payer's
 
     @Override
     protected boolean playManaHandling(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game) {
-        if (payStep(ability, unpaid, game, false) || payStep(ability, unpaid, game, true)) return true;
-        skipCreatureMana = true;
+        boolean outer = payingMana;
+        payingMana = true;
         try {
-            if (super.playManaHandling(ability, unpaid, game)) return true;  // false means nothing was activated
+            if (payStep(ability, unpaid, game, false) || payStep(ability, unpaid, game, true)) return true;
+            skipCreatureMana = true;
+            try {
+                if (super.playManaHandling(ability, unpaid, game)) return true;  // false means nothing was activated
+            } finally {
+                skipCreatureMana = false;
+            }
+            return super.playManaHandling(ability, unpaid, game);
         } finally {
-            skipCreatureMana = false;
+            payingMana = outer;
         }
-        return super.playManaHandling(ability, unpaid, game);
     }
 
     private static final mage.constants.ColoredManaSymbol[] COLOURS = mage.constants.ColoredManaSymbol.values();
@@ -168,9 +175,18 @@ public class PySeat extends ComputerPlayer {
         else sources.sort(Comparator.<MageObject>comparingInt(o -> plan.contains(o) ? 0 : 1).thenComparingInt(o -> keys.get(o)[1]));
         for (mage.abilities.costs.mana.ManaCost symbol : symbols) {
             for (MageObject o : sources) {
-                List<mage.abilities.mana.ActivatedManaAbilityImpl> abilities = new ArrayList<>(
-                        o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game));
-                abilities.sort(Comparator.comparingInt(ma -> ma.getNetMana(game).stream().mapToInt(mage.Mana::count).max().orElse(0)));
+                List<mage.abilities.mana.ActivatedManaAbilityImpl> abilities = new ArrayList<>();
+                Set<mage.abilities.mana.ActivatedManaAbilityImpl> restricted = Collections.newSetFromMap(new IdentityHashMap<>());
+                for (mage.abilities.mana.ActivatedManaAbilityImpl ma : o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game)) {
+                    mage.ConditionalMana r = restrictedMana(ma, game);
+                    if (r != null && !r.apply(ability, game, playerId, symbol)) continue;
+                    if (r != null) restricted.add(ma);
+                    abilities.add(ma);
+                }
+                // smaller abilities first, but restricted mana this ability may spend before any: Overgrown Zealot's
+                // two face-up-only mana pays {2} of a face-up cost, where its one any-colour mana left it short
+                abilities.sort(Comparator.<mage.abilities.mana.ActivatedManaAbilityImpl>comparingInt(ma -> restricted.contains(ma) ? 0 : 1)
+                        .thenComparingInt(ma -> ma.getNetMana(game).stream().mapToInt(mage.Mana::count).max().orElse(0)));
                 for (mage.abilities.mana.ActivatedManaAbilityImpl ma : abilities) {
                     for (mage.Mana net : ma.getNetMana(game)) {
                         if (net instanceof mage.ConditionalMana && !((mage.ConditionalMana) net).apply(ability, game, playerId, symbol)) continue;
@@ -186,13 +202,36 @@ public class PySeat extends ComputerPlayer {
     /** Colours a source can make for this ability as a bitmask (W U B R G), or -1 if it makes more than one mana at once. */
     private int colourMask(MageObject o, Ability ability, mage.abilities.costs.mana.ManaCost symbol, Game game) {
         int mask = 0;
-        for (mage.abilities.mana.ActivatedManaAbilityImpl ma : o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game))
+        for (mage.abilities.mana.ActivatedManaAbilityImpl ma : o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game)) {
+            mage.ConditionalMana r = restrictedMana(ma, game);
+            if (r != null && !r.apply(ability, game, playerId, symbol)) continue;
             for (mage.Mana net : ma.getNetMana(game)) {
                 if (net instanceof mage.ConditionalMana && !((mage.ConditionalMana) net).apply(ability, game, playerId, symbol)) continue;
                 if (net.count() > 1) return -1;
                 for (int i = 0; i < COLOURS.length; i++) if (amount(net, COLOURS[i]) > 0) mask |= 1 << i;
             }
+        }
         return mask;
+    }
+
+    /**
+     * The restricted mana a mana ability makes (e.g. Overgrown Zealot's "spend this mana only to turn permanents face
+     * up"), or null if its mana is unrestricted. XMage's getNetMana reports it as restricted only while it checks
+     * playable moves, so this reads the ability's mana builder, a private field of effects like
+     * AddConditionalManaOfAnyColorEffect.
+     */
+    private static mage.ConditionalMana restrictedMana(mage.abilities.mana.ActivatedManaAbilityImpl ma, Game game) {
+        for (mage.abilities.effects.Effect e : ma.getEffects())
+            for (Class<?> k = e.getClass(); k != null; k = k.getSuperclass())
+                for (java.lang.reflect.Field f : k.getDeclaredFields()) {
+                    if (!mage.abilities.mana.builder.ConditionalManaBuilder.class.isAssignableFrom(f.getType())) continue;
+                    try {
+                        f.setAccessible(true);
+                        mage.abilities.mana.builder.ConditionalManaBuilder b = (mage.abilities.mana.builder.ConditionalManaBuilder) f.get(e);
+                        if (b != null) return b.setMana(mage.Mana.AnyMana(1), ma, game).build();
+                    } catch (ReflectiveOperationException | RuntimeException ignored) { }
+                }
+        return null;
     }
 
     /** {W, U, B, R, G, generic} of a cost, or null for symbols the planner doesn't handle (hybrid, {C}, snow, X). */
@@ -581,8 +620,10 @@ public class PySeat extends ComputerPlayer {
     @Override
     public boolean choose(Outcome outcome, Choice choice, Game game) {
         if (simulated(game)) return super.choose(outcome, choice, game);
-        // mana colour choices belong to the autopayer (v1: autotap); "Choose color" for a mana ability is one too
-        if (choice.isManaColorChoice() || choice.getMessage() != null && choice.getMessage().toLowerCase().contains("mana")) {
+        // mana colour choices belong to the autopayer (v1: autotap). XMage flags every colour choice as a mana one
+        // (ChoiceColor sets it), so tell them apart by what asks: a mana effect (PutManaInPool) or our payer. "As
+        // this land enters, choose a color" (Valgavoth's Lair) is the player's (ColorChoiceCheck)
+        if (outcome == Outcome.PutManaInPool || payingMana || choice.getMessage() != null && choice.getMessage().toLowerCase().contains("mana")) {
             link.fallback.merge("CHOICE (mana)", 1, Integer::sum);
             return super.choose(outcome, choice, game);
         }

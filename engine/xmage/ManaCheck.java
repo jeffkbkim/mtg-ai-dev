@@ -1,4 +1,3 @@
-import mage.abilities.SpellAbility;
 import mage.abilities.costs.mana.ManaCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.cards.Card;
@@ -22,7 +21,9 @@ import java.util.*;
  * pays {4}, which the lands cover; then pays {6}, which needs two creatures.
  * Overgrown Zealot: its "{T}: Add one mana of any color" must be usable for a spell. Its other ability makes two mana
  * that can only turn permanents face up; XMage's payer tries the bigger ability first, and casts paid with Zealot
- * were rolled back (seen by the reviewer in five games). Board: Zealot and two Swamps, paying {2}{G}.
+ * were rolled back (seen by the reviewer in five games). Board: Zealot and two Swamps, paying {2}{G}. That two-mana
+ * ability must still pay where it may: turning a manifested Cryptid Inspector face up ({2}{G}) with Zealot and a
+ * Forest (a batch-1 game had this refused twice, as the payer took Zealot's one mana and came up short).
  * Colours in hand: paying {1}{G} from Island + 3 Forest while holding Don't Make a Sound ({1}{U}) must leave the
  * Island untapped (the reviewer saw the payer strand the only blue source in four games). Two boards from batch 2
  * games, where a colour-demand count still chose badly: {2}{W} from 3 Plains + 2 Mountain holding Jump Scare ({W}),
@@ -72,6 +73,7 @@ public class ManaCheck {
     }
 
     static String[] hand = {};
+    static boolean faceUp = false;  // pay for turning a manifested Cryptid Inspector face up instead of for a spell
     static List<String> untapped = new ArrayList<>();  // land names left untapped by the last trial
 
     /** [creatures tapped, lands left untapped, paid?, Islands left untapped] after paying cost on a fresh board. */
@@ -94,8 +96,9 @@ public class ManaCheck {
         game.getState().setActivePlayerId(py.getId());
         game.applyEffects();
         Card spell = make(game, "Murder", py.getId());  // any spell of ours to pay for
-        SpellAbility sa = spell.getSpellAbility();
+        mage.abilities.Ability sa = spell.getSpellAbility();
         sa.setControllerId(py.getId());
+        if (faceUp) sa = faceUpAbility(game, py, sa);
         boolean paid = new ManaCostsImpl<ManaCost>(cost).pay(sa, game, sa, py.getId(), false, null);
         int creaturesTapped = 0, landsUntapped = 0, islandsUntapped = 0;
         untapped = new ArrayList<>();
@@ -108,12 +111,22 @@ public class ManaCheck {
         return new int[]{creaturesTapped, landsUntapped, paid ? 1 : 0, islandsUntapped};
     }
 
+    /** The "turn face up" ability of a Cryptid Inspector manifested by source. */
+    static mage.abilities.Ability faceUpAbility(Game game, PySeat py, mage.abilities.Ability source) {
+        Card inspector = make(game, "Cryptid Inspector", py.getId());
+        py.getLibrary().putOnTop(inspector, game);
+        game.getState().setZone(inspector.getId(), Zone.LIBRARY);
+        Permanent faceDown = mage.abilities.effects.keyword.ManifestEffect.doManifestCards(game, source, py, Collections.singleton(inspector)).get(0);
+        for (mage.abilities.Ability a : faceDown.getAbilities(game)) if (a instanceof mage.abilities.common.TurnFaceUpAbility) return a;
+        throw new IllegalStateException("the manifested card has no turn face up ability");
+    }
+
     public static void main(String[] args) throws Exception {
         RepositoryUtil.bootstrapLocalDb();
         CardScanner.scan();
         String[] vitality = {"Enduring Vitality", "Bashful Beastie", "Bashful Beastie", "Bashful Beastie",
                 "Strangled Cemetery", "Strangled Cemetery", "Forest", "Forest"};
-        int trials = 20, badFour = 0, unpaid = 0, badSix = 0, zealotUnpaid = 0, islandSpent = 0, badKeep = 0;
+        int trials = 20, badFour = 0, unpaid = 0, badSix = 0, zealotUnpaid = 0, faceUpUnpaid = 0, islandSpent = 0, badKeep = 0;
         for (int t = 0; t < trials; t++) {
             int[] r = trial("{4}", vitality);
             if (r[2] == 0) unpaid++;
@@ -122,6 +135,9 @@ public class ManaCheck {
             if (s[2] == 0) unpaid++;
             else if (s[0] != 2 || s[1] != 0) badSix++;
             if (trial("{2}{G}", "Overgrown Zealot", "Swamp", "Swamp")[2] == 0) zealotUnpaid++;
+            faceUp = true;
+            if (trial("{2}{G}", "Overgrown Zealot", "Forest")[2] == 0) faceUpUnpaid++;
+            faceUp = false;
             hand = new String[]{"Don't Make a Sound"};
             int[] k = trial("{1}{G}", "Island", "Forest", "Forest", "Forest");
             hand = new String[]{};
@@ -137,10 +153,11 @@ public class ManaCheck {
         System.out.println("{4} with 4 lands: a creature was tapped in " + badFour + "/" + trials + " trials");
         System.out.println("{6} with 4 lands: not exactly 4 lands + 2 creatures in " + badSix + "/" + trials + " trials; unpaid " + unpaid);
         System.out.println("{2}{G} with Overgrown Zealot + 2 Swamps: unpaid in " + zealotUnpaid + "/" + trials + " trials");
+        System.out.println("turning Cryptid Inspector face up ({2}{G}) with Overgrown Zealot + Forest: unpaid in " + faceUpUnpaid + "/" + trials + " trials");
         System.out.println("{1}{G} from Island + 3 Forest holding a blue instant: Island spent (or unpaid) in " + islandSpent + "/" + trials + " trials");
         System.out.println("batch-2 boards: the colour a card in hand needs was spent in " + badKeep + "/" + (2 * trials) + " trials");
         System.out.println("asked Python: " + new TreeSet<>(asked));
-        boolean ok = badFour == 0 && badSix == 0 && unpaid == 0 && zealotUnpaid == 0 && islandSpent == 0 && badKeep == 0;
+        boolean ok = badFour == 0 && badSix == 0 && unpaid == 0 && zealotUnpaid == 0 && faceUpUnpaid == 0 && islandSpent == 0 && badKeep == 0;
         System.out.println(ok ? "PASS" : "FAIL");
         System.exit(ok ? 0 : 1);
     }

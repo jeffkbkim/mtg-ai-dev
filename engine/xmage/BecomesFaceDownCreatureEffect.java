@@ -2,7 +2,7 @@
 // BecomesFaceDownCreatureEffect.java, MIT License, Copyright (c) 2010 betasteward@gmail.com. Compiled with our classes,
 // which come first on the classpath, so it replaces the jar's copy. The only change is marked "PATCH (mtg-ai)":
 // a face-down Room (e.g. manifested by manifest dread) kept both doors' abilities, locked doors included. See
-// engine/xmage/README.md, "Our patches to XMage", and FaceDownRoomRepro.java.
+// engine/xmage/README.md, "Our patches to XMage", and FaceDownRoomCheck.java.
 package mage.abilities.effects.common.continuous;
 
 import mage.MageObject;
