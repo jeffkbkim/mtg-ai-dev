@@ -98,6 +98,11 @@ public final class AbilityKeys {
     // per game: original ability id -> key of a granted ability
     private static final Map<UUID, Map<UUID, String>> grantedByGame = new HashMap<>();
 
+    /** Drop the per-game cache once a game is over (a long run of games otherwise keeps every game's map). */
+    public static synchronized void forget(Game game) {
+        grantedByGame.remove(game.getId());
+    }
+
     private static synchronized Map<UUID, String> granted(Game game) {
         return grantedByGame.computeIfAbsent(game.getId(), g -> {
             Map<UUID, String> m = new HashMap<>();

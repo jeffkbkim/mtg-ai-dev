@@ -71,11 +71,11 @@ public class PySeat extends ComputerPlayer {
     }
 
     final transient Link link;
-    private transient Set<UUID> failedThisWindow = new HashSet<>();
+    private transient Set<String> failedThisWindow = new HashSet<>();
     private transient String windowKey = "";
     // abilities XMage lists as playable but refused without asking this seat anything (e.g. Crew with no other
     // untapped creature): skip them until the board, hand, life or stack changes, instead of re-offering every step
-    private transient Map<UUID, String> refusedAt = new HashMap<>();
+    private transient Map<String, String> refusedAt = new HashMap<>();
 
     public PySeat(String name, Link link) {
         super(name, RangeOfInfluence.ONE);
@@ -117,8 +117,29 @@ public class PySeat extends ComputerPlayer {
     private transient boolean skipCreatureMana = false;
     private transient boolean payingMana = false;  // colour choices of the mana abilities it activates are the payer's
 
+    // XMage keeps calling playManaHandling while a cost is unpaid; if a call activates mana that can't go toward the
+    // cost, nothing changes and it loops until the heap runs out (seen paying to unlock a Room door). Give up after
+    // the same unpaid cost comes back this many times in a row.
+    private static final int MAX_STALLED_PAYMENTS = 20;
+    private transient UUID stallAbility;
+    private transient String stallUnpaid = "";
+    private transient int stalls;
+
     @Override
     protected boolean playManaHandling(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game) {
+        String text = unpaid.getText() + "|" + getManaPool().getMana();
+        if (ability.getId().equals(stallAbility) && text.equals(stallUnpaid)) {
+            if (++stalls > MAX_STALLED_PAYMENTS) {
+                stalls = 0;
+                stallAbility = null;
+                link.fallback.merge("MANA_STALLED", 1, Integer::sum);
+                return false;
+            }
+        } else {
+            stallAbility = ability.getId();
+            stallUnpaid = text;
+            stalls = 0;
+        }
         boolean outer = payingMana;
         payingMana = true;
         try {
@@ -467,8 +488,8 @@ public class PySeat extends ComputerPlayer {
         ActivatedAbility[] chosen = {null};
         opts.add(new Option("PASS", null, null, () -> passed[0] = true).as("PASS"));
         for (ActivatedAbility a : playable(game)) {
-            if (a.isManaAbility() || failedThisWindow.contains(a.getId())) continue;
-            if (resources(game).equals(refusedAt.get(a.getId()))) continue;
+            if (a.isManaAbility() || failedThisWindow.contains(moveKey(a))) continue;
+            if (resources(game).equals(refusedAt.get(moveKey(a)))) continue;
             if (a instanceof mage.abilities.keyword.CrewAbility && !canCrew(a, game)) continue;
             Option o = new Option(a.getAbilityType() + " | " + label(game, a.getSourceId()) + " | " + a, a.getSourceId(), null, () -> chosen[0] = a);
             switch (a.getAbilityType()) {
@@ -493,8 +514,8 @@ public class PySeat extends ComputerPlayer {
             boolean askedSomething = link.asked.values().stream().mapToInt(Integer::intValue).sum() > askedBefore;
             // refused after this seat made choices (a target, a cost option): another choice might work, so only
             // drop it for this window. Refused with no choices: it can't work until something changes.
-            if (askedSomething) failedThisWindow.add(chosen[0].getId());
-            else refusedAt.put(chosen[0].getId(), before);
+            if (askedSomething) failedThisWindow.add(moveKey(chosen[0]));
+            else refusedAt.put(moveKey(chosen[0]), before);
             link.rejected.add("turn " + game.getTurnNum() + " " + opts.get(i).label + (askedSomething ? " (after choices)" : ""));
         }
         return true;
@@ -529,6 +550,15 @@ public class PySeat extends ComputerPlayer {
             if (power >= need) return true;
         }
         return false;
+    }
+
+    /**
+     * A refused move, remembered by its source and rule rather than its ability id: XMage builds special actions
+     * (unlocking a Room door) afresh for every priority, with new ids, so an id-keyed memory never matched and a
+     * door this seat couldn't pay for was offered, chosen and refused forever.
+     */
+    private static String moveKey(ActivatedAbility a) {
+        return a.getSourceId() + "|" + a.getAbilityType() + "|" + a.getRule();
     }
 
     /** What paying a cost can depend on: every permanent and whether it's tapped, this seat's hand, life and graveyard, the stack. */

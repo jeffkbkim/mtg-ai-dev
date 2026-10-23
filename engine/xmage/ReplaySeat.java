@@ -38,6 +38,7 @@ public class ReplaySeat extends PySeat {
         Set<String> resetOnShuffle = new HashSet<>();
         boolean started;                                   // first priority reached: mulligans are over
         long seed;                                         // XMage's random generator is reseeded from this each turn
+        String gameId = "";                                // the record's id, sent with every message
     }
 
     final transient Shared shared;
@@ -59,6 +60,7 @@ public class ReplaySeat extends PySeat {
 
     @Override
     protected void decorate(JsonObject msg, Game game) {
+        msg.addProperty("game", shared.gameId);
         msg.addProperty("seat", getName());
         msg.addProperty("turn", game.getTurnNum());
         msg.addProperty("active", game.isActivePlayer(playerId));
@@ -74,6 +76,14 @@ public class ReplaySeat extends PySeat {
                 for (JsonElement n : e.getValue().getAsJsonArray()) names.add(n.getAsString());
                 shared.queue.put(e.getKey(), names);
                 shared.pos.put(e.getKey(), 0);
+            }
+            for (Player p : game.getPlayers().values()) protectTop(p, game);
+        }
+        if (reply.has("top")) {  // cards an effect about to look at the top of the library should find (manifest dread)
+            for (Map.Entry<String, JsonElement> e : reply.getAsJsonObject("top").entrySet()) {
+                List<String> names = new ArrayList<>();
+                for (JsonElement n : e.getValue().getAsJsonArray()) names.add(n.getAsString());
+                for (Player p : game.getPlayers().values()) if (p.getName().equals(e.getKey())) { protectTop(p, game); stack(p, names, game); }
             }
         }
         if (reply.has("rollback") && reply.get("rollback").getAsBoolean()) shared.rollback = true;
@@ -94,9 +104,9 @@ public class ReplaySeat extends PySeat {
             if (w.has("battlefield")) {
                 Map<String, Integer> need = counts(w.getAsJsonArray("battlefield"));
                 Map<String, Integer> tokens = w.has("tokens") ? counts(w.getAsJsonArray("tokens")) : null;
+                boolean hidden = w.has("face_down_hidden") && w.get("face_down_hidden").getAsBoolean();
                 for (Permanent m : game.getBattlefield().getAllActivePermanents(p.getId())) {
                     if (m instanceof mage.game.permanent.PermanentToken) {
-                        // tokens can't be made from a name here; extra ones are removed
                         String tn = m.getName().endsWith(" Token") ? m.getName().substring(0, m.getName().length() - 6) : m.getName();
                         if (tokens != null) {
                             if (tokens.getOrDefault(tn, 0) > 0) tokens.merge(tn, -1, Integer::sum);
@@ -104,9 +114,9 @@ public class ReplaySeat extends PySeat {
                         }
                         continue;
                     }
-                    if (m.isFaceDown(game)) continue;
                     Card own = game.getCard(m.getId());
-                    String n = own != null ? own.getName() : m.getName();
+                    // the record names this seat's face-down cards "[Face-Down Card]" (the opponent's), or by name
+                    String n = m.isFaceDown(game) && hidden ? FACE_DOWN : own != null ? own.getName() : m.getName();
                     if (need.getOrDefault(n, 0) > 0) need.merge(n, -1, Integer::sum);
                     else {  // extra: to its owner's graveyard
                         game.getBattlefield().removePermanent(m.getId());
@@ -117,6 +127,35 @@ public class ReplaySeat extends PySeat {
                         }
                     }
                 }
+                // missing tokens: made from the classes Python names (no enter-the-battlefield suppression)
+                if (tokens != null && w.has("token_classes")) {
+                    JsonObject classes = w.getAsJsonObject("token_classes");
+                    for (Map.Entry<String, Integer> e : tokens.entrySet()) {
+                        if (e.getValue() <= 0 || !classes.has(e.getKey())) continue;
+                        try {
+                            mage.game.permanent.token.Token t = (mage.game.permanent.token.Token)
+                                    Class.forName(classes.get(e.getKey()).getAsString()).getDeclaredConstructor().newInstance();
+                            t.putOntoBattlefield(e.getValue(), game, null, p.getId());
+                        } catch (ReflectiveOperationException ex) {
+                            // unknown class: the token stays missing and shows up in the next comparison
+                        }
+                    }
+                }
+                // missing face-down cards: manifest that many cards from the library
+                for (int i = 0; i < need.getOrDefault(FACE_DOWN, 0) && p.getLibrary().hasCards(); i++) {
+                    Card top = p.getLibrary().getFromTop(game);
+                    // manifesting needs a source ability; a blank one stands in for "the resync"
+                    mage.abilities.Ability src = new mage.abilities.common.SimpleStaticAbility(
+                            mage.constants.Zone.ALL, new mage.abilities.effects.common.InfoEffect("replay resync"));
+                    src.setControllerId(p.getId());
+                    src.setSourceId(top.getId());
+                    try {
+                        mage.abilities.effects.keyword.ManifestEffect.doManifestCards(game, src, p, new HashSet<>(Collections.singletonList(top)));
+                    } catch (RuntimeException ex) {
+                        break;  // leave it missing: the next comparison reports it
+                    }
+                }
+                need.remove(FACE_DOWN);
                 for (Map.Entry<String, Integer> e : need.entrySet()) {
                     for (int i = 0; i < e.getValue(); i++) {
                         Card c = take(p, e.getKey(), game);
@@ -125,6 +164,7 @@ public class ReplaySeat extends PySeat {
                         game.addPermanent(perm, 0);
                         game.getState().setZone(c.getId(), mage.constants.Zone.BATTLEFIELD);
                         perm.removeSummoningSickness();
+                        if (perm.hasSubtype(mage.constants.SubType.AURA, game)) attachAura(perm, p, game);
                     }
                 }
             }
@@ -144,6 +184,27 @@ public class ReplaySeat extends PySeat {
             }
         }
         game.applyEffects();
+    }
+
+    static final String FACE_DOWN = "[Face-Down Card]";
+
+    /**
+     * The record doesn't say what an Aura enchants. Attach it to a creature: the controller's own if its text says
+     * "you control" or it helps (gets +, gains), else an opponent's; first by name, so runs agree.
+     */
+    private static void attachAura(Permanent aura, Player p, Game game) {
+        String rules = String.join(" ", aura.getRules(game)).toLowerCase();
+        boolean own = rules.contains("creature you control") || rules.contains("gets +") || rules.contains("gains") || rules.contains("has ");
+        List<Permanent> mine = new ArrayList<>(), theirs = new ArrayList<>();
+        for (Permanent c : game.getBattlefield().getAllActivePermanents()) {
+            if (!c.isCreature(game) || c.getId().equals(aura.getId())) continue;
+            (c.isControlledBy(p.getId()) ? mine : theirs).add(c);
+        }
+        Comparator<Permanent> byName = Comparator.comparing(Permanent::getName);
+        mine.sort(byName); theirs.sort(byName);
+        List<Permanent> first = own ? mine : theirs, second = own ? theirs : mine;
+        Permanent host = !first.isEmpty() ? first.get(0) : !second.isEmpty() ? second.get(0) : null;
+        if (host != null) host.addAttachment(aura.getId(), null, game);
     }
 
     /** Set a life total without life-gain or life-loss events (PlayerImpl.life is protected). */
@@ -202,6 +263,26 @@ public class ReplaySeat extends PySeat {
         }
     }
 
+    /**
+     * Keep cards the seat must still draw away from the top of its library: put up to 3 cards that aren't in its
+     * remaining draw queue on top, so effects that mill, surveil or manifest from the top don't eat a recorded draw.
+     */
+    void protectTop(Player p, Game game) {
+        List<String> q = shared.queue.get(p.getName());
+        int pos = shared.pos.getOrDefault(p.getName(), 0);
+        Map<String, Integer> pending = new HashMap<>();
+        if (q != null) for (String n : q.subList(Math.min(pos, q.size()), q.size())) pending.merge(n, 1, Integer::sum);
+        Map<String, Integer> inLib = new HashMap<>();
+        for (Card c : p.getLibrary().getCards(game)) inLib.merge(c.getName(), 1, Integer::sum);
+        List<Card> safe = new ArrayList<>();
+        for (Card c : p.getLibrary().getCards(game)) {
+            if (safe.size() >= 3) break;
+            int spare = inLib.getOrDefault(c.getName(), 0) - pending.getOrDefault(c.getName(), 0);
+            if (spare > 0) { safe.add(c); inLib.merge(c.getName(), -1, Integer::sum); }
+        }
+        for (Card c : safe) { p.getLibrary().remove(c.getId(), game); p.getLibrary().putOnTop(c, game); }
+    }
+
     @Override
     public void shuffleLibrary(mage.abilities.Ability source, Game game) {
         super.shuffleLibrary(source, game);
@@ -219,7 +300,9 @@ public class ReplaySeat extends PySeat {
                 shared.pos.put(getName(), p + next.size());
             }
         }
-        return super.drawCards(num, source, game, event);
+        int drawn = super.drawCards(num, source, game, event);
+        if (!game.isSimulation() && shared.started) protectTop(this, game);
+        return drawn;
     }
 
     @Override

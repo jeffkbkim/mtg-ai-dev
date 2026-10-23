@@ -38,6 +38,12 @@ DATA = Path.home() / "mtg-data/17lands/DSK"
 REPO = Path(__file__).resolve().parent.parent
 RUNTIME = Path.home() / "xmage/xmage/mage-server"
 FACE_DOWN = "[Face-Down Card]"
+# 17lands Duskmourn token ids -> XMage token classes. The two Insects and two Spirits are told apart only by id
+# here; which id is which class is a guess (it changes P/T and abilities, not the name the replay compares).
+TOKEN_CLASS = {92388: "ShardToken", 92389: "BeastieToken", 92390: "GlimmerToken", 92391: "InsectBlackGreenFlyingToken",
+               92399: "InsectWhiteToken", 92392: "Spirit31Token", 92394: "SpiritBlueToken", 92393: "ToyToken",
+               92395: "Demon66Token", 92396: "HorrorEnchantmentCreatureToken", 92397: "Gremlin11Token",
+               92398: "Spider22Token", 92400: "PrimoTheIndivisibleToken", 92401: "TreasureToken", 92402: "EverywhereToken"}
 BASICS = {"W": "Plains", "U": "Island", "B": "Swamp", "R": "Mountain", "G": "Forest"}
 
 
@@ -52,7 +58,8 @@ class Names:
         self.full = {h: n for n in raw.values() if " // " in n for h in n.split(" // ")}
         self.name = {i: self.full.get(n, n) for i, n in raw.items()}
         self.name[3] = FACE_DOWN
-        self.token = {i for i, e in zip(cards["id"], cards["expansion"]) if str(e).startswith("T")}
+        # tokens by rarity: basics from sets whose code starts with T (THB, TDM ...) aren't tokens
+        self.token = {i for i, r in zip(cards["id"], cards["rarity"]) if r == "token" and i != 3}
         self.types = {self.full.get(n, n): t or "" for n, t in zip(cards["name"], cards["types"])}
         text = json.loads((REPO / "engine/vocab/dsk_card_text.json").read_text())
         self.rules = {c["name"]: " ".join(c["rules"] + c.get("left", {}).get("rules", []) + c.get("right", {}).get("rules", [])) for c in text}
@@ -157,8 +164,10 @@ class Record:
         before = self.board(self.prev_prefix(prefix), other_who)
         after = self.board(prefix, other_who) + collections.Counter(self.n.norm(x) for x in self.L(prefix, "creatures_blocking", False))
         after = collections.Counter({k: max(after[k], self.board(prefix, other_who)[k]) for k in after})
+        # only cards with flash: others reach the board on the other player's turn some other way (an Enduring
+        # creature coming back as an enchantment, a reanimation) and aren't cast
         flash = [c for c in (after - before).elements() if c != FACE_DOWN and c in self.n.code
-                 and "Land" not in self.n.types.get(c, "")]
+                 and "Land" not in self.n.types.get(c, "") and self.n.rules.get(c, "").startswith("Flash")]
         ab_mine = "user_abilities" if active == "A" else "oppo_abilities"
         ab_theirs = "oppo_abilities" if active == "A" else "user_abilities"
         return {
@@ -182,17 +191,31 @@ class Record:
     def fix(self, prefix: str) -> dict:
         """The recorded end of turn in the form ReplaySeat.fix takes (tokens and face-down cards left out)."""
         bf = lambda w: [self.n.norm(x) for f in ("lands", "creatures", "non_creatures")
-                        for x in self.L(prefix, f"eot_{w}_{f}_in_play", tokens=False) if x != FACE_DOWN]
-        tok = lambda w: [self.n.norm(self.n.name.get(i, "")) for f in ("lands", "creatures", "non_creatures")
-                         for i in self.n.ids(self.r.get(prefix + f"eot_{w}_{f}_in_play")) if i in self.n.token]
-        out = {"A": {"battlefield": bf("user"), "tokens": tok("user"), "hand": self.L(prefix, "eot_user_cards_in_hand")},
-               "B": {"battlefield": bf("oppo"), "tokens": tok("oppo")}}
+                        for x in self.L(prefix, f"eot_{w}_{f}_in_play", tokens=False) if x != FACE_DOWN or w == "oppo"]
+        ids = lambda w: [i for f in ("lands", "creatures", "non_creatures") for i in self.n.ids(self.r.get(prefix + f"eot_{w}_{f}_in_play"))
+                         if i in self.n.token]
+        tok = lambda w: [self.n.norm(self.n.name.get(i, "")) for i in ids(w)]
+        classes = lambda w: {self.n.norm(self.n.name.get(i, "")): "mage.game.permanent.token." + TOKEN_CLASS[i] for i in ids(w) if i in TOKEN_CLASS}
+        out = {"A": {"battlefield": bf("user"), "tokens": tok("user"), "token_classes": classes("user"),
+                     "hand": self.L(prefix, "eot_user_cards_in_hand")},
+               "B": {"battlefield": bf("oppo"), "tokens": tok("oppo"), "token_classes": classes("oppo"), "face_down_hidden": True}}
         for seat, w in (("A", "user"), ("B", "oppo")):
             life = self.num(prefix, f"eot_{w}_life")
             if life is not None:
                 out[seat]["life"] = life
         hb = self.num(prefix, "eot_oppo_cards_in_hand")
         if hb is not None:
+            # B's hidden hand: the cards it plays next, in order, then filler; the record only gives the count
+            nxt = []
+            k = next((t for t in range(1, 2 * self.turns + 2) if self.slot(t) and self.slot(t)[1] == prefix), None)
+            for t in range((k or 0) + 1, 2 * self.turns + 2):
+                s = self.slot(t)
+                if s:
+                    b = self.plays(s[1], s[0])["B"]
+                    nxt += [c for c in b.get("lands", []) + b.get("spells", []) if c in self.n.code]
+            board = self.board(prefix, "oppo")
+            hand = nxt[:hb]
+            out["B"]["hand"] = hand
             out["B"]["hand_count"] = hb
         return out
 
@@ -257,9 +280,12 @@ def game_spec(rec: Record, names: Names, out: Path, gid) -> tuple[dict, list[str
     if missing:
         problems.append("deck A has cards outside our list: " + ", ".join(missing))
     seq = rec.b_sequence()
-    need = collections.Counter()
-    for c in seq:
-        need[c] += 1
+    need = collections.Counter(seq)
+    for t in range(1, 2 * rec.turns + 2):   # cards that reach B's board some other way still have to exist
+        s = rec.slot(t)
+        if s:
+            on_board = collections.Counter(c for c in rec.board(s[1], "oppo").elements() if c in names.code)
+            need = need | on_board
     # B's deck: every card it showed, as many copies as it ever used, plus basics for the cards it never showed
     colors = [c for c in (rec.r.get("opp_colors") or "") if c in BASICS] or ["W"]
     deck_b = collections.Counter(need)
@@ -283,7 +309,7 @@ class TurnScript:
     choice points; later ones take their first alternative. The driver searches over paths (fewest departures from
     the first alternatives first) and rewinds the turn between attempts."""
 
-    def __init__(self, rec: Record, t: int, path: tuple, names: Names):
+    def __init__(self, rec: Record, t: int, path: tuple, names: Names, state: dict | None = None):
         self.t, self.path, self.names = t, path, names
         self.active, self.prefix = rec.slot(t)
         self.other = "B" if self.active == "A" else "A"
@@ -297,10 +323,20 @@ class TurnScript:
         self.killed = collections.Counter(p["killed"])
         self.noncreature = collections.Counter(p["noncreature_cast"])
         self.tutored = collections.Counter(rec.L(self.prefix, "cards_tutored"))
+        # what each seat ends the turn with: a choice that brings one of these in (a search, a manifest) is likelier
+        self.gain = {"A": collections.Counter(self.expected["bf_A"] + self.expected["hand_A"]), "B": collections.Counter(self.expected["bf_B"])}
         self.pairings = block_pairings(p[self.other]["block"], p["blocked"])
         self.pairing = None
         self.flash_blockers = set(p[self.other].get("flash", [])) & {names.norm(x) for x in p[self.other]["block"]}
+        # A's casts this turn that weren't in its hand or drawn: played from exile (a Room door like Painter's Studio
+        # exiles the top cards to play). Stacked on top of the library before such an effect.
+        self.from_elsewhere = []
+        if state is not None and self.active == "A":
+            have = collections.Counter(names.norm(c) for c in state["A"]["hand"]) + collections.Counter(rec.L(self.prefix, "cards_drawn"))
+            self.from_elsewhere = sorted((collections.Counter(p["A"]["spells"]) - have).elements())
         self.taken, self.alts, self.points = [], [], []
+        self.offered = set()   # (seat, kind, name) of recorded plays XMage offered at some point this attempt
+        self.unlocks = 0
         self.unscripted = []
         if +self.todo["A"]["abilities"] or +self.todo["B"]["abilities"]:
             self.unscripted.append("activated_abilities")
@@ -390,7 +426,9 @@ def priority_alternatives(msg, sc: TurnScript, names: Names) -> list:
         if key not in seen:
             seen.add(key)
             items.append((i, key))
-    if not items:
+            sc.offered.add((seat,) + key[:1] + (str(key[1]),))
+    if not items and not (active and step in ("PRECOMBAT_MAIN", "POSTCOMBAT_MAIN") and sc.unlocks < 2
+                          and any(o["action"] == "SPECIAL" and "Unlock" in o["label"] for o in opts)):
         return []
     # sorted by kind and name, never by XMage's option order (it follows object ids, which differ between runs)
     items.sort(key=lambda it: ({"lands": 0, "spells": 1, "abilities": 2}[it[1][0]], str(it[1][1])))
@@ -402,6 +440,13 @@ def priority_alternatives(msg, sc: TurnScript, names: Names) -> list:
     alts = list(items)
     if not last_chance:
         alts = alts + [None] if now else [None] + alts
+    # unlocking a Room door is a special action 17lands doesn't record: try it only after the recorded reading,
+    # never as the default, and at most twice a turn
+    if active and step in ("PRECOMBAT_MAIN", "POSTCOMBAT_MAIN") and sc.unlocks < 2:
+        unlocks = sorted((o["label"], i) for i, o in enumerate(opts) if o["action"] == "SPECIAL" and "Unlock" in o["label"])
+        if unlocks and None not in alts:
+            alts.append(None)
+        alts += [(i, ("unlock", lab)) for lab, i in unlocks]
     return alts
 
 
@@ -419,14 +464,13 @@ def answer(msg: dict, sc: TurnScript | None, rec: Record, names: Names) -> int:
             hands = rec.hands_a()
             kept, opening = hands[-1] if hands else [], collections.Counter(names.names(rec.r.get("opening_hand")))
             bottom = collections.Counter(kept) - opening
-            for i, o in enumerate(opts):
-                if bottom[o["label"]] > 0:
+            for i in sorted(range(len(opts)), key=lambda i: opts[i]["label"]):
+                if bottom[opts[i]["label"]] > 0:
                     return i
-        need = collections.Counter(rec.b_sequence()[:10])
-        for i, o in enumerate(opts):  # B: bottom what it never shows first
-            if need[o["label"]] == 0:
-                return i
-        return len(opts) - 1
+        # B: bottom the card it needs last (or never): its draws are a queue of what it needs, in order
+        seq = rec.b_sequence()
+        first = lambda n: seq.index(n) if n in seq else len(seq)
+        return max(range(len(opts)), key=lambda i: (first(opts[i]["label"]), opts[i]["label"]))
     if sc is None:
         return 0
     todo = sc.todo[seat]
@@ -439,7 +483,22 @@ def answer(msg: dict, sc: TurnScript | None, rec: Record, names: Names) -> int:
         if c is None:
             return pick(labels, "PASS")
         i, (k, key) = c
+        if k == "unlock":
+            sc.unlocks += 1
+            card = names.norm((opts[i]["label"].split(" | ") + ["", ""])[1])
+            if seat == "A" and sc.from_elsewhere and "exile the top" in names.rules.get(card, names.rules.get(names.full.get(card, ""), "")).lower():
+                EXTRA["top"] = {"A": sc.from_elsewhere}
+            return i
         todo[k][key] -= 1
+        card = key[0] if k == "abilities" else key
+        if seat == "A" and card and "manifest dread" in names.rules.get(card, "").lower():
+            # manifest dread looks at the top two cards: put the card A ends the turn with face down on top
+            mine = collections.Counter(names.norm(e.get("card_name") or e.get("name") or "").split(": ", 1)[-1]
+                                       for e in msg["obs"]["entries"] if e.get("zone") == "BATTLEFIELD" and e.get("mine"))
+            pending = collections.Counter(todo["lands"]) + collections.Counter(todo["spells"])
+            fate = sorted((collections.Counter(sc.expected["bf_A"]) - mine - pending).elements())
+            if fate:
+                EXTRA["top"] = {"A": fate[:1]}
         return i
     if kind == "ATTACK":
         for i, o in enumerate(opts):
@@ -477,7 +536,7 @@ def answer(msg: dict, sc: TurnScript | None, rec: Record, names: Names) -> int:
     if kind == "MODE" or kind == "TRIGGER_ORDER":
         return by_label[sc.choose(min(3, len(opts)), f"{seat} {kind.lower()}")]
     if kind in ("TARGET", "CHOOSE", "TARGET_CARDS", "CHOOSE_CARDS"):
-        if "Surveil" in prompt or "Scry" in prompt or kind == "TARGET_CARDS" and "DONE" in labels:
+        if "Surveil" in prompt or "Scry" in prompt:
             return pick(labels, "DONE")  # keep the top of the library: the recorded draws come from the queue anyway
         order = list(by_label)
         def rank(i):
@@ -487,9 +546,11 @@ def answer(msg: dict, sc: TurnScript | None, rec: Record, names: Names) -> int:
                 return 0
             if sc.killed[n] > 0:
                 return 1
-            if (o.get("target") or {}).get("player") == "opp":
+            if sc.gain[seat][n] > 0 and kind in ("CHOOSE_CARDS", "TARGET_CARDS", "CHOOSE"):
                 return 2
-            return 4 if o["label"] == "DONE" else 3
+            if (o.get("target") or {}).get("player") == "opp":
+                return 3
+            return 5 if o["label"] == "DONE" else 4
         order.sort(key=rank)
         return order[sc.choose(min(4, len(order)), f"{seat} target")]
     return 0
@@ -503,6 +564,8 @@ def pick(labels: list[str], want: str) -> int:
 
 
 MULLIGANS = {"A": 0, "B": 0}
+EXTRA = {}   # fields answer() adds to its reply (e.g. "top")
+RESIDUAL = collections.Counter()
 
 
 # ---------------------------------------------------------------- comparison
@@ -553,30 +616,49 @@ def run(args):
         recs[gid] = rec
         specs.append(spec)
     (out / "games.jsonl").write_text("".join(json.dumps(s) + "\n" for s in specs))
-    srv = socket.socket(); srv.bind(("127.0.0.1", 0)); srv.listen(1)
     cp = ":".join([args.classes] + sorted(glob.glob(str(RUNTIME / "**/*.jar"), recursive=True)))
-    jvm = subprocess.Popen(["java", "-Xmx3g", "-Djava.awt.headless=true", "--add-opens=java.base/java.lang=ALL-UNNAMED", "-cp", cp,
-                            "ReplayMatch", str(srv.getsockname()[1]), str(out / "games.jsonl")],
-                           cwd=RUNTIME, stdout=open(out / "jvm.log", "w"), stderr=subprocess.STDOUT)
-    srv.settimeout(300)
-    conn, _ = srv.accept()
-    conn.settimeout(300)
-    f = conn.makefile("rw")
+
+    def open_jvm(k: int, chunk: list):
+        """One JVM per chunk of games: XMage keeps per-game state around, so a long run in one JVM runs out of heap."""
+        path = out / f"games_{k:03d}.jsonl"
+        path.write_text("".join(json.dumps(sp) + "\n" for sp in chunk))
+        srv = socket.socket(); srv.bind(("127.0.0.1", 0)); srv.listen(1)
+        jvm = subprocess.Popen(["java", "-Xmx4g", "-Djava.awt.headless=true", "--add-opens=java.base/java.lang=ALL-UNNAMED", "-cp", cp,
+                                "ReplayMatch", str(srv.getsockname()[1]), str(path)],
+                               cwd=RUNTIME, stdout=open(out / f"jvm_{k:03d}.log", "w"), stderr=subprocess.STDOUT)
+        srv.settimeout(300)
+        conn, _ = srv.accept()
+        conn.settimeout(300)
+        return jvm, conn.makefile("rw")
+
+    def lines():
+        for k in range(0, len(specs), args.chunk):
+            jvm, f = open_jvm(k // args.chunk, specs[k:k + args.chunk])
+            CHAN["f"] = f
+            for line in f:
+                yield line
+                if json.loads(line)["type"] == "end":
+                    break
+            jvm.wait(timeout=60)
+
+    CHAN = {}
     log = open(out / "turns.jsonl", "w")
     gi = 0
     cur = {"gid": None}
     stats = collections.Counter()
 
-    def new_game():
+    by_id = {sp["id"]: sp for sp in specs}
+
+    def new_game(gid=None):
         nonlocal gi
-        spec = specs[gi]; gi += 1
+        spec = by_id[gid] if gid else specs[gi]; gi += 1
         MULLIGANS["A"] = MULLIGANS["B"] = 0
         cur.update(gid=spec["id"], rec=recs[spec["id"]], sc=None, t=None, path=(), frontier=[], seen=set(), best=None,
-                   failed=False, attempts=0)
+                   failed=False, attempts=0, fixed_to=None, fix_sent=None, game_attempts=0)
 
     new_game()
 
-    def draws_for(t: int) -> dict:
+    def draws_for(t: int, state: dict) -> dict:
         rec = cur["rec"]
         a = rec.a_draws_by_turn()
         future = []
@@ -589,13 +671,28 @@ def run(args):
             if s:
                 b = rec.plays(s[1], s[0])["B"]
                 need += b.get("lands", []) + b.get("spells", [])
-        return {"A": future, "B": [c for c in need if c in names.code]}
+        in_hand = collections.Counter(names.norm(c) for c in state["B"]["hand"])
+        queue = []
+        for c in need:
+            if c not in names.code:
+                continue
+            if in_hand[c] > 0:
+                in_hand[c] -= 1   # already holds it: don't draw another copy
+            else:
+                queue.append(c)
+        return {"A": future, "B": queue}
 
     def finish_turn(ok: bool, d: dict, extra: dict):
         rec = {"game": cur["gid"], "turn": cur["t"], "active": cur["sc"].active, "prefix": cur["sc"].prefix, "ok": ok,
+               "start_exact": not cur["failed"] or cur.get("start_exact", False),
                "attempts": cur["attempts"], "after_resync": cur["failed"], "diff": d, "unscripted": cur["sc"].unscripted, **extra}
         log.write(json.dumps(rec) + "\n"); log.flush()
         key = "after_resync" if cur["failed"] else "clean"
+        cur["last_ok"] = ok
+        if not ok:
+            cur["start_exact"] = False
+        stats["exact_start_turns"] += rec["start_exact"]
+        stats["exact_start_ok"] += rec["start_exact"] and ok
         stats[f"{key}_turns"] += 1
         stats[f"{key}_ok"] += ok
         if not ok:
@@ -604,8 +701,13 @@ def run(args):
             print(f"{cur['gid']} t{cur['t']} {cur['sc'].active} {'OK' if ok else 'FAIL'} after {cur['attempts']} {'' if ok else json.dumps(d)[:300]}", flush=True)
 
     t0 = time.time()
-    for line in f:
+    for line in lines():
+        f = CHAN["f"]
         msg = json.loads(line)
+        if msg.get("game") and msg["game"] != cur["gid"]:
+            # a JVM that died mid-chunk skips games: follow the id XMage reports, not our count
+            stats["games_lost"] += 1
+            new_game(msg["game"])
         typ = msg["type"]
         reply = {"choice": 0}
         if args.trace and f"{cur['gid']}:{msg.get('turn')}" == args.trace and typ in ("turn_start", "eot"):
@@ -614,14 +716,33 @@ def run(args):
         if typ == "turn_start":
             t = msg["turn"]
             rec = cur["rec"]
+            if cur.get("fixed_to") is not None and cur["t"] != t:
+                # how well the last resync took: the state at this turn's start against the record it was reset to
+                residual = diff(cur["fixed_to"], observed(msg["state"], names))
+                cur["residual"] = residual
+                cur["start_exact"] = not residual
+                if os.environ.get("DEBUG_RESIDUAL") and "bf_A" in residual:
+                    print("RESIDUAL", cur["gid"], t, json.dumps(residual), "| fix A bf:", sorted(cur["fix_sent"]["A"]["battlefield"]),
+                          "| state A bf:", sorted(p["name"] for p in msg["state"]["A"]["battlefield"]),
+                          "| A hand:", sorted(msg["state"]["A"]["hand"]), "| A gy:", sorted(msg["state"]["A"]["graveyard"]), "| lib", msg["state"]["A"]["library"])
+                stats["resyncs"] += 1
+                stats["resyncs_exact"] += not residual
+                for k, v in residual.items():
+                    stats[f"resync_residual_{k}"] += 1
+                    if isinstance(v, dict) and "missing" in v:
+                        for n in v["missing"]: RESIDUAL[f"{k} missing {n}"] += 1
+                        for n in v["extra"]: RESIDUAL[f"{k} extra {n}"] += 1
+                cur["fixed_to"] = None
             if rec.slot(t) is None:
                 cur["sc"] = None
             else:
                 if cur["t"] != t:
                     cur.update(t=t, path=(), frontier=[], seen={()}, attempts=0, best=None)
+                if cur.get("fixed_to") is None and cur["failed"] and cur.get("last_ok"):
+                    cur["start_exact"] = True   # the previous turn reproduced, so this one starts from the record too
                 cur["attempts"] += 1
-                cur["sc"] = TurnScript(rec, t, cur["path"], names)
-            reply["draws"] = draws_for(t)
+                cur["sc"] = TurnScript(rec, t, cur["path"], names, msg["state"])
+            reply["draws"] = draws_for(t, msg["state"])
         elif typ == "eot":
             sc = cur["sc"]
             if sc is not None:
@@ -630,6 +751,11 @@ def run(args):
                 rem = sc.remaining()
                 if rem:
                     d["not_done"] = rem
+                    never = sorted(f"{s_}:{k}:{n}" for s_ in ("A", "B") for k in ("lands", "spells", "abilities")
+                                   for n_, c in sc.todo[s_][k].items() if c > 0 for n in [str(n_[0] or n_[1][:20]) if isinstance(n_, tuple) else n_]
+                                   if (s_, k, str(n_)) not in sc.offered)
+                    if never:
+                        d["never_offered"] = never
                 score = len(d)
                 if cur["best"] is None or score < cur["best"][0]:
                     cur["best"] = (score, d)
@@ -643,16 +769,21 @@ def run(args):
                             if a != sc.taken[j] and child not in cur["seen"]:
                                 cur["seen"].add(child)
                                 heapq.heappush(cur["frontier"], (sum(1 for x in child if x), len(child), child))
-                    if cur["frontier"] and cur["attempts"] < args.budget:
+                    cur["game_attempts"] = cur.get("game_attempts", 0) + 1
+                    if cur["frontier"] and cur["attempts"] < args.budget and cur["game_attempts"] < args.game_budget:
                         cur["path"] = heapq.heappop(cur["frontier"])[2]
                         reply["rollback"] = True
                     else:
                         finish_turn(False, cur["best"][1], {"points": len(sc.taken), "exhausted": not cur["frontier"]})
                         reply["fix"] = cur["rec"].fix(sc.prefix)
+                        cur["fixed_to"] = sc.expected
+                        cur["fix_sent"] = reply["fix"]
                     # carry on from this attempt: the game no longer matches the record
         elif typ == "decision":
             try:
+                EXTRA.clear()
                 reply["choice"] = answer(msg, cur["sc"], cur["rec"], names)
+                reply.update(EXTRA)
             except Exception as e:  # a bug in the script must not hang the JVM
                 print("answer error", cur["gid"], msg.get("kind"), repr(e), file=sys.stderr)
                 reply["choice"] = 0
@@ -675,13 +806,15 @@ def run(args):
                 new_game()
             continue
         elif typ == "end":
-            break
+            continue
         f.write(json.dumps(reply) + "\n"); f.flush()
-    jvm.wait(timeout=60)
     summary = {"games": len(specs), "skipped": skipped, "budget": args.budget, "seconds": round(time.time() - t0, 1), **stats}
+    if stats["exact_start_turns"]:
+        summary["exact_start_rate"] = round(stats["exact_start_ok"] / stats["exact_start_turns"], 3)
     for k in ("clean", "after_resync"):
         if stats[f"{k}_turns"]:
             summary[f"{k}_rate"] = round(stats[f"{k}_ok"] / stats[f"{k}_turns"], 3)
+    summary["resync_residual_top"] = RESIDUAL.most_common(25)
     (out / "summary.json").write_text(json.dumps(summary, indent=1))
     print(json.dumps(summary, indent=1))
 
@@ -691,6 +824,8 @@ if __name__ == "__main__":
     ap.add_argument("--games", type=int, default=20)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--budget", type=int, default=40, help="attempts per turn")
+    ap.add_argument("--chunk", type=int, default=10, help="games per JVM")
+    ap.add_argument("--game-budget", type=int, default=400, help="rewinds per game, at most")
     ap.add_argument("--run", default=time.strftime("%Y%m%d-%H%M%S"))
     ap.add_argument("--classes", default="/tmp/xmage-cls-dev")
     ap.add_argument("-v", "--verbose", action="store_true")

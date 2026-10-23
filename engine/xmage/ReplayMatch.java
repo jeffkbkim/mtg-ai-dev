@@ -41,6 +41,7 @@ public class ReplayMatch {
                     MulliganType.GAME_DEFAULT.getMulligan(0), 40, 20, 7);
             Match match = new TwoPlayerMatch(new MatchOptions("replay", "Two Player Duel", false));
             ReplaySeat.Shared shared = new ReplaySeat.Shared();
+            shared.gameId = spec.get("id").getAsString();
             shared.seed = spec.has("seed") ? spec.get("seed").getAsLong() : spec.get("id").getAsString().hashCode();
             mage.util.RandomUtil.setSeed(shared.seed);
             ReplaySeat[] seats = {new ReplaySeat("A", link, shared), new ReplaySeat("B", link, shared)};
@@ -80,6 +81,7 @@ public class ReplayMatch {
             end.addProperty("seconds", (System.nanoTime() - start) / 1e9);
             if (error != null) end.addProperty("error", error);
             end.add("state", ReplaySeat.dump(game));
+            AbilityKeys.forget(game);
             link.out.println(gson.toJson(end));
             link.in.readLine();  // Python acknowledges before the next game
         }
