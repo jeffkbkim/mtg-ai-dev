@@ -138,6 +138,7 @@ final class Shadow {
             extra.addProperty("clairvoyant", true);
         }
         if (ui != null) extra.add("ui", ui);
+        if (p.msg.has("auto")) extra.add("auto", p.msg.get("auto"));
         r.writeDecision(player.getId(), r.playerName(r.seat(player.getId())), p.msg, choice, extra);
     }
 

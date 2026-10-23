@@ -33,7 +33,7 @@ index f0983acbd5..64656b768b 100644
    'ai.type.monteCarlo': 'Monte Carlo',
    'ai.type.monteCarlo.detail': 'Experimental; juega por simulación y piensa más tiempo.',
 diff --git a/Mage.Web.Client/src/app/screens/aiSetup.ts b/Mage.Web.Client/src/app/screens/aiSetup.ts
-index 624dec02a9..92ba1d87be 100644
+index 624dec02a9..7c8073e5bf 100644
 --- a/Mage.Web.Client/src/app/screens/aiSetup.ts
 +++ b/Mage.Web.Client/src/app/screens/aiSetup.ts
 @@ -12,17 +12,26 @@ export const DIFFICULTIES: { label: MessageKey; skill: number; detail: MessageKe
@@ -65,6 +65,18 @@ index 624dec02a9..92ba1d87be 100644
  }
  
  export function difficultyOf(skill: number) {
+@@ -45,8 +54,10 @@ export function aiDeckLabel(t: Translate, options: AiOptions, rosterName: string
+ /** One line describing the AI setup, for the Play zone; `adaptiveLabel` stands in for the difficulty when adaptive. */
+ export function describeAi(t: Translate, options: AiOptions, deckName: string | null, adaptiveLabel?: string): string {
+   const difficulty = options.adaptive && adaptiveLabel ? adaptiveLabel : t(difficultyOf(options.skill).label);
++  // mtg-ai: name the opponent when it isn't the standard AI
++  const who = options.aiType === 'COMPUTER_CLAUDE' ? t('ai.type.claude') : options.aiType === 'WATCH' ? t('ai.type.watch') : null;
+   const parts = [
+-    options.opponents > 1 ? t('ai.summary.many', { count: options.opponents, difficulty }) : t('ai.summary.one', { difficulty }),
++    who ?? (options.opponents > 1 ? t('ai.summary.many', { count: options.opponents, difficulty }) : t('ai.summary.one', { difficulty })),
+     deckName ?? t(options.rules === 'deck' ? 'ai.summary.metaDeck' : 'ai.summary.randomDeck'),
+     t(options.winsNeeded === 2 ? 'ai.summary.bestOf3' : 'ai.summary.bestOf1'),
+   ];
 diff --git a/Mage.Web.Client/src/app/stores/play.ts b/Mage.Web.Client/src/app/stores/play.ts
 index cf7bf56e51..bfcd7dfc3e 100644
 --- a/Mage.Web.Client/src/app/stores/play.ts

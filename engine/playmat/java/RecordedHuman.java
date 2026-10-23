@@ -112,12 +112,19 @@ public class RecordedHuman extends HumanPlayer {
             pendingPriority = null;
             if (!acted && p.opts.size() > 1) {
                 JsonObject ui = ui(w);
-                if (waits == w) {
-                    // not asked: Playmat's auto-pass or a stop the player didn't set. Recorded so the history has no gaps
-                    ui.addProperty("auto", "ui_skip");
-                    p.msg.addProperty("auto", "ui_skip");
+                if (hasLeft() || hasLost()) {
+                    // the window ended with a concession, not a pass
+                    ui.addProperty("conceded", true);
+                    shadow().record(game, p, -1, "unmapped", ui);
+                } else {
+                    if (waits == w) {
+                        // not asked: Playmat's auto-pass or a stop the player didn't set. Recorded so the history has
+                        // no gaps
+                        ui.addProperty("auto", "ui_skip");
+                        p.msg.addProperty("auto", "ui_skip");
+                    }
+                    shadow().record(game, p, 0, "exact", ui);
                 }
-                shadow().record(game, p, 0, "exact", ui);
             }
         }
         return result;
