@@ -1,0 +1,15 @@
+diff --git a/Mage/src/main/java/mage/players/PlayerType.java b/Mage/src/main/java/mage/players/PlayerType.java
+index 4a8fccd892..1273a753cd 100644
+--- a/Mage/src/main/java/mage/players/PlayerType.java
++++ b/Mage/src/main/java/mage/players/PlayerType.java
+@@ -11,7 +11,9 @@ public enum PlayerType {
+     HUMAN("Human", false, true),
+     COMPUTER_DRAFT_BOT("Computer - draftbot", true, false),
+     COMPUTER_MONTE_CARLO("Computer - monte carlo", true, true),
+-    COMPUTER_MAD("Computer - mad", true, true);
++    COMPUTER_MAD("Computer - mad", true, true),
++    // mtg-ai: our Claude player (engine/playmat in github.com/jeffkbkim/mtg-ai), a plugin class named in config.xml
++    COMPUTER_CLAUDE("Computer - claude", true, true);
+ 
+     final String description;
+     final boolean isAI;

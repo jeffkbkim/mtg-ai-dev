@@ -58,3 +58,12 @@ The user chose to build on the unmodified XMage 1.4.62 release jars with our own
 ## 17lands DSK split (2026-10-22)
 
 Train/validation/test is frozen by draft: `sha256("mtg-ai-dsk-split-v1:" + draft_id)[:8] % 100`, below 80 train, below 90 validation, else test (`seventeenlands/prepare.py split`, `~/mtg-data/17lands/DSK/splits.parquet` on the mini). Every pick, game and replay of a draft shares its split. Changing it means a new salt and version, not editing this one.
+
+## Playing against our AI in a browser: Playmat (2026-10-23)
+
+Jeff chose [Playmat](https://github.com/arcanite24/playmat) (an Arena-style web client on an XMage 1.4.62 fork) to play our
+AI from a browser, after a Reddit and GitHub survey of XMage clients. It does not replace the engine integration above:
+our training and evaluation runs stay on the release jars. Our changes live in `engine/playmat/` as a patch series
+against one pinned Playmat commit plus our seat plugin, not in a fork. Playmat's server carries our two XMage rule fixes
+so its games follow our rules. Every game there is recorded in PySeat's decision format; Jeff's decisions say how
+exactly a browser answer maps to our options, and XMage AI decisions are flagged clairvoyant (not imitation labels).
