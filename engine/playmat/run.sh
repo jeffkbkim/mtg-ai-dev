@@ -24,7 +24,10 @@ stop() {
   for name in launcher claude_service; do
     f=$DATA/$name.pid
     if [ -f "$f" ] && kill -0 "$(cat "$f")" 2>/dev/null; then
-      kill "$(cat "$f")" 2>/dev/null || true
+      pid=$(cat "$f")
+      kill "$pid" 2>/dev/null || true
+      # the launcher stops its game server before it exits, and holds a lock until then
+      for _ in $(seq 1 60); do kill -0 "$pid" 2>/dev/null || break; sleep 1; done
       echo "stopped $name"
     fi
     rm -f "$f"
