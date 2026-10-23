@@ -1,0 +1,86 @@
+# Replaying 17lands games in XMage
+
+`turn_replay.py` replays 17lands DSK games in XMage turn by turn and measures how often each turn reproduces the
+recorded end of turn. The aim is labelled decisions for every turn: the recorded ones (exact) plus the ones the
+record leaves out, filled in by search (inferred). It's our own design; DraftZero's write-up (docs/008 in their
+repo) was read for lessons, not code.
+
+## How it works
+
+- **Seats.** Both seats are `ReplaySeat`s (`engine/xmage/ReplaySeat.java`, run by `ReplayMatch.java`), scripted
+  from Python over one socket.
+- **Decks and draws.** The user's deck is recorded. The opponent's deck is the cards it revealed, plus basics.
+  - Each seat draws from a queue: the user its recorded hands and draws, the opponent the cards it needs next.
+  - Cards it must still draw are kept away from the top of the library, so mill and manifest effects don't eat them.
+- **Each turn**, both seats make their recorded plays: lands, spells, activated abilities, attacks, blocks.
+  - The record doesn't say when each play happened, the targets, who blocked whom, modes, "may" answers, trigger
+    order, or whether a Room door was unlocked. Each of these is a **choice point**, likeliest alternative first.
+  - In the end step the true state is compared with the record: both life totals, the user's hand, the opponent's
+    hand size, both boards, and every recorded play happened.
+  - If it doesn't match, XMage rewinds to the start of the turn (its own rollback). Then other choices are tried,
+    fewest departures from the likeliest first, up to 40 attempts.
+- **After a turn no attempt reproduces**, the visible state is reset to the record:
+  - life, hands, boards, tokens (by class), face-down cards (manifested) and Auras (attached by a heuristic), with
+    cards moved directly between zones;
+  - then the game goes on.
+  - Turns after a reset start from a less exact state: tapped state, counters and door states aren't reset.
+- **Runs are reproducible.** XMage's random numbers are seeded per game and per turn, and every choice order is
+  independent of XMage's object ids.
+
+```sh
+uv run --group data python seventeenlands/turn_replay.py --games 300 --seed 7 --run m300   # ~27 min on the mini
+```
+
+Output in `~/mtg-data/17lands/DSK/turn_replay/<run>/`:
+- `turns.jsonl`: one line per turn, with the choices taken, the attempts and what differed.
+- `summary.json`: the totals.
+
+## Results, 2026-10-23 (300 random games, seed 7, main `f3222cf`)
+
+95% intervals in brackets.
+
+| Turns | Reproduced |
+|---|---:|
+| All, n = 5,158 | **70.2%** (69.0–71.5) |
+| Before a game's first miss ("clean"), n = 2,614 | **88.9%** (87.7–90.1) |
+| After a reset, n = 2,544 | 51.0% (49.0–52.9) |
+| After a reset that matched the record exactly, n = 2,332 | 55.5% (53.5–57.5) |
+
+- **By player turn:** 98% on turn 1, 97% on 2, 89% on 3, 76% on 4, 70% on 5, 57% on 6, 53% on 7, 42% on 8 and later.
+- **Whole games:** 11 of 300 games reproduce every turn.
+- **Attempts:** 84% of reproduced turns match on the first attempt.
+- **Resets:** 84% of resets match the recorded visible state exactly.
+- **Activated abilities:** turns with one reproduce 37% of the time.
+
+**Why clean turns miss** (289 misses):
+
+| Cause | Misses |
+|---|---:|
+| Every recorded play happened, but the end state differs | 225 |
+| A recorded play was never possible | 36 |
+| A recorded play was possible but never happened in a way that matched | 28 |
+
+The state differences are mostly on the user's board (68), the opponent's board (38) and the user's hand (29). The
+plays that were never possible are mostly the opponent's spells (15).
+
+**After a reset** the same causes appear, more often. A reset can't restore what 17lands doesn't record (tapped
+lands, counters, which Room doors are unlocked, what an Aura enchants), and those differences change later turns.
+
+## How to read these numbers
+
+- **The opponent's side uses hindsight.** It holds exactly the cards it plays, when it plays them. So a reproduced
+  turn shows the user's recorded plays can be realised in XMage, not that the opponent's hidden hand is known.
+- **A guess can match by luck.** A searched choice that reproduces the end state is likely, not certain.
+  Labels from searched choice points are inferred and must be kept apart from the recorded ones.
+- **Compared with DraftZero.** They report 89% of Foundations turns reproduced.
+  - They rebuild every turn's start from the record, inferring tapped state and counters, with the same opponent
+    hindsight. That's closest to our clean rate (88.9%).
+  - Our chained replay pays for every earlier miss.
+
+## Next
+
+1. Better resets: infer tapped lands from mana spent and attacks, Room door states, counters. That moves the
+   after-reset rate toward the clean rate.
+2. The opponent's plays that were never possible (its hand or mana after a reset).
+3. Activated abilities (37%): match more 17lands ability ids to XMage options, and try their timing.
+4. Label output: the per-decision rows (options, choice, exact or inferred) for training.
