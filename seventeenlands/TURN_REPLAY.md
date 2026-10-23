@@ -124,6 +124,40 @@ What this means for training labels:
   `turns.jsonl` (`ambiguity`).
 - Block pairing is almost never a choice: 17lands' blockers and blocked attackers pin it down.
 
+## Training rows, 2026-10-24 (`--rows`)
+
+`--rows` writes `decisions.jsonl.gz`, one row per decision of the user's seat. Rows come only from clean turns
+that reproduced, excluding final turns, plus the mulligans.
+
+- **Fields:**
+  - what the seat saw: `obs`, the same per-seat observation the Claude player and the encoder use, with no hidden
+    cards;
+  - `options` and `choice`;
+  - `game`, `draft_id` (for the frozen split), `turn`, `kind` and `step`.
+- **`label`** says how sure the choice is:
+  - `recorded`: the record decides it. Attacks, blocks, mulligans, and windows where the only reading of the record
+    is to pass or play.
+  - `unique`: a searched choice the ambiguity check proved was the only one that fits.
+  - `ambiguous`: a searched choice where other alternatives fit too.
+  - `unprobed`: searched, without an ambiguity check (when run without `--probe`).
+  - `not_recorded`: an answer the replay fixes itself (surveil and scry keep the top card).
+
+On 100 games (seed 11, `--probe 30`) there were 9,045 rows: 8,066 recorded, 266 unique and 713 ambiguous.
+
+| Kind | recorded | unique | ambiguous |
+|---|---:|---:|---:|
+| Priority | 6,712 | 173 | 639 |
+| Attack | 740 | 0 | 0 |
+| Block | 51 | 0 | 0 |
+| Target | 18 | 45 | 30 |
+| Other choices (search, manifest, modes, "may", trigger order) | 545 | 48 | 44 |
+
+- **Most recorded priority rows are passes.**
+- **Of the 717 priority rows that make a play** (cast, land, ability), 588 are ambiguous, because which window a
+  play happened in usually can't be told.
+- So the record pins down *which* plays a turn made, not *when* each was made. How to turn that into a training
+  target is a model decision, left open here.
+
 ## How to read these numbers
 
 - **The opponent's side uses hindsight.** It holds exactly the cards it plays, when it plays them. So a reproduced

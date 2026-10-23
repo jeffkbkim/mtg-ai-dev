@@ -29,7 +29,7 @@ manifested off the top of the library are not scripted yet; turns that need them
 """
 from __future__ import annotations
 
-import argparse, collections, glob, heapq, itertools, json, os, random, socket, subprocess, sys, time
+import argparse, collections, glob, gzip, heapq, itertools, json, os, random, socket, subprocess, sys, time
 from pathlib import Path
 
 import polars as pl
@@ -599,6 +599,7 @@ def answer(msg: dict, sc: TurnScript | None, rec: Record, names: Names) -> int:
         return by_label[sc.choose(min(3, len(opts)), f"{seat} {kind.lower()}")]
     if kind in ("TARGET", "CHOOSE", "TARGET_CARDS", "CHOOSE_CARDS"):
         if "Surveil" in prompt or "Scry" in prompt:
+            EXTRA["_label"] = "not_recorded"   # our fixed answer, not the player's: 17lands doesn't record it
             return pick(labels, "DONE")  # keep the top of the library: the recorded draws come from the queue anyway
         order = list(by_label)
         # what this seat still lacks compared with its recorded end of turn (board, and hand for A)
@@ -748,6 +749,15 @@ def run(args):
                 queue.append(c)
         return {"A": future, "B": queue}
 
+    rows_out = gzip.open(out / "decisions.jsonl.gz", "wt") if args.rows else None
+
+    def write_row(row: dict, label: str, turn: int):
+        """One decision of the user's seat, for training: what it saw, its options, what it chose, and how sure that is."""
+        rec = cur["rec"]
+        rows_out.write(json.dumps({"game": cur["gid"], "draft_id": rec.r["draft_id"], "turn": turn, "label": label,
+                                   "seat": "A", **row}) + "\n")
+        stats[f"rows_{label}"] += 1
+
     def finish_turn(ok: bool, d: dict, extra: dict):
         last = cur["rec"].slot(cur["t"] + 1) is None
         rec = {"game": cur["gid"], "turn": cur["t"], "active": cur["sc"].active, "prefix": cur["sc"].prefix, "ok": ok, "last": last,
@@ -758,6 +768,18 @@ def run(args):
             stats["last_turns"] += 1
             stats["last_ok"] += ok
             return
+        if ok and args.rows and not cur["failed"]:
+            amb = {i: x["ambiguous"] for i, x in enumerate(extra.get("ambiguity") or [])}
+            for row in cur.get("buf", []):
+                if row.pop("fixed_label", None):
+                    label = "not_recorded"        # an answer the replay fixes itself (surveil, scry)
+                elif row["point"] is None:
+                    label = "recorded"            # the record decides it (attacks, blocks, the only legal reading)
+                elif row["point"] in amb:
+                    label = "ambiguous" if amb[row["point"]] else "unique"
+                else:
+                    label = "unprobed"            # searched, and no ambiguity check ran
+                write_row(row, label=label, turn=cur["t"])
         key = "after_resync" if cur["failed"] else "clean"
         cur["last_ok"] = ok
         if not ok:
@@ -812,6 +834,7 @@ def run(args):
                 if cur.get("fixed_to") is None and cur["failed"] and cur.get("last_ok"):
                     cur["start_exact"] = True   # the previous turn reproduced, so this one starts from the record too
                 cur["attempts"] += 1
+                cur["buf"] = []
                 cur["sc"] = TurnScript(rec, t, cur["path"], names, msg["state"])
             reply["draws"] = draws_for(t, msg["state"])
         elif typ == "eot":
@@ -892,8 +915,20 @@ def run(args):
         elif typ == "decision":
             try:
                 EXTRA.clear()
+                sc_ = cur["sc"]
+                before = len(sc_.taken) if sc_ is not None else 0
                 reply["choice"] = answer(msg, cur["sc"], cur["rec"], names)
+                fixed_label = EXTRA.pop("_label", None)
                 reply.update(EXTRA)
+                if args.rows and msg["seat"] == "A":
+                    point = before if sc_ is not None and len(sc_.taken) > before else None
+                    row = {"kind": msg["kind"], "prompt": msg["prompt"], "step": msg.get("step"), "obs": msg["obs"],
+                           "options": msg["options"], "choice": reply["choice"], "point": point, "fixed_label": fixed_label}
+                    if sc_ is None:   # mulligans and bottoms, before turn 1: recorded exactly
+                        row.pop("fixed_label", None)
+                        write_row(row, label="recorded", turn=0)
+                    else:
+                        cur.setdefault("buf", []).append(row)
             except Exception as e:  # a bug in the script must not hang the JVM
                 print("answer error", cur["gid"], msg.get("kind"), repr(e), file=sys.stderr)
                 reply["choice"] = 0
@@ -918,6 +953,8 @@ def run(args):
         elif typ == "end":
             continue
         f.write(json.dumps(reply) + "\n"); f.flush()
+    if rows_out:
+        rows_out.close()
     summary = {"games": len(specs), "skipped": skipped, "budget": args.budget, "seconds": round(time.time() - t0, 1), **stats}
     if stats["exact_start_turns"]:
         summary["exact_start_rate"] = round(stats["exact_start_ok"] / stats["exact_start_turns"], 3)
@@ -936,6 +973,9 @@ if __name__ == "__main__":
     ap.add_argument("--budget", type=int, default=40, help="attempts per turn")
     ap.add_argument("--chunk", type=int, default=10, help="games per JVM")
     ap.add_argument("--game-budget", type=int, default=400, help="rewinds per game, at most")
+    ap.add_argument("--rows", action="store_true",
+                    help="write the user's decisions in clean, reproduced turns to decisions.jsonl.gz, each labelled "
+                         "recorded / unique / ambiguous / unprobed / not_recorded")
     ap.add_argument("--probe", type=int, default=0,
                     help="ambiguity check: after a clean turn reproduces, try up to this many other choices to see if they fit too")
     ap.add_argument("--run", default=time.strftime("%Y%m%d-%H%M%S"))
