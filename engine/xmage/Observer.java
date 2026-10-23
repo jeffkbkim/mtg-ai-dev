@@ -335,9 +335,38 @@ public final class Observer {
         for (Map.Entry<String, String> s : secret.entrySet()) {
             String name = s.getKey();
             if (name.isEmpty() || visible.contains(name) || isBasic(name)) continue;
-            if (containsName(text, name)) hits.add(s.getValue() + " name in message: " + name);
+            boolean hit = rulesWords().contains(name) ? containsAsValue(text, name) : containsName(text, name);
+            if (hit) hits.add(s.getValue() + " name in message: " + name);
         }
         return hits;
+    }
+
+    private static Set<String> rulesWords;
+
+    /**
+     * Card names that are also words in rules text, like the Special Guest "Sacrifice" ("Sacrifice this
+     * enchantment: ..."). For these a match in running text proves nothing.
+     */
+    private static synchronized Set<String> rulesWords() {
+        if (rulesWords == null) {
+            Set<String> names = DskCards.byName().keySet();
+            StringBuilder rules = new StringBuilder();
+            for (mage.cards.repository.CardInfo ci : DskCards.byName().values())
+                for (String r : ci.createCard().getRules()) rules.append(r).append('\n');
+            String all = rules.toString();
+            Set<String> words = new HashSet<>();
+            for (String n : names) {
+                // the name in some other card's rules text, as a whole word (not that card's own {this})
+                if (containsName(all, n)) words.add(n);
+            }
+            rulesWords = words;
+        }
+        return rulesWords;
+    }
+
+    /** Name as a whole JSON string value or a "|"-separated label part: "Sacrifice" or "| Sacrifice |". */
+    static boolean containsAsValue(String text, String name) {
+        return text.contains("\"" + name + "\"") || text.contains("| " + name + " |") || text.contains(": " + name + "\"");
     }
 
     /**

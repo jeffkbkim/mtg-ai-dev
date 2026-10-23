@@ -386,6 +386,16 @@
     ]
   },
   {
+    "name": "Collected Company",
+    "cost": "{3}{G}",
+    "mana_value": 4,
+    "types": "[Instant]",
+    "rarity": "Mythic",
+    "rules": [
+      "Look at the top six cards of your library. Put up to two creature cards with mana value 3 or less from among them onto the battlefield. Put the rest on the bottom of your library in any order."
+    ]
+  },
+  {
     "name": "Come Back Wrong",
     "cost": "{2}{B}",
     "mana_value": 3,
@@ -518,6 +528,16 @@
     "rules": [
       "Vigilance",
       "Islandcycling {2} ({2}, Discard this card: Search your library for an Island card, reveal it, put it into your hand, then shuffle.)"
+    ]
+  },
+  {
+    "name": "Damnation",
+    "cost": "{2}{B}{B}",
+    "mana_value": 4,
+    "types": "[Sorcery]",
+    "rarity": "Mythic",
+    "rules": [
+      "Destroy all creatures. They can't be regenerated."
     ]
   },
   {
@@ -868,6 +888,16 @@
     "rarity": "Uncommon",
     "rules": [
       "Exile target artifact, enchantment, or creature with power 4 or greater."
+    ]
+  },
+  {
+    "name": "Expropriate",
+    "cost": "{7}{U}{U}",
+    "mana_value": 9,
+    "types": "[Sorcery]",
+    "rarity": "Mythic",
+    "rules": [
+      "Council's dilemma - Starting with you, each player votes for time or money. For each time vote, take an extra turn after this one. For each money vote, choose a permanent owned by the voter and gain control of it. Exile {this}."
     ]
   },
   {
@@ -1408,6 +1438,17 @@
     ]
   },
   {
+    "name": "Hallowed Haunting",
+    "cost": "{2}{W}{W}",
+    "mana_value": 4,
+    "types": "[Enchantment]",
+    "rarity": "Mythic",
+    "rules": [
+      "As long as you control seven or more enchantments, creatures you control have flying and vigilance.",
+      "Whenever you cast an enchantment spell, create a white Spirit Cleric creature token with \"This creature's power and toughness are each equal to the number of Spirits you control.\""
+    ]
+  },
+  {
     "name": "Hand That Feeds",
     "cost": "{1}{R}",
     "mana_value": 2,
@@ -1761,6 +1802,17 @@
     ]
   },
   {
+    "name": "Maddening Hex",
+    "cost": "{1}{R}{R}",
+    "mana_value": 3,
+    "types": "[Enchantment] - [Aura, Curse]",
+    "rarity": "Mythic",
+    "rules": [
+      "Enchant player",
+      "Whenever enchanted player casts a noncreature spell, roll a d6. {this} deals damage to that player equal to the result. Then attach {this} to another one of your opponents chosen at random."
+    ]
+  },
+  {
     "name": "Malevolent Chandelier",
     "cost": "{6}",
     "mana_value": 6,
@@ -2039,6 +2091,16 @@
     ]
   },
   {
+    "name": "Noxious Revival",
+    "cost": "{G/P}",
+    "mana_value": 1,
+    "types": "[Instant]",
+    "rarity": "Mythic",
+    "rules": [
+      "Put target card from a graveyard on top of its owner's library."
+    ]
+  },
+  {
     "name": "Oblivious Bookworm",
     "cost": "{G}{U}",
     "mana_value": 2,
@@ -2246,6 +2308,17 @@
     "rarity": "Rare",
     "rules": [
       "Discard your hand. Then draw X cards, where X is the number of card types among cards in your graveyard."
+    ]
+  },
+  {
+    "name": "Phantasmal Image",
+    "cost": "{1}{U}",
+    "mana_value": 2,
+    "types": "[Creature] - [Illusion]",
+    "rarity": "Mythic",
+    "pt": "0/0",
+    "rules": [
+      "You may have {this} enter as a copy of any creature on the battlefield, except it's an Illusion in addition to its other types and it has \"When this creature becomes the target of a spell or ability, sacrifice it.\""
     ]
   },
   {
@@ -2503,6 +2576,17 @@
     ]
   },
   {
+    "name": "Sacrifice",
+    "cost": "{B}",
+    "mana_value": 1,
+    "types": "[Instant]",
+    "rarity": "Mythic",
+    "rules": [
+      "As an additional cost to cast this spell, sacrifice a creature.",
+      "Add an amount of {B} equal to the sacrificed creature's mana value."
+    ]
+  },
+  {
     "name": "Savior of the Small",
     "cost": "{3}{W}",
     "mana_value": 4,
@@ -2712,6 +2796,17 @@
         "When you unlock this door, create an X/X blue Spirit creature token with flying, where X is the number of unlocked doors among Rooms you control."
       ]
     }
+  },
+  {
+    "name": "Soul Warden",
+    "cost": "{W}",
+    "mana_value": 1,
+    "types": "[Creature] - [Human, Cleric]",
+    "rarity": "Mythic",
+    "pt": "1/1",
+    "rules": [
+      "Whenever another creature enters, you gain 1 life."
+    ]
   },
   {
     "name": "Spectral Snatcher",
@@ -3140,6 +3235,16 @@
         "When you unlock this door, create a 6/6 black Demon creature token with flying."
       ]
     }
+  },
+  {
+    "name": "Unholy Heat",
+    "cost": "{R}",
+    "mana_value": 1,
+    "types": "[Instant]",
+    "rarity": "Mythic",
+    "rules": [
+      "{this} deals 2 damage to target creature or planeswalker.Delirium - {this} deals 6 damage instead if there are four or more card types among cards in your graveyard."
+    ]
   },
   {
     "name": "Unidentified Hovership",

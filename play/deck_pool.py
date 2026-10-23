@@ -6,8 +6,8 @@
 Each draft's deck is its most-played build (17lands logs the main deck of every game). Two kinds:
 - typical: drafts sampled uniformly, so archetypes appear as often as people draft them;
 - trophy: drafts that reached 7 wins (at most 2 losses).
-Only 40-card decks whose every card is in XMage's DSK set are kept; decks with other cards (e.g. Special Guests) are
-skipped and counted, never patched. Drafts listed in --exclude manifests (an earlier pool) are not picked again. The numbers file maps names to XMage collector numbers ("number<TAB>name").
+Only 40-card decks whose every card is in the numbers file are kept (DSK plus its Special Guests); decks with other
+cards are skipped and counted, never patched. Drafts listed in --exclude manifests (an earlier pool) are not picked again. The numbers file maps names to XMage collector numbers ("number<TAB>name").
 Writes <out>/<kind>_<nn>.dck and <out>/manifest.json (draft id, record, colors, rank, card counts per deck).
 """
 import argparse, csv, gzip, json, random
@@ -75,7 +75,8 @@ for kind, picked in (("typical", typical), ("trophy", trophy)):
     for k, info in enumerate(picked):
         name = f"{kind}_{k:02d}"
         lines = [f"NAME:{name} (17lands DSK draft {info['draft_id']}, {info['wins']}-{info['losses']}, {info['main_colors']})"]
-        lines += [f"{n} [DSK:{numbers[c]}] {c}" for c, n in sorted(info["deck"].items(), key=lambda kv: (-kv[1], kv[0]))]
+        # numbers are DSK collector numbers, or "SPG:<n>" for a Special Guest
+        lines += [f"{n} [{numbers[c] if ':' in numbers[c] else 'DSK:' + numbers[c]}] {c}" for c, n in sorted(info["deck"].items(), key=lambda kv: (-kv[1], kv[0]))]
         (out / f"{name}.dck").write_text("\n".join(lines) + "\n")
         manifest.append({"file": f"{name}.dck", "kind": kind, **{k2: info[k2] for k2 in (
             "draft_id", "build_index", "build_games", "games", "wins", "losses", "main_colors", "splash_colors",

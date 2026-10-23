@@ -58,6 +58,11 @@ class DeckBuilder:
         self.pairs = [set(p) for p in itertools.combinations(COLORS, 2)]
         self.pairs += [cs for cs in {frozenset(cs) for cs in self.spells.values() if len(cs) > 2}]
 
+    def code(self, n):
+        """Deck-file set code and number: "DSK:14", or "SPG:71" for a Special Guest."""
+        v = self.numbers[n]
+        return v if ":" in v else f"DSK:{v}"
+
     def build(self, i):
         pair = self.pairs[i % len(self.pairs)]
         pool = [n for n, cs in self.spells.items() if cs <= pair]
@@ -73,8 +78,8 @@ class DeckBuilder:
         n_basic = 17 - len(nonbasic)
         counts = {ch: max(1, int(n_basic * weight[ch] / sum(weight.values()))) for ch in cols}
         counts[max(cols, key=weight.get)] += n_basic - sum(counts.values())
-        lines = [f"1 [DSK:{self.numbers[n]}] {n}" for n in spells + nonbasic]
-        lines += [f"{counts[ch]} [DSK:{self.numbers[BASICS[ch]]}] {BASICS[ch]}" for ch in cols]
+        lines = [f"1 [{self.code(n)}] {n}" for n in spells + nonbasic]
+        lines += [f"{counts[ch]} [{self.code(BASICS[ch])}] {BASICS[ch]}" for ch in cols]
         name = f"soak_{i:04d}_{''.join(cols)}"
         return name, spells + nonbasic, f"NAME:{name}\n" + "\n".join(lines) + "\n"
 

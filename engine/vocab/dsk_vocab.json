@@ -32,6 +32,7 @@
     "Charred Foyer // Warped Space",
     "Clammy Prowler",
     "Clockwork Percussionist",
+    "Collected Company",
     "Come Back Wrong",
     "Commune with Evil",
     "Conductive Machete",
@@ -44,6 +45,7 @@
     "Cursed Windbreaker",
     "Cynical Loner",
     "Daggermaw Megalodon",
+    "Damnation",
     "Dashing Bloodsucker",
     "Dazzling Theater // Prop Room",
     "Defiant Survivor",
@@ -70,6 +72,7 @@
     "Etched Cornfield",
     "Ethereal Armor",
     "Exorcise",
+    "Expropriate",
     "Fanatic of the Harrowing",
     "Fear of Abduction",
     "Fear of Being Hunted",
@@ -112,6 +115,7 @@
     "Gremlin Tamer",
     "Grievous Wound",
     "Growing Dread",
+    "Hallowed Haunting",
     "Hand That Feeds",
     "Hardened Escort",
     "Haunted Screen",
@@ -143,6 +147,7 @@
     "Lionheart Glimmer",
     "Live or Die",
     "Living Phone",
+    "Maddening Hex",
     "Malevolent Chandelier",
     "Manifest Dread",
     "Marina Vendrell",
@@ -164,6 +169,7 @@
     "Niko, Light of Hope",
     "Norin, Swift Survivalist",
     "Nowhere to Run",
+    "Noxious Revival",
     "Oblivious Bookworm",
     "Omnivorous Flytrap",
     "Optimistic Scavenger",
@@ -181,6 +187,7 @@
     "Patchwork Beastie",
     "Peculiar Lighthouse",
     "Peer Past the Veil",
+    "Phantasmal Image",
     "Piggy Bank",
     "Piranha Fly",
     "Plains",
@@ -201,6 +208,7 @@
     "Rite of the Moth",
     "Roaring Furnace // Steaming Sauna",
     "Rootwise Survivor",
+    "Sacrifice",
     "Savior of the Small",
     "Saw",
     "Sawblade Skinripper",
@@ -218,6 +226,7 @@
     "Skullsnap Nuisance",
     "Slavering Branchsnapper",
     "Smoky Lounge // Misty Salon",
+    "Soul Warden",
     "Spectral Snatcher",
     "Spineseeker Centipede",
     "Split Up",
@@ -251,6 +260,7 @@
     "Under the Skin",
     "Underwater Tunnel // Slimy Aquarium",
     "Unholy Annex // Ritual Chamber",
+    "Unholy Heat",
     "Unidentified Hovership",
     "Unnerving Grasp",
     "Unsettling Twins",
@@ -845,6 +855,11 @@
       "text": "Whenever you turn a permanent face up, put a +1/+1 counter on it."
     },
     {
+      "key": "Hallowed Haunting#0",
+      "type": "Triggered",
+      "text": "Whenever you cast an enchantment spell, create a white Spirit Cleric creature token with \"This creature\u0027s power and toughness are each equal to the number of Spirits you control.\""
+    },
+    {
       "key": "Hand That Feeds#0",
       "type": "Triggered",
       "text": "\u003ci\u003eDelirium\u003c/i\u003e \u0026mdash; Whenever {this} attacks while there are four or more card types among cards in your graveyard, it gets +2/+0 and gains menace until end of turn."
@@ -983,6 +998,11 @@
       "key": "Living Phone#0",
       "type": "Triggered",
       "text": "When {this} dies, look at the top five cards of your library. You may reveal a creature card with power 2 or less from among them and put it into your hand. Put the rest on the bottom of your library in a random order."
+    },
+    {
+      "key": "Maddening Hex#0",
+      "type": "Triggered",
+      "text": "Whenever enchanted player casts a noncreature spell, roll a d6. {this} deals damage to that player equal to the result. Then attach {this} to another one of your opponents chosen at random."
     },
     {
       "key": "Malevolent Chandelier#0",
@@ -1360,6 +1380,11 @@
       "key": "Smoky Lounge // Misty Salon#1",
       "type": "Triggered",
       "text": "When you unlock this door, create an X/X blue Spirit creature token with flying, where X is the number of unlocked doors among Rooms you control."
+    },
+    {
+      "key": "Soul Warden#0",
+      "type": "Triggered",
+      "text": "Whenever another creature enters, you gain 1 life."
     },
     {
       "key": "Spectral Snatcher#0",

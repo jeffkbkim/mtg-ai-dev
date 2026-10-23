@@ -23,9 +23,10 @@ Rank is missing for 5,163 games and 483,690 picks; splash colours are mostly emp
 
 **Cards:** 17lands lists 286 cards and XMage's DSK list 276. The 10 extra are Duskmourn's Special Guests (Collected
 Company, Damnation, Expropriate, Hallowed Haunting, Maddening Hex, Noxious Revival, Phantasmal Image, Sacrifice,
-Soul Warden, Unholy Heat). XMage implements all 10 under other set codes, so no card is unsupported. But our
-vocabulary (`engine/vocab/dsk_vocab.json`) only has the 276, and 20,928 games (2.1%) have a Special Guest in the deck.
-Those games need the vocabulary extended, or have to be set aside explicitly. They're not dropped or replaced here.
+Soul Warden, Unholy Heat). XMage implements all 10 under set SPG, so no card is unsupported. 20,928 games (2.1%)
+have a Special Guest in the deck. **2026-10-23:** they're now in our card list (`engine/xmage/DskCards.java`), so the
+vocabulary and card text have 286 cards (card and ability ids shifted; no model had been trained on the old ones).
+XMage's own DSK boosters don't contain Special Guests, so a faithful draft needs our own pack generator.
 
 **Split** (`splits.json`): by draft, `sha256("mtg-ai-dsk-split-v1:" + draft_id)`, 80/10/10. Every row of a draft,
 in all three datasets, lands in the same split. 140,619 / 17,731 / 17,558 drafts; games 809,318 / 102,031 / 100,600.
@@ -68,3 +69,21 @@ Every table also has the game's key, `on_play`, `won`, `rank`, `num_mulligans`, 
 drops and attacks) both players' life, lands, creatures and other permanents at the end of the previous turn, plus
 the opponent's hand size. Cards are names; nothing is encoded. How to turn these into model inputs is a model
 decision, left open here.
+
+## Fully replayable games, 2026-10-23 (`replayable.py`, 20,000 games)
+
+A game counts as replayable move for move only if nothing about either player's moves has to be guessed.
+**2 of 20,000 games (0.0%) pass.** Share of games failing each test (a game can fail several):
+
+| Test | What can't be told from the replay | Games failing |
+|---|---|---:|
+| targets | any spell or ability with a target | 99.3% |
+| timing | the active player cast something and attacked in the same turn (before or after combat?) | 99.5% |
+| order | one player made 2+ plays in a turn (the "abilities" columns include triggers, so this test is strict) | 99.7% |
+| hand | the rebuilt hand drifted from the recorded one at some point | 73.4% |
+| blocks | 2+ attackers met blockers (who blocked whom?) | 72.2% |
+| guests | a Special Guest in the deck (now supported) | 2.1% |
+
+So no game can be replayed as is. To replay games in XMage, the missing parts (targets, order, timing, block
+assignments) have to be filled in by search: try the choices the engine allows and keep the ones that lead to the
+next recorded end-of-turn state. Those filled-in choices are inferred labels, not recorded ones.

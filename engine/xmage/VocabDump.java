@@ -7,13 +7,12 @@ import mage.cards.repository.*;
 import java.nio.file.*;
 import java.util.*;
 
-/** Writes the DSK card and ability vocabulary (names and ability keys) as JSON. */
+/** Writes the DSK card and ability vocabulary (Duskmourn and its Special Guests: names and ability keys) as JSON. */
 public class VocabDump {
     public static void main(String[] args) throws Exception {
         RepositoryUtil.bootstrapLocalDb();
         CardScanner.scan();
-        Map<String, CardInfo> byName = new TreeMap<>();
-        for (CardInfo ci : CardRepository.instance.findCards(new CardCriteria().setCodes("DSK"))) byName.putIfAbsent(ci.getName(), ci);
+        Map<String, CardInfo> byName = DskCards.byName();  // Duskmourn plus its 10 Special Guests
         JsonArray cards = new JsonArray(), abilities = new JsonArray();
         // named choices (non-card answers): alternative costs and modes
         Set<String> choices = new TreeSet<>();
