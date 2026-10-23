@@ -159,6 +159,9 @@ class ClaudePlayer:
     def _spawn(self):
         env = {k: v for k, v in os.environ.items() if k not in ("CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_REMOTE_SESSION_ID")}
         env["CLAUDE_EFFORT"] = self.effort  # an inherited default (e.g. a cloud session's "medium") must not compete with --effort
+        # each seat calls again within seconds (batch 2's longest wait was under 5 min), and 5-minute cache writes cost
+        # 1.25x input where 1-hour ones (the subscription default) cost 2x
+        env["CLAUDE_CODE_PROMPT_CACHE_TTL"] = "5m"
         self.proc = subprocess.Popen(
             ["claude", "-p", "--input-format", "stream-json", "--output-format", "stream-json", "--verbose",
              "--model", self.model, "--effort", self.effort, "--system-prompt-file", "system.txt",
