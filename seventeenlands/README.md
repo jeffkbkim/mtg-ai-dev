@@ -52,3 +52,19 @@ between isn't.
 So the exact, ready-to-use labels are mulligans, land drops and attack sets. Spell choices are exact as sets but
 need order, timing and targets inferred, and block assignments need inferring in over half of block turns. Any
 training data built from replays should mark which parts are exact and which are inferred.
+
+## Decision tables, 2026-10-23
+
+`decisions.py` writes one row per decision for the three kinds a replay records exactly, from all 1,011,949 games,
+to `~/mtg-data/17lands/DSK/decisions/` (440 MB). Every row has its draft's split; none is missing one.
+
+| Table | Rows | Label | Context that may be off (flagged) |
+|---|---:|---|---|
+| `mulligans.parquet` | 1,132,220 | keep or mulligan; for a kept hand after mulligans, the cards put on the bottom | none: every hand seen is recorded, and the bottomed cards always account for the difference |
+| `land_drops.parquet` | 7,185,684 | which land was played (or none, 9% of rows) | `hand_start` = last recorded hand + this turn's draws; the played land was in it 98.6% of the time (`land_in_hand_start`) |
+| `attacks.parquet` | 6,073,790 | which creatures attacked, and which were blocked | `attackers_available` = creatures at the end of the previous turn; misses haste creatures cast this turn and animated lands, so every attacker was in it 93.7% of the time (`attackers_in_available`) |
+
+Every table also has the game's key, `on_play`, `won`, `rank`, `num_mulligans`, `has_special_guest`, and (for land
+drops and attacks) both players' life, lands, creatures and other permanents at the end of the previous turn, plus
+the opponent's hand size. Cards are names; nothing is encoded. How to turn these into model inputs is a model
+decision, left open here.
