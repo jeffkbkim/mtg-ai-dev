@@ -66,6 +66,32 @@ plays that were never possible are mostly the opponent's spells (15).
 **After a reset** the same causes appear, more often. A reset can't restore what 17lands doesn't record (tapped
 lands, counters, which Room doors are unlocked, what an Aura enchants), and those differences change later turns.
 
+## Update, 2026-10-23 evening: better resets (same 300 games, seed 7)
+
+What changed:
+- **Room doors.** The replay casts the exact door 17lands recorded. A reset restores each Room's unlocked doors:
+  the doors cast, plus the doors whose "when you unlock this door" trigger appears in the record.
+- **Tapped state.** A reset taps as many of the active player's lands as it spent mana (basics first), plus its
+  attackers. Those stay tapped through the other player's turn.
+- **Searches and manifests** pick the card the seat still lacks compared with its recorded end of turn.
+- **A game's final turn** is counted apart. The record often ends in a concession, which no play reproduces;
+  49 of 177 final turns reproduce.
+
+| Turns, final turns excluded | Before | After |
+|---|---:|---:|
+| All | 70.2%* | **73.3%** (72.1–74.5), n = 5,000 |
+| Clean | 88.9% | **89.9%** (88.7–90.9), n = 2,733 |
+| After a reset | 51.0% | **53.4%** (51.3–55.4), n = 2,267 |
+
+\* Before, final turns were counted with the rest.
+
+- **By player turn:** 99%, 97%, 90%, 79%, 72%, 63%, 55%, then 45% on turn 8 and later.
+- **Whole games:** 23 of 300 reproduce every non-final turn.
+- **Right after a reset** is the weakest turn: 47% reproduce, against 78% two turns later. What a reset still can't
+  restore is mostly what 17lands never records: +1/+1 and other counters, what an Aura or Equipment is attached to,
+  the graveyard (which delirium counts), and an Overlord cast for its impending cost. Turns off by one or two life
+  are the common symptom.
+
 ## How to read these numbers
 
 - **The opponent's side uses hindsight.** It holds exactly the cards it plays, when it plays them. So a reproduced

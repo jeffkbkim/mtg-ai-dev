@@ -57,6 +57,7 @@ class Names:
         raw = dict(zip(cards["id"], cards["name"]))
         self.full = {h: n for n in raw.values() if " // " in n for h in n.split(" // ")}
         self.name = {i: self.full.get(n, n) for i, n in raw.items()}
+        self.raw = dict(raw)   # keeps a Room's door name: 17lands records which door was cast
         self.name[3] = FACE_DOWN
         # tokens by rarity: basics from sets whose code starts with T (THB, TDM ...) aren't tokens
         self.token = {i for i, r in zip(cards["id"], cards["rarity"]) if r == "token" and i != 3}
@@ -64,6 +65,14 @@ class Names:
         text = json.loads((REPO / "engine/vocab/dsk_card_text.json").read_text())
         self.rules = {c["name"]: " ".join(c["rules"] + c.get("left", {}).get("rules", []) + c.get("right", {}).get("rules", [])) for c in text}
         self.cost = {c["name"]: c.get("cost", "") for c in text}
+        # Room doors: half name -> (room, side), and each door's rules for matching its unlock trigger
+        self.half_of, door_rules = {}, []
+        for c in text:
+            for side in ("left", "right"):
+                if side in c:
+                    self.half_of[c[side]["name"]] = (c["name"], side)
+                    door_rules.append((c["name"], side, norm_text(" ".join(c[side]["rules"]))))
+        self.door_rules = door_rules
         ab = pl.read_csv(DATA.parent / "abilities.csv")
         self.ability_text = dict(zip(ab["id"], ab["text"]))
         self._ability = {}
@@ -93,6 +102,18 @@ class Names:
                     out = (cards[0], norm_text(text))
         self._ability[aid] = out
         return out
+
+    def door_trigger(self, aid: int) -> tuple[str, str] | None:
+        """(room, side) for a 17lands "When you unlock this door" ability, else None."""
+        text = self.ability_text.get(aid) or ""
+        if not text.startswith("When you unlock this door"):
+            return None
+        t = norm_text(text.replace("CARDNAME", "{this}"))[:40]
+        hits = [(room, side) for room, side, r in self.door_rules if t and t in r]
+        return hits[0] if len(hits) == 1 else None
+
+    def raw_names(self, v):
+        return [self.raw.get(i, str(i)) for i in self.ids(v)]
 
     def ids(self, v):
         return [] if v in (None, "") else [int(x) for x in str(v).split("|") if x]
@@ -188,6 +209,28 @@ class Record:
                 "hand_A": sorted(self.L(prefix, "eot_user_cards_in_hand")), "hand_B": self.num(prefix, "eot_oppo_cards_in_hand"),
                 "bf_A": bf("user"), "bf_B": bf("oppo")}
 
+    def doors(self, upto_prefix: str, who: str) -> dict[str, list[str]]:
+        """Room doors unlocked for one player by the end of a turn: doors it cast, and doors whose unlock trigger fired."""
+        out = collections.defaultdict(set)
+        for t in range(1, 2 * self.turns + 2):
+            s = self.slot(t)
+            if not s:
+                continue
+            active, p = s
+            mine = (active == "A") == (who == "user")
+            if mine:
+                for raw in self.n.raw_names(self.r.get(p + "non_creatures_cast")):
+                    if raw in self.n.half_of:
+                        room, side = self.n.half_of[raw]
+                        out[room].add(side)
+            for aid in self.n.ids(self.r.get(p + f"{who}_abilities")):
+                d = self.n.door_trigger(aid)
+                if d:
+                    out[d[0]].add(d[1])
+            if p == upto_prefix:
+                break
+        return {k: sorted(v) for k, v in out.items()}
+
     def fix(self, prefix: str) -> dict:
         """The recorded end of turn in the form ReplaySeat.fix takes (tokens and face-down cards left out)."""
         bf = lambda w: [self.n.norm(x) for f in ("lands", "creatures", "non_creatures")
@@ -197,8 +240,15 @@ class Record:
         tok = lambda w: [self.n.norm(self.n.name.get(i, "")) for i in ids(w)]
         classes = lambda w: {self.n.norm(self.n.name.get(i, "")): "mage.game.permanent.token." + TOKEN_CLASS[i] for i in ids(w) if i in TOKEN_CLASS}
         out = {"A": {"battlefield": bf("user"), "tokens": tok("user"), "token_classes": classes("user"),
-                     "hand": self.L(prefix, "eot_user_cards_in_hand")},
-               "B": {"battlefield": bf("oppo"), "tokens": tok("oppo"), "token_classes": classes("oppo"), "face_down_hidden": True}}
+                     "hand": self.L(prefix, "eot_user_cards_in_hand"), "doors": self.doors(prefix, "user")},
+               "B": {"battlefield": bf("oppo"), "tokens": tok("oppo"), "token_classes": classes("oppo"), "face_down_hidden": True,
+                     "doors": self.doors(prefix, "oppo")}}
+        # the player whose turn this was keeps its permanents tapped into the next turn: as many lands as the mana it
+        # spent (an estimate: mana from other sources and lands tapped for abilities aren't told apart), and attackers
+        active = "A" if prefix.startswith("user") else "B"
+        who = "user" if active == "A" else "oppo"
+        spent = self.num(prefix, f"{who}_mana_spent", 0)
+        out[active]["tap"] = {"lands": spent, "creatures": [self.n.norm(x) for x in self.L(prefix, "creatures_attacked", False)]}
         for seat, w in (("A", "user"), ("B", "oppo")):
             life = self.num(prefix, f"eot_{w}_life")
             if life is not None:
@@ -328,6 +378,11 @@ class TurnScript:
         self.pairings = block_pairings(p[self.other]["block"], p["blocked"])
         self.pairing = None
         self.flash_blockers = set(p[self.other].get("flash", [])) & {names.norm(x) for x in p[self.other]["block"]}
+        # which door of a Room each seat cast: 17lands records the door, so cast that one, not the other
+        self.halves = {s_: collections.Counter() for s_ in ("A", "B")}
+        for raw in names.raw_names(rec.r.get(self.prefix + "non_creatures_cast")):
+            if raw in names.half_of:
+                self.halves[self.active][raw] += 1
         # A's casts this turn that weren't in its hand or drawn: played from exile (a Room door like Painter's Studio
         # exiles the top cards to play). Stacked on top of the library before such an effect.
         self.from_elsewhere = []
@@ -414,6 +469,10 @@ def priority_alternatives(msg, sc: TurnScript, names: Names) -> list:
         if o["action"] == "PLAY_LAND" and active and todo["lands"][name] > 0:
             key = ("lands", name)
         elif o["action"] == "CAST" and todo["spells"][name] > 0:
+            raw = parts[1].strip()
+            wanted = {h: k for h, k in sc.halves[seat].items() if names.half_of[h][0] == name and k > 0}
+            if raw in names.half_of and wanted and raw not in wanted:
+                continue   # the other door of a Room whose recorded door is still to cast
             key = ("spells", name)
         elif o["action"] == "ACTIVATE" and len(parts) >= 3:
             text = norm_text(parts[2].replace(parts[1], "{this}"))
@@ -490,6 +549,9 @@ def answer(msg: dict, sc: TurnScript | None, rec: Record, names: Names) -> int:
                 EXTRA["top"] = {"A": sc.from_elsewhere}
             return i
         todo[k][key] -= 1
+        raw = (opts[i]["label"].split(" | ") + ["", ""])[1].strip()
+        if k == "spells" and sc.halves[seat][raw] > 0:
+            sc.halves[seat][raw] -= 1
         card = key[0] if k == "abilities" else key
         if seat == "A" and card and "manifest dread" in names.rules.get(card, "").lower():
             # manifest dread looks at the top two cards: put the card A ends the turn with face down on top
@@ -539,6 +601,10 @@ def answer(msg: dict, sc: TurnScript | None, rec: Record, names: Names) -> int:
         if "Surveil" in prompt or "Scry" in prompt:
             return pick(labels, "DONE")  # keep the top of the library: the recorded draws come from the queue anyway
         order = list(by_label)
+        # what this seat still lacks compared with its recorded end of turn (board, and hand for A)
+        have = collections.Counter(names.norm((e.get("card_name") or e.get("name") or "").split(": ", 1)[-1])
+                                   for e in msg["obs"]["entries"] if e.get("mine") and e.get("zone") in ("BATTLEFIELD", "HAND"))
+        deficit = sc.gain[seat] - have
         def rank(i):
             o = opts[i]
             n = names.norm(entry_name(msg, o["target"]) or o["label"])
@@ -546,7 +612,7 @@ def answer(msg: dict, sc: TurnScript | None, rec: Record, names: Names) -> int:
                 return 0
             if sc.killed[n] > 0:
                 return 1
-            if sc.gain[seat][n] > 0 and kind in ("CHOOSE_CARDS", "TARGET_CARDS", "CHOOSE"):
+            if deficit[n] > 0 and kind in ("CHOOSE_CARDS", "TARGET_CARDS", "CHOOSE"):
                 return 2
             if (o.get("target") or {}).get("player") == "opp":
                 return 3
@@ -683,10 +749,15 @@ def run(args):
         return {"A": future, "B": queue}
 
     def finish_turn(ok: bool, d: dict, extra: dict):
-        rec = {"game": cur["gid"], "turn": cur["t"], "active": cur["sc"].active, "prefix": cur["sc"].prefix, "ok": ok,
+        last = cur["rec"].slot(cur["t"] + 1) is None
+        rec = {"game": cur["gid"], "turn": cur["t"], "active": cur["sc"].active, "prefix": cur["sc"].prefix, "ok": ok, "last": last,
                "start_exact": not cur["failed"] or cur.get("start_exact", False),
                "attempts": cur["attempts"], "after_resync": cur["failed"], "diff": d, "unscripted": cur["sc"].unscripted, **extra}
         log.write(json.dumps(rec) + "\n"); log.flush()
+        if last:   # the game's final turn: often a concession, which no play reproduces; counted on its own
+            stats["last_turns"] += 1
+            stats["last_ok"] += ok
+            return
         key = "after_resync" if cur["failed"] else "clean"
         cur["last_ok"] = ok
         if not ok:

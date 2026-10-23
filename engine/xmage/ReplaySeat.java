@@ -168,6 +168,40 @@ public class ReplaySeat extends PySeat {
                     }
                 }
             }
+            if (w.has("doors")) {  // which Room doors are unlocked: the record's casts and unlock triggers
+                JsonObject doors = w.getAsJsonObject("doors");
+                for (Permanent m : game.getBattlefield().getAllActivePermanents(p.getId())) {
+                    Card own = game.getCard(m.getId());
+                    if (own == null || !doors.has(own.getName()) || m.isFaceDown(game)) continue;
+                    Set<String> sides = new HashSet<>();
+                    for (JsonElement e : doors.getAsJsonArray(own.getName())) sides.add(e.getAsString());
+                    setField(m, "leftHalfUnlocked", sides.contains("left"));
+                    setField(m, "rightHalfUnlocked", sides.contains("right"));
+                }
+            }
+            if (w.has("tap")) {  // the player whose turn just ended: lands it spent mana from, creatures that attacked
+                JsonObject tap = w.getAsJsonObject("tap");
+                List<Permanent> lands = new ArrayList<>();
+                Map<String, Integer> attackers = tap.has("creatures") ? counts(tap.getAsJsonArray("creatures")) : new HashMap<>();
+                List<Permanent> mine = new ArrayList<>(game.getBattlefield().getAllActivePermanents(p.getId()));
+                mine.sort(Comparator.comparing(Permanent::getName));
+                for (Permanent m : mine) {
+                    if (m.isLand(game)) { m.setTapped(false); lands.add(m); }
+                    else if (m.isCreature(game)) {
+                        Card own = game.getCard(m.getId());
+                        String n = own != null && !(m instanceof mage.game.permanent.PermanentToken) ? own.getName() : m.getName();
+                        boolean attacked = attackers.getOrDefault(n, 0) > 0 && !m.hasAbility(mage.abilities.keyword.VigilanceAbility.getInstance(), game);
+                        if (attackers.getOrDefault(n, 0) > 0) attackers.merge(n, -1, Integer::sum);
+                        m.setTapped(attacked);
+                    }
+                }
+                // tap basics first, then other lands that make mana; never a land that makes none (Terramorphic
+                // Expanse), whose own ability the record may still need
+                lands.removeIf(m -> m.getAbilities().getActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD).isEmpty());
+                lands.sort(Comparator.comparing((Permanent m) -> m.isBasic(game) ? 0 : 1).thenComparing(Permanent::getName));
+                int n = tap.has("lands") ? tap.get("lands").getAsInt() : 0;
+                for (int i = 0; i < Math.min(n, lands.size()); i++) lands.get(i).setTapped(true);
+            }
             if (w.has("hand")) {
                 Map<String, Integer> need = counts(w.getAsJsonArray("hand"));
                 for (Card c : new ArrayList<>(p.getHand().getCards(game))) {
@@ -205,6 +239,17 @@ public class ReplaySeat extends PySeat {
         List<Permanent> first = own ? mine : theirs, second = own ? theirs : mine;
         Permanent host = !first.isEmpty() ? first.get(0) : !second.isEmpty() ? second.get(0) : null;
         if (host != null) host.addAttachment(aura.getId(), null, game);
+    }
+
+    /** Set a boolean field of a permanent without events (Room door state lives in PermanentImpl). */
+    private static void setField(Permanent m, String name, boolean v) {
+        try {
+            java.lang.reflect.Field f = mage.game.permanent.PermanentImpl.class.getDeclaredField(name);
+            f.setAccessible(true);
+            f.setBoolean(m, v);
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     /** Set a life total without life-gain or life-loss events (PlayerImpl.life is protected). */
