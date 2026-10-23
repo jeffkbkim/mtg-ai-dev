@@ -1,6 +1,6 @@
 """Flag clear blunders in recorded Claude games, one review per seat per game, so they can be filtered from training data.
 
-  python3 play/review.py <run dir or game*.jsonl> ... [--model claude-opus-5-5] [--effort high] [--parallel 4]
+  python3 play/review.py <run dir or game*.jsonl> ... [--model claude-opus-5-5] [--effort high] [--parallel 4] [--fraction 0.5]
   python3 play/review.py <run dir> ... --summary     # counts only, no new reviews
 
 A reviewer (headless `claude -p`, no tools) reads one seat's game exactly as that seat saw it: each asked decision
@@ -204,6 +204,11 @@ def summary(paths):
             print("  flags per 1,000 decisions: " + ", ".join(f"{k} {1000 * v / n:.1f}" for k, v in sorted(cats)))
 
 
+def picked(game_file, fraction):
+    """Whether this game is in the reviewed sample: a stable hash of its path, so reruns pick the same games."""
+    return int(hashlib.sha256(str(Path(game_file).resolve()).encode()).hexdigest()[:8], 16) < fraction * 2 ** 32
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("paths", nargs="+")
@@ -212,10 +217,12 @@ if __name__ == "__main__":
     ap.add_argument("--parallel", type=int, default=4)
     ap.add_argument("--timeout", type=int, default=1800)
     ap.add_argument("--summary", action="store_true")
+    ap.add_argument("--fraction", type=float, default=0.5,
+                    help="review this share of the games (both seats), picked by a hash of the path (Jeff 2026-10-23: half)")
     args = ap.parse_args()
     if not args.summary:
         texts = load_card_text()
-        jobs = [(gf, seat) for gf in game_files(args.paths) for seat in ("A", "B")]
+        jobs = [(gf, seat) for gf in game_files(args.paths) if picked(gf, args.fraction) for seat in ("A", "B")]
         with ThreadPoolExecutor(args.parallel) as ex:
             for path, status in ex.map(lambda j: review_one(j[0], j[1], args, texts), jobs):
                 print(f"{path}: {status}", flush=True)

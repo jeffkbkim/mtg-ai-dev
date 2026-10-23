@@ -50,10 +50,11 @@ How the game talks to you:
 
 Reply with exactly one line of JSON and nothing else:
 {"choice": <option number>, "reason": "<one or two sentences: your plan and the main risk you checked>"}
-When you PASS priority and want to keep passing while nothing happens, add "pass_until": "end_of_turn" (you will
-be asked again at the end step of the opponent's turn, e.g. to cast an instant then) or "my_turn" (asked again at
-your next turn). You are always asked again when anything goes on the stack, in your own main phases, during combat,
-and for attacks, blocks and other choices."""
+When you PASS priority, say how far to keep passing while nothing happens: "pass_until": "my_main" (asked again in
+your next main phase: use it in your upkeep and draw step), "end_of_turn" (asked again at the end step of the
+opponent's turn, e.g. to cast an instant then) or "my_turn" (asked again at your next turn). Add one to every PASS
+unless you mean to act at the very next window; each extra question costs time. You are always asked again when
+anything goes on the stack, in your own main phases, during combat, and for attacks, blocks and other choices."""
 
 
 PLAN_RULES = """## Your plan
@@ -126,7 +127,7 @@ class ClaudePlayer:
     """
 
     LOG_LINES = 80
-    PASS_TARGETS = ("end_of_turn", "my_turn")
+    PASS_TARGETS = ("my_main", "end_of_turn", "my_turn")
     MAX_ERRORS = 2
 
     def __init__(self, model="claude-opus-5-5", effort="high", lessons=None, plan=False, facts=False, check=False,
@@ -231,13 +232,17 @@ class ClaudePlayer:
         if msg["kind"] != "PRIORITY" or msg["options"][0]["label"] != "PASS":
             return False  # attacks, blocks, targets... are always asked; pass_until stays for later windows
         if g["my_turn"] and g["step"] in ("Precombat Main", "Postcombat Main"):
+            if self.pass_until["target"] == "my_main":
+                self.pass_until = None
             return False  # never skip my own main phases (land drops, sorcery-speed plays); pass_until stays
         if any(e.get("attacking") for e in msg["obs"]["entries"]):
             return False  # combat-trick windows (before and after blocks) are always asked
         # Windows where PASS is the only option are answered in Java and never reach us, so the target step may be
         # missed: expire by turn number too (turns are numbered across both players: mine, theirs, mine, ...).
         p = self.pass_until
-        if p["target"] == "my_turn":
+        if p["target"] == "my_main":  # cleared in my main phase above; a later turn means it was missed
+            reached = g["turn"] > p["turn"] + (0 if p["my_turn"] else 1)
+        elif p["target"] == "my_turn":
             reached = g["my_turn"] and g["turn"] != p["turn"]
         else:  # end_of_turn: the end step of the opponent's current turn, or of their next one if set on my turn
             last = p["turn"] + (1 if p["my_turn"] else 0)
