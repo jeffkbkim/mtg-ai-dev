@@ -1,0 +1,14 @@
+diff --git a/ops/desktop/launcher/src/playmat/launcher/GameServer.java b/ops/desktop/launcher/src/playmat/launcher/GameServer.java
+index 51978ff024..7f0801b006 100644
+--- a/ops/desktop/launcher/src/playmat/launcher/GameServer.java
++++ b/ops/desktop/launcher/src/playmat/launcher/GameServer.java
+@@ -121,6 +121,9 @@ final class GameServer {
+         command.add("-Dxmage.replays.dir=" + home.resolve("saved").resolve("replays"));
+         command.add("-Dxmage.healthPort=" + HEALTH_PORT);
+         command.add("-Dlog4j.configuration=" + home.resolve("config").resolve("log4j-playmat.properties").toUri());
++        // mtg-ai: extra JVM options for the game server (recording folder, commits, Claude service port)
++        String extra = System.getenv("PLAYMAT_SERVER_OPTS");
++        if (extra != null && !extra.trim().isEmpty()) command.addAll(java.util.Arrays.asList(extra.trim().split("\\s+")));
+         command.add("-cp");
+         command.add(layout.serverRelease().resolve("lib") + File.separator + "*");
+         command.add("mage.server.Main");

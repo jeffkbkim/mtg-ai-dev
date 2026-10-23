@@ -1,0 +1,190 @@
+diff --git a/Mage.Web.Client/src/app/i18n/en/core.ts b/Mage.Web.Client/src/app/i18n/en/core.ts
+index 08d3213a6d..8e9bd25816 100644
+--- a/Mage.Web.Client/src/app/i18n/en/core.ts
++++ b/Mage.Web.Client/src/app/i18n/en/core.ts
+@@ -172,7 +172,11 @@ export default {
+   'ai.deck.commanderStarters': 'Commander starters',
+   'ai.deck.yours': 'Your decks',
+   'ai.type': 'AI',
+-  'ai.type.standard': 'Standard',
++  'ai.type.standard': 'Playmat AI',
++  'ai.type.claude': 'Claude AI',
++  'ai.type.claude.detail': 'Our Claude player (mtg-ai). It thinks for a while on each decision; every move is recorded.',
++  'ai.type.watch': 'Claude vs Playmat AI',
++  'ai.type.watch.detail': 'Claude AI plays your selected deck against the Playmat AI, and you watch. Every move is recorded.',
+   'ai.type.standard.detail': 'The usual XMage AI.',
+   'ai.type.monteCarlo': 'Monte Carlo',
+   'ai.type.monteCarlo.detail': 'Experimental; plays by simulation and thinks longer.',
+diff --git a/Mage.Web.Client/src/app/i18n/es.ts b/Mage.Web.Client/src/app/i18n/es.ts
+index f0983acbd5..64656b768b 100644
+--- a/Mage.Web.Client/src/app/i18n/es.ts
++++ b/Mage.Web.Client/src/app/i18n/es.ts
+@@ -177,7 +177,11 @@ const es: Catalog = {
+   'ai.deck.commanderStarters': 'Mazos iniciales de commander',
+   'ai.deck.yours': 'Tus mazos',
+   'ai.type': 'IA',
+-  'ai.type.standard': 'Estándar',
++  'ai.type.standard': 'IA de Playmat',
++  'ai.type.claude': 'IA Claude',
++  'ai.type.claude.detail': 'Nuestro jugador Claude (mtg-ai). Piensa un rato en cada decisión; se graba cada jugada.',
++  'ai.type.watch': 'Claude contra la IA de Playmat',
++  'ai.type.watch.detail': 'La IA Claude juega tu mazo contra la IA de Playmat, y tú miras. Se graba cada jugada.',
+   'ai.type.standard.detail': 'La IA habitual de XMage.',
+   'ai.type.monteCarlo': 'Monte Carlo',
+   'ai.type.monteCarlo.detail': 'Experimental; juega por simulación y piensa más tiempo.',
+diff --git a/Mage.Web.Client/src/app/screens/aiSetup.ts b/Mage.Web.Client/src/app/screens/aiSetup.ts
+index 624dec02a9..92ba1d87be 100644
+--- a/Mage.Web.Client/src/app/screens/aiSetup.ts
++++ b/Mage.Web.Client/src/app/screens/aiSetup.ts
+@@ -12,17 +12,26 @@ export const DIFFICULTIES: { label: MessageKey; skill: number; detail: MessageKe
+ 
+ export const AI_TYPES: { value: AiType; label: MessageKey; detail: MessageKey }[] = [
+   { value: 'COMPUTER_MAD', label: 'ai.type.standard', detail: 'ai.type.standard.detail' },
++  // mtg-ai: our Claude player, and Claude against the standard AI with the player watching
++  { value: 'COMPUTER_CLAUDE', label: 'ai.type.claude', detail: 'ai.type.claude.detail' },
++  { value: 'WATCH', label: 'ai.type.watch', detail: 'ai.type.watch.detail' },
+   { value: 'COMPUTER_MONTE_CARLO', label: 'ai.type.monteCarlo', detail: 'ai.type.monteCarlo.detail' },
+ ];
+ 
+ /** The AI types this server offers (a server can leave the Monte Carlo AI out); all of them until it has said. */
+ export function offeredAiTypes(playerTypes: readonly string[] | undefined) {
+-  return playerTypes ? AI_TYPES.filter((item) => playerTypes.includes(item.value)) : AI_TYPES;
++  const offered = (value: AiType) => !playerTypes || playerTypes.includes(value === 'WATCH' ? 'COMPUTER_CLAUDE' : value);
++  return AI_TYPES.filter((item) => offered(item.value));
++}
++
++/** AI types that can play a server-side batch (the matchup lab): XMage's own AIs only */
++export function batchAiTypes(playerTypes: readonly string[] | undefined) {
++  return offeredAiTypes(playerTypes).filter((item) => item.value === 'COMPUTER_MAD' || item.value === 'COMPUTER_MONTE_CARLO');
+ }
+ 
+ /** The AI type to seat: the chosen one if the server offers it, else the standard AI. */
+ export function seatableAiType(aiType: AiType, playerTypes: readonly string[] | undefined): AiType {
+-  return !playerTypes || playerTypes.includes(aiType) ? aiType : 'COMPUTER_MAD';
++  return aiType !== 'WATCH' && (!playerTypes || playerTypes.includes(aiType)) ? aiType : 'COMPUTER_MAD';
+ }
+ 
+ export function difficultyOf(skill: number) {
+diff --git a/Mage.Web.Client/src/app/stores/play.ts b/Mage.Web.Client/src/app/stores/play.ts
+index cf7bf56e51..bfcd7dfc3e 100644
+--- a/Mage.Web.Client/src/app/stores/play.ts
++++ b/Mage.Web.Client/src/app/stores/play.ts
+@@ -26,7 +26,8 @@ const FREEFORM_COMMANDER = 'Variant Magic - Freeform Commander';
+ 
+ export type PlayPhase = 'idle' | 'starting' | 'waitingForGame';
+ 
+-export type AiType = 'COMPUTER_MAD' | 'COMPUTER_MONTE_CARLO';
++/** 'WATCH' (mtg-ai): Claude AI plays the chosen deck against the standard AI while the player watches */
++export type AiType = 'COMPUTER_MAD' | 'COMPUTER_MONTE_CARLO' | 'COMPUTER_CLAUDE' | 'WATCH';
+ 
+ export interface AiOptions {
+   /** server AI strength, 1-10 */
+@@ -129,7 +130,10 @@ export async function aiDecks(chosenId: string | null, count: number, commander:
+     taken.add(chosenMeta.file);
+     decks.push(await metaDeck(chosenMeta.file, chosenMeta.name));
+   }
+-  const fitting = starters.filter((starter) => isCommanderFormat(starter.format) === commander);
++  const matching = starters.filter((starter) => isCommanderFormat(starter.format) === commander);
++  // mtg-ai: a server with DSK decks (dsk-*.dck) deals the AI one of them
++  const dsk = matching.filter((starter) => starter.file.startsWith('dsk-'));
++  const fitting = !commander && dsk.length > 0 ? dsk : matching;
+   const chosenFile = chosenId?.startsWith(STARTER_PREFIX) ? chosenId.slice(STARTER_PREFIX.length) : null;
+   const chosen = fitting.find((starter) => starter.file === chosenFile);
+   if (decks.length === 0 && chosen) decks.push(await starterDeck(chosen.file, chosen.name));
+@@ -197,11 +201,13 @@ export const usePlay = create<PlayState>((set, get) => ({
+     // the guided first game: the easiest AI with a random starter deck, one game, nothing unusual
+     // a format deck for the player (Home's Meta deck mode): the format's rules, and the AI takes one of its decks too
+     const metaGame = deckId.startsWith(META_PREFIX) || deckId.startsWith(RANDOM_META_PREFIX);
+-    const options: AiOptions = practice || guided
++    const chosen: AiOptions = practice || guided
+       ? { ...get().aiOptions, rules: 'casual', opponents: 1, aiType: 'COMPUTER_MAD', skill: 1, winsNeeded: 1, startingLife: null, opponentDeckId: null, adaptive: false }
+       : metaGame
+         ? { ...get().aiOptions, ...picked, rules: 'deck', opponentDeckId: null }
+         : { ...get().aiOptions, ...picked };
++    const watch = chosen.aiType === 'WATCH';
++    const options: AiOptions = watch ? { ...chosen, opponents: 1 } : chosen;
+     useCoach.getState().setGuided(guided);
+     set({ phase: 'starting', error: null, deckId, returnPath: null, lastOptions: practice ? { practice } : picked });
+     // a game outside any event: leaving it goes back to Play
+@@ -258,7 +264,9 @@ export const usePlay = create<PlayState>((set, get) => ({
+         gameType,
+         deckType,
+         winsNeeded: options.winsNeeded,
+-        playerTypes: ['HUMAN', ...rivals.map(() => seatableAiType(options.aiType, queryClient.getQueryData<ServerState>(['serverState'])?.playerTypes))],
++        playerTypes: watch
++          ? ['COMPUTER_CLAUDE', ...rivals.map(() => 'COMPUTER_MAD' as const)]
++          : ['HUMAN', ...rivals.map(() => seatableAiType(options.aiType, queryClient.getQueryData<ServerState>(['serverState'])?.playerTypes))],
+         advanced: { startingLife: options.startingLife },
+       }));
+       // no table: the server doesn't know us any more (the session store sends us to sign in)
+@@ -269,17 +277,31 @@ export const usePlay = create<PlayState>((set, get) => ({
+       // the player's rating. A server that can't mark the table still plays the game
+       const mark = tableMarkArgs(source.kind === 'ghost' && rivals[0] !== sourced ? { kind: 'roster', id: null } : source, adaptiveFormat);
+       if (mark) await api.soloTableMark(tableId, ...mark).catch(() => false);
+-      if (!await api.roomJoinTable(roomId, tableId, userName, 'HUMAN', 1, playerDeck)) {
++      if (watch) {
++        // mtg-ai: Claude plays the chosen deck; the player takes no seat and watches once the game is on
++        if (!await api.roomJoinTable(roomId, tableId, 'Claude AI', 'COMPUTER_CLAUDE', 1, playerDeck)) {
++          throw new Error('The Claude AI could not take its seat. Is the Claude service running?');
++        }
++      } else if (!await api.roomJoinTable(roomId, tableId, userName, 'HUMAN', 1, playerDeck)) {
+         throw new Error(options.rules === 'deck' ? `Your deck isn't legal in ${rules.label}. Fix it in the deck builder, or play casual.` : 'Your deck was not accepted for this table.');
+       }
+       for (const [index, rival] of rivals.entries()) {
+-        const name = practice ? 'Goldfish' : rivals.length === 1 ? 'AI Opponent' : `AI ${index + 1}`;
+-        if (!await api.roomJoinTable(roomId, tableId, name, options.aiType, skill, rival)) {
+-          throw new Error('The AI could not take its seat.');
++        const seatType = watch ? 'COMPUTER_MAD' : seatableAiType(options.aiType, queryClient.getQueryData<ServerState>(['serverState'])?.playerTypes);
++        const name = practice ? 'Goldfish' : watch ? 'Playmat AI' : seatType === 'COMPUTER_CLAUDE' ? 'Claude AI' : rivals.length === 1 ? 'AI Opponent' : `AI ${index + 1}`;
++        if (!await api.roomJoinTable(roomId, tableId, name, seatType, skill, rival)) {
++          throw new Error(seatType === 'COMPUTER_CLAUDE' ? 'The Claude AI could not take its seat. Is the Claude service running?' : 'The AI could not take its seat.');
+         }
+       }
+       set({ phase: 'waitingForGame' });
+       if (!await api.matchStart(roomId, tableId)) throw new Error('The match could not start.');
++      if (watch) {
++        // the game starts a moment after the match; watching is allowed once it's dueling
++        for (let attempt = 0; attempt < 40; attempt++) {
++          if (await api.roomWatchTable(roomId, tableId).catch(() => false)) return;
++          await new Promise((resolve) => setTimeout(resolve, 500));
++        }
++        throw new Error('The game started, but it could not be watched. Find it under Tables.');
++      }
+     } catch (error) {
+       const tableId = get().tableId;
+       set({ phase: 'idle', error: error instanceof Error ? error.message : String(error), tableId: null });
+diff --git a/Mage.Web.Client/src/app/train/MatchupLab.tsx b/Mage.Web.Client/src/app/train/MatchupLab.tsx
+index fa16633a13..6eaa40c71b 100644
+--- a/Mage.Web.Client/src/app/train/MatchupLab.tsx
++++ b/Mage.Web.Client/src/app/train/MatchupLab.tsx
+@@ -9,7 +9,7 @@ import { api } from '../connection';
+ import { registerMessages, useT } from '../i18n';
+ import messages from '../i18n/en/career';
+ import { queryClient, useServerState } from '../queries';
+-import { offeredAiTypes } from '../screens/aiSetup';
++import { batchAiTypes } from '../screens/aiSetup';
+ import type { AiType } from '../stores/play';
+ import { useDecks } from '../stores/decks';
+ import { notify } from '../stores/toasts';
+@@ -44,7 +44,7 @@ export function MatchupLab() {
+   const [aiB, setAiB] = useState<AiType>('COMPUTER_MAD');
+   const [minePuzzles, setMinePuzzles] = useState(false);
+   const t = useT();
+-  const aiTypes = offeredAiTypes(useServerState().data?.playerTypes);
++  const aiTypes = batchAiTypes(useServerState().data?.playerTypes);
+   const [busy, setBusy] = useState(false);
+   const jobs = useQuery({
+     queryKey: JOBS_KEY,
+diff --git a/Mage.Web.Client/src/protocol/generated/views.ts b/Mage.Web.Client/src/protocol/generated/views.ts
+index 3500e7e8ac..fd476b4876 100644
+--- a/Mage.Web.Client/src/protocol/generated/views.ts
++++ b/Mage.Web.Client/src/protocol/generated/views.ts
+@@ -2437,7 +2437,7 @@ export type PhaseStep = "UNTAP" | "UPKEEP" | "DRAW" | "PRECOMBAT_MAIN" | "BEGIN_
+ 
+ export type PlayerAction = "PASS_PRIORITY_UNTIL_MY_NEXT_TURN" | "PASS_PRIORITY_UNTIL_TURN_END_STEP" | "PASS_PRIORITY_UNTIL_NEXT_MAIN_PHASE" | "PASS_PRIORITY_UNTIL_NEXT_TURN" | "PASS_PRIORITY_UNTIL_NEXT_TURN_SKIP_STACK" | "PASS_PRIORITY_UNTIL_STACK_RESOLVED" | "PASS_PRIORITY_UNTIL_END_STEP_BEFORE_MY_NEXT_TURN" | "PASS_PRIORITY_CANCEL_ALL_ACTIONS" | "TRIGGER_AUTO_ORDER_ABILITY_FIRST" | "TRIGGER_AUTO_ORDER_NAME_FIRST" | "TRIGGER_AUTO_ORDER_ABILITY_LAST" | "TRIGGER_AUTO_ORDER_NAME_LAST" | "TRIGGER_AUTO_ORDER_RESET_ALL" | "ROLLBACK_TURNS" | "UNDO" | "CONCEDE" | "MANA_AUTO_PAYMENT_ON" | "MANA_AUTO_PAYMENT_OFF" | "MANA_AUTO_PAYMENT_RESTRICTED_ON" | "MANA_AUTO_PAYMENT_RESTRICTED_OFF" | "USE_FIRST_MANA_ABILITY_ON" | "USE_FIRST_MANA_ABILITY_OFF" | "RESET_AUTO_SELECT_REPLACEMENT_EFFECTS" | "REVOKE_PERMISSIONS_TO_SEE_HAND_CARDS" | "REQUEST_PERMISSION_TO_SEE_HAND_CARDS" | "REQUEST_PERMISSION_TO_ROLLBACK_TURN" | "ADD_PERMISSION_TO_SEE_HAND_CARDS" | "ADD_PERMISSION_TO_ROLLBACK_TURN" | "DENY_PERMISSION_TO_ROLLBACK_TURN" | "PERMISSION_REQUESTS_ALLOWED_ON" | "PERMISSION_REQUESTS_ALLOWED_OFF" | "REQUEST_AUTO_ANSWER_ID_YES" | "REQUEST_AUTO_ANSWER_ID_NO" | "REQUEST_AUTO_ANSWER_TEXT_YES" | "REQUEST_AUTO_ANSWER_TEXT_NO" | "REQUEST_AUTO_ANSWER_RESET_ALL" | "CLIENT_DOWNLOAD_SYMBOLS" | "CLIENT_QUIT_TOURNAMENT" | "CLIENT_QUIT_DRAFT_TOURNAMENT" | "CLIENT_CONCEDE_GAME" | "CLIENT_CONCEDE_MATCH" | "CLIENT_STOP_WATCHING" | "CLIENT_DISCONNECT_FULL" | "CLIENT_DISCONNECT_KEEP_GAMES" | "CLIENT_EXIT_FULL" | "CLIENT_EXIT_KEEP_GAMES" | "CLIENT_REMOVE_TABLE" | "CLIENT_DOWNLOAD_CARD_IMAGES" | "CLIENT_RECONNECT" | "CLIENT_REPLAY_ACTION" | "HOLD_PRIORITY" | "UNHOLD_PRIORITY" | "VIEW_LIMITED_DECK" | "VIEW_SIDEBOARD" | "TOGGLE_RECORD_MACRO";
+ 
+-export type PlayerType = "HUMAN" | "COMPUTER_DRAFT_BOT" | "COMPUTER_MONTE_CARLO" | "COMPUTER_MAD";
++export type PlayerType = "HUMAN" | "COMPUTER_DRAFT_BOT" | "COMPUTER_MONTE_CARLO" | "COMPUTER_MAD" | "COMPUTER_CLAUDE";
+ 
+ export type RangeOfInfluence = "ONE" | "TWO" | "ALL";
+ 
