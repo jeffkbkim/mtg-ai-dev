@@ -808,7 +808,7 @@ def run(args):
                 cur["sc"] = None
             else:
                 if cur["t"] != t:
-                    cur.update(t=t, path=(), frontier=[], seen={()}, attempts=0, best=None)
+                    cur.update(t=t, path=(), frontier=[], seen={()}, attempts=0, best=None, probe=None)
                 if cur.get("fixed_to") is None and cur["failed"] and cur.get("last_ok"):
                     cur["start_exact"] = True   # the previous turn reproduced, so this one starts from the record too
                 cur["attempts"] += 1
@@ -830,7 +830,46 @@ def run(args):
                 score = len(d)
                 if cur["best"] is None or score < cur["best"][0]:
                     cur["best"] = (score, d)
-                if not d:
+                probe = cur.get("probe")
+                if probe is not None:
+                    # ambiguity check: did this departure from the reproducing choices also reproduce the turn?
+                    if probe["at"] is not None:
+                        probe["results"].append((probe["at"][0], probe["at"][1], not d))
+                    if probe["queue"]:
+                        j, a = probe["queue"].pop(0)
+                        probe["at"] = (j, a)
+                        cur["path"] = tuple(probe["good"][:j]) + (a,)
+                        reply["rollback"] = True
+                    elif probe["at"] is not None:
+                        probe["at"] = None          # replay the reproducing choices once more, then move on
+                        cur["path"] = tuple(probe["good"])
+                        reply["rollback"] = True
+                    else:
+                        amb = collections.defaultdict(lambda: [0, 0])   # kind -> [points, ambiguous points]
+                        hit = {j for j, a, ok in probe["results"] if ok}
+                        rows = []
+                        for j, (what, n) in enumerate(zip(probe["points"], probe["alts"])):
+                            w = what.split()
+                            kind = "block pairing" if what.startswith("block") else f"{w[0]} {w[-1]}"   # seat + kind
+                            amb[kind][0] += 1
+                            amb[kind][1] += j in hit
+                            rows.append({"point": what, "alternatives": n, "ambiguous": j in hit,
+                                         "fully_probed": all((j, a) in {(x, y) for x, y, _ in probe["results"]} for a in range(n) if a != probe["good"][j])})
+                        for k, (n, m) in amb.items():
+                            stats[f"amb_points_{k}"] += n
+                            stats[f"amb_ambiguous_{k}"] += m
+                        cur["probe"] = None
+                        finish_turn(not d, {} if not d else d, {"path": list(probe["good"]), "points": len(probe["good"]),
+                                                               "ambiguity": rows, "probe_final_matched": not d})
+                elif not d and args.probe and not cur["failed"] and sc.taken:
+                    queue = [(j, a) for j in range(len(sc.taken)) for a in range(sc.alts[j]) if a != sc.taken[j]][:args.probe]
+                    cur["probe"] = {"good": list(sc.taken), "alts": list(sc.alts), "points": list(sc.points),
+                                    "queue": queue, "results": [], "at": None}
+                    j, a = queue.pop(0)
+                    cur["probe"]["at"] = (j, a)
+                    cur["path"] = tuple(sc.taken[:j]) + (a,)
+                    reply["rollback"] = True
+                elif not d:
                     finish_turn(True, {}, {"path": list(sc.taken), "points": len(sc.taken)})
                 else:
                     # children: depart from what this attempt took at one later choice point
@@ -897,6 +936,8 @@ if __name__ == "__main__":
     ap.add_argument("--budget", type=int, default=40, help="attempts per turn")
     ap.add_argument("--chunk", type=int, default=10, help="games per JVM")
     ap.add_argument("--game-budget", type=int, default=400, help="rewinds per game, at most")
+    ap.add_argument("--probe", type=int, default=0,
+                    help="ambiguity check: after a clean turn reproduces, try up to this many other choices to see if they fit too")
     ap.add_argument("--run", default=time.strftime("%Y%m%d-%H%M%S"))
     ap.add_argument("--classes", default="/tmp/xmage-cls-dev")
     ap.add_argument("-v", "--verbose", action="store_true")

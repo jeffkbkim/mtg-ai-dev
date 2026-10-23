@@ -92,6 +92,38 @@ What changed:
   the graveyard (which delirium counts), and an Overlord cast for its impending cost. Turns off by one or two life
   are the common symptom.
 
+## Ambiguity check, 2026-10-23 (100 games, seed 7, `--probe 30`)
+
+How it works: after a clean turn reproduces, every other alternative at each of its choice points is tried, one
+at a time. Everything before that point keeps the reproducing choices; everything after takes the likeliest
+alternative. If another alternative also reproduces the turn, the record can't tell them apart, so that searched
+label is **ambiguous**.
+
+- 834 turns were probed, and every alternative of every choice point was tried.
+- The reproducing choices replayed to the same end in 833 of 834.
+
+| Searched choice | Choice points | Ambiguous |
+|---|---:|---:|
+| User: when to make a play on its own turn (now or later, so before/after combat and order) | 750 | 81.5% |
+| User: targets | 144 | 47.2% |
+| User: when to cast on the opponent's turn | 105 | 27.6% |
+| User: "may" answers | 19 | 68% |
+| User: trigger order | 16 | 88% |
+| Opponent: when to play on its own turn | 770 | 82.2% |
+| Opponent: targets | 173 | 61.3% |
+| Block pairing | 1 | 0% |
+
+- Of the 445 turns with at least one user choice point, all of them were unique in only 46 (10%).
+- Of the 111 turns with user targets, all targets were unique in 54 (49%).
+
+What this means for training labels:
+- **Use the recorded sets:** which lands and spells were played, attacks, blocks, mulligans.
+- **Don't train on order or timing within a turn.** The record almost never pins them down. Usually the order
+  doesn't change the end state, which is exactly why it can't be recovered.
+- **Use a target only when the check finds it unique** (about half the time). The per-choice-point result is in
+  `turns.jsonl` (`ambiguity`).
+- Block pairing is almost never a choice: 17lands' blockers and blocked attackers pin it down.
+
 ## How to read these numbers
 
 - **The opponent's side uses hindsight.** It holds exactly the cards it plays, when it plays them. So a reproduced
