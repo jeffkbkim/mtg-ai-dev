@@ -1,4 +1,6 @@
 import com.google.gson.JsonObject;
+import mage.cards.Card;
+import mage.cards.decks.Deck;
 import mage.constants.RangeOfInfluence;
 import mage.game.Game;
 
@@ -12,26 +14,51 @@ import java.net.Socket;
  * (-Dmtgai.claudePort, default 17180), which runs play/players.py's ClaudePlayer and writes its decisions to the
  * game's folder (see GameRecorder). A table whose service isn't running can't seat this player: the join fails.
  *
- * Messages on the socket are PySeat's, plus: the first decision of each game carries "start" (game id, folder, seat
- * letter, deck file); {"type":"game_end", ...games.jsonl line} after each game; {"type":"end"} when the match ends.
+ * Messages on the socket are PySeat's, plus: {"type":"hello", model, effort} when the seat is created (the table is
+ * set up); {"type":"prewarm", deck} when the game is dealt its deck, so the service can start the model before the first
+ * decision; the first decision of each game carries "start" (game id, folder, seat letter, deck file);
+ * {"type":"game_end", ...games.jsonl line} after each game; {"type":"end"} when the match ends. None of these is
+ * answered.
+ *
+ * The model and effort come from the seat's skill, which the web client sets (see 0006's claudeSkill): model index * 3
+ * + effort index + 1, Opus 5.5 then Sonnet 5.5, low/medium/high. Any other skill is Opus 5.5 high.
  */
 public class ClaudeSeat extends PySeat {
 
+    static final String[] MODELS = {"claude-opus-5-5", "claude-sonnet-5-5"};
+    static final String[] EFFORTS = {"low", "medium", "high"};
+
     private final transient Socket socket;
     private transient String startedGame;
+    final String model, effort;
 
     public ClaudeSeat(String name, RangeOfInfluence range, int skill) {
-        this(name, connect());
+        this(name, connect(), skill >= 1 && skill <= 6 ? skill : 3);
     }
 
-    private ClaudeSeat(String name, Socket socket) {
+    private ClaudeSeat(String name, Socket socket, int skill) {
         super(name, link(socket));
         this.socket = socket;
+        this.model = MODELS[(skill - 1) / 3];
+        this.effort = EFFORTS[(skill - 1) % 3];
+        JsonObject hello = new JsonObject();
+        hello.addProperty("type", "hello");
+        hello.addProperty("model", model);
+        hello.addProperty("effort", effort);
+        send(hello);
     }
 
     public ClaudeSeat(final ClaudeSeat player) {
         super(player);
         this.socket = player.socket;
+        this.model = player.model;
+        this.effort = player.effort;
+    }
+
+    private void send(JsonObject msg) {
+        synchronized (link) {
+            link.out.println(link.gson.toJson(msg));
+        }
     }
 
     @Override
@@ -64,9 +91,31 @@ public class ClaudeSeat extends PySeat {
         if (game.isSimulation()) return;
         GameRecorder r = GameRecorder.of(game);
         r.register(this, "claude", getClass().getName(), 0);
+        r.setSeatInfo(r.seat(playerId), "model", model);
+        r.setSeatInfo(r.seat(playerId), "effort", effort);
         synchronized (r) {
             if (!r.claudeSeats.contains(this)) r.claudeSeats.add(this);
         }
+    }
+
+    /** The game's deck, in GameRecorder's .dck format: the service starts the model on it before the first decision. */
+    @Override
+    public void useDeck(Deck deck, Game game) {
+        super.useDeck(deck, game);
+        if (game.isSimulation()) return;
+        java.util.Map<String, Integer> counts = new java.util.TreeMap<>();
+        java.util.Map<String, String> setOf = new java.util.HashMap<>();
+        for (Card c : deck.getMaindeckCards()) {
+            counts.merge(c.getName(), 1, Integer::sum);
+            setOf.putIfAbsent(c.getName(), c.getExpansionSetCode() + ":" + c.getCardNumber());
+        }
+        StringBuilder sb = new StringBuilder();
+        for (java.util.Map.Entry<String, Integer> c : counts.entrySet())
+            sb.append(c.getValue()).append(" [").append(setOf.get(c.getKey())).append("] ").append(c.getKey()).append('\n');
+        JsonObject warm = new JsonObject();
+        warm.addProperty("type", "prewarm");
+        warm.addProperty("deck", sb.toString());
+        send(warm);
     }
 
     @Override
@@ -93,9 +142,7 @@ public class ClaudeSeat extends PySeat {
     void sendGameEnd(JsonObject result) {
         JsonObject end = result.deepCopy();
         end.addProperty("type", "game_end");
-        synchronized (link) {
-            link.out.println(link.gson.toJson(end));
-        }
+        send(end);
     }
 
     @Override

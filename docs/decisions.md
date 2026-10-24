@@ -42,6 +42,15 @@ A compound action is chosen as a sequence of single choices (for example: which 
 
 The user chose to build on the unmodified XMage 1.4.62 release jars with our own Java classes (`engine/xmage/`), rather than forking XMage or using the Playmat websocket client. A Java seat hands every real decision to Python as JSON lines with an observation built from XMage's per-seat view; every message is checked against full game state for hidden-information leaks. Fork XMage source only if a DSK card bug blocks us. Coverage is tracked per card through rejected moves and unmapped abilities reported in the run log. Write-ups: `/mnt/project-files/notes/xmage-step1-readiness.md` to `xmage-step4-encoder.md` (project files, not in Git).
 
+### Cards revealed from hand stay visible (2026-10-23)
+
+Approved by the owner. XMage forgets a reveal at the next priority or update event, often before the seat's next
+decision, so a card the opponent revealed from hand vanished from the observation while still in that hand. The
+observer now remembers it (per game and seat) and keeps emitting it as zone `HAND`, `mine: false`, `revealed: true`
+until the card changes zone (new zone change counter), the game ends or its turn is rolled back; a card revealed
+from a library is not remembered, even if it then goes to a hand. The leak checks whitelist only those cards. The text renderer shows `opp HAND (revealed) <name>` and logs the reveal. Check:
+`engine/xmage/RevealCheck.java`.
+
 ## Research references
 
 - [DSK runtime tests and Witchcraft contribution scope — 2026-10-07](../experiments/engine_smoke/README.md). Current XMage passes a limited gameplay smoke test, but the packaged MageZero route is not DSK-ready. Consider current XMage as a reference while evaluating focused Witchcraft contributions; no final switch or contribution implementation is decided.
@@ -67,3 +76,15 @@ our training and evaluation runs stay on the release jars. Our changes live in `
 against one pinned Playmat commit plus our seat plugin, not in a fork. Playmat's server carries our two XMage rule fixes
 so its games follow our rules. Every game there is recorded in PySeat's decision format; Jeff's decisions say how
 exactly a browser answer maps to our options, and XMage AI decisions are flagged clairvoyant (not imitation labels).
+
+## Playmat: Claude plays first by rule, a good-decks pool, Claude's model and effort per table (2026-10-23)
+
+- The Claude seat no longer chooses play or draw: it always plays first (`PLAY_DRAW=rule`, recorded `"source": "rule"`),
+  so no training row comes from that choice. `PLAY_DRAW=claude` restores the model's choice.
+- `engine/xmage/decks/17lands-good`: 70 decks from 7-win drafts (at most 2 losses) whose drafter's win-rate bucket is
+  at least 0.60, kept by deck score (mean GIH WR of nonland cards over all games). The Claude AI's random Playmat deck
+  comes from this pool. The score measures card quality only, not curve or synergy.
+- The web client's AI settings choose the Claude model (Opus 5.5, Sonnet 5.5) and effort; both are recorded with each
+  decision, and games with different settings must not be pooled as one player.
+- Blocks XMage refused are recorded as `mapping: "refused"` (choice -1), not as decisions; the accepted blocks are
+  recorded from what the engine holds.

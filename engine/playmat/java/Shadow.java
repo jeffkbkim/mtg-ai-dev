@@ -139,6 +139,10 @@ final class Shadow {
         }
         if (ui != null) extra.add("ui", ui);
         if (p.msg.has("auto")) extra.add("auto", p.msg.get("auto"));
+        // set by a seat that writes a decision after the fact (RecordedHuman's blocks): fields for each line, and the time
+        // the decision was made, so game0.jsonl keeps it in order
+        if (p.msg.has("extra")) for (Map.Entry<String, com.google.gson.JsonElement> e : p.msg.getAsJsonObject("extra").entrySet()) extra.add(e.getKey(), e.getValue());
+        if (p.msg.has("ts_at")) extra.add("ts", p.msg.get("ts_at"));
         r.writeDecision(player.getId(), r.playerName(r.seat(player.getId())), p.msg, choice, extra);
     }
 

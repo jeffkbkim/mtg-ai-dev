@@ -1,0 +1,741 @@
+diff --git a/Mage.Web.Client/src/app/decks/Collection.tsx b/Mage.Web.Client/src/app/decks/Collection.tsx
+index 7a1da4c5d4..b02af08d8b 100644
+--- a/Mage.Web.Client/src/app/decks/Collection.tsx
++++ b/Mage.Web.Client/src/app/decks/Collection.tsx
+@@ -3,6 +3,7 @@ import { Search, X } from 'lucide-react';
+ import { memo, useEffect, useMemo, useRef, useState } from 'react';
+ import type { CardCriteria, CardType, CardView, Rarity } from '../../protocol/generated/views';
+ import { api } from '../connection';
++import { readJson, writeJson } from '../stores/persist';
+ import { CardFace } from '../ui/CardFace';
+ import { useCardInfoStore } from './cardInfo';
+ import styles from './DeckBuilder.module.css';
+@@ -24,6 +25,11 @@ const EMPTY_FILTERS: CollectionFilters = { text: '', anyText: false, colors: [],
+ 
+ const PAGE = 60;
+ 
++// mtg-ai: only Duskmourn: House of Horror (DSK), the set our Limited decks are drafted from; remembered per browser.
++// Its Special Guests (SPG 74-83) aren't in XMage's DSK boosters, so they stay out
++const DSK_SET = 'DSK';
++const DSK_ONLY_KEY = 'playmat.collection.dskOnly';
++
+ const COLORS: { key: string; symbol: string; label: string }[] = [
+   { key: 'white', symbol: 'w', label: 'White' },
+   { key: 'blue', symbol: 'u', label: 'Blue' },
+@@ -56,7 +62,7 @@ const RARITIES: { value: Rarity | ''; label: string }[] = [
+ /** Sets most players don't build with: joke sets, unofficial sets, and Arena-only digital cards. */
+ const SIDELINED_SET_TYPES = new Set(['JOKE_SET', 'CUSTOM_SET', 'MAGIC_ARENA']);
+ 
+-function toCriteria(filters: CollectionFilters, format: string, start: number, ignoreSets: string[]): CardCriteria {
++function toCriteria(filters: CollectionFilters, format: string, start: number, ignoreSets: string[], dskOnly: boolean): CardCriteria {
+   const text = filters.text.trim();
+   return {
+     ignoreSetCodes: ignoreSets,
+@@ -68,7 +74,7 @@ function toCriteria(filters: CollectionFilters, format: string, start: number, i
+     webColors: filters.colors,
+     colorMatch: 'any',
+     types: filters.type ? [filters.type] : [],
+-    setCodes: filters.set ? [filters.set] : undefined,
++    setCodes: dskOnly ? [DSK_SET] : filters.set ? [filters.set] : undefined,
+     rarities: filters.rarity ? [filters.rarity] : [],
+     manaValue: filters.manaValue ?? undefined,
+     manaValueOperator: filters.manaValue === 7 ? 'gte' : filters.manaValue !== null ? 'eq' : undefined,
+@@ -103,6 +109,11 @@ export function Collection({ format, identity, counts, limitOf, onAdd, onRemove,
+ }) {
+   const [filters, setFilters] = useState<CollectionFilters>(EMPTY_FILTERS);
+   const [allSets, setAllSets] = useState(false);
++  const [dskOnly, setDskOnlyState] = useState(() => readJson(DSK_ONLY_KEY, false));
++  const setDskOnly = (on: boolean) => {
++    setDskOnlyState(on);
++    writeJson(DSK_ONLY_KEY, on);
++  };
+   // a commander deck shows what its commander allows, unless the player asks for everything
+   const [anyIdentity, setAnyIdentity] = useState(false);
+   const colorIdentity = identity && !anyIdentity ? identity.join('') : null;
+@@ -114,8 +125,8 @@ export function Collection({ format, identity, counts, limitOf, onAdd, onRemove,
+     [allSets, sets.data],
+   );
+   const results = useInfiniteQuery({
+-    queryKey: ['collection', query, format, ignoreSets, colorIdentity],
+-    queryFn: ({ pageParam }) => api.searchCards(toCriteria(query, format, pageParam, ignoreSets), colorIdentity === null ? null : { colorIdentity }),
++    queryKey: ['collection', query, format, ignoreSets, colorIdentity, dskOnly],
++    queryFn: ({ pageParam }) => api.searchCards(toCriteria(query, format, pageParam, ignoreSets, dskOnly), colorIdentity === null ? null : { colorIdentity }),
+     // wait for the set list so the first page already leaves the sidelined sets out
+     enabled: allSets || !sets.isPending,
+     initialPageParam: 0,
+@@ -175,6 +186,10 @@ export function Collection({ format, identity, counts, limitOf, onAdd, onRemove,
+               : identity.map((letter) => <i key={letter} className={`ms ms-cost ms-${letter.toLowerCase()}`} aria-hidden="true" />)}
+           </label>
+         )}
++        <label className={styles.toggle} title="Only Duskmourn: House of Horror cards (DSK)">
++          <input type="checkbox" checked={dskOnly} onChange={(event) => setDskOnly(event.target.checked)} />
++          DSK only
++        </label>
+         <label className={styles.toggle} title="Joke sets, unofficial sets and Arena-only cards">
+           <input type="checkbox" checked={allSets} onChange={(event) => setAllSets(event.target.checked)} />
+           Joke &amp; digital sets
+@@ -220,7 +235,7 @@ export function Collection({ format, identity, counts, limitOf, onAdd, onRemove,
+         <select className={styles.select} value={filters.rarity} onChange={(event) => set({ rarity: event.target.value as Rarity | '' })} aria-label="Rarity">
+           {RARITIES.map((rarity) => <option key={rarity.value} value={rarity.value}>{rarity.label}</option>)}
+         </select>
+-        <select className={[styles.select, styles.setSelect].join(' ')} value={filters.set} onChange={(event) => set({ set: event.target.value })} aria-label="Set">
++        <select className={[styles.select, styles.setSelect].join(' ')} value={dskOnly ? DSK_SET : filters.set} disabled={dskOnly} onChange={(event) => set({ set: event.target.value })} aria-label="Set">
+           <option value="">All sets</option>
+           {setOptions.map((item) => <option key={item.setCode} value={item.setCode}>{item.name} ({item.setCode})</option>)}
+         </select>
+diff --git a/Mage.Web.Client/src/app/decks/DeckBuilder.module.css b/Mage.Web.Client/src/app/decks/DeckBuilder.module.css
+index d574c6c539..96f1725b80 100644
+--- a/Mage.Web.Client/src/app/decks/DeckBuilder.module.css
++++ b/Mage.Web.Client/src/app/decks/DeckBuilder.module.css
+@@ -383,6 +383,32 @@
+   color: var(--ink-strong);
+ }
+ 
++/* mtg-ai: the mana value view's switch, at the end of the zone tabs */
++.viewToggle {
++  display: inline-flex;
++  align-items: center;
++  gap: 5px;
++  align-self: center;
++  margin-left: auto;
++  padding: 4px 8px;
++  border: 0;
++  border-radius: 999px;
++  background: transparent;
++  color: var(--ink-dim);
++  font-size: var(--text-xs);
++  font-weight: 600;
++  cursor: pointer;
++}
++
++.viewToggle:hover {
++  color: var(--ink-strong);
++}
++
++.viewToggleOn {
++  background: rgb(var(--ink-rgb) / 0.1);
++  color: var(--ink-strong);
++}
++
+ .list {
+   flex: 1;
+   min-height: 0;
+diff --git a/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx b/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx
+index 6da944cbe5..f4d4102a67 100644
+--- a/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx
++++ b/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx
+@@ -1,5 +1,5 @@
+ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+-import { ArrowLeftRight, BarChart3, Check, ChevronLeft, ClipboardPaste, Crown, Images, ListPlus, Minus, Mountain, Plus, Replace, Sparkles, TriangleAlert } from 'lucide-react';
++import { ArrowLeftRight, BarChart3, Check, ChevronLeft, ClipboardPaste, Columns3, Crown, Images, ListPlus, Minus, Mountain, Plus, Replace, Sparkles, TriangleAlert } from 'lucide-react';
+ import { useMyCardStyles } from '../ui/cardStyles';
+ import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react';
+ import { useNavigate, useParams } from 'react-router-dom';
+@@ -13,6 +13,7 @@ import { useServerState } from '../queries';
+ import { STARTER_PREFIX, useDecks } from '../stores/decks';
+ import { openImport, type ImportTarget } from '../stores/importSheet';
+ import { notify } from '../stores/toasts';
++import { readJson, writeJson } from '../stores/persist';
+ import { Button } from '../ui/Button';
+ import { CardFace } from '../ui/CardFace';
+ import { ManaCost } from '../ui/ManaCost';
+@@ -23,6 +24,7 @@ import { SideboardPlansDialog } from './SideboardPlansDialog';
+ import { PrintingPicker } from './PrintingPicker';
+ import { ExportMenu } from './ExportMenu';
+ import { ManaCurve } from './ManaCurve';
++import { ManaColumns } from './ManaColumns';
+ import { SourceLine } from './import/SourceLine';
+ import { useImportPaste } from './import/useImportShortcuts';
+ import { useValidation } from './useValidation';
+@@ -34,6 +36,10 @@ import styles from './DeckBuilder.module.css';
+ 
+ const DEFAULT_FORMAT = 'Constructed - Freeform';
+ 
++// mtg-ai: the deck by mana value in place of the collection (MTG Arena's deck view), remembered per browser
++type DeckView = 'list' | 'mana';
++const DECK_VIEW_KEY = 'playmat.deckBuilder.view';
++
+ /** What the card pool on the left gets from the builder (the collection of every card, or a player's own binder). */
+ export interface BinderProps {
+   format: string;
+@@ -115,6 +121,11 @@ export function DeckBuilder({ initial, mode }: { initial: DeckCardLists; mode?:
+   const [deck, setDeck] = useState(initial);
+   const [zone, setZone] = useState<DeckZone>('cards');
+   const [preview, setPreview] = useState<{ card: CardView; anchor: DOMRect; side: 'auto' | 'left' } | null>(null);
++  const [view, setViewState] = useState<DeckView>(() => readJson<DeckView>(DECK_VIEW_KEY, 'list'));
++  const setView = useCallback((next: DeckView) => {
++    setViewState(next);
++    writeJson(DECK_VIEW_KEY, next);
++  }, []);
+   // a deck pasted here becomes its own deck; "From a list…" brings cards into this one
+   useImportPaste();
+   const allEntries = useMemo(() => [...deck.cards, ...deck.sideboard], [deck.cards, deck.sideboard]);
+@@ -178,13 +189,30 @@ export function DeckBuilder({ initial, mode }: { initial: DeckCardLists; mode?:
+       return current;
+     });
+   }, [zone]);
++  // mtg-ai: a card in the mana value columns: click for one more, right-click for one less
++  const addRow = useCallback((row: DeckRow) => setDeck((current) => (copiesByName(current, row.entry.cardName) >= limitFor(row.card, row.entry.cardName)
++    ? current
++    : addCard(current, zone, { cardName: row.entry.cardName, setCode: row.entry.setCode ?? '', cardNumber: row.entry.cardNumber ?? '' }))), [zone, limitFor]);
++  const removeRow = useCallback((row: DeckRow) => setDeck((current) => removeCard(current, zone, row.key)), [zone]);
+   // collection cards preview beside the card; deck rows preview to the left of the deck list
+   const onPreview = useCallback((card: CardView | null, anchor?: DOMRect) => setPreview(card && anchor ? { card, anchor, side: 'auto' } : null), []);
+   const onRowPreview = useCallback((card: CardView | null, anchor?: DOMRect) => setPreview(card && anchor ? { card, anchor, side: 'left' } : null), []);
+ 
+   return (
+     <div className={styles.page}>
+-      {mode ? (
++      {view === 'mana' ? (
++        <section className={styles.collection} aria-label="Deck by mana value">
++          <div className={styles.filters}>
++            <span className={styles.toggle}>{zone === 'cards' ? 'Deck' : rules.commandZone ? 'Command zone' : 'Sideboard'} by mana value. Click a card for one more, right-click for one less.</span>
++            <button type="button" className={styles.reset} onClick={() => setView('list')}>Back to the cards</button>
++          </div>
++          <div className={styles.results}>
++            {deck[zone].length === 0
++              ? <p className={styles.note}>No cards here yet.</p>
++              : <ManaColumns entries={deck[zone]} info={info} onAdd={addRow} onRemove={removeRow} onPreview={onPreview} />}
++          </div>
++        </section>
++      ) : mode ? (
+         <mode.Binder format={format} identity={identity} counts={counts} limitOf={limitOf} onAdd={add} onRemove={removeOne} onPreview={onPreview} />
+       ) : (
+         <Collection format={format === 'Limited' ? '' : format} identity={identity} counts={counts} limitOf={limitOf} onAdd={add} onRemove={removeOne} onPreview={onPreview} />
+@@ -192,6 +220,8 @@ export function DeckBuilder({ initial, mode }: { initial: DeckCardLists; mode?:
+       <DeckPanel
+         deck={deck}
+         zone={zone}
++        view={view}
++        onView={setView}
+         info={info}
+         formats={formats}
+         rules={rules}
+@@ -223,9 +253,11 @@ function useCommanderIdentity(deck: DeckCardLists, info: ReadonlyMap<string, Car
+   }, [deck.sideboard, info, rules.commandZone]);
+ }
+ 
+-function DeckPanel({ deck, zone, info, formats, rules, identity, saving, limitFor, fixedFormat, doneLabel, onZone, onChange, onPreview, onDone, onPlay }: {
++function DeckPanel({ deck, zone, view, onView, info, formats, rules, identity, saving, limitFor, fixedFormat, doneLabel, onZone, onChange, onPreview, onDone, onPlay }: {
+   deck: DeckCardLists;
+   zone: DeckZone;
++  view: DeckView;
++  onView(view: DeckView): void;
+   info: ReadonlyMap<string, CardView>;
+   formats: { label: string; types: string[] }[];
+   rules: FormatRules;
+@@ -327,6 +359,16 @@ function DeckPanel({ deck, zone, info, formats, rules, identity, saving, limitFo
+         <button type="button" role="tab" aria-selected={zone === 'sideboard'} className={zone === 'sideboard' ? styles.tabOn : styles.tab} onClick={() => onZone('sideboard')}>
+           {commandZone ? 'Command zone' : 'Sideboard'} {sideCount}
+         </button>
++        {/* mtg-ai: the deck by mana value, in columns where the collection was */}
++        <button
++          type="button"
++          className={[styles.viewToggle, view === 'mana' ? styles.viewToggleOn : ''].join(' ')}
++          aria-pressed={view === 'mana'}
++          title={view === 'mana' ? 'Back to the collection' : 'Lay out the deck in columns by mana value'}
++          onClick={() => onView(view === 'mana' ? 'list' : 'mana')}
++        >
++          <Columns3 size={15} aria-hidden="true" /> By mana value
++        </button>
+       </div>
+ 
+       <div className={styles.list} role="tabpanel">
+diff --git a/Mage.Web.Client/src/app/decks/GoodStartersToggle.tsx b/Mage.Web.Client/src/app/decks/GoodStartersToggle.tsx
+new file mode 100644
+index 0000000000..3660e513ad
+--- /dev/null
++++ b/Mage.Web.Client/src/app/decks/GoodStartersToggle.tsx
+@@ -0,0 +1,18 @@
++// mtg-ai: the "Good only" switch over the deck lists (stores/decks.ts, pickableRoster)
++import { useT } from '../i18n';
++import { hasGoodStarters, useDecks, useGoodStartersOnly } from '../stores/decks';
++import styles from './DeckBuilder.module.css';
++
++/** Shown only while the server ships good DSK starters. */
++export function GoodStartersToggle() {
++  const t = useT();
++  const shown = useDecks((state) => hasGoodStarters(state.starters));
++  const { on, set } = useGoodStartersOnly();
++  if (!shown) return null;
++  return (
++    <label className={styles.toggle} title={t('decks.goodOnly.detail')}>
++      <input type="checkbox" checked={on} onChange={(event) => set(event.target.checked)} />
++      {t('decks.goodOnly')}
++    </label>
++  );
++}
+diff --git a/Mage.Web.Client/src/app/decks/ManaColumns.module.css b/Mage.Web.Client/src/app/decks/ManaColumns.module.css
+new file mode 100644
+index 0000000000..49e2e01b3c
+--- /dev/null
++++ b/Mage.Web.Client/src/app/decks/ManaColumns.module.css
+@@ -0,0 +1,90 @@
++/* mtg-ai: the deck in columns by mana value; each card shows its name strip, the last one in full */
++.columns {
++  display: grid;
++  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
++  gap: 12px;
++  align-items: start;
++}
++
++.column {
++  min-width: 0;
++}
++
++.head {
++  display: flex;
++  justify-content: space-between;
++  margin-bottom: 6px;
++  padding-bottom: 4px;
++  border-bottom: 1px solid var(--ink-ghost);
++  font-family: var(--font-print);
++  font-size: var(--text-sm);
++  font-weight: 700;
++  letter-spacing: var(--tracking-print-wide);
++  text-transform: uppercase;
++  color: var(--ink-dim);
++}
++
++.head span {
++  color: var(--ink-strong);
++}
++
++.stack {
++  margin: 0;
++  padding: 0;
++  list-style: none;
++}
++
++/* a card's height is 88/63 of its width; percentages of margin follow the column's width */
++.card + .card {
++  margin-top: calc(19% - 139.7%);
++}
++
++.tile {
++  position: relative;
++  display: block;
++  width: 100%;
++  padding: 0;
++  border: 0;
++  border-radius: var(--card-radius);
++  background: transparent;
++  cursor: pointer;
++  transition: transform var(--dur-quick) var(--ease-lift);
++}
++
++.still {
++  cursor: default;
++}
++
++button.tile:hover {
++  transform: translateY(-4px);
++}
++
++.tile:focus-visible {
++  outline: 2px solid var(--ink-strong);
++  outline-offset: 2px;
++}
++
++.amount {
++  position: absolute;
++  top: 4px;
++  right: 4px;
++  padding: 1px 6px;
++  border-radius: 999px;
++  background: rgb(var(--mat-rgb) / 0.92);
++  box-shadow: inset 0 0 0 1px var(--ink-faint);
++  font-family: var(--font-print);
++  font-size: 13px;
++  color: var(--ink-strong);
++}
++
++.dialogBody {
++  position: relative;
++  max-height: 70vh;
++  overflow-y: auto;
++}
++
++.dialogPreview {
++  position: fixed;
++  z-index: calc(var(--z-dialog) + 2);
++  pointer-events: none;
++}
+diff --git a/Mage.Web.Client/src/app/decks/ManaColumns.tsx b/Mage.Web.Client/src/app/decks/ManaColumns.tsx
+new file mode 100644
+index 0000000000..ebc42b8265
+--- /dev/null
++++ b/Mage.Web.Client/src/app/decks/ManaColumns.tsx
+@@ -0,0 +1,119 @@
++// mtg-ai: a deck laid out in columns by mana value, like MTG Arena's deck view
++import { useEffect, useMemo, useState } from 'react';
++import { createPortal } from 'react-dom';
++import type { CardView } from '../../protocol/generated/views';
++import type { DeckCardLists } from '../../core/decks/types';
++import { useT } from '../i18n';
++import { useDecks } from '../stores/decks';
++import { Dialog } from '../ui/Dialog';
++import { CardFace } from '../ui/CardFace';
++import { useCardInfo } from './cardInfo';
++import { countZone, manaColumns, type DeckRow } from './deckModel';
++import styles from './ManaColumns.module.css';
++
++/** The cards stacked in columns (0-1, 2, 3, 4, 5, 6+, lands); click adds a copy and right-click removes one when editing. */
++export function ManaColumns({ entries, info, onAdd, onRemove, onPreview }: {
++  entries: DeckCardLists['cards'];
++  info: ReadonlyMap<string, CardView>;
++  onAdd?(row: DeckRow): void;
++  onRemove?(row: DeckRow): void;
++  onPreview(card: CardView | null, anchor?: DOMRect): void;
++}) {
++  const columns = useMemo(() => manaColumns(entries, info), [entries, info]);
++  return (
++    <div className={styles.columns} aria-label="Deck by mana value">
++      {columns.map((column) => (
++        <section key={column.key} className={styles.column} aria-label={`${column.label}: ${column.count}`}>
++          <h3 className={styles.head}>{column.label}<span>{column.count}</span></h3>
++          <ul className={styles.stack}>
++            {column.rows.map((row) => (
++              <li key={row.key} className={styles.card}>
++                {onAdd || onRemove ? (
++                  <button
++                    type="button"
++                    className={styles.tile}
++                    onClick={() => onAdd?.(row)}
++                    onContextMenu={(event) => {
++                      if (!onRemove) return;
++                      event.preventDefault();
++                      onRemove(row);
++                    }}
++                    onPointerEnter={(event) => row.card && onPreview(row.card, event.currentTarget.getBoundingClientRect())}
++                    onPointerLeave={() => onPreview(null)}
++                    aria-label={`${row.entry.amount} ${row.entry.cardName}`}
++                  >
++                    <Tile row={row} />
++                  </button>
++                ) : (
++                  <div
++                    className={[styles.tile, styles.still].join(' ')}
++                    onPointerEnter={(event) => row.card && onPreview(row.card, event.currentTarget.getBoundingClientRect())}
++                    onPointerLeave={() => onPreview(null)}
++                    aria-label={`${row.entry.amount} ${row.entry.cardName}`}
++                  >
++                    <Tile row={row} />
++                  </div>
++                )}
++              </li>
++            ))}
++          </ul>
++        </section>
++      ))}
++    </div>
++  );
++}
++
++function Tile({ row }: { row: DeckRow }) {
++  return (
++    <>
++      <CardFace card={row.card ?? { name: row.entry.cardName }} size="small" />
++      {row.entry.amount > 1 && <b className={styles.amount} aria-hidden="true">×{row.entry.amount}</b>}
++    </>
++  );
++}
++
++/** A deck's main deck by mana value without opening the builder (a starter stays a starter: nothing is copied). */
++export function DeckCardsDialog({ deckId, name, onClose }: { deckId: string | null; name: string; onClose(): void }) {
++  const t = useT();
++  const [loaded, setLoaded] = useState<{ id: string; deck: DeckCardLists } | null>(null);
++  const deck = loaded && loaded.id === deckId ? loaded.deck : null;
++  const [preview, setPreview] = useState<{ card: CardView; anchor: DOMRect } | null>(null);
++  useEffect(() => {
++    if (!deckId) return;
++    let cancelled = false;
++    void useDecks.getState().loadList(deckId).then((list) => !cancelled && setLoaded({ id: deckId, deck: list })).catch(() => undefined);
++    return () => {
++      cancelled = true;
++    };
++  }, [deckId]);
++  const entries = useMemo(() => deck?.cards ?? [], [deck]);
++  const info = useCardInfo(entries);
++  return (
++    <Dialog
++      open={!!deckId}
++      onOpenChange={(open) => !open && onClose()}
++      title={name}
++      width="lg"
++      description={deck ? t('decks.cards.count', { count: countZone(deck, 'cards') }) : t('decks.cards.loading')}
++    >
++      <div className={styles.dialogBody}>
++        <ManaColumns entries={entries} info={info} onPreview={(card, anchor) => setPreview(card && anchor ? { card, anchor } : null)} />
++        {preview && createPortal(<ColumnPreview {...preview} />, document.body)}
++      </div>
++    </Dialog>
++  );
++}
++
++/** The pointed card in full, beside its column (over the dialog, so it lives on the page body). */
++function ColumnPreview({ card, anchor }: { card: CardView; anchor: DOMRect }) {
++  const width = 260;
++  const height = width * (88 / 63);
++  const gap = 12;
++  const left = anchor.right + gap + width <= window.innerWidth ? anchor.right + gap : Math.max(gap, anchor.left - gap - width);
++  const top = Math.max(12, Math.min(window.innerHeight - height - 12, anchor.top));
++  return (
++    <div className={styles.dialogPreview} style={{ left, top, width }} aria-hidden="true">
++      <CardFace card={card} size="large" />
++    </div>
++  );
++}
+diff --git a/Mage.Web.Client/src/app/decks/deckModel.test.ts b/Mage.Web.Client/src/app/decks/deckModel.test.ts
+index 8f2549f075..b9935d2d84 100644
+--- a/Mage.Web.Client/src/app/decks/deckModel.test.ts
++++ b/Mage.Web.Client/src/app/decks/deckModel.test.ts
+@@ -1,7 +1,7 @@
+ import { describe, expect, it } from 'vitest';
+ import type { CardView } from '../../protocol/generated/views';
+ import type { DeckCardLists } from '../../core/decks/types';
+-import { addCard, changePrinting, copiesByName, copyLimit, countZone, entryKey, groupDeck, manaCurve, moveCard, removeCard } from './deckModel';
++import { addCard, changePrinting, copiesByName, copyLimit, countZone, entryKey, groupDeck, manaColumns, manaCurve, moveCard, removeCard } from './deckModel';
+ 
+ const empty: DeckCardLists = { name: 'Test', cards: [], sideboard: [] };
+ const bolt = { cardName: 'Lightning Bolt', setCode: 'M10', cardNumber: '146' };
+@@ -67,3 +67,28 @@ describe('grouping and curve', () => {
+     expect(manaCurve(deck.cards, info)).toEqual([0, 4, 0, 0, 0, 0, 0, 0]);
+   });
+ });
++
++// mtg-ai: the mana value columns
++describe('mana value columns', () => {
++  it('puts 0 and 1 together, 6 and up together, lands apart, and counts copies', () => {
++    const card = (name: string, manaValue: number, types: CardView['cardTypes']) => ({ name, manaValue, cardTypes: types }) as CardView;
++    const entries = [
++      { cardName: 'Ornithopter', setCode: 'A', cardNumber: '1', amount: 1 },
++      { cardName: 'Bolt', setCode: 'A', cardNumber: '2', amount: 2 },
++      { cardName: 'Bear', setCode: 'A', cardNumber: '3', amount: 3 },
++      { cardName: 'Dragon', setCode: 'A', cardNumber: '4', amount: 1 },
++      { cardName: 'Mountain', setCode: 'A', cardNumber: '5', amount: 16 },
++    ];
++    const info = new Map([
++      ['A:1', card('Ornithopter', 0, ['ARTIFACT', 'CREATURE'])],
++      ['A:2', card('Bolt', 1, ['INSTANT'])],
++      ['A:3', card('Bear', 2, ['CREATURE'])],
++      ['A:4', card('Dragon', 7, ['CREATURE'])],
++      ['A:5', card('Mountain', 0, ['LAND'])],
++    ]);
++    const columns = manaColumns(entries, info);
++    expect(columns.map((column) => [column.key, column.count])).toEqual([['0-1', 3], ['2', 3], ['3', 0], ['4', 0], ['5', 0], ['6+', 1], ['lands', 16]]);
++    expect(columns[0].rows.map((row) => row.entry.cardName)).toEqual(['Ornithopter', 'Bolt']);
++    expect(manaColumns([{ cardName: 'X', amount: 1 }], new Map()).at(-1)?.key).toBe('unknown');
++  });
++});
+diff --git a/Mage.Web.Client/src/app/decks/deckModel.ts b/Mage.Web.Client/src/app/decks/deckModel.ts
+index 00f9b0c30b..b02e5fd377 100644
+--- a/Mage.Web.Client/src/app/decks/deckModel.ts
++++ b/Mage.Web.Client/src/app/decks/deckModel.ts
+@@ -151,6 +151,42 @@ export function manaCurve(entries: DeckCardInfo[], info: ReadonlyMap<string, Car
+   return curve;
+ }
+ 
++// mtg-ai: the deck in columns by mana value, as MTG Arena lays it out (0-1, 2, 3, 4, 5, 6+), lands in their own column
++export type ManaColumnKey = '0-1' | '2' | '3' | '4' | '5' | '6+' | 'lands' | 'unknown';
++
++export interface ManaColumn {
++  key: ManaColumnKey;
++  label: string;
++  count: number;
++  rows: DeckRow[];
++}
++
++const MANA_COLUMNS: ManaColumnKey[] = ['0-1', '2', '3', '4', '5', '6+', 'lands', 'unknown'];
++
++function manaColumnOf(card: CardView | undefined): ManaColumnKey {
++  if (!card) return 'unknown';
++  if (groupOf(card) === 'lands') return 'lands';
++  const value = card.manaValue ?? 0;
++  return value <= 1 ? '0-1' : value >= 6 ? '6+' : (String(value) as ManaColumnKey);
++}
++
++/** Every mana value column (empty ones too) and the lands; cards still being looked up get a column of their own. */
++export function manaColumns(entries: DeckCardInfo[], info: ReadonlyMap<string, CardView>): ManaColumn[] {
++  const columns = new Map<ManaColumnKey, DeckRow[]>(MANA_COLUMNS.map((key) => [key, []]));
++  for (const entry of entries) {
++    const key = entryKey(entry);
++    const card = info.get(key);
++    columns.get(manaColumnOf(card))!.push({ key, entry, card });
++  }
++  return MANA_COLUMNS.filter((key) => key !== 'unknown' || columns.get(key)!.length > 0).map((key) => {
++    // creatures first, then by mana value and name
++    const rows = columns.get(key)!.sort((a, b) => Number(groupOf(b.card) === 'creatures') - Number(groupOf(a.card) === 'creatures')
++      || (a.card?.manaValue ?? 0) - (b.card?.manaValue ?? 0) || a.entry.cardName.localeCompare(b.entry.cardName));
++    const label = key === 'lands' ? GROUP_LABELS.lands : key === 'unknown' ? GROUP_LABELS.unknown : key === '0-1' ? '0–1' : key;
++    return { key, label, count: rows.reduce((sum, row) => sum + row.entry.amount, 0), rows };
++  });
++}
++
+ const COLOR_KEYS = [['white', 'W'], ['blue', 'U'], ['black', 'B'], ['red', 'R'], ['green', 'G']] as const;
+ 
+ /** Colors the deck plays, in WUBRG order. */
+diff --git a/Mage.Web.Client/src/app/i18n/en/core.ts b/Mage.Web.Client/src/app/i18n/en/core.ts
+index 8e9bd25816..2e3900cd49 100644
+--- a/Mage.Web.Client/src/app/i18n/en/core.ts
++++ b/Mage.Web.Client/src/app/i18n/en/core.ts
+@@ -223,6 +223,11 @@ export default {
+   'decks.copyAndEdit': 'Copy and edit',
+   'decks.edit': 'Edit deck',
+   'decks.duplicate': 'Duplicate',
++  'decks.cards': 'Cards by mana value',
++  'decks.cards.count': { one: '{count} card in the deck', other: '{count} cards in the deck' },
++  'decks.cards.loading': 'Opening the deck…',
++  'decks.goodOnly': 'Good only',
++  'decks.goodOnly.detail': 'Of our DSK starter decks, show only the ★ good ones',
+   'decks.rename': 'Rename',
+   'decks.remove': 'Remove deck',
+   'decks.pick': 'Pick a deck to see it here.',
+diff --git a/Mage.Web.Client/src/app/i18n/es.ts b/Mage.Web.Client/src/app/i18n/es.ts
+index 64656b768b..d2256021a3 100644
+--- a/Mage.Web.Client/src/app/i18n/es.ts
++++ b/Mage.Web.Client/src/app/i18n/es.ts
+@@ -225,6 +225,11 @@ const es: Catalog = {
+   'decks.sleeve': 'Funda {color}',
+   'decks.copyAndEdit': 'Copiar y editar',
+   'decks.edit': 'Editar mazo',
++  'decks.cards': 'Cartas por valor de maná',
++  'decks.cards.count': { one: '{count} carta en el mazo', other: '{count} cartas en el mazo' },
++  'decks.cards.loading': 'Abriendo el mazo…',
++  'decks.goodOnly': 'Solo buenos',
++  'decks.goodOnly.detail': 'De nuestros mazos iniciales de DSK, muestra solo los buenos ★',
+   'decks.duplicate': 'Duplicar',
+   'decks.rename': 'Renombrar',
+   'decks.remove': 'Eliminar mazo',
+diff --git a/Mage.Web.Client/src/app/screens/DecksScreen.tsx b/Mage.Web.Client/src/app/screens/DecksScreen.tsx
+index 06fb814c34..72bf901934 100644
+--- a/Mage.Web.Client/src/app/screens/DecksScreen.tsx
++++ b/Mage.Web.Client/src/app/screens/DecksScreen.tsx
+@@ -1,4 +1,4 @@
+-import { ClipboardPaste, Cloud, CloudOff, Copy, Download, PencilLine, PencilRuler, RefreshCw, Trash2 } from 'lucide-react';
++import { ClipboardPaste, Cloud, CloudOff, Columns3, Copy, Download, PencilLine, PencilRuler, RefreshCw, Trash2 } from 'lucide-react';
+ import { lazy, Suspense, useEffect, useMemo, useState, type FormEvent } from 'react';
+ import { useNavigate } from 'react-router-dom';
+ import { siteById } from '../../core/deckImport/sites';
+@@ -12,7 +12,9 @@ import { deckStorage } from '../../core/decks/DeckStorageService';
+ import { applyUpdate } from '../../core/deckImport/diff';
+ import { t as translate, useT } from '../i18n';
+ import { RichText } from '../i18n/RichText';
+-import { SLEEVE_COLORS, chosenSleeve, rosterOf, sleeveFor, useDecks, type RosterDeck } from '../stores/decks';
++import { SLEEVE_COLORS, chosenSleeve, pickableRoster, rosterOf, sleeveFor, useDecks, useGoodStartersOnly, type RosterDeck } from '../stores/decks';
++import { GoodStartersToggle } from '../decks/GoodStartersToggle';
++import { DeckCardsDialog } from '../decks/ManaColumns';
+ import { useDeckSyncStatus } from '../stores/deckSyncStatus';
+ import { useSettings } from '../stores/settings';
+ import { useServerInfo } from '../queries';
+@@ -39,6 +41,10 @@ export function DecksScreen() {
+   const decks = useDecks();
+   const t = useT();
+   const roster = useMemo(() => rosterOf(decks), [decks]);
++  // mtg-ai: "Good only" leaves our other DSK starters off the shelf, and a deck's cards can be seen by mana value
++  const goodOnly = useGoodStartersOnly((state) => state.on);
++  const shelf = useMemo(() => pickableRoster(roster, decks.starters, goodOnly), [roster, decks.starters, goodOnly]);
++  const [viewing, setViewing] = useState<RosterDeck | null>(null);
+   const [removing, setRemoving] = useState<RosterDeck | null>(null);
+   const [updating, setUpdating] = useState<string | null>(null);
+   const [renaming, setRenaming] = useState<RosterDeck | null>(null);
+@@ -93,6 +99,7 @@ export function DecksScreen() {
+         aside={
+           <>
+             <SyncNote />
++            <GoodStartersToggle />
+             <Button size="sm" icon={<Download size={16} />} onClick={() => openImport()}>{t('decks.import')}</Button>
+             <Button size="sm" icon={<PencilRuler size={16} />} onClick={() => navigate('/decks/new')}>{t('decks.build')}</Button>
+           </>
+@@ -110,7 +117,7 @@ export function DecksScreen() {
+               <RichText text={t('decks.empty')} parts={{ keys: <kbd>{PASTE_KEYS}</kbd> }} />
+             </p>
+           )}
+-          {roster.map((deck) => (
++          {shelf.map((deck) => (
+             <div key={deck.id} role="listitem" className={[styles.cell, deck.id === arrivedId ? styles.arrived : ''].join(' ')}>
+               <div onDoubleClick={() => navigate(`/decks/${encodeURIComponent(deck.id)}`)}>
+                 <DeckBox deck={deck} sleeve={sleeveFor(decks.sleeves, deck)} selected={deck.id === decks.selectedId} onSelect={() => decks.select(deck.id)} />
+@@ -169,6 +176,7 @@ export function DecksScreen() {
+               {selected.starter ? t('decks.copyAndEdit') : t('decks.edit')}
+             </Button>
+             <div className={styles.actions}>
++              <Button variant="print" size="sm" icon={<Columns3 size={16} />} onClick={() => setViewing(selected)}>{t('decks.cards')}</Button>
+               <ExportMenu getDeck={() => useDecks.getState().loadList(selected.id)} />
+               <Button variant="print" size="sm" icon={<Copy size={16} />} onClick={() => void duplicate(selected)}>{t('decks.duplicate')}</Button>
+               {!selected.starter && (
+@@ -187,6 +195,8 @@ export function DecksScreen() {
+         )}
+       </Zone>
+ 
++      <DeckCardsDialog deckId={viewing?.id ?? null} name={viewing?.name ?? ''} onClose={() => setViewing(null)} />
++
+       <UpdateDialog deckId={updating} onClose={() => setUpdating(null)} />
+ 
+       <RenameDialog deck={renaming} onClose={() => setRenaming(null)} />
+diff --git a/Mage.Web.Client/src/app/screens/HomeScreen.tsx b/Mage.Web.Client/src/app/screens/HomeScreen.tsx
+index 0b6655d78d..7fbe144b68 100644
+--- a/Mage.Web.Client/src/app/screens/HomeScreen.tsx
++++ b/Mage.Web.Client/src/app/screens/HomeScreen.tsx
+@@ -1,7 +1,8 @@
+ import { SlidersHorizontal } from 'lucide-react';
+ import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties } from 'react';
+ import { useNavigate } from 'react-router-dom';
+-import { META_PREFIX, RANDOM_META_PREFIX, rosterOf, sleeveFor, useDecks } from '../stores/decks';
++import { META_PREFIX, RANDOM_META_PREFIX, pickableRoster, rosterOf, sleeveFor, useDecks, useGoodStartersOnly } from '../stores/decks';
++import { GoodStartersToggle } from '../decks/GoodStartersToggle';
+ import { formatRules } from '../../core/decks/formats';
+ import { metaDecksFor } from '../../core/decks/metaDecks';
+ import { readJson } from '../stores/persist';
+@@ -61,7 +62,9 @@ export function HomeScreen() {
+   if (aiOpen && !aiLoaded) setAiLoaded(true);
+   const emailStatus = useEmailStatus().data;
+   const emailUnconfirmed = !!emailStatus?.email && !emailStatus.verified && !!emailStatus.mail;
+-  const roster = useMemo(() => rosterOf(decks), [decks]);
++  // mtg-ai: "Good only" leaves our other DSK starters out of the list
++  const goodOnly = useGoodStartersOnly((state) => state.on);
++  const roster = useMemo(() => pickableRoster(rosterOf(decks), decks.starters, goodOnly), [decks, goodOnly]);
+   // a meta, ghost or mirror opponent, or adaptive skill, is described with the solo messages
+   const soloReady = useCareerMessages(mode === 'meta' || play.aiOptions.adaptive || opponentSource(play.aiOptions.opponentDeckId).kind !== 'roster');
+   const selected = roster.find((deck) => deck.id === decks.selectedId) ?? roster[0] ?? null;
+@@ -124,6 +127,7 @@ export function HomeScreen() {
+         <header className={styles.rosterHead}>
+           <h2>{t('home.yourDecks')}</h2>
+           <span className={styles.rosterActions}>
++            <GoodStartersToggle />
+             <Button variant="quiet" size="sm" onClick={() => openImport()}>{t('home.import')}</Button>
+             <Button variant="quiet" size="sm" onClick={() => navigate('/decks')}>{t('home.manage')}</Button>
+           </span>
+diff --git a/Mage.Web.Client/src/app/stores/decks.ts b/Mage.Web.Client/src/app/stores/decks.ts
+index 68da924cbd..7ca9ecf84a 100644
+--- a/Mage.Web.Client/src/app/stores/decks.ts
++++ b/Mage.Web.Client/src/app/stores/decks.ts
+@@ -252,6 +252,28 @@ export function rosterOf(state: Pick<DeckLibraryState, 'saved' | 'starters'>): R
+   return [...saved, ...state.starters.filter((starter) => !savedNames.has(starter.name)).map(starterToRoster)];
+ }
+ 
++// mtg-ai: "Good only" hides our other DSK starters (dsk-*.dck) and keeps the strong ones (dsk-good-*.dck); on by default,
++// remembered per browser. It only applies while the server has good ones; Playmat's own starters always show
++const GOOD_ONLY_KEY = 'playmat.starters.goodOnly';
++
++export const useGoodStartersOnly = create<{ on: boolean; set(on: boolean): void }>((set) => ({
++  on: readJson(GOOD_ONLY_KEY, true),
++  set(on) {
++    writeJson(GOOD_ONLY_KEY, on);
++    set({ on });
++  },
++}));
++
++export function hasGoodStarters(starters: StarterDeck[]): boolean {
++  return starters.some((starter) => starter.file.startsWith('dsk-good-'));
++}
++
++/** The roster the player picks from: the other DSK starters left out while "Good only" is on. */
++export function pickableRoster(roster: RosterDeck[], starters: StarterDeck[], goodOnly: boolean): RosterDeck[] {
++  if (!goodOnly || !hasGoodStarters(starters)) return roster;
++  return roster.filter((deck) => !deck.starter || !deck.starter.file.startsWith('dsk-') || deck.starter.file.startsWith('dsk-good-'));
++}
++
+ export function sleeveFor(sleeves: Record<string, string>, deck: RosterDeck | null | undefined): string {
+   if (!deck) return SLEEVE_COLORS[0];
+   // "random": one of the player's Career sleeves, a different one each game (ui/sleeveArt.ts)

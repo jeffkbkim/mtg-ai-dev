@@ -1,0 +1,222 @@
+diff --git a/Mage.Web.Client/src/app/match/GameLog.tsx b/Mage.Web.Client/src/app/match/GameLog.tsx
+index aea94db726..46bafdc3b1 100644
+--- a/Mage.Web.Client/src/app/match/GameLog.tsx
++++ b/Mage.Web.Client/src/app/match/GameLog.tsx
+@@ -162,7 +162,8 @@ export function GameLog({ gameId, notices, canChat, view, replayLog, delayMs = 0
+   }, [view]);
+ 
+   const rows = useMemo(() => {
+-    const errors = notices.filter((notice) => notice.kind === 'error').map((notice) => noticeEntry(`n${notice.id}`, notice.text, notice.at));
++    // mtg-ai: the server's messages to this player (e.g. why a block was refused) are shown too
++    const errors = notices.filter((notice) => notice.kind === 'error' || notice.kind === 'personal').map((notice) => noticeEntry(`n${notice.id}`, notice.text, notice.at));
+     const blocked = new Set(ignored.map((name) => name.toLowerCase()));
+     const heard = blocked.size > 0 ? chat.entries.filter((entry) => entry.tone !== 'chat' || !entry.who || !blocked.has(entry.who.toLowerCase())) : chat.entries;
+     const visible = muted ? heard.filter((entry) => entry.tone !== 'chat' || entry.who === myName) : heard;
+diff --git a/Mage.Web.Client/src/app/match/MatchStage.tsx b/Mage.Web.Client/src/app/match/MatchStage.tsx
+index a9a0bf5f28..3d769270f4 100644
+--- a/Mage.Web.Client/src/app/match/MatchStage.tsx
++++ b/Mage.Web.Client/src/app/match/MatchStage.tsx
+@@ -27,6 +27,7 @@ import { usePlay } from '../stores/play';
+ import { useAutomation, useSettings } from '../stores/settings';
+ import { progressionShown } from '../career/progressionEvents';
+ import { notify } from '../stores/toasts';
++import { blockWarning } from '../../core/game/blockRequirements';
+ import { Button } from '../ui/Button';
+ import { CardFace } from '../ui/CardFace';
+ import { Dialog } from '../ui/Dialog';
+@@ -224,6 +225,16 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+   );
+   const stack = useMemo(() => Object.values(view?.stack ?? {}), [view?.stack]);
+ 
++  // mtg-ai: the declare-blockers prompt whose blocks were already warned about (a second press sends them anyway)
++  const blockWarned = useRef<unknown>(null);
++  // mtg-ai: the server's messages to this player only (XMage's informPlayer: a refused block says why) pop up, once
++  const shownNotice = useRef(Math.max(-1, ...state.notices.map((notice) => notice.id)));
++  useEffect(() => {
++    const fresh = state.notices.filter((notice) => notice.kind === 'personal' && notice.id > shownNotice.current);
++    if (fresh.length === 0) return;
++    for (const notice of fresh.slice(-2)) notify('Game', notice.text, 'error');
++    shownNotice.current = Math.max(...fresh.map((notice) => notice.id));
++  }, [state.notices]);
+   const onCommand = useCallback((command: Command) => {
+     // Cancel on a payment is never dropped: auto-pay keeps a tap with the server most of the time
+     if (command.type === 'boolean' && !command.value && session.getState().interaction.mode === 'payMana') {
+@@ -232,6 +243,17 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+     }
+     // one answer per question: while the server works on the last one, further answers are dropped
+     if (command.type !== 'action' && session.getState().awaitingServer) return;
++    // mtg-ai: blocks that leave a "must be blocked if able" attacker unblocked are not sent on the first press
++    const current = session.getState();
++    if (command.type === 'boolean' && command.value && current.interaction.mode === 'declareBlockers'
++      && current.interaction.prompt?.kind === 'declareBlockers' && blockWarned.current !== current.interaction.prompt) {
++      const warning = blockWarning(current.view, current.interaction.prompt);
++      if (warning) {
++        blockWarned.current = current.interaction.prompt;
++        notify('Not a legal block', warning, 'error');
++        return;
++      }
++    }
+     if (command.type === 'action' && (command.action === 'HOLD_PRIORITY' || command.action === 'UNHOLD_PRIORITY')) {
+       setHolding(command.action === 'HOLD_PRIORITY');
+     }
+diff --git a/Mage.Web.Client/src/app/match/PermanentStack.tsx b/Mage.Web.Client/src/app/match/PermanentStack.tsx
+index f649815245..161893797a 100644
+--- a/Mage.Web.Client/src/app/match/PermanentStack.tsx
++++ b/Mage.Web.Client/src/app/match/PermanentStack.tsx
+@@ -1,5 +1,5 @@
+ import {
+-  Anvil, ArrowUpToLine, Castle, Eye, EyeOff, Feather, FlaskConical, Footprints, HeartPulse, Lock, LockOpen, Shield, ShieldCheck,
++  Anvil, ArrowUpToLine, Castle, Crosshair, Eye, EyeOff, Feather, FlaskConical, Footprints, HeartPulse, Lock, LockOpen, Shield, ShieldCheck,
+   ShieldHalf, Skull, Sword, Swords, Users, Zap, type LucideIcon,
+ } from 'lucide-react';
+ import { memo, useMemo, useRef, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
+@@ -67,6 +67,7 @@ const KEYWORD_ICONS: Record<MarkedKeyword, LucideIcon> = {
+   Shroud: EyeOff,
+   Ward: ShieldHalf,
+   Protection: ShieldCheck,
++  'Must be blocked': Crosshair, // mtg-ai
+ };
+ 
+ /** The layer each keyword effect draws (PermanentStack.module.css); float moves the card itself. */
+diff --git a/Mage.Web.Client/src/app/screens/aiSetupOffer.test.ts b/Mage.Web.Client/src/app/screens/aiSetupOffer.test.ts
+index da735fd9bd..952cf79eaf 100644
+--- a/Mage.Web.Client/src/app/screens/aiSetupOffer.test.ts
++++ b/Mage.Web.Client/src/app/screens/aiSetupOffer.test.ts
+@@ -5,7 +5,7 @@ import { aiDeckLabel, offeredAiTypes, seatableAiType } from './aiSetup';
+ 
+ describe('AI types a server offers', () => {
+   it('lists every type until the server has said, then only the ones it has', () => {
+-    expect(offeredAiTypes(undefined).map((item) => item.value)).toEqual(['COMPUTER_MAD', 'COMPUTER_MONTE_CARLO']);
++    expect(offeredAiTypes(undefined).map((item) => item.value)).toEqual(['COMPUTER_MAD', 'COMPUTER_CLAUDE', 'WATCH', 'COMPUTER_MONTE_CARLO']); // mtg-ai: our two Claude types
+     expect(offeredAiTypes(['HUMAN', 'COMPUTER_MAD']).map((item) => item.value)).toEqual(['COMPUTER_MAD']);
+   });
+ 
+diff --git a/Mage.Web.Client/src/core/game/blockRequirements.test.ts b/Mage.Web.Client/src/core/game/blockRequirements.test.ts
+new file mode 100644
+index 0000000000..692f3ca8da
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/blockRequirements.test.ts
+@@ -0,0 +1,36 @@
++import { describe, expect, it } from 'vitest';
++import type { GameView } from '../../protocol/generated/views';
++import { blockWarning } from './blockRequirements';
++import type { DeclareBlockersPrompt } from './prompt';
++
++const fear = { id: 'a1', name: 'Fear of Being Hunted', rules: ['Haste', 'This creature must be blocked if able.'] };
++const bear = { id: 'a2', name: 'Bear', rules: [] };
++const wall = { id: 'b1', name: 'Wall', rules: [] };
++
++function view(blockers: Record<string, string>): GameView {
++  return {
++    myPlayerId: 'me',
++    players: [{ playerId: 'me', battlefield: { b1: wall } }],
++    combat: [
++      { attackers: { a1: fear }, blockers: Object.fromEntries(Object.entries(blockers).filter(([, a]) => a === 'a1').map(([b]) => [b, wall])) },
++      { attackers: { a2: bear }, blockers: Object.fromEntries(Object.entries(blockers).filter(([, a]) => a === 'a2').map(([b]) => [b, wall])) },
++    ],
++  } as unknown as GameView;
++}
++const prompt = { kind: 'declareBlockers', possibleBlockers: ['b1'] } as unknown as DeclareBlockersPrompt;
++
++describe('blockWarning', () => {
++  it('warns when a must-be-blocked attacker is left unblocked', () => {
++    expect(blockWarning(view({}), prompt)).toMatch(/Fear of Being Hunted must be blocked/);
++    expect(blockWarning(view({ b1: 'a2' }), { ...prompt, possibleBlockers: [] })).toMatch(/must be blocked/);
++  });
++  it('accepts blocks that meet the requirement', () => {
++    expect(blockWarning(view({ b1: 'a1' }), { ...prompt, possibleBlockers: [] })).toBeNull();
++  });
++  it('knows a flier needs flying or reach', () => {
++    const flier = { ...fear, rules: ['Flying', 'This creature must be blocked if able.'] };
++    const v = view({});
++    v.combat![0].attackers = { a1: flier };
++    expect(blockWarning(v, prompt)).toBeNull();
++  });
++});
+diff --git a/Mage.Web.Client/src/core/game/blockRequirements.ts b/Mage.Web.Client/src/core/game/blockRequirements.ts
+new file mode 100644
+index 0000000000..f0f59f7c2b
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/blockRequirements.ts
+@@ -0,0 +1,53 @@
++import type { CardView, GameView, PermanentView } from '../../protocol/generated/views';
++import { keywordMarks, mustBeBlocked } from './keywords';
++import type { DeclareBlockersPrompt } from './prompt';
++
++/**
++ * mtg-ai: attackers that must be blocked if able (Fear of Being Hunted, lures), and a check before blocks are sent.
++ * The server is the judge: it refuses a declaration that breaks a requirement and asks again. This check only says
++ * so before sending, from what the board shows (flying needs flying or reach; other evasion isn't known here), so a
++ * second press sends the blocks anyway.
++ */
++
++function myPermanent(view: GameView, id: string): PermanentView | undefined {
++  for (const player of view.players ?? []) {
++    const permanent = player.battlefield?.[id];
++    if (permanent) return permanent;
++  }
++  return undefined;
++}
++
++function canBlock(blocker: PermanentView | undefined, attacker: CardView): boolean {
++  if (!blocker) return false;
++  const attackerMarks = new Set(keywordMarks(attacker).map((mark) => mark.name));
++  const blockerMarks = new Set(keywordMarks(blocker).map((mark) => mark.name));
++  return !attackerMarks.has('Flying') || blockerMarks.has('Flying') || blockerMarks.has('Reach');
++}
++
++/**
++ * Why the blocks as they stand break a "must be blocked if able" requirement, or null: an attacker that must be
++ * blocked is unblocked while a creature that could block it blocks nothing or blocks an attacker without that need.
++ */
++export function blockWarning(view: GameView | null | undefined, prompt: DeclareBlockersPrompt): string | null {
++  if (!view) return null;
++  const blocking = new Map<string, string>(); // blocker -> the attacker it blocks
++  for (const group of view.combat ?? []) {
++    const first = Object.keys(group.attackers ?? {})[0];
++    for (const id of Object.keys(group.blockers ?? {})) if (first) blocking.set(id, first);
++  }
++  for (const group of view.combat ?? []) {
++    if (Object.keys(group.blockers ?? {}).length > 0) continue;
++    for (const attacker of Object.values(group.attackers ?? {})) {
++      if (!mustBeBlocked(attacker)) continue;
++      const free = [...new Set([...prompt.possibleBlockers, ...blocking.keys()])].filter((id) => {
++        const blocks = blocking.get(id);
++        const other = blocks ? (view.combat ?? []).find((g) => g.attackers?.[blocks])?.attackers?.[blocks] : undefined;
++        return (!other || !mustBeBlocked(other)) && canBlock(myPermanent(view, id), attacker);
++      });
++      if (free.length > 0) {
++        return `${attacker.name ?? 'An attacker'} must be blocked if able. Block it, or press again to send these blocks anyway.`;
++      }
++    }
++  }
++  return null;
++}
+diff --git a/Mage.Web.Client/src/core/game/keywords.ts b/Mage.Web.Client/src/core/game/keywords.ts
+index 24638dca8a..f3ca2df455 100644
+--- a/Mage.Web.Client/src/core/game/keywords.ts
++++ b/Mage.Web.Client/src/core/game/keywords.ts
+@@ -16,8 +16,15 @@ export const MARKED_KEYWORDS = [
+   'Flying', 'Reach', 'Menace', 'Defender',
+   'First strike', 'Double strike', 'Deathtouch', 'Trample', 'Lifelink', 'Infect', 'Vigilance', 'Haste',
+   'Indestructible', 'Hexproof', 'Shroud', 'Ward', 'Protection',
++  // mtg-ai: not a keyword, but blocks depend on it (Fear of Being Hunted)
++  'Must be blocked',
+ ] as const;
+ 
++/** mtg-ai: an attacker that must be blocked if able, from its current rules text */
++export function mustBeBlocked(card: CardView | undefined): boolean {
++  return (card?.rules ?? []).some((line) => /must be blocked\b/i.test(line.replace(/<[^>]+>/g, '')));
++}
++
+ export type MarkedKeyword = typeof MARKED_KEYWORDS[number];
+ 
+ /** The server's ability icons (computed from the permanent's current abilities, granted ones included). */
+@@ -48,6 +55,7 @@ export function keywordMarks(card: CardView): KeywordMark[] {
+   }
+   // the server has no icon for these; its current rules text lists them, granted ones included
+   for (const name of keywordsOf(card)) now.add(name);
++  if (mustBeBlocked(card)) now.add('Must be blocked');
+   const original = (card as PermanentView).original;
+   const printed = original ? new Set(keywordsOf(original)) : null;
+   return MARKED_KEYWORDS

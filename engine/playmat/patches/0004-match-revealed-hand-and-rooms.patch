@@ -1,0 +1,681 @@
+diff --git a/Mage.Common/src/main/java/mage/view/PermanentView.java b/Mage.Common/src/main/java/mage/view/PermanentView.java
+index d5831ecd90..4dfc5c37e5 100644
+--- a/Mage.Common/src/main/java/mage/view/PermanentView.java
++++ b/Mage.Common/src/main/java/mage/view/PermanentView.java
+@@ -1,6 +1,7 @@
+ package mage.view;
+ 
+ import mage.cards.Card;
++import mage.cards.RoomCard;
+ import mage.game.Game;
+ import mage.game.permanent.Permanent;
+ import mage.game.permanent.PermanentToken;
+@@ -39,6 +40,11 @@ public class PermanentView extends CardView {
+     private final boolean attachedControllerDiffers;
+     private final MutateView mutateView;
+     private final boolean mutated;
++    // mtg-ai: a Room's doors and which of them are unlocked, for the web client (names null: not a face-up Room)
++    private final String roomLeftDoor;
++    private final String roomRightDoor;
++    private final boolean roomLeftUnlocked;
++    private final boolean roomRightUnlocked;
+ 
+     public PermanentView(Permanent permanent, Card card, UUID createdForPlayerId, Game game) {
+         super(permanent, game, CardUtil.canShowAsControlled(permanent, createdForPlayerId));
+@@ -73,6 +79,19 @@ public class PermanentView extends CardView {
+         this.copy = permanent.isCopy();
+         this.mutateView = new MutateView(permanent, game);
+         this.mutated = permanent.getMutateCount() > 0;
++        // mtg-ai: a face-up Room shows both doors (its printed card is public) and which are unlocked
++        if (!this.isFaceDown() && permanent.getMainCard() instanceof RoomCard) {
++            RoomCard room = (RoomCard) permanent.getMainCard();
++            this.roomLeftDoor = room.getLeftHalfCard().getName();
++            this.roomRightDoor = room.getRightHalfCard().getName();
++            this.roomLeftUnlocked = permanent.isLeftDoorUnlocked();
++            this.roomRightUnlocked = permanent.isRightDoorUnlocked();
++        } else {
++            this.roomLeftDoor = null;
++            this.roomRightDoor = null;
++            this.roomLeftUnlocked = false;
++            this.roomRightUnlocked = false;
++        }
+ 
+         // for fipped, transformed or copied cards, switch the names
+         if (original != null && !original.getName().equals(this.getName())) {
+@@ -155,6 +174,10 @@ public class PermanentView extends CardView {
+         this.attachedControllerDiffers = permanentView.attachedControllerDiffers;
+         this.mutateView = permanentView.mutateView;
+         this.mutated = permanentView.mutated;
++        this.roomLeftDoor = permanentView.roomLeftDoor;
++        this.roomRightDoor = permanentView.roomRightDoor;
++        this.roomLeftUnlocked = permanentView.roomLeftUnlocked;
++        this.roomRightUnlocked = permanentView.roomRightUnlocked;
+     }
+ 
+     public boolean isTapped() {
+diff --git a/Mage.Common/src/main/java/mage/view/RevealedView.java b/Mage.Common/src/main/java/mage/view/RevealedView.java
+index 2a009dc7fa..044750e7d0 100644
+--- a/Mage.Common/src/main/java/mage/view/RevealedView.java
++++ b/Mage.Common/src/main/java/mage/view/RevealedView.java
+@@ -23,7 +23,8 @@ public class RevealedView implements Serializable {
+             if (card instanceof PermanentCard && card.isFaceDown(game)) {
+                 this.cards.put(card.getId(), new CardView(card.getMainCard())); // do not use game param, so it will take default card
+             } else {
+-                this.cards.put(card.getId(), new CardView(card, game));
++                // mtg-ai: with its zone, so the web client knows a card revealed from a hand (and when it leaves)
++                this.cards.put(card.getId(), new CardView(card, game, false, true));
+             }
+         }
+     }
+diff --git a/Mage.Web.Client/src/app/match/CardZoom.module.css b/Mage.Web.Client/src/app/match/CardZoom.module.css
+index 3a89578ffd..715d1f1d7a 100644
+--- a/Mage.Web.Client/src/app/match/CardZoom.module.css
++++ b/Mage.Web.Client/src/app/match/CardZoom.module.css
+@@ -15,6 +15,20 @@
+   filter: drop-shadow(0 28px 50px rgb(var(--shade-rgb) / 0.6));
+ }
+ 
++/* mtg-ai: a card printed on its side, turned a quarter to read in landscape */
++.sideways {
++  position: relative;
++  flex: none;
++}
++
++.sideways > * {
++  position: absolute;
++  top: 50%;
++  left: 50%;
++  translate: -50% -50%;
++  rotate: 90deg;
++}
++
+ .details {
+   max-width: 340px;
+   margin: 0;
+diff --git a/Mage.Web.Client/src/app/match/CardZoom.tsx b/Mage.Web.Client/src/app/match/CardZoom.tsx
+index adb1e1f5f5..d1fa76bdf9 100644
+--- a/Mage.Web.Client/src/app/match/CardZoom.tsx
++++ b/Mage.Web.Client/src/app/match/CardZoom.tsx
+@@ -1,6 +1,6 @@
+ import { useEffect, useState } from 'react';
+ import type { CardView, PermanentView } from '../../protocol/generated/views';
+-import { isStackAbility } from '../../core/game/cards';
++import { isStackAbility, printedSideways } from '../../core/game/cards';
+ import { AbilityCard } from '../ui/AbilityCard';
+ import { showsBackFace } from '../../core/images/imageLinks';
+ import { CardFace } from '../ui/CardFace';
+@@ -50,14 +50,16 @@ export function CardZoom({ large = false }: { large?: boolean }) {
+   const extra = details(card);
+   const rules = styled ? (card.rules ?? []).filter((line) => line.trim()) : [];
+   const width = large ? LARGE_WIDTH : ZOOM_WIDTH;
+-  const height = width * (88 / 63);
++  // mtg-ai: a Room (or split card) is printed on its side: it shows turned, as wide as a card is tall
++  const sideways = !isStackAbility(card) && printedSideways(card);
++  const height = sideways ? width : width * (88 / 63);
+   const point = toStagePoint(stage, shown.x, shown.y);
+   const pointerRight = point.x > stage.width / 2;
+   // the second face sits beside the first: the panel is that much wider
+-  const span = back && card.transformable ? width * 1.62 + 12 : width;
++  const span = back && card.transformable ? width * 1.62 + 12 : sideways ? width * (88 / 63) : width;
+   const left = large
+     ? (pointerRight ? EDGE : stage.width - span - EDGE)
+-    : pointerRight ? point.x - ZOOM_WIDTH - 60 : point.x + 60;
++    : pointerRight ? point.x - (sideways ? span : ZOOM_WIDTH) - 60 : point.x + 60;
+   const top = large
+     ? Math.max(EDGE, (stage.height - height) / 2 - 40)
+     : Math.max(EDGE, Math.min(stage.height - height - EDGE, point.y - height / 2));
+@@ -67,7 +69,13 @@ export function CardZoom({ large = false }: { large?: boolean }) {
+       <div className={styles.faces}>
+         {isStackAbility(card)
+           ? <AbilityCard ability={card} sleeve={shown.sleeve} style={{ width }} />
+-          : <CardFace card={card} size="large" sleeve={shown.sleeve} style={{ width }} />}
++          : sideways
++            ? (
++              <div className={styles.sideways} style={{ width: span, height }}>
++                <CardFace card={card} size="large" sleeve={shown.sleeve} style={{ width }} />
++              </div>
++            )
++            : <CardFace card={card} size="large" sleeve={shown.sleeve} style={{ width }} />}
+         {back && card.transformable && (
+           <CardFace card={back} face={showsBackFace(card) ? 'front' : 'back'} size="normal" sleeve={shown.sleeve} style={{ width: width * 0.62 }} />
+         )}
+diff --git a/Mage.Web.Client/src/app/match/MatchStage.module.css b/Mage.Web.Client/src/app/match/MatchStage.module.css
+index bf52388c2f..5f7de31d39 100644
+--- a/Mage.Web.Client/src/app/match/MatchStage.module.css
++++ b/Mage.Web.Client/src/app/match/MatchStage.module.css
+@@ -202,6 +202,31 @@
+   transform-origin: 50% 0;
+ }
+ 
++/* mtg-ai: a card revealed from the hand hangs a little lower, face up over its neighbours, with a mark */
++.revealedCard {
++  top: 30px;
++  z-index: 1;
++}
++
++.revealedMark {
++  position: absolute;
++  left: 50%;
++  bottom: -4px;
++  translate: -50% 0;
++  padding: 1px 6px;
++  border-radius: 999px;
++  background: rgb(var(--mat-rgb) / 0.9);
++  box-shadow: inset 0 0 0 1px var(--brass);
++  color: var(--brass-ink);
++  font-family: var(--font-print);
++  font-size: 11px;
++  font-weight: 700;
++  letter-spacing: 0.08em;
++  text-transform: uppercase;
++  white-space: nowrap;
++  pointer-events: none;
++}
++
+ .handCount {
+   position: absolute;
+   left: 0;
+diff --git a/Mage.Web.Client/src/app/match/MatchStage.tsx b/Mage.Web.Client/src/app/match/MatchStage.tsx
+index 5bcc389d58..a9a0bf5f28 100644
+--- a/Mage.Web.Client/src/app/match/MatchStage.tsx
++++ b/Mage.Web.Client/src/app/match/MatchStage.tsx
+@@ -10,6 +10,7 @@ import { parsePayment } from '../../core/game/payment';
+ import { xLimit } from '../../core/game/announceX';
+ import { sortHand } from '../../core/game/handOrder';
+ import { askedAboutCards } from '../../core/game/reveals';
++import { revealedInHand } from '../../core/game/revealedHand';
+ import { delayLabel, isBroadcastDelay } from '../../core/game/broadcastDelay';
+ import { spectatorHand } from '../../core/game/spectatorHand';
+ import { matchProgress } from '../../core/game/matchProgress';
+@@ -500,6 +501,7 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+                 sleeve={theirSleeves.get(opponent.player.playerId!) ?? sleeves.theirs}
+                 look={lookOf(opponent.player)}
+                 handCount={opponent.player.handCount ?? 0}
++                revealed={revealedInHand(state.revealedHands, opponent.player.playerId)}
+                 clickable={clickable}
+                 selected={interaction.selected}
+                 quiet={EMPTY}
+@@ -778,13 +780,15 @@ function Row({ groups, left, width, top, ideal, min, forward, label, flip, ...re
+ }
+ 
+ /** An opponent's half: their rows mirrored above the seam, their seat, piles and hidden hand. */
+-function OpponentSide({ board, index, count, sleeve, handCount, deciding, layout, commanders, commanderDamage, outOfRange, look, ...row }: RowProps & {
++function OpponentSide({ board, index, count, sleeve, handCount, revealed, deciding, layout, commanders, commanderDamage, outOfRange, look, ...row }: RowProps & {
+   layout: MatchLayout;
+   look: PlayerLook | undefined;
+   board: PlayerBoard;
+   index: number;
+   count: number;
+   handCount: number;
++  /** mtg-ai: cards revealed from this hand and still in it */
++  revealed: CardView[];
+   deciding: boolean;
+   commanders: readonly CommanderStatus[];
+   commanderDamage: readonly { name: string; amount: number }[];
+@@ -825,23 +829,41 @@ function OpponentSide({ board, index, count, sleeve, handCount, deciding, layout
+         </div>
+       )}
+       {count > 1 && !layout.tall && <span className={styles.seatName} style={{ left: place.left + 16 }} aria-hidden="true">{player.name}</span>}
+-      <HiddenHand playerId={player.playerId!} count={handCount} sleeve={sleeve} left={layout.hiddenHandX(index, count)} />
++      <HiddenHand playerId={player.playerId!} count={handCount} revealed={revealed} sleeve={sleeve} left={layout.hiddenHandX(index, count)} />
+     </>
+   );
+ }
+ 
+ /** The backs of an opponent's hand peeking over the top edge; their spells fly out of it. */
+-function HiddenHand({ playerId, count, sleeve, left }: { playerId: string; count: number; sleeve: string; left: number }) {
++function HiddenHand({ playerId, count, revealed, sleeve, left }: { playerId: string; count: number; revealed: CardView[]; sleeve: string; left: number }) {
+   const ref = useRef<HTMLDivElement>(null);
+   useFlipOrigin(`hand:${playerId}`, ref);
++  const setZoom = useMatchUi((state) => state.setZoom);
+   const shown = Math.min(count, 10);
++  // mtg-ai: cards revealed from this hand show face up, marked, in place of as many backs
++  const faceUp = revealed.slice(0, shown);
++  const label = `${count} cards in hand` + (faceUp.length > 0 ? `, revealed: ${faceUp.map((card) => card.displayName ?? card.name).join(', ')}` : '');
+   return (
+-    <div ref={ref} className={styles.hiddenHand} style={{ left }} aria-label={`${count} cards in hand`} role="img">
+-      {Array.from({ length: shown }, (_, i) => (
+-        <div key={i} className={styles.hiddenCard} style={{ ['--i' as string]: i - (shown - 1) / 2 }}>
+-          <CardFace card={{}} hidden sleeve={sleeve} size="small" />
+-        </div>
+-      ))}
++    <div ref={ref} className={styles.hiddenHand} style={{ left }} aria-label={label} role="img">
++      {Array.from({ length: shown }, (_, i) => {
++        const card = faceUp[i];
++        return card ? (
++          <div
++            key={card.cardId ?? card.id ?? i}
++            className={[styles.hiddenCard, styles.revealedCard].join(' ')}
++            style={{ ['--i' as string]: i - (shown - 1) / 2 }}
++            onPointerEnter={(event) => setZoom({ card, x: event.clientX, y: event.clientY, sleeve, anchor: event.currentTarget })}
++            onPointerLeave={() => setZoom(null)}
++          >
++            <CardFace card={card} sleeve={sleeve} size="small" />
++            <span className={styles.revealedMark}>Revealed</span>
++          </div>
++        ) : (
++          <div key={i} className={styles.hiddenCard} style={{ ['--i' as string]: i - (shown - 1) / 2 }}>
++            <CardFace card={{}} hidden sleeve={sleeve} size="small" />
++          </div>
++        );
++      })}
+       {count > 0 && <span className={styles.handCount}>{count}</span>}
+     </div>
+   );
+diff --git a/Mage.Web.Client/src/app/match/PermanentStack.module.css b/Mage.Web.Client/src/app/match/PermanentStack.module.css
+index 28604ea69f..764af196df 100644
+--- a/Mage.Web.Client/src/app/match/PermanentStack.module.css
++++ b/Mage.Web.Client/src/app/match/PermanentStack.module.css
+@@ -177,6 +177,57 @@
+ }
+ 
+ /* power/toughness plate printed over the card's corner */
++/* mtg-ai: a Room's two doors along the bottom: the unlocked ones lit, the locked ones dim behind a lock */
++.doors {
++  position: absolute;
++  left: 4%;
++  right: 4%;
++  bottom: 4%;
++  display: flex;
++  flex-direction: column;
++  gap: 2px;
++  margin: 0;
++  padding: 0;
++  list-style: none;
++  pointer-events: none;
++}
++
++.doors li {
++  display: flex;
++  align-items: center;
++  gap: 3px;
++  min-width: 0;
++  padding: 1px 5px;
++  border-radius: 5px;
++  font-family: var(--font-print);
++  font-size: calc(11px * var(--badge, 1));
++  font-weight: 700;
++  line-height: 1.25;
++}
++
++.doors li > svg {
++  flex: none;
++}
++
++.doors li > span {
++  min-width: 0;
++  overflow: hidden;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++
++.doorUnlocked {
++  background: rgb(var(--brass-rgb) / 0.92);
++  color: var(--mat-900);
++  box-shadow: 0 0 0 1px rgb(var(--brass-rgb) / 0.5), 0 0 8px rgb(var(--brass-rgb) / 0.45);
++}
++
++.doorLocked {
++  background: rgb(var(--mat-rgb) / 0.88);
++  color: var(--ink-dim);
++  box-shadow: inset 0 0 0 1px var(--ink-faint);
++}
++
+ .pt {
+   position: absolute;
+   right: 3%;
+diff --git a/Mage.Web.Client/src/app/match/PermanentStack.tsx b/Mage.Web.Client/src/app/match/PermanentStack.tsx
+index 3c49ce4af7..f649815245 100644
+--- a/Mage.Web.Client/src/app/match/PermanentStack.tsx
++++ b/Mage.Web.Client/src/app/match/PermanentStack.tsx
+@@ -1,8 +1,9 @@
+ import {
+-  Anvil, ArrowUpToLine, Castle, Eye, EyeOff, Feather, FlaskConical, Footprints, HeartPulse, Shield, ShieldCheck,
++  Anvil, ArrowUpToLine, Castle, Eye, EyeOff, Feather, FlaskConical, Footprints, HeartPulse, Lock, LockOpen, Shield, ShieldCheck,
+   ShieldHalf, Skull, Sword, Swords, Users, Zap, type LucideIcon,
+ } from 'lucide-react';
+ import { memo, useMemo, useRef, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
++import { roomDoors } from '../../core/game/cards';
+ import { keywordEffects, keywordMarks, type KeywordEffect, type MarkedKeyword } from '../../core/game/keywords';
+ import type { PermanentView } from '../../protocol/generated/views';
+ import { useSettings } from '../stores/settings';
+@@ -184,6 +185,8 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+   const counters = (permanent.counters ?? []).filter((counter) => (counter.count ?? 0) > 0);
+   const isCreature = (permanent.cardTypes ?? []).includes('CREATURE');
+   const loyalty = permanent.loyalty || permanent.defense;
++  // mtg-ai: a Room's doors, the unlocked ones lit
++  const doors = roomDoors(permanent);
+   // summoning sick: it can't attack or tap yet, so it dozes (the server's flag ignores haste; a hasty creature is awake)
+   const asleep = isCreature && !!permanent.summoningSickness && !keywords.some((mark) => mark.name === 'Haste');
+   const flying = effects.includes('float');
+@@ -282,6 +285,20 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+         </ul>
+       )}
+ 
++      {doors && (
++        <ul className={styles.doors} style={{ transform: tapped ? 'rotate(-90deg)' : undefined }} aria-label="Doors">
++          {doors.map((door) => {
++            const Icon = door.unlocked ? LockOpen : Lock;
++            return (
++              <li key={door.name} className={door.unlocked ? styles.doorUnlocked : styles.doorLocked} title={`${door.name}: ${door.unlocked ? 'unlocked' : 'locked'}`}>
++                <Icon size={11} strokeWidth={2.6} aria-hidden="true" />
++                <span>{door.name}</span>
++              </li>
++            );
++          })}
++        </ul>
++      )}
++
+       {isCreature && permanent.power !== undefined && (
+         <span className={[styles.pt, ptTone(permanent)].join(' ')}>
+           {permanent.power}/{permanent.toughness}
+@@ -315,6 +332,8 @@ function describe(permanent: PermanentView, state: { tapped: boolean; asleep: bo
+   const parts = [permanent.name ?? 'Permanent'];
+   if (permanent.power !== undefined && (permanent.cardTypes ?? []).includes('CREATURE')) parts.push(`${permanent.power}/${permanent.toughness}`);
+   parts.push(...state.keywords);
++  // mtg-ai: a Room says which doors are unlocked
++  for (const door of roomDoors(permanent) ?? []) parts.push(`${door.name} ${door.unlocked ? 'unlocked' : 'locked'}`);
+   if (state.tapped) parts.push('tapped');
+   if (state.asleep) parts.push('summoning sick');
+   if (state.isAttacking) parts.push('attacking');
+diff --git a/Mage.Web.Client/src/core/game/cards.test.ts b/Mage.Web.Client/src/core/game/cards.test.ts
+index 8e10d807ed..e44cc3fb0a 100644
+--- a/Mage.Web.Client/src/core/game/cards.test.ts
++++ b/Mage.Web.Client/src/core/game/cards.test.ts
+@@ -1,5 +1,5 @@
+ import { describe, expect, it } from 'vitest';
+-import { isStackAbility, printsPowerToughness } from './cards';
++import { isStackAbility, printedSideways, printsPowerToughness, roomDoors } from './cards';
+ 
+ describe('isStackAbility', () => {
+   it('recognises abilities as the server sends them (no isAbility flag)', () => {
+@@ -28,3 +28,25 @@ describe('printsPowerToughness', () => {
+     expect(printsPowerToughness({ power: '', toughness: '' })).toBe(false);
+   });
+ });
++
++// mtg-ai: Rooms
++describe('printedSideways', () => {
++  it('turns Rooms and split cards, not aftermath or other cards', () => {
++    expect(printedSideways({ subTypes: ['ROOM'] })).toBe(true);
++    expect(printedSideways({ isSplitCard: true, rotate: true })).toBe(true);
++    expect(printedSideways({ isSplitCard: true, rotate: false })).toBe(false);
++    expect(printedSideways({ subTypes: ['AURA'] })).toBe(false);
++  });
++});
++
++describe('roomDoors', () => {
++  it('lists both doors, left first, with which are unlocked', () => {
++    expect(roomDoors({ roomLeftDoor: 'Bottomless Pool', roomRightDoor: 'Locker Room', roomRightUnlocked: true })).toEqual([
++      { name: 'Bottomless Pool', unlocked: false },
++      { name: 'Locker Room', unlocked: true },
++    ]);
++  });
++  it('is null for anything that is not a face-up Room', () => {
++    expect(roomDoors({})).toBeNull();
++  });
++});
+diff --git a/Mage.Web.Client/src/core/game/cards.ts b/Mage.Web.Client/src/core/game/cards.ts
+index da2f66c8c0..4ae1161bbd 100644
+--- a/Mage.Web.Client/src/core/game/cards.ts
++++ b/Mage.Web.Client/src/core/game/cards.ts
+@@ -1,4 +1,4 @@
+-import type { CardView, StackAbilityView } from '../../protocol/generated/views';
++import type { CardView, PermanentView, StackAbilityView } from '../../protocol/generated/views';
+ 
+ /**
+  * Whether a stack object is an ability rather than a spell. The server's ability views never set `isAbility`;
+@@ -20,3 +20,25 @@ export function printsPowerToughness(card: Pick<CardView, 'power' | 'toughness'
+   if (card.typeText) return /\b(?:creature|vehicle|spacecraft)\b/i.test(card.typeText);
+   return card.power !== '0' || card.toughness !== '0';
+ }
++
++/**
++ * mtg-ai: whether a card's picture is printed on its side and reads in landscape: Rooms, and split cards the server
++ * marks to turn (`rotate`; aftermath halves read upright).
++ */
++export function printedSideways(card: Pick<CardView, 'subTypes' | 'isSplitCard' | 'rotate'>): boolean {
++  return (card.subTypes ?? []).includes('ROOM') || (!!card.isSplitCard && !!card.rotate);
++}
++
++export interface RoomDoor {
++  name: string;
++  unlocked: boolean;
++}
++
++/** mtg-ai: a Room permanent's two doors, left first, as the server tells them (null: not a face-up Room). */
++export function roomDoors(permanent: Pick<PermanentView, 'roomLeftDoor' | 'roomRightDoor' | 'roomLeftUnlocked' | 'roomRightUnlocked'>): [RoomDoor, RoomDoor] | null {
++  if (!permanent.roomLeftDoor || !permanent.roomRightDoor) return null;
++  return [
++    { name: permanent.roomLeftDoor, unlocked: !!permanent.roomLeftUnlocked },
++    { name: permanent.roomRightDoor, unlocked: !!permanent.roomRightUnlocked },
++  ];
++}
+diff --git a/Mage.Web.Client/src/core/game/gameSession.ts b/Mage.Web.Client/src/core/game/gameSession.ts
+index 3408922313..e325f39274 100644
+--- a/Mage.Web.Client/src/core/game/gameSession.ts
++++ b/Mage.Web.Client/src/core/game/gameSession.ts
+@@ -7,6 +7,7 @@ import { DelayedRelay } from './broadcastDelay';
+ import { deriveInteraction, type Command, type Interaction } from './interaction';
+ import type { Prediction } from './prediction';
+ import { PROMPT_EVENTS, parsePrompt, promptGameView, stripMarkup, type Prompt, type PromptEventName } from './prompt';
++import { NO_REVEALED_HANDS, rememberRevealedHands, type RevealedHands } from './revealedHand';
+ import { structuralShare } from './structuralShare';
+ 
+ export type GameSessionMode = 'play' | 'watch' | 'replay';
+@@ -44,6 +45,8 @@ export interface GameSessionState {
+   endInfo: GameEndView | null;
+   /** watching: the broadcast delay in ms (0: live); what the server sends is shown this much later */
+   broadcastDelayMs: number;
++  /** mtg-ai: cards revealed from each player's hand that are still there (revealedHand.ts); none in replays */
++  revealedHands: RevealedHands;
+ }
+ 
+ const MAX_NOTICES = 50;
+@@ -111,6 +114,7 @@ export class GameSession {
+       gameOver: null,
+       endInfo: null,
+       broadcastDelayMs: 0,
++      revealedHands: NO_REVEALED_HANDS,
+     }));
+ 
+     const forThisGame = <T>(handler: (data: T, event: ServerEvent) => void) =>
+@@ -370,7 +374,9 @@ export class GameSession {
+     // the server's view is the truth: whatever the click was expected to do, this shows what it did
+     if (this.store.getState().prediction) this.store.setState({ prediction: null });
+     const playerId = this.store.getState().playerId ?? (this.store.getState().mode === 'play' ? view.myPlayerId ?? null : null);
+-    this.store.setState({ view: next, playerId });
++    // mtg-ai: a replay jumps between moments, so what was revealed before is only remembered live
++    const { mode, revealedHands } = this.store.getState();
++    this.store.setState({ view: next, playerId, revealedHands: mode === 'replay' ? revealedHands : rememberRevealedHands(revealedHands, next) });
+     this.refreshInteraction();
+   }
+ 
+diff --git a/Mage.Web.Client/src/core/game/revealedHand.test.ts b/Mage.Web.Client/src/core/game/revealedHand.test.ts
+new file mode 100644
+index 0000000000..2a037212f3
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/revealedHand.test.ts
+@@ -0,0 +1,83 @@
++import { describe, expect, it } from 'vitest';
++import type { CardView, GameView, PlayerView } from '../../protocol/generated/views';
++import { NO_REVEALED_HANDS, rememberRevealedHands, revealedInHand, type RevealedHands } from './revealedHand';
++
++// mtg-ai: the opponent's hand remembers what was revealed from it, and forgets a card once it leaves
++
++const ME = 'me';
++const THEM = 'them';
++const pool: CardView = { id: 'c1', cardId: 'c1', ownerId: THEM, name: 'Bottomless Pool // Locker Room' };
++const bolt: CardView = { id: 'c2', cardId: 'c2', ownerId: THEM, name: 'Lightning Bolt' };
++
++function player(id: string, handCount: number, libraryCount = 30, zones: Partial<PlayerView> = {}): PlayerView {
++  return { playerId: id, handCount, libraryCount, ...zones };
++}
++
++function view(them: PlayerView, extra: Partial<GameView> = {}): GameView {
++  return { myPlayerId: ME, players: [player(ME, 7), them], ...extra };
++}
++
++function revealed(...cards: CardView[]): GameView['revealed'] {
++  return [{ name: 'Duress [1a2]', cards: Object.fromEntries(cards.map((card) => [card.id!, card])) }];
++}
++
++function names(hands: RevealedHands): string[] {
++  return revealedInHand(hands, THEM).map((card) => card.name!);
++}
++
++describe('rememberRevealedHands', () => {
++  it('remembers a card revealed from the hand after the reveal is gone', () => {
++    let hands = rememberRevealedHands(NO_REVEALED_HANDS, view(player(THEM, 5), { revealed: revealed({ ...pool, zone: 'HAND' }) }));
++    expect(names(hands)).toEqual(['Bottomless Pool // Locker Room']);
++    hands = rememberRevealedHands(hands, view(player(THEM, 6, 29)));
++    expect(names(hands)).toEqual(['Bottomless Pool // Locker Room']);
++  });
++
++  it('never remembers a card revealed from elsewhere, or with no zone given', () => {
++    let hands = rememberRevealedHands(NO_REVEALED_HANDS, view(player(THEM, 5), { revealed: revealed({ ...pool, zone: 'LIBRARY' }) }));
++    expect(names(hands)).toEqual([]);
++    hands = rememberRevealedHands(hands, view(player(THEM, 5), { revealed: revealed(pool) }));
++    expect(names(hands)).toEqual([]);
++  });
++
++  it('never shows my own reveals as the opponent\'s', () => {
++    const mine = { ...bolt, ownerId: ME, zone: 'HAND' as const };
++    const hands = rememberRevealedHands(NO_REVEALED_HANDS, view(player(THEM, 5), { revealed: revealed(mine) }));
++    expect(names(hands)).toEqual([]);
++  });
++
++  it('forgets a card once it is cast, discarded or exiled (it shows up under the same card id)', () => {
++    const start = rememberRevealedHands(NO_REVEALED_HANDS, view(player(THEM, 5), { revealed: revealed({ ...pool, zone: 'HAND' }, { ...bolt, zone: 'HAND' }) }));
++    expect(names(start)).toHaveLength(2);
++    // cast: the spell has its own object id, the physical card id is the hand card's
++    const cast = rememberRevealedHands(start, view(player(THEM, 4), { stack: { spell: { id: 'spell', cardId: 'c2', name: 'Lightning Bolt' } } }));
++    expect(names(cast)).toEqual(['Bottomless Pool // Locker Room']);
++    const discarded = rememberRevealedHands(start, view(player(THEM, 4, 30, { graveyard: { c1: pool } })));
++    expect(names(discarded)).toEqual(['Lightning Bolt']);
++    const played = rememberRevealedHands(start, view(player(THEM, 4, 30, { battlefield: { c1: pool } })));
++    expect(names(played)).toEqual(['Lightning Bolt']);
++    const exiled = rememberRevealedHands(start, view(player(THEM, 4), { exiles: [{ c2: bolt }] }));
++    expect(names(exiled)).toEqual(['Bottomless Pool // Locker Room']);
++  });
++
++  it('forgets a card the reveal still lists in another zone', () => {
++    const start = rememberRevealedHands(NO_REVEALED_HANDS, view(player(THEM, 5), { revealed: revealed({ ...pool, zone: 'HAND' }) }));
++    const back = rememberRevealedHands(start, view(player(THEM, 4, 31), { revealed: revealed({ ...pool, zone: 'LIBRARY' }) }));
++    expect(names(back)).toEqual([]);
++  });
++
++  it('forgets everything when a card goes from the hand to the library unseen', () => {
++    const start = rememberRevealedHands(NO_REVEALED_HANDS, view(player(THEM, 5), { revealed: revealed({ ...pool, zone: 'HAND' }) }));
++    expect(names(rememberRevealedHands(start, view(player(THEM, 4, 31))))).toEqual([]);
++    // drawing is not that: the hand grows as the library shrinks
++    expect(names(rememberRevealedHands(start, view(player(THEM, 6, 29))))).toEqual(['Bottomless Pool // Locker Room']);
++    // nor is casting an unrevealed card
++    expect(names(rememberRevealedHands(start, view(player(THEM, 4, 30))))).toEqual(['Bottomless Pool // Locker Room']);
++  });
++
++  it('forgets everything when the hand holds fewer cards than remembered (shuffled away, discarded unseen)', () => {
++    const start = rememberRevealedHands(NO_REVEALED_HANDS, view(player(THEM, 2), { revealed: revealed({ ...pool, zone: 'HAND' }, { ...bolt, zone: 'HAND' }) }));
++    expect(names(rememberRevealedHands(start, view(player(THEM, 1, 30))))).toEqual([]);
++    expect(names(rememberRevealedHands(start, view(player(THEM, 0, 37))))).toEqual([]);
++  });
++});
+diff --git a/Mage.Web.Client/src/core/game/revealedHand.ts b/Mage.Web.Client/src/core/game/revealedHand.ts
+new file mode 100644
+index 0000000000..8d06918e14
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/revealedHand.ts
+@@ -0,0 +1,78 @@
++import type { CardView, GameView } from '../../protocol/generated/views';
++
++/**
++ * mtg-ai: cards revealed from a player's hand stay known while they stay in that hand. The server lists reveals in
++ * `GameView.revealed` only for the rest of the turn and sends an opponent's hand as a count, so the client keeps
++ * what it saw: a revealed card whose zone was the hand, by its physical card id, until that card shows up anywhere
++ * else (cast, discarded, exiled, back on the library while still listed as revealed). When a card leaves the hand
++ * for a hidden zone (put back on the library: the hand shrinks as the library grows) or the hand holds fewer cards
++ * than are remembered, which ones left is unknown, and all of them are forgotten. Nothing that was not revealed is
++ * ever remembered; a server that doesn't send the zone of revealed cards gives nothing to remember.
++ */
++export interface RevealedHand {
++  /** revealed cards still in the hand, by physical card id (cardId, else id), in the order they were revealed */
++  cards: ReadonlyMap<string, CardView>;
++  handCount: number;
++  libraryCount: number;
++}
++
++/** by player id */
++export type RevealedHands = ReadonlyMap<string, RevealedHand>;
++
++export const NO_REVEALED_HANDS: RevealedHands = new Map();
++
++function physicalId(card: CardView, fallback: string): string {
++  return card.cardId ?? card.id ?? fallback;
++}
++
++/** The memory after one more game view. */
++export function rememberRevealedHands(previous: RevealedHands, view: GameView): RevealedHands {
++  // every card in a public zone: none of them is in a hand
++  const seen = new Set<string>();
++  const addSeen = (cards: Record<string, CardView> | undefined) => {
++    for (const [id, card] of Object.entries(cards ?? {})) seen.add(physicalId(card, id));
++  };
++  addSeen(view.stack);
++  for (const zone of view.exiles ?? []) addSeen(zone);
++  for (const player of view.players ?? []) {
++    addSeen(player.battlefield);
++    addSeen(player.graveyard);
++    addSeen(player.exile);
++  }
++  // the revealed cards, with where each one is now (the server says while the reveal lasts)
++  const revealed: { key: string; card: CardView }[] = [];
++  for (const group of view.revealed ?? []) {
++    for (const [id, card] of Object.entries(group.cards ?? {})) revealed.push({ key: physicalId(card, id), card: { ...card, id: card.id ?? id } });
++  }
++
++  const next = new Map<string, RevealedHand>();
++  for (const player of view.players ?? []) {
++    const playerId = player.playerId;
++    if (!playerId) continue;
++    const before = previous.get(playerId);
++    const handCount = player.handCount ?? 0;
++    const libraryCount = player.libraryCount ?? 0;
++    const putBack = !!before && handCount < before.handCount && libraryCount > before.libraryCount;
++    const cards = new Map(putBack ? [] : before?.cards ?? []);
++    for (const key of cards.keys()) if (seen.has(key)) cards.delete(key);
++    for (const { key, card } of revealed) {
++      if (card.ownerId !== playerId || !card.zone) continue;
++      if (card.zone === 'HAND') cards.set(key, card);
++      else cards.delete(key);
++    }
++    // more remembered than held: which ones left is unknown; only the ones seen in the hand right now stay
++    if (cards.size > handCount) {
++      const now = new Set(revealed.filter(({ card }) => card.ownerId === playerId && card.zone === 'HAND').map(({ key }) => key));
++      for (const key of cards.keys()) if (!now.has(key)) cards.delete(key);
++      if (cards.size > handCount) cards.clear();
++    }
++    next.set(playerId, { cards, handCount, libraryCount });
++  }
++  return next;
++}
++
++/** A player's revealed cards still in hand. */
++export function revealedInHand(hands: RevealedHands, playerId: string | undefined): CardView[] {
++  const hand = playerId ? hands.get(playerId) : undefined;
++  return hand ? [...hand.cards.values()] : [];
++}
+diff --git a/Mage.Web.Client/src/protocol/generated/views.ts b/Mage.Web.Client/src/protocol/generated/views.ts
+index fd476b4876..82be206a69 100644
+--- a/Mage.Web.Client/src/protocol/generated/views.ts
++++ b/Mage.Web.Client/src/protocol/generated/views.ts
+@@ -1771,6 +1771,10 @@ export interface PermanentView extends CardView {
+     nameOwner?: string;
+     original?: CardView;
+     phasedIn?: boolean;
++    roomLeftDoor?: string;
++    roomLeftUnlocked?: boolean;
++    roomRightDoor?: string;
++    roomRightUnlocked?: boolean;
+     summoningSickness?: boolean;
+     tapped?: boolean;
+ }

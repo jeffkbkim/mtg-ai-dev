@@ -21,11 +21,15 @@ home network, sign in with any name, and on Home open the AI settings (the oppon
 | AI type | Who plays |
 |---|---|
 | Playmat AI | you against XMage's standard AI ("Computer - mad") |
-| Claude AI | you against our Claude player (`play/players.py`, Opus high, facts and self-check on) |
+| Claude AI | you against our Claude player (`play/players.py`, facts and self-check on; model Opus 5.5 or Sonnet 5.5 and effort low/medium/high in the same dialog, default Opus high) |
 | Claude vs Playmat AI | Claude plays your selected deck against XMage's AI; you watch |
 
-Pick a deck (the `DSK typical_NN` / `DSK trophy_NN` starters are our 160 real 17lands DSK decks from
-`engine/xmage/decks/17lands-r2`); the AI is dealt a random one of them unless you choose its deck in the settings.
+Pick a deck. Our starters are real 17lands DSK decks, named with their deck score (mean 17lands GIH WR of the nonland
+cards), colors, record and rank, strongest first: the 70 `★ good_NN` decks (`engine/xmage/decks/17lands-good`) and
+the 160 `typical_NN` / `trophy_NN` decks (`engine/xmage/decks/17lands-r2`). "Good only" (Home, Decks; on by default)
+hides the 160. The Claude AI is dealt a random good deck, whatever the Rules setting; the other AIs any DSK starter;
+choosing the AI's deck in the settings overrides both. Claude always plays first (`PLAY_DRAW=rule`, the default, recorded
+as `"source": "rule"`; `PLAY_DRAW=claude engine/playmat/run.sh` lets the model choose).
 Claude takes a while per decision (tens of seconds, longer when it self-checks) and costs about $5 a game
 (API-equivalent; on a subscription it counts against plan usage).
 
@@ -37,9 +41,15 @@ Each game gets `~/mtg-data/playmat-games/<date>/<game id>/` (`java/GameRecorder.
 - `game0.jsonl`: every recorded decision of both seats, in time order. Each line is a PySeat decision (observation
   from that seat's own view, options with ability and choice keys, `leaks` from Observer's checks) plus the pick:
   - Claude: as in match.py runs (prompt, reply, reason, tokens, cost), `"source": "claude"`.
+  - Claude lines also carry `model` and `effort`; the first one of a game carries `prewarm` (the process was started
+    and the system prompt cached when the game was dealt).
   - You: `"source": "human_ui"`, with `"mapping"` saying how your browser answer was matched to an option: `exact`
     (a priority action, yes/no, a mode, one target), `inferred` (several targets, attackers or blockers, rebuilt as
     PySeat's one-at-a-time sequence from what you declared) or `unmapped` (choice -1, the answer kept in `ui`).
+    Blocks XMage refused (a "must be blocked if able" attacker left unblocked) are BLOCK lines with choice -1 and
+    `"mapping": "refused"` (what was declared in `ui.declared`): leave them out of training. The accepted blocks follow
+    as the usual sequence, from what XMage holds once it accepts them, with `block_attempts` and, if the engine
+    changed them, `engine_adjusted: true` and `declared`.
     Priority windows Playmat passed for you (auto-pass, stops) are PASS lines with `"auto": "ui_skip"`. Mana you tap
     by hand is counted in `ui.manual_mana`: it is not a decision our seat has (it pays automatically).
   - Playmat AI: `"source": "xmage_ai"`, `"reconstructed": true`, `"clairvoyant": true`. XMage's AI searches copies of
@@ -58,6 +68,14 @@ Each game of a best-of-three gets its own folder. Playmat also keeps its own rep
 - `patches/0002`: the launcher passes `$PLAYMAT_SERVER_OPTS` to the game server (our `-Dmtgai.*` settings).
 - `patches/0003`: the web client's AI types (Playmat AI, Claude AI, Claude vs Playmat AI) and the watch flow, and
   the AI is dealt a `dsk-*` starter deck when the server has them.
+- `patches/0004`: the match screen: opponent cards revealed from hand stay shown in their hand until they leave it;
+  Rooms preview in landscape and show which door is unlocked.
+- `patches/0005`: the deck builder: "DSK only" card filter, the deck by mana value (also read-only for starters on the
+  Decks screen), and "Good only" for the starter lists.
+- `patches/0006`: the Claude AI's model and effort in the AI settings (sent as the seat's skill: model index * 3 +
+  effort index + 1), and its random deck from the good pool.
+- `patches/0007`: blocks: attackers that must be blocked if able are marked, blocks that leave one unblocked are held
+  back once with a message, and the server's messages to the player (why a block was refused) are shown.
 - Our two XMage rule fixes (`engine/xmage/BecomesFaceDownCreatureEffect.java`, `VeteranSurvivor.java`) are copied over
   Playmat's sources at build time, so games here follow the rules our recorded games do.
 - `java/ClaudeSeat.java`: PySeat for a Playmat table; connects to `claude_service.py` (port 17180), which runs one

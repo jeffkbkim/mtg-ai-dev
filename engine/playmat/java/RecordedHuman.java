@@ -22,6 +22,12 @@ import java.util.*;
  * format (see Shadow). A priority window the browser was never asked about (Playmat's auto-pass and stops) is
  * recorded as a PASS with "auto": "ui_skip". Mana the player taps by hand while paying is not a decision PySeat has;
  * each such tap is counted in the next record's "ui".manual_mana.
+ *
+ * Blocks: XMage asks again when a declaration breaks a block requirement or restriction (e.g. an attacker that must be
+ * blocked if able), so one declare-blockers step can take several declarations. Each one the engine refused is one
+ * BLOCK line with choice -1, "mapping": "refused" and the declared blocks in "ui".declared; the legal one is written
+ * as the usual sequence when the engine accepts it (the DECLARED_BLOCKERS event), from the blocks XMage holds then,
+ * with "block_attempts" (declarations it took) and "engine_adjusted": true when those differ from what was declared.
  */
 public class RecordedHuman extends HumanPlayer {
 
@@ -55,7 +61,13 @@ public class RecordedHuman extends HumanPlayer {
     @Override
     public void init(Game game) {
         super.init(game);
-        if (!game.isSimulation()) GameRecorder.of(game).register(this, "human", getClass().getName(), 0);
+        if (game.isSimulation()) return;
+        GameRecorder r = GameRecorder.of(game);
+        r.register(this, "human", getClass().getName(), 0);
+        game.getState().addWatcher(new BlocksDeclared(playerId));
+        synchronized (r) {
+            r.beforeEnd.add(() -> flushBlocks(game, false));
+        }
     }
 
     @Override
@@ -257,9 +269,31 @@ public class RecordedHuman extends HumanPlayer {
         shadow().recordSequence(game, p, picked);
     }
 
+    /** This step's declaration so far: the decision, what was declared, how many declarations, when. */
+    private transient Shadow.Pending blockPending;
+    private transient List<Object> blockDeclared;
+    private transient int blockAttempts;
+    private transient long blockTs;
+    private transient int blockTurn;
+
     @Override
     public void selectBlockers(Ability source, Game game, UUID defendingPlayerId) {
         if (!recording(game)) { super.selectBlockers(source, game, defendingPlayerId); return; }
+        if (blockPending != null && blockTurn != game.getTurnNum()) flushBlocks(game, false);  // never accepted (shouldn't happen)
+        if (blockPending != null) {
+            // asked again in the same step: XMage refused the previous declaration
+            JsonObject ui = new JsonObject();
+            com.google.gson.JsonArray declared = new com.google.gson.JsonArray();
+            for (Object ref : blockDeclared) {
+                int i = Shadow.indexOfRef(blockPending.opts, ref);
+                declared.add(i < 0 ? String.valueOf(ref) : blockPending.opts.get(i).label.replaceAll("<[^>]+>", "").replaceAll(" ?\\[[0-9a-f]{3}\\]", ""));
+            }
+            ui.add("declared", declared);
+            blockPending.msg.addProperty("ts_at", blockTs);
+            shadow().record(game, blockPending, -1, "refused", ui);
+        } else {
+            blockAttempts = 0;
+        }
         Shadow.Pending p = shadow().build("BLOCK", "declare blockers one at a time", game,
                 shadow().blockOptions(game, Collections.emptySet()), null);
         depth++;
@@ -268,6 +302,49 @@ public class RecordedHuman extends HumanPlayer {
         } finally {
             depth--;
         }
-        shadow().recordSequence(game, p, Shadow.declaredBlocks(game, playerId));
+        blockPending = p;
+        blockDeclared = Shadow.declaredBlocks(game, playerId);
+        blockAttempts++;
+        blockTs = System.currentTimeMillis();
+        blockTurn = game.getTurnNum();
+    }
+
+    /**
+     * The step's last declaration, written once the engine has accepted it (accepted) or the game ended first: the
+     * blocks XMage holds, flagged when they differ from what the player declared.
+     */
+    void flushBlocks(Game game, boolean accepted) {
+        Shadow.Pending p = blockPending;
+        if (p == null) return;
+        blockPending = null;
+        List<Object> held = accepted ? Shadow.declaredBlocks(game, playerId) : blockDeclared;
+        JsonObject extra = new JsonObject();
+        extra.addProperty("block_attempts", blockAttempts);
+        if (!new HashSet<>(held).equals(new HashSet<>(blockDeclared))) {
+            extra.addProperty("engine_adjusted", true);
+            com.google.gson.JsonArray declared = new com.google.gson.JsonArray();
+            for (Object ref : blockDeclared) declared.add(String.valueOf(ref));
+            extra.add("declared", declared);
+        }
+        if (!accepted) extra.addProperty("block_unconfirmed", true);  // the game ended before the engine accepted it
+        p.msg.add("extra", extra);
+        p.msg.addProperty("ts_at", blockTs);
+        shadow().recordSequence(game, p, held);
+    }
+
+    /** Tells the defending RecordedHuman when the engine has accepted its blocks. */
+    static final class BlocksDeclared extends mage.watchers.Watcher {
+        BlocksDeclared(UUID playerId) {
+            super(mage.constants.WatcherScope.PLAYER);
+            this.controllerId = playerId;
+        }
+
+        @Override
+        public void watch(mage.game.events.GameEvent event, Game game) {
+            if (event.getType() != mage.game.events.GameEvent.EventType.DECLARED_BLOCKERS || game.isSimulation()
+                    || !controllerId.equals(event.getPlayerId())) return;
+            mage.players.Player p = game.getPlayer(controllerId);
+            if (p instanceof RecordedHuman) ((RecordedHuman) p).flushBlocks(game, true);
+        }
     }
 }

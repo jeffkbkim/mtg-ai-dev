@@ -44,6 +44,7 @@ public final class GameRecorder {
     final Map<String, JsonObject> seatInfo = new LinkedHashMap<>();
     final Map<String, Integer> nextIdx = new HashMap<>();
     final List<ClaudeSeat> claudeSeats = new ArrayList<>();
+    final List<Runnable> beforeEnd = new ArrayList<>();
     private boolean decksWritten = false, ended = false;
     private final long started = System.currentTimeMillis();
 
@@ -138,7 +139,7 @@ public final class GameRecorder {
         rec.add("leaks", msg.get("leaks"));
         rec.addProperty("choice", choice);
         for (Map.Entry<String, com.google.gson.JsonElement> e : extra.entrySet()) rec.add(e.getKey(), e.getValue());
-        rec.addProperty("ts", System.currentTimeMillis());
+        if (!rec.has("ts")) rec.addProperty("ts", System.currentTimeMillis());
         append(dir.resolve("seat-" + seat + ".jsonl"), GSON.toJson(rec));
     }
 
@@ -186,6 +187,14 @@ public final class GameRecorder {
         }
     }
 
+    synchronized void setSeatInfo(String seat, String key, String value) {
+        JsonObject i = seatInfo.get(seat);
+        if (i != null) {
+            i.addProperty(key, value);
+            writeConfig();
+        }
+    }
+
     synchronized void setPlayerName(String seat, String name) {
         JsonObject i = seatInfo.get(seat);
         if (i != null && !name.equals(i.has("player") ? i.get("player").getAsString() : null)) {
@@ -197,6 +206,7 @@ public final class GameRecorder {
     /** Game over: result, merged decisions, Claude seats told. Called once, from END_GAME_INFO. */
     synchronized void end() {
         if (ended) return;
+        for (Runnable r : beforeEnd) r.run();  // decisions a seat still holds (RecordedHuman's last blocks)
         ended = true;
         JsonObject g = new JsonObject();
         g.addProperty("game", 0);

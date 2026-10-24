@@ -140,6 +140,8 @@ class ClaudePlayer:
         self.name = f"claude:{model}:{effort}" + (f":{Path(lessons).stem}" if lessons else "") + (":plan" if plan else "") + (":facts" if facts else "") + (":check" if check else "")
         self.texts = load_card_text()
         self.proc = None
+        self.fresh = False  # the process was started before the game's first decision (prewarm) and has seen nothing
+        self.warm = None
 
     def start_game(self, game, deck_path):
         self.seen = set()
@@ -157,17 +159,48 @@ class ClaudePlayer:
         self.prompt_sha = hashlib.sha256(system.encode()).hexdigest()[:12]  # recorded per decision: prompt versions must not be pooled
         Path(self.workdir, "system.txt").write_text(system)
 
-    def _spawn(self):
+    def _env(self):
         env = {k: v for k, v in os.environ.items() if k not in ("CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_REMOTE_SESSION_ID")}
         env["CLAUDE_EFFORT"] = self.effort  # an inherited default (e.g. a cloud session's "medium") must not compete with --effort
         # each seat calls again within seconds (batch 2's longest wait was under 5 min), and 5-minute cache writes cost
         # 1.25x input where 1-hour ones (the subscription default) cost 2x
         env["CLAUDE_CODE_PROMPT_CACHE_TTL"] = "5m"
+        return env
+
+    def _args(self):
+        return ["claude", "-p", "--model", self.model, "--effort", self.effort, "--system-prompt-file", "system.txt",
+                "--tools", "", "--strict-mcp-config", "--setting-sources", "", "--no-session-persistence"]
+
+    def prewarm(self):
+        """Before the game's first decision (after start_game): start the conversation's process, and write the system
+        prompt to the prompt cache with a throwaway one-line call in the background, so the first decision waits on
+        neither. The conversation itself is untouched."""
+        if self.proc is None:
+            self._spawn()
+            self.fresh = True
+        self.warm = {"done": False}
+
+        def warm():
+            t0 = time.time()
+            try:
+                out = subprocess.run(self._args() + ["--output-format", "json", "Reply with the word OK."], cwd=self.workdir,
+                                     env=self._env(), capture_output=True, text=True, timeout=180)
+                res = json.loads(out.stdout or "{}")
+                self.warm.update(cost_usd=res.get("total_cost_usd", 0.0), cache_write=res.get("usage", {}).get("cache_creation_input_tokens"))
+            except (subprocess.TimeoutExpired, json.JSONDecodeError, OSError) as e:
+                self.warm["error"] = str(e)[:200]
+            self.warm.update(done=True, seconds=round(time.time() - t0, 2))
+
+        threading.Thread(target=warm, daemon=True).start()
+
+    def warm_info(self):
+        """The prewarm's cost and timing so far, for the record of the first decision."""
+        return {f"cache_{k}" if k in ("done", "seconds", "error") else k: v for k, v in (self.warm or {}).items()}
+
+    def _spawn(self):
         self.proc = subprocess.Popen(
-            ["claude", "-p", "--input-format", "stream-json", "--output-format", "stream-json", "--verbose",
-             "--model", self.model, "--effort", self.effort, "--system-prompt-file", "system.txt",
-             "--tools", "", "--strict-mcp-config", "--setting-sources", "", "--no-session-persistence"],
-            cwd=self.workdir, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            self._args()[:2] + ["--input-format", "stream-json", "--output-format", "stream-json", "--verbose"] + self._args()[2:],
+            cwd=self.workdir, env=self._env(), stdin=subprocess.PIPE, stdout=subprocess.PIPE,
             stderr=open(Path(self.workdir, "stderr.log"), "a"), text=True, bufsize=1)
         self.cost_so_far = 0.0
         self.conv_decisions = 0
@@ -180,6 +213,7 @@ class ClaudePlayer:
             except (OSError, subprocess.TimeoutExpired):
                 self.proc.kill()
             self.proc = None
+        self.fresh = False
 
     def _ask(self, text):
         """Send one user turn, return (result text, per-turn usage, cost of this turn, seconds)."""
@@ -255,8 +289,10 @@ class ClaudePlayer:
     def _prompt(self, msg, g):
         """This decision's text; starts a conversation (with the game log) if none is running."""
         names = names_in(msg["obs"])
-        if self.proc is None:
-            self._spawn()
+        if self.proc is None or self.fresh:
+            if self.proc is None:
+                self._spawn()
+            self.fresh = False
             self.seen = set()  # a new conversation hasn't seen any card text yet
             self.conv_pregame = True
             head = ("A new game starts." if not self.asked_any else

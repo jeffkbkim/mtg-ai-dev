@@ -1,0 +1,247 @@
+diff --git a/Mage.Web.Client/src/app/i18n/en/core.ts b/Mage.Web.Client/src/app/i18n/en/core.ts
+index 8e9bd25816..30c6ad2ff5 100644
+--- a/Mage.Web.Client/src/app/i18n/en/core.ts
++++ b/Mage.Web.Client/src/app/i18n/en/core.ts
+@@ -177,6 +177,14 @@ export default {
+   'ai.type.claude.detail': 'Our Claude player (mtg-ai). It thinks for a while on each decision; every move is recorded.',
+   'ai.type.watch': 'Claude vs Playmat AI',
+   'ai.type.watch.detail': 'Claude AI plays your selected deck against the Playmat AI, and you watch. Every move is recorded.',
++  'ai.claude.model': 'Claude model',
++  'ai.claude.effort': 'Effort',
++  'ai.claude.opus': 'Opus 5.5',
++  'ai.claude.sonnet': 'Sonnet 5.5',
++  'ai.claude.low': 'Low',
++  'ai.claude.medium': 'Medium',
++  'ai.claude.high': 'High',
++  'ai.claude.noDifficulty': 'The Claude AI has no difficulty setting: pick its model and effort below.',
+   'ai.type.standard.detail': 'The usual XMage AI.',
+   'ai.type.monteCarlo': 'Monte Carlo',
+   'ai.type.monteCarlo.detail': 'Experimental; plays by simulation and thinks longer.',
+diff --git a/Mage.Web.Client/src/app/i18n/es.ts b/Mage.Web.Client/src/app/i18n/es.ts
+index 64656b768b..e13b48baf5 100644
+--- a/Mage.Web.Client/src/app/i18n/es.ts
++++ b/Mage.Web.Client/src/app/i18n/es.ts
+@@ -182,6 +182,14 @@ const es: Catalog = {
+   'ai.type.claude.detail': 'Nuestro jugador Claude (mtg-ai). Piensa un rato en cada decisión; se graba cada jugada.',
+   'ai.type.watch': 'Claude contra la IA de Playmat',
+   'ai.type.watch.detail': 'La IA Claude juega tu mazo contra la IA de Playmat, y tú miras. Se graba cada jugada.',
++  'ai.claude.model': 'Modelo de Claude',
++  'ai.claude.effort': 'Esfuerzo',
++  'ai.claude.opus': 'Opus 5.5',
++  'ai.claude.sonnet': 'Sonnet 5.5',
++  'ai.claude.low': 'Bajo',
++  'ai.claude.medium': 'Medio',
++  'ai.claude.high': 'Alto',
++  'ai.claude.noDifficulty': 'La IA Claude no tiene dificultad: elige su modelo y esfuerzo abajo.',
+   'ai.type.standard.detail': 'La IA habitual de XMage.',
+   'ai.type.monteCarlo': 'Monte Carlo',
+   'ai.type.monteCarlo.detail': 'Experimental; juega por simulación y piensa más tiempo.',
+diff --git a/Mage.Web.Client/src/app/screens/AiSettingsDialog.tsx b/Mage.Web.Client/src/app/screens/AiSettingsDialog.tsx
+index 2195fad3e5..2cc9cd2d94 100644
+--- a/Mage.Web.Client/src/app/screens/AiSettingsDialog.tsx
++++ b/Mage.Web.Client/src/app/screens/AiSettingsDialog.tsx
+@@ -12,7 +12,7 @@ import {
+ } from '../solo/freePlay';
+ import type { GhostOpponent } from '../../protocol/generated/views';
+ import { DEFAULT_AI_OPTIONS, usePlay } from '../stores/play';
+-import { AI_TYPES, DIFFICULTIES, difficultyOf, offeredAiTypes } from './aiSetup';
++import { AI_TYPES, CLAUDE_EFFORTS, CLAUDE_MODELS, DIFFICULTIES, difficultyOf, offeredAiTypes } from './aiSetup';
+ import { useServerState } from '../queries';
+ import { Button } from '../ui/Button';
+ import { Dialog } from '../ui/Dialog';
+@@ -24,14 +24,15 @@ registerMessages(messages);
+ /** the deck menu's entry for a ghost deck; its code is asked for below the menu */
+ const GHOST_CHOICE = '__ghost__';
+ 
+-function Segmented<T extends string | number>({ label, value, options, onChange }: {
++function Segmented<T extends string | number>({ label, value, options, onChange, disabled = false }: {
+   label: string;
+   value: T;
+   options: { value: T; label: string }[];
+   onChange(value: T): void;
++  disabled?: boolean;
+ }) {
+   return (
+-    <div className={styles.segmented} role="radiogroup" aria-label={label}>
++    <div className={styles.segmented} role="radiogroup" aria-label={label} aria-disabled={disabled || undefined} style={disabled ? { opacity: 0.45, pointerEvents: 'none' } : undefined}>
+       {options.map((option) => (
+         <button
+           key={String(option.value)}
+@@ -102,8 +103,9 @@ export function AiSettingsDialog({ open, onOpenChange }: { open: boolean; onOpen
+                 value={difficulty.skill}
+                 options={DIFFICULTIES.map((item) => ({ value: item.skill, label: t(item.label) }))}
+                 onChange={(skill) => setOptions({ skill })}
++                disabled={options.aiType === 'COMPUTER_CLAUDE'}
+               />
+-              <p className={styles.detail}>{t(difficulty.detail)}</p>
++              <p className={styles.detail}>{t(options.aiType === 'COMPUTER_CLAUDE' ? 'ai.claude.noDifficulty' : difficulty.detail)}</p>
+             </>
+           )}
+           <label className={styles.check}>
+@@ -159,6 +161,20 @@ export function AiSettingsDialog({ open, onOpenChange }: { open: boolean; onOpen
+           <p className={styles.detail}>{t(AI_TYPES.find((item) => item.value === options.aiType)?.detail ?? 'ai.type.standard.detail')}</p>
+         </section>
+ 
++        {(options.aiType === 'COMPUTER_CLAUDE' || options.aiType === 'WATCH') && (
++          // mtg-ai: which Claude plays, and how hard it thinks
++          <div className={styles.pair}>
++            <section className={styles.row}>
++              <h3 className={styles.label}>{t('ai.claude.model')}</h3>
++              <Segmented label={t('ai.claude.model')} value={options.claudeModel ?? 'claude-opus-5-5'} options={CLAUDE_MODELS.map((item) => ({ value: item.value, label: t(item.label) }))} onChange={(claudeModel) => setOptions({ claudeModel })} />
++            </section>
++            <section className={styles.row}>
++              <h3 className={styles.label}>{t('ai.claude.effort')}</h3>
++              <Segmented label={t('ai.claude.effort')} value={options.claudeEffort ?? 'high'} options={CLAUDE_EFFORTS.map((item) => ({ value: item.value, label: t(item.label) }))} onChange={(claudeEffort) => setOptions({ claudeEffort })} />
++            </section>
++          </div>
++        )}
++
+         <div className={styles.pair}>
+           <section className={styles.row}>
+             <h3 className={styles.label}>{t('ai.match')}</h3>
+diff --git a/Mage.Web.Client/src/app/screens/aiSetup.ts b/Mage.Web.Client/src/app/screens/aiSetup.ts
+index 7c8073e5bf..157a4e82cb 100644
+--- a/Mage.Web.Client/src/app/screens/aiSetup.ts
++++ b/Mage.Web.Client/src/app/screens/aiSetup.ts
+@@ -1,5 +1,5 @@
+ import type { MessageKey, Translate } from '../i18n';
+-import type { AiOptions, AiType } from '../stores/play';
++import type { AiOptions, AiType, ClaudeEffort, ClaudeModel } from '../stores/play';
+ import { opponentSource } from '../solo/freePlay';
+ 
+ /** The server AI's skill (1-10) behind each difficulty. */
+@@ -34,6 +34,22 @@ export function seatableAiType(aiType: AiType, playerTypes: readonly string[] |
+   return aiType !== 'WATCH' && (!playerTypes || playerTypes.includes(aiType)) ? aiType : 'COMPUTER_MAD';
+ }
+ 
++// mtg-ai: the Claude AI's model and effort. The seat's skill carries them to the server (ClaudeSeat): model index * 3 +
++// effort index + 1, so 1-3 is Opus low/medium/high and 4-6 Sonnet
++export const CLAUDE_MODELS: { value: ClaudeModel; label: MessageKey }[] = [
++  { value: 'claude-opus-5-5', label: 'ai.claude.opus' },
++  { value: 'claude-sonnet-5-5', label: 'ai.claude.sonnet' },
++];
++export const CLAUDE_EFFORTS: { value: ClaudeEffort; label: MessageKey }[] = [
++  { value: 'low', label: 'ai.claude.low' },
++  { value: 'medium', label: 'ai.claude.medium' },
++  { value: 'high', label: 'ai.claude.high' },
++];
++
++export function claudeSkill(model: ClaudeModel, effort: ClaudeEffort) {
++  return Math.max(0, CLAUDE_MODELS.findIndex((m) => m.value === model)) * 3 + Math.max(0, CLAUDE_EFFORTS.findIndex((e) => e.value === effort)) + 1;
++}
++
+ export function difficultyOf(skill: number) {
+   return DIFFICULTIES.reduce((best, item) => (Math.abs(item.skill - skill) < Math.abs(best.skill - skill) ? item : best));
+ }
+@@ -55,7 +71,8 @@ export function aiDeckLabel(t: Translate, options: AiOptions, rosterName: string
+ export function describeAi(t: Translate, options: AiOptions, deckName: string | null, adaptiveLabel?: string): string {
+   const difficulty = options.adaptive && adaptiveLabel ? adaptiveLabel : t(difficultyOf(options.skill).label);
+   // mtg-ai: name the opponent when it isn't the standard AI
+-  const who = options.aiType === 'COMPUTER_CLAUDE' ? t('ai.type.claude') : options.aiType === 'WATCH' ? t('ai.type.watch') : null;
++  const claude = `${t(CLAUDE_MODELS.find((m) => m.value === options.claudeModel)?.label ?? 'ai.claude.opus')} ${options.claudeEffort}`;
++  const who = options.aiType === 'COMPUTER_CLAUDE' ? `${t('ai.type.claude')} (${claude})` : options.aiType === 'WATCH' ? `${t('ai.type.watch')} (${claude})` : null;
+   const parts = [
+     who ?? (options.opponents > 1 ? t('ai.summary.many', { count: options.opponents, difficulty }) : t('ai.summary.one', { difficulty })),
+     deckName ?? t(options.rules === 'deck' ? 'ai.summary.metaDeck' : 'ai.summary.randomDeck'),
+diff --git a/Mage.Web.Client/src/app/stores/play.ts b/Mage.Web.Client/src/app/stores/play.ts
+index bfcd7dfc3e..7c4e28b6a5 100644
+--- a/Mage.Web.Client/src/app/stores/play.ts
++++ b/Mage.Web.Client/src/app/stores/play.ts
+@@ -9,7 +9,7 @@ import { deckStorage } from '../../core/decks/DeckStorageService';
+ import { toWire } from '../decks/deckModel';
+ import type { DeckCardLists as WireDeck, GameTypeView, ServerState } from '../../protocol/generated/views';
+ import { queryClient } from '../queries';
+-import { seatableAiType } from '../screens/aiSetup';
++import { claudeSkill, seatableAiType } from '../screens/aiSetup';
+ import type { DeckCardLists } from '../../core/decks/types';
+ import { formatRules, gameTypesFor, isCommanderFormat } from '../../core/decks/formats';
+ import { pickMetaDeck } from '../../core/decks/metaDecks';
+@@ -28,6 +28,8 @@ export type PlayPhase = 'idle' | 'starting' | 'waitingForGame';
+ 
+ /** 'WATCH' (mtg-ai): Claude AI plays the chosen deck against the standard AI while the player watches */
+ export type AiType = 'COMPUTER_MAD' | 'COMPUTER_MONTE_CARLO' | 'COMPUTER_CLAUDE' | 'WATCH';
++export type ClaudeModel = 'claude-opus-5-5' | 'claude-sonnet-5-5';
++export type ClaudeEffort = 'low' | 'medium' | 'high';
+ 
+ export interface AiOptions {
+   /** server AI strength, 1-10 */
+@@ -42,6 +44,9 @@ export interface AiOptions {
+   /** the AI's skill follows the player's results (S049) instead of `skill` */
+   adaptive: boolean;
+   aiType: AiType;
++  /** mtg-ai: the Claude AI's model and effort (Claude AI and Claude vs Playmat AI) */
++  claudeModel: ClaudeModel;
++  claudeEffort: ClaudeEffort;
+   /** games needed to win the match: 1 (best of one) or 2 (best of three) */
+   winsNeeded: 1 | 2;
+   /** null: the format's own (20, or 40 in Commander) */
+@@ -63,6 +68,8 @@ export const DEFAULT_AI_OPTIONS: AiOptions = {
+   opponentLabel: null,
+   adaptive: false,
+   aiType: 'COMPUTER_MAD',
++  claudeModel: 'claude-opus-5-5',
++  claudeEffort: 'high',
+   winsNeeded: 1,
+   startingLife: null,
+   rules: 'casual',
+@@ -114,9 +121,10 @@ const metaDeck = (file: string, name: string) => deckFile(`/meta-decks/${encodeU
+ /**
+  * Decks for the AI seats: the one picked in the AI settings for the first seat, then, for a game played in a format,
+  * that format's decks (the most played ones more often); otherwise, or when they run out, random starter decks of the
+- * same kind (commander or not). Never the same deck twice while there are others.
++ * same kind (commander or not). Never the same deck twice while there are others. `good` (mtg-ai, the Claude AI): random
++ * decks come from the good DSK pool (dsk-good-*), whatever the rules.
+  */
+-export async function aiDecks(chosenId: string | null, count: number, commander: boolean, format: string | null = null, avoid: string | null = null): Promise<DeckCardLists[]> {
++export async function aiDecks(chosenId: string | null, count: number, commander: boolean, format: string | null = null, avoid: string | null = null, good = false): Promise<DeckCardLists[]> {
+   const decks: DeckCardLists[] = [];
+   if (chosenId && !chosenId.startsWith(STARTER_PREFIX) && !chosenId.startsWith(META_PREFIX)) {
+     const saved = await deckStorage.loadDeck(chosenId);
+@@ -132,14 +140,14 @@ export async function aiDecks(chosenId: string | null, count: number, commander:
+   }
+   const matching = starters.filter((starter) => isCommanderFormat(starter.format) === commander);
+   // mtg-ai: a server with DSK decks (dsk-*.dck) deals the AI one of them
+-  const dsk = matching.filter((starter) => starter.file.startsWith('dsk-'));
++  const dsk = matching.filter((starter) => starter.file.startsWith(good && matching.some((s) => s.file.startsWith('dsk-good-')) ? 'dsk-good-' : 'dsk-'));
+   const fitting = !commander && dsk.length > 0 ? dsk : matching;
+   const chosenFile = chosenId?.startsWith(STARTER_PREFIX) ? chosenId.slice(STARTER_PREFIX.length) : null;
+   const chosen = fitting.find((starter) => starter.file === chosenFile);
+   if (decks.length === 0 && chosen) decks.push(await starterDeck(chosen.file, chosen.name));
+   const pool = fitting.filter((starter) => starter !== chosen);
+   while (decks.length < count) {
+-    const meta = format ? pickMetaDeck(metaDecks, format, taken) : null;
++    const meta = format && !good ? pickMetaDeck(metaDecks, format, taken) : null;
+     if (meta) {
+       taken.add(meta.file);
+       decks.push(await metaDeck(meta.file, meta.name));
+@@ -238,9 +246,11 @@ export const usePlay = create<PlayState>((set, get) => ({
+       const source: OpponentSource = practice ? { kind: 'roster', id: null } : opponentSource(options.opponentDeckId);
+       const sourced = practice ? null : await sourceDeck(source, playerDeck, deck.name, commander);
+       const format = options.rules === 'deck' ? deckType : null;
++      // mtg-ai: the Claude AI's random deck is always a good-pool DSK deck
++      const claudeRival = !watch && seatableAiType(options.aiType, queryClient.getQueryData<ServerState>(['serverState'])?.playerTypes) === 'COMPUTER_CLAUDE';
+       const rivalDecks: WireDeck[] = practice
+         ? [toWire(goldfishDeck(commander))]
+-        : [...(sourced ? [sourced] : []), ...(await aiDecks(source.kind === 'roster' ? source.id : null, opponents - (sourced ? 1 : 0), commander, format, meta?.file ?? null)).map(toWire)];
++        : [...(sourced ? [sourced] : []), ...(await aiDecks(source.kind === 'roster' ? source.id : null, opponents - (sourced ? 1 : 0), commander, format, meta?.file ?? null, claudeRival)).map(toWire)];
+       // adaptive: the AI plays at the skill the player's recent results call for
+       const adaptiveFormat = !practice && options.adaptive ? adaptiveFormatFor(commander) : null;
+       const skill = adaptiveFormat ? adaptiveSkill((await api.soloAdaptive(adaptiveFormat).catch(() => null))?.skill, options.skill) : options.skill;
+@@ -279,7 +289,7 @@ export const usePlay = create<PlayState>((set, get) => ({
+       if (mark) await api.soloTableMark(tableId, ...mark).catch(() => false);
+       if (watch) {
+         // mtg-ai: Claude plays the chosen deck; the player takes no seat and watches once the game is on
+-        if (!await api.roomJoinTable(roomId, tableId, 'Claude AI', 'COMPUTER_CLAUDE', 1, playerDeck)) {
++        if (!await api.roomJoinTable(roomId, tableId, 'Claude AI', 'COMPUTER_CLAUDE', claudeSkill(options.claudeModel, options.claudeEffort), playerDeck)) {
+           throw new Error('The Claude AI could not take its seat. Is the Claude service running?');
+         }
+       } else if (!await api.roomJoinTable(roomId, tableId, userName, 'HUMAN', 1, playerDeck)) {
+@@ -288,7 +298,7 @@ export const usePlay = create<PlayState>((set, get) => ({
+       for (const [index, rival] of rivals.entries()) {
+         const seatType = watch ? 'COMPUTER_MAD' : seatableAiType(options.aiType, queryClient.getQueryData<ServerState>(['serverState'])?.playerTypes);
+         const name = practice ? 'Goldfish' : watch ? 'Playmat AI' : seatType === 'COMPUTER_CLAUDE' ? 'Claude AI' : rivals.length === 1 ? 'AI Opponent' : `AI ${index + 1}`;
+-        if (!await api.roomJoinTable(roomId, tableId, name, seatType, skill, rival)) {
++        if (!await api.roomJoinTable(roomId, tableId, name, seatType, seatType === 'COMPUTER_CLAUDE' ? claudeSkill(options.claudeModel, options.claudeEffort) : skill, rival)) {
+           throw new Error(seatType === 'COMPUTER_CLAUDE' ? 'The Claude AI could not take its seat. Is the Claude service running?' : 'The AI could not take its seat.');
+         }
+       }
