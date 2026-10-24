@@ -347,4 +347,12 @@ public class RecordedHuman extends HumanPlayer {
             if (p instanceof RecordedHuman) ((RecordedHuman) p).flushBlocks(game, true);
         }
     }
+
+    /** The deck's name as the web client sent it (for the AI, how its deck was matched to the player's) goes to config.json. */
+    @Override
+    public void useDeck(mage.cards.decks.Deck deck, Game game) {
+        super.useDeck(deck, game);
+        GameRecorder r = GameRecorder.find(game);
+        if (r != null && !game.isSimulation()) r.setSeatInfo(r.seat(playerId), "deck_name", String.valueOf(deck.getName()));  // how the web client picked it
+    }
 }

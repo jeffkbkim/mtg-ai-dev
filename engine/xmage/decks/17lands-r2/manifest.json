@@ -62,6 +62,48 @@
     "The Jolly Balloon Man": 1,
     "Turn Inside Out": 1,
     "Vicious Clown": 1
+   },
+   "deck_score": 0.55088,
+   "tier": 1,
+   "review": {
+    "archetype": "RG aggro (W splash)",
+    "coherent": true,
+    "concerns": [
+     "mana",
+     "splash",
+     "filler",
+     "delirium"
+    ],
+    "rating": 3,
+    "verdict": "A solid red aggro core with good burn (Dragonfire, Chainsaw, Beastie Beatdown, Emergence) and strong tops in Razorkin and Fear of Burning Alive. But the mana runs backwards: 7 Forest to 5 Mountain in a red-heavy deck with RR at the top. The white splash for Jolly Balloon Man isn't worth it, and filler like Peer Past the Veil, Norin and the double Anthropede keeps it from rising above average."
+   },
+   "stats": {
+    "curve": [
+     3,
+     11,
+     4,
+     4,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 3,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Chainsaw",
+     "Fear of Burning Alive",
+     "Monstrous Emergence",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.65738,
+    "red_flags": []
    }
   },
   {
@@ -98,6 +140,48 @@
     "Vanish from Sight": 1,
     "Wary Watchdog": 1,
     "Wickerfolk Thresher": 1
+   },
+   "deck_score": 0.56333,
+   "tier": 1,
+   "review": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "threat density"
+    ],
+    "rating": 3,
+    "verdict": "A playable UG manifest deck. Manifest Dread effects, Valgavoth's Onslaught and three Bashful Beasties pad out a thin 10-creature count, but two Say Its Name without Altanak, two Insidious Fungus and Moldering Gym are weak slots, and the removal is light and mostly tempo-based."
+   },
+   "stats": {
+    "curve": [
+     3,
+     8,
+     6,
+     3,
+     3,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 2,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Monstrous Emergence",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "deck_score_top": 0.66792,
+    "red_flags": []
    }
   },
   {
@@ -137,6 +221,49 @@
     "Shrewd Storyteller": 2,
     "Slavering Branchsnapper": 1,
     "Surgical Suite // Hospital Room": 1
+   },
+   "deck_score": 0.53863,
+   "tier": 1,
+   "review": {
+    "archetype": "GW survivors aggro",
+    "coherent": true,
+    "concerns": [
+     "filler",
+     "top-end",
+     "card quality"
+    ],
+    "rating": 3,
+    "verdict": "A solid, low-curve GW attacking deck. Shrewd Storyteller, Lionheart Glimmer, Baseball Bat and Seized from Slumber pull their weight, but Marvin, Overgrown Zealot, Found Footage and Possessed Goat are filler that lowers its ceiling."
+   },
+   "stats": {
+    "curve": [
+     4,
+     8,
+     7,
+     1,
+     3,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "noncreature_spells": 8,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 3,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Bear Trap",
+     "Monstrous Emergence",
+     "Seized from Slumber"
+    ],
+    "soft_removal_cards": [
+     "Baseball Bat"
+    ],
+    "archetype_wr": 0.5269779659031972,
+    "deck_score_top": 0.64847,
+    "red_flags": [
+     "weak archetype WG 52.7%"
+    ]
    }
   },
   {
@@ -177,6 +304,43 @@
     "Untimely Malfunction": 1,
     "Vengeful Possession": 1,
     "Vicious Clown": 1
+   },
+   "deck_score": 0.56197,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro (low-power go-wide)",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "filler tricks",
+     "few creatures"
+    ],
+    "rating": 3,
+    "verdict": "A coherent low-curve RW attack deck. The Wandering Rescuer, Lionheart Glimmer and Arabella give it real top-end and payoff, and the tokens and manifest dread pad a thin 13-creature count. But with Glassworks as the only real removal, plus weak filler like Vengeful Possession, Jump Scare, Turn Inside Out and a delirium-less Hand That Feeds, it has to win by racing and can stall against bigger boards."
+   },
+   "stats": {
+    "curve": [
+     3,
+     12,
+     4,
+     3,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 11,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 1,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Glassworks // Shattered Yard"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.66906,
+    "red_flags": []
    }
   },
   {
@@ -216,6 +380,45 @@
     "Splitskin Doll": 1,
     "Unidentified Hovership": 1,
     "Vengeful Possession": 1
+   },
+   "deck_score": 0.56119,
+   "tier": 1,
+   "review": {
+    "archetype": "RW low-power aggro",
+    "coherent": true,
+    "concerns": [
+     "card quality",
+     "removal",
+     "low top end"
+    ],
+    "rating": 3,
+    "verdict": "A focused, low-curve RW aggro deck with good synergy pieces (Arabella, Midnight Mayhem, Hovership, Playmates), but a few weak fillers like Percussionists and Jump Scares, and light removal keep it at a solid but unspectacular level."
+   },
+   "stats": {
+    "curve": [
+     6,
+     8,
+     5,
+     4,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "noncreature_spells": 8,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 3,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Scorching Dragonfire",
+     "Seized from Slumber",
+     "Unidentified Hovership"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67007,
+    "red_flags": []
    }
   },
   {
@@ -256,6 +459,51 @@
     "Tunnel Surveyor": 1,
     "Valgavoth's Faithful": 1,
     "Withering Torment": 1
+   },
+   "deck_score": 0.5462,
+   "tier": 1,
+   "review": {
+    "archetype": "UB eerie control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "blue mana",
+     "filler"
+    ],
+    "rating": 4,
+    "verdict": "Strong UB deck: Murder, Withering Torment, Nowhere to Run, Sporogenic Infection, Drowner, Meat Locker and Miasma Demon give plenty of interaction, and Enduring Curiosity and Mindskinner are standout threats; the main drags are UUU/UU costs on only nine blue sources, a thin creature count, and weak filler like Ghost Vacuum and Valgavoth's Faithful."
+   },
+   "stats": {
+    "curve": [
+     3,
+     8,
+     8,
+     2,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Murder",
+     "Nowhere to Run",
+     "Sporogenic Infection",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Meat Locker // Drowned Diner"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "deck_score_top": 0.66134,
+    "red_flags": [
+     "weak archetype UB 51.6%"
+    ]
    }
   },
   {
@@ -298,6 +546,52 @@
     "Vanish from Sight": 1,
     "Vile Mutilator": 1,
     "Withering Torment": 1
+   },
+   "deck_score": 0.54568,
+   "tier": 1,
+   "review": {
+    "archetype": "UB control splashing red removal",
+    "coherent": true,
+    "concerns": [
+     "colors",
+     "mana",
+     "early game",
+     "top-heavy"
+    ],
+    "rating": 3,
+    "verdict": "A solid removal and card-advantage core (2 Glassworks, Withering Torment, Rollercrusher, Mutilator, Enduring Curiosity) with good cycling fat, but the red is a real third color rather than a light splash, which strains a base with many UU and BB costs, and the early board is thin, with Pyroclasm hitting your own small creatures."
+   },
+   "stats": {
+    "curve": [
+     1,
+     4,
+     7,
+     4,
+     2,
+     5
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "The Rollercrusher Ride",
+     "Vanish from Sight",
+     "Vile Mutilator",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.49213406292749656,
+    "deck_score_top": 0.65531,
+    "red_flags": [
+     "4 two-drops",
+     "5 cards at 6+",
+     "weak archetype UBR 49.2%"
+    ]
    }
   },
   {
@@ -339,6 +633,52 @@
     "Terramorphic Expanse": 2,
     "The Swarmweaver": 1,
     "Winter's Intervention": 2
+   },
+   "deck_score": 0.56473,
+   "tier": 1,
+   "review": {
+    "archetype": "BG delirium splash R",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "RR splash"
+    ],
+    "rating": 4,
+    "verdict": "Deep removal and strong BG delirium payoffs (Balemurk, Swarmweaver, Drag to the Roots) make this a strong control deck, but 12 creatures is thin and Boilerbilges' RR on roughly five red sources is greedy."
+   },
+   "stats": {
+    "curve": [
+     5,
+     4,
+     5,
+     4,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 4,
+    "removal": 10,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Coordinated Clobbering",
+     "Drag to the Roots",
+     "Fear of Lost Teeth",
+     "Final Vengeance",
+     "Impossible Inferno",
+     "Overlord of the Boilerbilges",
+     "Scorching Dragonfire",
+     "Sporogenic Infection",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.66924,
+    "red_flags": [
+     "4 two-drops"
+    ]
    }
   },
   {
@@ -373,6 +713,51 @@
     "Stalked Researcher": 1,
     "Unable to Scream": 1,
     "Underwater Tunnel // Slimy Aquarium": 2
+   },
+   "deck_score": 0.54003,
+   "tier": 1,
+   "review": {
+    "archetype": "UR Rooms/eerie control",
+    "coherent": true,
+    "concerns": [
+     "mana split",
+     "few threats",
+     "weak creatures"
+    ],
+    "rating": 3,
+    "verdict": "A real Rooms deck: three Meat Lockers, two Glassworks and Dragonfire give plenty of interaction, and the eerie payoffs reward the plan. But blue is clearly the main color and the land split runs backwards (8 Mountain, 7 Island), and filler like the Skullcrabs and the defender Researcher leaves it short on ways to actually close games."
+   },
+   "stats": {
+    "curve": [
+     6,
+     6,
+     9,
+     2,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 5,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Infernal Phantom",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.6496,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -417,6 +802,50 @@
     "Unable to Scream": 1,
     "Unholy Annex // Ritual Chamber": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.54824,
+   "tier": 1,
+   "review": {
+    "archetype": "WB rooms/eerie, splash U",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "removal",
+     "splash",
+     "durdly reanimation"
+    ],
+    "rating": 2,
+    "verdict": "There are real payoffs in Unholy Annex, Enduring Tenacity and Ghostly Dancers, but with only 12 creatures, thin removal, two clunky Emerge from the Cocoons with few good targets, and a UU Megalodon off one Island, it feels more like a pile of slow value than a focused deck."
+   },
+   "stats": {
+    "curve": [
+     4,
+     7,
+     4,
+     3,
+     3,
+     4
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 13,
+    "lands": 15,
+    "fixing_lands": 5,
+    "removal": 2,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Come Back Wrong",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5232467844183716,
+    "deck_score_top": 0.65915,
+    "red_flags": [
+     "15 lands",
+     "weak archetype WB 52.3%"
+    ]
    }
   },
   {
@@ -458,6 +887,52 @@
     "Unable to Scream": 2,
     "Underwater Tunnel // Slimy Aquarium": 3,
     "Wary Watchdog": 1
+   },
+   "deck_score": 0.56112,
+   "tier": 1,
+   "review": {
+    "archetype": "UG manifest/delirium splashing red",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "colors",
+     "splash",
+     "card quality",
+     "threats"
+    ],
+    "rating": 2,
+    "verdict": "Only 9 real creatures backed by three Underwater Tunnels and filler. The 4-card red splash runs on a single Mountain plus fixing. It has some removal (Unable to Scream x2, Glassworks, Inferno, Rollercrusher) but too few threats to close games."
+   },
+   "stats": {
+    "curve": [
+     5,
+     7,
+     8,
+     2,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 3,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Impossible Inferno",
+     "The Rollercrusher Ride"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5244383028814167,
+    "deck_score_top": 0.66786,
+    "red_flags": [
+     "weak archetype URG 52.4%"
+    ]
    }
   },
   {
@@ -496,6 +971,48 @@
     "Underwater Tunnel // Slimy Aquarium": 2,
     "Unwilling Vessel": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.56514,
+   "tier": 1,
+   "review": {
+    "archetype": "UR rooms/eerie",
+    "coherent": true,
+    "concerns": [
+     "black splash",
+     "red sources"
+    ],
+    "rating": 4,
+    "verdict": "A focused UR enchantment deck with three Glassworks and other solid removal plus eerie payoffs; the black splash for Fear of Infinity has one source and should be cut for an on-color card."
+   },
+   "stats": {
+    "curve": [
+     2,
+     8,
+     9,
+     2,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Fear of Burning Alive",
+     "Glassworks // Shattered Yard",
+     "Roaring Furnace // Steaming Sauna",
+     "Scorching Dragonfire",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.67278,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -535,6 +1052,50 @@
     "Trapped in the Screen": 1,
     "Turn Inside Out": 1,
     "Unsettling Twins": 1
+   },
+   "deck_score": 0.56374,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler tricks",
+     "two-drops"
+    ],
+    "rating": 3,
+    "verdict": "Solid RW deck with strong removal (Dragonfire, Bargain, Glassworks, Trapped in the Screen, Overlord) and good top end. It's held back by only 13 creatures and several low-impact one-mana tricks, which leave the aggro curve thin and Arabella underpowered."
+   },
+   "stats": {
+    "curve": [
+     4,
+     8,
+     3,
+     5,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 6,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Exorcise",
+     "Glassworks // Shattered Yard",
+     "Overlord of the Boilerbilges",
+     "Scorching Dragonfire",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.66723,
+    "red_flags": []
    }
   },
   {
@@ -574,6 +1135,50 @@
     "Underwater Tunnel // Slimy Aquarium": 2,
     "Unholy Annex // Ritual Chamber": 1,
     "Withering Torment": 1
+   },
+   "deck_score": 0.55989,
+   "tier": 1,
+   "review": {
+    "archetype": "UB eerie/enchantments",
+    "coherent": true,
+    "concerns": [
+     "small creatures",
+     "filler",
+     "top end"
+    ],
+    "rating": 4,
+    "verdict": "A focused UB eerie deck with real payoffs (Entity Tracker, Skullsnap Nuisance, Balemurk Leech, recursive Fear of Infinity) and solid removal (Withering Torment, Come Back Wrong, 2x Nowhere to Run, Unable to Scream, Meat Locker). Enduring Curiosity and Unholy Annex give it strong power cards, and the Room second halves cover the late game for a low curve. The bodies are small and the two Paranormal Analysts are weak with so few manifest effects, but it's a good deck overall."
+   },
+   "stats": {
+    "curve": [
+     3,
+     8,
+     9,
+     1,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 4,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Come Back Wrong",
+     "Nowhere to Run",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "deck_score_top": 0.67273,
+    "red_flags": [
+     "weak archetype UB 51.6%"
+    ]
    }
   },
   {
@@ -612,6 +1217,52 @@
     "Valgavoth, Terror Eater": 1,
     "Vile Mutilator": 1,
     "Withering Torment": 1
+   },
+   "deck_score": 0.55377,
+   "tier": 1,
+   "review": {
+    "archetype": "WB removal control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "curve",
+     "top-heavy"
+    ],
+    "rating": 3,
+    "verdict": "Loaded with premium removal (2 Murder, Hoverships, Trapped in the Screen, Withering Torment, Vile Mutilator) and a strong top end in Valgavoth, but only 11 creatures and a clumped 3-drop slot with weak bodies make it a grindy control deck that can struggle to close or crew."
+   },
+   "stats": {
+    "curve": [
+     2,
+     4,
+     12,
+     0,
+     2,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 9,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Come Back Wrong",
+     "Final Vengeance",
+     "Murder",
+     "Trapped in the Screen",
+     "Unidentified Hovership",
+     "Vile Mutilator",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "deck_score_top": 0.66535,
+    "red_flags": [
+     "4 two-drops",
+     "weak archetype WB 52.3%"
+    ]
    }
   },
   {
@@ -650,6 +1301,50 @@
     "Unable to Scream": 1,
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Vanish from Sight": 2
+   },
+   "deck_score": 0.56986,
+   "tier": 1,
+   "review": {
+    "archetype": "WU enchantments/Glimmers",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "threat density"
+    ],
+    "rating": 3,
+    "verdict": "A synergistic WU enchantment deck. Gremlin Tamer, Rooms and Glimmer makers work together, and Fear of Impostors, Drowner, Unable to Scream and Fear of Falling give it real quality. But only 11 real creatures, three Glimmerlights and a thin top end make it a fine deck, not a strong one."
+   },
+   "stats": {
+    "curve": [
+     3,
+     13,
+     4,
+     2,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 3,
+    "soft_removal": 5,
+    "removal_cards": [
+     "Fear of Falling",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Floodpits Drowner",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67787,
+    "red_flags": []
    }
   },
   {
@@ -691,6 +1386,50 @@
     "Vengeful Possession": 1,
     "Violent Urge": 1,
     "Winter's Intervention": 1
+   },
+   "deck_score": 0.55086,
+   "tier": 1,
+   "review": {
+    "archetype": "BR sacrifice/removal midrange",
+    "coherent": true,
+    "concerns": [
+     "thin 3-drops",
+     "weak filler creatures",
+     "Pyroclasm anti-synergy",
+     "Valgavoth cost"
+    ],
+    "rating": 3,
+    "verdict": "Deep, high-quality removal plus Overlord and Fear of Burning Alive carry a solid BR deck, but filler like Norin and Ragged Playmate, few 3-drops, a 9-drop and a Pyroclasm that hits your own small creatures cap it at fine."
+   },
+   "stats": {
+    "curve": [
+     4,
+     9,
+     2,
+     5,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 9,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Fear of Burning Alive",
+     "Fear of Lost Teeth",
+     "Final Vengeance",
+     "Scorching Dragonfire",
+     "Sporogenic Infection",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5497882348930948,
+    "deck_score_top": 0.66067,
+    "red_flags": []
    }
   },
   {
@@ -730,6 +1469,53 @@
     "Valgavoth, Terror Eater": 1,
     "Victor, Valgavoth's Seneschal": 1,
     "Vile Mutilator": 1
+   },
+   "deck_score": 0.55197,
+   "tier": 1,
+   "review": {
+    "archetype": "WB control/reanimator",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "top-heavy",
+     "sac costs",
+     "early game"
+    ],
+    "rating": 3,
+    "verdict": "Removal and bombs are excellent: Valgavoth, Shroudstomper, Unholy Annex, Fear of Abduction, two Live or Die and Split Up. But 12 creatures, three sacrifice-cost cards and five 6+ drops make it clunky and vulnerable to fast starts."
+   },
+   "stats": {
+    "curve": [
+     4,
+     5,
+     4,
+     1,
+     4,
+     5
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 8,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Come Back Wrong",
+     "Fear of Abduction",
+     "Final Vengeance",
+     "Live or Die",
+     "Seized from Slumber",
+     "Split Up",
+     "Vile Mutilator"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "deck_score_top": 0.66659,
+    "red_flags": [
+     "5 cards at 6+",
+     "weak archetype WB 52.3%"
+    ]
    }
   },
   {
@@ -766,6 +1552,49 @@
     "Swamp": 8,
     "Trapped in the Screen": 1,
     "Vile Mutilator": 1
+   },
+   "deck_score": 0.54446,
+   "tier": 1,
+   "review": {
+    "archetype": "WB midrange/control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "top-heavy",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "Solid removal (3 Seized, Trapped, Bear Trap) and two bomb-ish Shroudstompers plus Vile Mutilator carry a deck whose creature count is low and whose early filler (Teddies, Found Footage, Ethereal Armor) is weak; fine but clunky."
+   },
+   "stats": {
+    "curve": [
+     3,
+     3,
+     6,
+     4,
+     4,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Bear Trap",
+     "Seized from Slumber",
+     "Trapped in the Screen",
+     "Vile Mutilator"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "deck_score_top": 0.65501,
+    "red_flags": [
+     "3 two-drops",
+     "weak archetype WB 52.3%"
+    ]
    }
   },
   {
@@ -805,6 +1634,52 @@
     "Unstoppable Slasher": 2,
     "Valgavoth's Lair": 1,
     "Winter's Intervention": 1
+   },
+   "deck_score": 0.55923,
+   "tier": 1,
+   "review": {
+    "archetype": "BG midrange with a white splash",
+    "coherent": false,
+    "concerns": [
+     "colors",
+     "mana",
+     "few creatures",
+     "filler"
+    ],
+    "rating": 2,
+    "verdict": "The BG core is solid, with Murder, 2 Drag to the Roots, 2 Unstoppable Slasher, Tyvar and good removal overall. But the deck dilutes it with heavy white cards (Shepherding Spirits WW, Dollmaker's Shop, Baseball Bat, 2 weak Emerge from the Cocoon) on 2 Plains and no fixing, which leaves only 12 creatures and an inconsistent mana base. It should cut white for more BG bodies."
+   },
+   "stats": {
+    "curve": [
+     2,
+     5,
+     6,
+     3,
+     4,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 5,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Coordinated Clobbering",
+     "Drag to the Roots",
+     "Murder",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [
+     "Baseball Bat"
+    ],
+    "archetype_wr": 0.5176401793255799,
+    "deck_score_top": 0.66845,
+    "red_flags": [
+     "3 main colors, 0 fixing lands",
+     "weak archetype WBG 51.8%"
+    ]
    }
   },
   {
@@ -842,6 +1717,47 @@
     "Turn Inside Out": 1,
     "Veteran Survivor": 1,
     "Violent Urge": 2
+   },
+   "deck_score": 0.56356,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "tricks",
+     "flood",
+     "card quality"
+    ],
+    "rating": 3,
+    "verdict": "A focused low-curve RW go-wide deck with good payoffs like Midnight Mayhem, Orphans and Most Valuable Slayer, but it has thin removal, too many low-impact tricks and 1-drops, and runs 17 lands where 16 would suit a curve this low."
+   },
+   "stats": {
+    "curve": [
+     7,
+     10,
+     2,
+     3,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 2,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Impossible Inferno",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [
+     "Fear of Missing Out"
+    ],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67229,
+    "red_flags": []
    }
   },
   {
@@ -881,6 +1797,49 @@
     "Surgical Suite // Hospital Room": 3,
     "Trapped in the Screen": 1,
     "Veteran Survivor": 1
+   },
+   "deck_score": 0.54866,
+   "tier": 1,
+   "review": {
+    "archetype": "WG survivors aggro",
+    "coherent": true,
+    "concerns": [
+     "weak one-drops",
+     "Patchwork Beastie",
+     "too many Surgical Suites",
+     "light removal",
+     "low power"
+    ],
+    "rating": 2,
+    "verdict": "The low-curve WG survivors plan is coherent, but filler drags it down: Beastie can rarely reach delirium, the Goats are weak, three Surgical Suites is too many, and only three removal spells leave the deck underpowered."
+   },
+   "stats": {
+    "curve": [
+     6,
+     8,
+     5,
+     3,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 3,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Coordinated Clobbering",
+     "Sheltered by Ghosts",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5269779659031972,
+    "deck_score_top": 0.6633,
+    "red_flags": [
+     "weak archetype WG 52.7%"
+    ]
    }
   },
   {
@@ -914,6 +1873,44 @@
     "Valgavoth's Onslaught": 1,
     "Wary Watchdog": 1,
     "Wildfire Wickerfolk": 1
+   },
+   "deck_score": 0.55548,
+   "tier": 1,
+   "review": {
+    "archetype": "RG manifest dread midrange",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "top end",
+     "card quality"
+    ],
+    "rating": 3,
+    "verdict": "A coherent manifest shell with three Cryptid Inspectors and plenty of dread enablers that add bodies, but interaction is thin (essentially Beastie Beatdown) and the low-impact top end leaves it relying on grinding value rather than real power."
+   },
+   "stats": {
+    "curve": [
+     1,
+     9,
+     8,
+     3,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 2,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Infernal Phantom"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66156,
+    "red_flags": []
    }
   },
   {
@@ -947,6 +1944,48 @@
     "Splitskin Doll": 3,
     "Tunnel Surveyor": 1,
     "Unwilling Vessel": 3
+   },
+   "deck_score": 0.57191,
+   "tier": 1,
+   "review": {
+    "archetype": "WU enchantments/eerie",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "top end",
+     "threat density"
+    ],
+    "rating": 3,
+    "verdict": "A synergistic WU eerie deck: Unwilling Vessels, Glimmers and Rooms work together, and Sheltered by Ghosts, Exorcise and Meat Locker give it solid interaction. It is thin on real threats and bodies, though, so it can run out of pressure in long games."
+   },
+   "stats": {
+    "curve": [
+     4,
+     13,
+     5,
+     2,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 14,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 5,
+    "removal_cards": [
+     "Exorcise",
+     "Sheltered by Ghosts"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Get Out",
+     "Meat Locker // Drowned Diner"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67999,
+    "red_flags": []
    }
   },
   {
@@ -984,6 +2023,49 @@
     "Swamp": 8,
     "Wary Watchdog": 1,
     "Winter's Intervention": 1
+   },
+   "deck_score": 0.54644,
+   "tier": 1,
+   "review": {
+    "archetype": "BG removal-heavy midrange",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "lands",
+     "mana value 4 gap",
+     "BBBB Meathook"
+    ],
+    "rating": 4,
+    "verdict": "Deep, efficient removal (Nowhere to Run x2, Drag to the Roots x2, Live or Die, Sporogenic Infection, Miasma Demon) carries a thin, low-impact creature base; 16 lands is slightly greedy for a 7-drop and Meathook, and one Say Its Name is filler, but this deck grinds out most opponents."
+   },
+   "stats": {
+    "curve": [
+     0,
+     11,
+     5,
+     3,
+     1,
+     4
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 11,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 8,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Drag to the Roots",
+     "Live or Die",
+     "Meathook Massacre II",
+     "Nowhere to Run",
+     "Sporogenic Infection",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.66057,
+    "red_flags": []
    }
   },
   {
@@ -1023,6 +2105,48 @@
     "Unnerving Grasp": 2,
     "Vanish from Sight": 1,
     "Wary Watchdog": 1
+   },
+   "deck_score": 0.56251,
+   "tier": 1,
+   "review": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "removal"
+    ],
+    "rating": 3,
+    "verdict": "A solid UG manifest shell: Growing Dread, Bookworm and the Unnerving Grasps make up for the low creature count, and the two landcyclers smooth the mana, but Cathartic Parting and Horrid Vigor are weak slots and the removal is thin."
+   },
+   "stats": {
+    "curve": [
+     2,
+     9,
+     5,
+     2,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 2,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Monstrous Emergence",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "deck_score_top": 0.66981,
+    "red_flags": []
    }
   },
   {
@@ -1062,6 +2186,52 @@
     "Unable to Scream": 1,
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.56618,
+   "tier": 1,
+   "review": {
+    "archetype": "UR rooms tempo",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "card quality",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A playable UR rooms deck with good removal (Dragonfire, Bargain, Vanish, Unable to Scream) and solid payoffs in Fear of Falling and Hordecaller, but only 10 real creatures plus a lot of low-impact rooms and filler make the board presence thin."
+   },
+   "stats": {
+    "curve": [
+     4,
+     10,
+     3,
+     3,
+     3,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 4,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Fear of Falling",
+     "Scorching Dragonfire",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Get Out",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.66969,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -1103,6 +2273,50 @@
     "Trial of Agony": 1,
     "Unsettling Twins": 1,
     "Unwanted Remake": 1
+   },
+   "deck_score": 0.55251,
+   "tier": 1,
+   "review": {
+    "archetype": "RW midrange",
+    "coherent": false,
+    "concerns": [
+     "pointless splash",
+     "lands",
+     "few creatures",
+     "3-drops"
+    ],
+    "rating": 2,
+    "verdict": "The removal is solid: Unwanted Remake, 2x Seized from Slumber, Trial of Agony and 2x Fear of Immobility. But the 2 Islands only serve Steaming Sauna, a late-game door, and they weaken a white-heavy mana base. Only 12 creatures and two 3-drops leave the curve thin, and filler like Ethereal Armor and Shardmage's Rescue drags it down."
+   },
+   "stats": {
+    "curve": [
+     5,
+     5,
+     2,
+     4,
+     5,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 6,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Boilerbilges Ripper",
+     "Infernal Phantom",
+     "Roaring Furnace // Steaming Sauna",
+     "Seized from Slumber",
+     "Unwanted Remake"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.66461,
+    "red_flags": []
    }
   },
   {
@@ -1139,6 +2353,47 @@
     "Trapped in the Screen": 2,
     "Unsettling Twins": 2,
     "Valgavoth's Onslaught": 1
+   },
+   "deck_score": 0.55477,
+   "tier": 1,
+   "review": {
+    "archetype": "WG survivors/manifest",
+    "coherent": true,
+    "concerns": [
+     "top end",
+     "card quality"
+    ],
+    "rating": 3,
+    "verdict": "Clean, low-curve WG deck. Trapped in the Screen, Sheltered by Ghosts, Rip and Valgavoth's Onslaught give it real power, and manifest dread pays off Cryptid Inspector, but many filler 2-drops and little reach make it solid rather than strong."
+   },
+   "stats": {
+    "curve": [
+     0,
+     9,
+     11,
+     3,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 9,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 3,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Sheltered by Ghosts",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [
+     "Baseball Bat"
+    ],
+    "archetype_wr": 0.5269779659031972,
+    "deck_score_top": 0.66269,
+    "red_flags": [
+     "weak archetype WG 52.7%"
+    ]
    }
   },
   {
@@ -1173,6 +2428,48 @@
     "Undead Sprinter": 1,
     "Vengeful Possession": 2,
     "Winter's Intervention": 1
+   },
+   "deck_score": 0.56109,
+   "tier": 1,
+   "review": {
+    "archetype": "BR sacrifice",
+    "coherent": true,
+    "concerns": [
+     "threat density",
+     "few creatures",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "Coherent BR sacrifice shell with six Rats as fodder, cheap sacrifice-based removal, and Threaten effects that work with its outlets. It is thin on real threats and payoffs (only Skinripper and Egotist), and Cursed Recording is a wasted slot, so it can grind but struggles to close games."
+   },
+   "stats": {
+    "curve": [
+     3,
+     11,
+     6,
+     2,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Fear of Lost Teeth",
+     "Final Vengeance",
+     "Glassworks // Shattered Yard",
+     "Sawblade Skinripper",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5497882348930948,
+    "deck_score_top": 0.66525,
+    "red_flags": []
    }
   },
   {
@@ -1213,6 +2510,51 @@
     "Ticket Booth // Tunnel of Hate": 2,
     "Turn Inside Out": 1,
     "Unable to Scream": 1
+   },
+   "deck_score": 0.56393,
+   "tier": 1,
+   "review": {
+    "archetype": "UR Rooms splashing B",
+    "coherent": true,
+    "concerns": [
+     "splash",
+     "mana",
+     "few creatures"
+    ],
+    "rating": 3,
+    "verdict": "A real UR Rooms deck with plenty of interaction and Overlord of the Boilerbilges at the top, but the black splash for Nashi (a 2-drop gold card) and Nowhere to Run strains a mana base that already needs UU and RR, and the creature count is low."
+   },
+   "stats": {
+    "curve": [
+     2,
+     8,
+     7,
+     3,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 4,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Nowhere to Run",
+     "Overlord of the Boilerbilges",
+     "Roaring Furnace // Steaming Sauna"
+    ],
+    "soft_removal_cards": [
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.66767,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -1247,6 +2589,46 @@
     "Ticket Booth // Tunnel of Hate": 1,
     "Under the Skin": 1,
     "Wary Watchdog": 1
+   },
+   "deck_score": 0.5565,
+   "tier": 1,
+   "review": {
+    "archetype": "RG delirium midrange/removal",
+    "coherent": true,
+    "concerns": [
+     "creature quality",
+     "few creatures"
+    ],
+    "rating": 4,
+    "verdict": "Nine real removal spells, led by three Glassworks and two Dragonfire, plus manifest dread to cover the light creature count, make this a strong RG control-midrange deck even though the bodies are fairly average."
+   },
+   "stats": {
+    "curve": [
+     0,
+     9,
+     9,
+     2,
+     3,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 9,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Boilerbilges Ripper",
+     "Glassworks // Shattered Yard",
+     "Impossible Inferno",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66052,
+    "red_flags": []
    }
   },
   {
@@ -1281,6 +2663,48 @@
     "Threats Around Every Corner": 1,
     "Turn Inside Out": 1,
     "Valgavoth's Onslaught": 1
+   },
+   "deck_score": 0.55849,
+   "tier": 1,
+   "review": {
+    "archetype": "RG manifest dread midrange",
+    "coherent": true,
+    "concerns": [
+     "card quality",
+     "top end",
+     "filler",
+     "few enablers"
+    ],
+    "rating": 3,
+    "verdict": "A playable RG manifest shell with good removal (Chainsaw, Dragonfire, Glassworks), Valgavoth's Onslaught and Wurm, but five Cryptid Inspectors have too few manifest enablers, and filler like the Cartographers and main-deck Cathartic Parting leaves it short on power and late-game threats."
+   },
+   "stats": {
+    "curve": [
+     1,
+     11,
+     7,
+     1,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 9,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 3,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Chainsaw",
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [
+     "Fear of Missing Out"
+    ],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66633,
+    "red_flags": []
    }
   },
   {
@@ -1315,6 +2739,53 @@
     "Twist Reality": 1,
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Vanish from Sight": 2
+   },
+   "deck_score": 0.54742,
+   "tier": 1,
+   "review": {
+    "archetype": "UR rooms control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "win conditions",
+     "counterspells",
+     "Ghost Vacuum"
+    ],
+    "rating": 3,
+    "verdict": "Loaded with quality interaction (Dragonfire, Bargain, Drowner, three Meat Lockers, Vanish) and a real rooms/eerie theme, but only 9 creatures, three reactive counters and filler like Ghost Vacuum leave it short on threats to close games."
+   },
+   "stats": {
+    "curve": [
+     2,
+     8,
+     8,
+     5,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 6,
+    "soft_removal": 5,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Infernal Phantom",
+     "Scorching Dragonfire",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.65678,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -1355,6 +2826,52 @@
     "Twist Reality": 1,
     "Unable to Scream": 1,
     "Underwater Tunnel // Slimy Aquarium": 1
+   },
+   "deck_score": 0.56829,
+   "tier": 1,
+   "review": {
+    "archetype": "UW rooms/enchantments, light R splash",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "splash",
+     "filler",
+     "Oculus enabling"
+    ],
+    "rating": 3,
+    "verdict": "The WU core is solid: Drowner, Gremlin Tamers, Meat Lockers, Seized from Slumber, Fear of Abduction and Unable to Scream. But only 12 creatures, a red splash for weak cards (Turn Inside Out, Diversion Specialist) on 3 sources, and few ways to fill the graveyard for Oculus or trigger the Analysts drag it down to merely playable."
+   },
+   "stats": {
+    "curve": [
+     3,
+     10,
+     6,
+     1,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 5,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Exorcise",
+     "Fear of Abduction",
+     "Roaring Furnace // Steaming Sauna",
+     "Seized from Slumber",
+     "Split Up"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67526,
+    "red_flags": []
    }
   },
   {
@@ -1393,6 +2910,48 @@
     "Swamp": 7,
     "Undead Sprinter": 1,
     "Vengeful Possession": 1
+   },
+   "deck_score": 0.5517,
+   "tier": 1,
+   "review": {
+    "archetype": "BR removal midrange",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "creature quality"
+    ],
+    "rating": 3,
+    "verdict": "Deep removal suite (Murder, Live or Die, 2x Bargain, Dragonfire, Glassworks, Final Vengeance) carries a thin, mediocre 12-creature body count; solid but light on threats and sacrifice fodder."
+   },
+   "stats": {
+    "curve": [
+     2,
+     9,
+     7,
+     5,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 8,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Final Vengeance",
+     "Glassworks // Shattered Yard",
+     "Live or Die",
+     "Murder",
+     "Scorching Dragonfire",
+     "Sporogenic Infection"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5497882348930948,
+    "deck_score_top": 0.65741,
+    "red_flags": []
    }
   },
   {
@@ -1432,6 +2991,47 @@
     "Trapped in the Screen": 1,
     "Wary Watchdog": 2,
     "Wickerfolk Thresher": 1
+   },
+   "deck_score": 0.55248,
+   "tier": 1,
+   "review": {
+    "archetype": "GW survivors aggro",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A solid, low-curve GW Survivors creature deck with good role-players (Rip, Baseball Bat, Hardened Escort, Trapped in the Screen). It is light on interaction and card advantage, though, and has little reach if the board stalls."
+   },
+   "stats": {
+    "curve": [
+     1,
+     10,
+     7,
+     4,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 20,
+    "noncreature_spells": 4,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 2,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Exorcise",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [
+     "Baseball Bat"
+    ],
+    "archetype_wr": 0.5269779659031972,
+    "deck_score_top": 0.66245,
+    "red_flags": [
+     "weak archetype WG 52.7%"
+    ]
    }
   },
   {
@@ -1475,6 +3075,50 @@
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unsettling Twins": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.56439,
+   "tier": 1,
+   "review": {
+    "archetype": "WU enchantments/eerie, light red splash",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "small bodies",
+     "aura risk"
+    ],
+    "rating": 3,
+    "verdict": "A real eerie plan with good blue interaction (2 Drowner, Meat Locker, Vanish, Unable to Scream) and strong top-end in Fear of Abduction and Lionheart Glimmer, but the creature base is thin and small, it leans on cheap auras and tricks, and the Glassworks splash is a light extra; a solid but unspectacular deck."
+   },
+   "stats": {
+    "curve": [
+     7,
+     5,
+     7,
+     2,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 4,
+    "removal": 3,
+    "soft_removal": 5,
+    "removal_cards": [
+     "Fear of Abduction",
+     "Glassworks // Shattered Yard",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Floodpits Drowner",
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67295,
+    "red_flags": []
    }
   },
   {
@@ -1511,6 +3155,49 @@
     "Vile Mutilator": 1,
     "Wary Watchdog": 2,
     "Winter's Intervention": 1
+   },
+   "deck_score": 0.56305,
+   "tier": 1,
+   "review": {
+    "archetype": "BG removal control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat density",
+     "low power"
+    ],
+    "rating": 3,
+    "verdict": "Removal is excellent: 3 Murder, Drag to the Roots, Nowhere to Run, plus Enduring Vitality and Unholy Annex/Ritual Chamber as strong cards. But only 9 real creatures, many of them small (Fungus, Rat, Watchdog), so the deck can stall without finishers. Manifest dread effects help, but it is still a playable deck rather than a great one."
+   },
+   "stats": {
+    "curve": [
+     3,
+     9,
+     7,
+     3,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 9,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Drag to the Roots",
+     "Monstrous Emergence",
+     "Murder",
+     "Nowhere to Run",
+     "Sporogenic Infection",
+     "Vile Mutilator",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.67086,
+    "red_flags": []
    }
   },
   {
@@ -1548,6 +3235,51 @@
     "Unable to Scream": 1,
     "Underwater Tunnel // Slimy Aquarium": 2,
     "Unnerving Grasp": 1
+   },
+   "deck_score": 0.54482,
+   "tier": 1,
+   "review": {
+    "archetype": "UR rooms/enchantments",
+    "coherent": false,
+    "concerns": [
+     "card quality",
+     "few creatures",
+     "removal",
+     "Pyroclasm anti-synergy",
+     "light red"
+    ],
+    "rating": 2,
+    "verdict": "The deck is mostly blue Rooms with a thin red splash. Two Pyroclasms kill its own 2-toughness creatures, filler like the Skullcrabs and Peepers drags the card quality down, and it lacks threats and real removal, so it should be a below-average deck."
+   },
+   "stats": {
+    "curve": [
+     5,
+     9,
+     6,
+     3,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 13,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 0,
+    "soft_removal": 5,
+    "removal_cards": [],
+    "soft_removal_cards": [
+     "Duskmourn's Domination",
+     "Get Out",
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.65505,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -1587,6 +3319,48 @@
     "Wary Watchdog": 2,
     "Wildfire Wickerfolk": 1,
     "Zimone, All-Questioning": 1
+   },
+   "deck_score": 0.57311,
+   "tier": 1,
+   "review": {
+    "archetype": "RG delirium midrange",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "splashes",
+     "Oculus"
+    ],
+    "rating": 3,
+    "verdict": "Strong red removal suite (3 Glassworks, Nemesis, Beatdown, Emergence, Waltz) and decent delirium enablers, but only 12 creatures plus manifests, a shaky double splash (Zimone, Oculus with 1 Island; Drag with 1 Swamp), and Oculus is hard to fuel here; solid but unpolished."
+   },
+   "stats": {
+    "curve": [
+     1,
+     9,
+     9,
+     1,
+     3,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 8,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Drag to the Roots",
+     "Glassworks // Shattered Yard",
+     "Monstrous Emergence",
+     "Screaming Nemesis",
+     "Waltz of Rage"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.67515,
+    "red_flags": []
    }
   },
   {
@@ -1623,6 +3397,45 @@
     "Turn Inside Out": 1,
     "Unsettling Twins": 2,
     "Untimely Malfunction": 1
+   },
+   "deck_score": 0.56246,
+   "tier": 1,
+   "review": {
+    "archetype": "RW low-power aggro",
+    "coherent": true,
+    "concerns": [
+     "filler one-drops",
+     "card quality",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A focused RW power-2-or-less aggro deck with two Arabellas and solid removal (Trapped x2, Dragonfire, Bargain, Trial), and a low curve that suits 16 lands. It leans on weak filler like Possessed Goat, Clockwork Percussionist, Norin and Turn Inside Out, so it can run out of gas against bigger boards."
+   },
+   "stats": {
+    "curve": [
+     7,
+     10,
+     3,
+     4,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Scorching Dragonfire",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67114,
+    "red_flags": []
    }
   },
   {
@@ -1660,6 +3473,46 @@
     "Undead Sprinter": 1,
     "Vengeful Possession": 1,
     "Violent Urge": 1
+   },
+   "deck_score": 0.56148,
+   "tier": 1,
+   "review": {
+    "archetype": "BR sacrifice aggro",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "few creatures",
+     "tricks",
+     "card quality"
+    ],
+    "rating": 2,
+    "verdict": "The low-curve BR sacrifice plan has real payoffs in Skinripper, Egotist and Chainsaw, but it runs only 13 mostly small creatures and too many weak tricks (2 Turn Inside Out, Violent Urge, Playmates) with almost no removal, so it folds to bigger boards."
+   },
+   "stats": {
+    "curve": [
+     5,
+     9,
+     5,
+     3,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 3,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Chainsaw",
+     "Final Vengeance",
+     "Sawblade Skinripper"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5497882348930948,
+    "deck_score_top": 0.66553,
+    "red_flags": []
    }
   },
   {
@@ -1696,6 +3549,53 @@
     "Turn Inside Out": 2,
     "Unable to Scream": 1,
     "Unwilling Vessel": 2
+   },
+   "deck_score": 0.56418,
+   "tier": 1,
+   "review": {
+    "archetype": "UR rooms/enchantment tempo",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat density",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "Plenty of quality removal (3 Glassworks, Dragonfire, Bargain, Stay Hidden, Meat Locker) and a decent eerie/room subtheme on a lean curve, but only 11 mostly small creatures plus weak filler like 2x Turn Inside Out leaves it short on ways to actually close games."
+   },
+   "stats": {
+    "curve": [
+     4,
+     11,
+     8,
+     1,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 13,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 6,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Glassworks // Shattered Yard",
+     "Infernal Phantom",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [
+     "Fear of Missing Out",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.66904,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -1730,6 +3630,52 @@
     "Unnerving Grasp": 1,
     "Vanish from Sight": 1,
     "Violent Urge": 1
+   },
+   "deck_score": 0.54837,
+   "tier": 1,
+   "review": {
+    "archetype": "UR rooms/enchantments",
+    "coherent": true,
+    "concerns": [
+     "threat density",
+     "card quality",
+     "top end",
+     "few creatures"
+    ],
+    "rating": 2,
+    "verdict": "The interaction is solid (Glassworks x2, Drowner, Unable to Scream, Vanish from Sight), but the creatures are low-impact: four Creeping Peepers, 2/2s and 2/4 Slayers. There are no real finishers or evasion and nothing above 4 mana outside Room doors, so it struggles to close games."
+   },
+   "stats": {
+    "curve": [
+     3,
+     7,
+     7,
+     6,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 3,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.65849,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -1765,6 +3711,41 @@
     "Reluctant Role Model": 1,
     "Veteran Survivor": 1,
     "Vicious Clown": 1
+   },
+   "deck_score": 0.56568,
+   "tier": 1,
+   "review": {
+    "archetype": "RW go-wide aggro",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "filler",
+     "top-heavy fours"
+    ],
+    "rating": 3,
+    "verdict": "A focused, low-curve RW aggro deck where five Midnight Mayhem and Arabella give real punch, but it has no removal at all and filler like Ethereal Armor and Norin leaves it dependent on racing."
+   },
+   "stats": {
+    "curve": [
+     6,
+     7,
+     4,
+     7,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "noncreature_spells": 8,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 0,
+    "soft_removal": 0,
+    "removal_cards": [],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67417,
+    "red_flags": []
    }
   },
   {
@@ -1804,6 +3785,47 @@
     "Stay Hidden, Stay Silent": 1,
     "Ticket Booth // Tunnel of Hate": 1,
     "Turn Inside Out": 1
+   },
+   "deck_score": 0.55839,
+   "tier": 1,
+   "review": {
+    "archetype": "RG manifest midrange, splashing blue",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "splash",
+     "filler"
+    ],
+    "rating": 2,
+    "verdict": "Some solid red removal and Enduring Courage, but only 10 real creatures undercut Monstrous Emergence and the attack triggers, two Say Its Names are filler, and splashing blue for Glimmerburst and an aura isn't worth the mana strain."
+   },
+   "stats": {
+    "curve": [
+     2,
+     9,
+     4,
+     7,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 4,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Monstrous Emergence",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66019,
+    "red_flags": []
    }
   },
   {
@@ -1843,6 +3865,44 @@
     "Violent Urge": 1,
     "Wary Watchdog": 1,
     "Wickerfolk Thresher": 1
+   },
+   "deck_score": 0.55373,
+   "tier": 1,
+   "review": {
+    "archetype": "RG manifest dread midrange",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "removal",
+     "filler",
+     "Pyroclasm anti-synergy"
+    ],
+    "rating": 2,
+    "verdict": "Only 9 real creatures propped up by slow manifest-dread enchantments and low-impact tricks; Rollercrusher and the Trials can't make up for a weak, clunky threat base, and Pyroclasm fights its own 2/2 manifests."
+   },
+   "stats": {
+    "curve": [
+     4,
+     6,
+     5,
+     7,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 1,
+    "soft_removal": 0,
+    "removal_cards": [
+     "The Rollercrusher Ride"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66265,
+    "red_flags": []
    }
   },
   {
@@ -1880,6 +3940,48 @@
     "Spectral Snatcher": 1,
     "Swamp": 8,
     "Unholy Annex // Ritual Chamber": 2
+   },
+   "deck_score": 0.55677,
+   "tier": 2,
+   "review": {
+    "archetype": "BR sacrifice midrange",
+    "coherent": true,
+    "concerns": [
+     "mana",
+     "black depth",
+     "delirium"
+    ],
+    "rating": 4,
+    "verdict": "Deep black removal (2 Murder, 2 Live or Die, Nowhere to Run, Final Vengeance, Miasma Demon), two Unholy Annex and good sac fodder make a strong deck, but heavy BB costs on 8 Swamps plus the Gorge strain the mana, and the red filler and delirium cards are mediocre."
+   },
+   "stats": {
+    "curve": [
+     2,
+     9,
+     6,
+     2,
+     2,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 8,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Fear of Lost Teeth",
+     "Final Vengeance",
+     "Live or Die",
+     "Murder",
+     "Nowhere to Run",
+     "Sawblade Skinripper"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5497882348930948,
+    "deck_score_top": 0.66424,
+    "red_flags": []
    }
   },
   {
@@ -1916,6 +4018,45 @@
     "Unsettling Twins": 2,
     "Wary Watchdog": 3,
     "Wickerfolk Thresher": 1
+   },
+   "deck_score": 0.55135,
+   "tier": 1,
+   "review": {
+    "archetype": "WG survivors aggro",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "aura density",
+     "top-end"
+    ],
+    "rating": 3,
+    "verdict": "A tidy, low-curve WG survivors deck with good enablers like Reluctant Role Model, Hardened Escort, Toby and Hauntwoods Shrieker. Sheltered by Ghosts is its only real removal, and four Frantic Strength lean too hard on auras, so it struggles to answer bombs or break board stalls."
+   },
+   "stats": {
+    "curve": [
+     1,
+     7,
+     9,
+     5,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 17,
+    "noncreature_spells": 6,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 1,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Sheltered by Ghosts"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5269779659031972,
+    "deck_score_top": 0.6628,
+    "red_flags": [
+     "weak archetype WG 52.7%"
+    ]
    }
   },
   {
@@ -1956,6 +4097,50 @@
     "Unable to Scream": 2,
     "Under the Skin": 1,
     "Vanish from Sight": 2
+   },
+   "deck_score": 0.56667,
+   "tier": 1,
+   "review": {
+    "archetype": "WU control splashing G",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "mana",
+     "splash",
+     "Oculus"
+    ],
+    "rating": 3,
+    "verdict": "Removal is deep and good (Unable to Scream x2, Trapped in the Screen, Seized from Slumber, Vanish from Sight x2, Domination), but the deck is thin on threats. The mana is skewed toward Islands even though the cheap creatures are white, the green splash for Rip and Under the Skin isn't worth the strain, and Oculus will struggle to find six graveyard cards."
+   },
+   "stats": {
+    "curve": [
+     2,
+     7,
+     4,
+     5,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 4,
+    "removal": 4,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Seized from Slumber",
+     "Trapped in the Screen",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Duskmourn's Domination",
+     "Fear of Immobility",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67405,
+    "red_flags": []
    }
   },
   {
@@ -2002,6 +4187,52 @@
     "Terramorphic Expanse": 2,
     "The Jolly Balloon Man": 1,
     "Wickerfolk Thresher": 1
+   },
+   "deck_score": 0.54867,
+   "tier": 1,
+   "review": {
+    "archetype": "RG midrange/delirium, light W and a Marina splash",
+    "coherent": true,
+    "concerns": [
+     "colors",
+     "mana base",
+     "greedy splash",
+     "early game"
+    ],
+    "rating": 3,
+    "verdict": "A solid RG core with good fight-based removal (2 Beastie Beatdown, Monstrous Emergence, Impossible Inferno) and big green bodies, weakened by greedy mana: the W gold cards and a Marina splash that needs a lone Island and Swamp add stumbles a cleaner RG build wouldn't have."
+   },
+   "stats": {
+    "curve": [
+     1,
+     6,
+     8,
+     3,
+     4,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 9,
+    "lands": 17,
+    "fixing_lands": 7,
+    "removal": 5,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Fear of Burning Alive",
+     "Impossible Inferno",
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [
+     "Baseball Bat",
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.4786153434910452,
+    "deck_score_top": 0.65292,
+    "red_flags": [
+     "weak archetype WRG 47.9%"
+    ]
    }
   },
   {
@@ -2044,6 +4275,54 @@
     "The Wandering Rescuer": 1,
     "Trapped in the Screen": 1,
     "Victor, Valgavoth's Seneschal": 1
+   },
+   "deck_score": 0.5553,
+   "tier": 1,
+   "review": {
+    "archetype": "3-color WB(g) removal pile",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "colors",
+     "mana",
+     "filler",
+     "reanimation"
+    ],
+    "rating": 2,
+    "verdict": "Lots of removal (Split Up, Trapped in the Screen, Live or Die x2, Drag to the Roots, Seized from Slumber), but with only 10 mostly small creatures, it lacks a clock. The mana is stretched across three colors with BB and WW costs. Two maindeck Cathartic Partings and reanimation with few targets (Rite of the Moth, Cadaver Lab) are dead weight."
+   },
+   "stats": {
+    "curve": [
+     4,
+     7,
+     6,
+     2,
+     4,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 6,
+    "removal": 10,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Drag to the Roots",
+     "Exorcise",
+     "Fear of Lost Teeth",
+     "Final Vengeance",
+     "Live or Die",
+     "Seized from Slumber",
+     "Split Up",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5176401793255799,
+    "deck_score_top": 0.66608,
+    "red_flags": [
+     "weak archetype WBG 51.8%"
+    ]
    }
   },
   {
@@ -2083,6 +4362,46 @@
     "Turn Inside Out": 1,
     "Twitching Doll": 1,
     "Wary Watchdog": 1
+   },
+   "deck_score": 0.55768,
+   "tier": 1,
+   "review": {
+    "archetype": "RG aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A low-curve RG beatdown deck with solid removal (Dragonfire, 2 Glassworks, Beatdown, Clobbering), but only 13 creatures plus a few manifests is thin for a deck leaning on bite effects, and filler like Norin, Turn Inside Out and Clockwork Percussionist caps its power."
+   },
+   "stats": {
+    "curve": [
+     4,
+     10,
+     6,
+     1,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Coordinated Clobbering",
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66151,
+    "red_flags": []
    }
   },
   {
@@ -2121,6 +4440,46 @@
     "Wary Watchdog": 1,
     "Wickerfolk Thresher": 1,
     "Wildfire Wickerfolk": 1
+   },
+   "deck_score": 0.55974,
+   "tier": 1,
+   "review": {
+    "archetype": "RG aggro (red-heavy small creatures)",
+    "coherent": true,
+    "concerns": [
+     "top end",
+     "card quality",
+     "delirium"
+    ],
+    "rating": 3,
+    "verdict": "Lean, fast red-based aggro with solid removal (2 Bargain, Dragonfire, Chainsaw, Glassworks) and Enduring Courage, but the filler (Clowns, Percussionists, Violent Urge) is low-impact, there's almost nothing past 4 mana, and the delirium cards have little support. A fine deck that can run people over but struggles if the game goes long."
+   },
+   "stats": {
+    "curve": [
+     3,
+     11,
+     6,
+     4,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "noncreature_spells": 8,
+    "lands": 16,
+    "fixing_lands": 3,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Chainsaw",
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66225,
+    "red_flags": []
    }
   },
   {
@@ -2167,6 +4526,48 @@
     "Veteran Survivor": 1,
     "Winter's Intervention": 1,
     "Zimone, All-Questioning": 1
+   },
+   "deck_score": 0.54713,
+   "tier": 1,
+   "review": {
+    "archetype": "Esper enchantments (splash G)",
+    "coherent": false,
+    "concerns": [
+     "colors",
+     "removal",
+     "Zimone splash",
+     "low power"
+    ],
+    "rating": 2,
+    "verdict": "A three-color enchantment pile with a pointless green splash for Zimone, almost no removal, and many weak cheap cards; it should be trimmed to two colors."
+   },
+   "stats": {
+    "curve": [
+     4,
+     10,
+     4,
+     2,
+     2,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 18,
+    "noncreature_spells": 6,
+    "lands": 16,
+    "fixing_lands": 6,
+    "removal": 1,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.48710765900553893,
+    "deck_score_top": 0.65871,
+    "red_flags": [
+     "weak archetype WUB 48.7%"
+    ]
    }
   },
   {
@@ -2206,6 +4607,47 @@
     "Violent Urge": 1,
     "Waltz of Rage": 1,
     "Wildfire Wickerfolk": 1
+   },
+   "deck_score": 0.5588,
+   "tier": 1,
+   "review": {
+    "archetype": "RG aggro/delirium",
+    "coherent": true,
+    "concerns": [
+     "creature quality",
+     "few creatures",
+     "thin 3-4 drops"
+    ],
+    "rating": 3,
+    "verdict": "Plenty of cheap removal (Chainsaw, Bargain, Glassworks, Beatdown, Trial, Waltz) and decent delirium support, but the threats are thin and low-impact, with three Percussionists and filler Toys. The deck is fine, but it could lose to bigger boards."
+   },
+   "stats": {
+    "curve": [
+     6,
+     10,
+     3,
+     1,
+     3,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 11,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Betrayer's Bargain",
+     "Chainsaw",
+     "Glassworks // Shattered Yard",
+     "Waltz of Rage"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66129,
+    "red_flags": []
    }
   },
   {
@@ -2247,6 +4689,48 @@
     "Unholy Annex // Ritual Chamber": 1,
     "Valgavoth's Onslaught": 1,
     "Wary Watchdog": 2
+   },
+   "deck_score": 0.55891,
+   "tier": 1,
+   "review": {
+    "archetype": "BG delirium/manifest",
+    "coherent": false,
+    "concerns": [
+     "white splash",
+     "few creatures",
+     "weak cards",
+     "threat density",
+     "Cathartic Parting"
+    ],
+    "rating": 2,
+    "verdict": "Low-power BG pile: 12 mostly small creatures, maindeck Cathartic Parting, Cracked Skull and Glimmerlight filler, two Zealots with little to turn face up, and two Plains warping the mana just to splash a mediocre Rite of the Moth."
+   },
+   "stats": {
+    "curve": [
+     2,
+     12,
+     6,
+     2,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Coordinated Clobbering",
+     "Fear of Lost Teeth",
+     "Nowhere to Run",
+     "Sporogenic Infection"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.66641,
+    "red_flags": []
    }
   },
   {
@@ -2286,6 +4770,47 @@
     "Turn Inside Out": 2,
     "Unsettling Twins": 1,
     "Vicious Clown": 1
+   },
+   "deck_score": 0.56584,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "card quality",
+     "low curve",
+     "removal"
+    ],
+    "rating": 3,
+    "verdict": "A coherent low-curve RW aggro deck with real payoffs (Enduring Innocence, Razorkin Hordecaller, Fear of Being Hunted, Sheltered by Ghosts), but filler like Turn Inside Out x2, Jump Scare and Ethereal Armor, and only a few true removal spells, cap it at a fine deck."
+   },
+   "stats": {
+    "curve": [
+     8,
+     6,
+     3,
+     4,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 3,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Infernal Phantom",
+     "Scorching Dragonfire",
+     "Sheltered by Ghosts"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.66923,
+    "red_flags": []
    }
   },
   {
@@ -2324,6 +4849,49 @@
     "Underwater Tunnel // Slimy Aquarium": 2,
     "Valgavoth's Onslaught": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.55332,
+   "tier": 1,
+   "review": {
+    "archetype": "UR Rooms/eerie",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "splash",
+     "card quality",
+     "few creatures"
+    ],
+    "rating": 2,
+    "verdict": "The UR Rooms shell has real synergy, with 7 Rooms feeding Soulrager, Entity Tracker and Apparition, but removal is thin, filler like Skullcrab and Paranormal Analyst dilutes it, and splashing green for two gold 2-drops plus Onslaught strains the mana for little gain."
+   },
+   "stats": {
+    "curve": [
+     3,
+     6,
+     10,
+     2,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 2,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Impossible Inferno",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.65962,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -2364,6 +4932,45 @@
     "The Swarmweaver": 1,
     "Under the Skin": 1,
     "Withering Torment": 1
+   },
+   "deck_score": 0.5576,
+   "tier": 1,
+   "review": {
+    "archetype": "BG delirium midrange",
+    "coherent": true,
+    "concerns": [
+     "splash",
+     "mana"
+    ],
+    "rating": 4,
+    "verdict": "Strong BG with good removal (2 Murder, Torment, Drag to the Roots, Live or Die) and payoffs like Swarmweaver, Broodspinner and Miasma Demon. Splashing blue for two gold 2-drop Bookworms is a needless mana strain; straight BG would be cleaner."
+   },
+   "stats": {
+    "curve": [
+     0,
+     7,
+     10,
+     3,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Drag to the Roots",
+     "Live or Die",
+     "Murder",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.66862,
+    "red_flags": []
    }
   },
   {
@@ -2402,6 +5009,49 @@
     "Unable to Scream": 1,
     "Underwater Tunnel // Slimy Aquarium": 2,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.55941,
+   "tier": 1,
+   "review": {
+    "archetype": "WU enchantments/eerie",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "low threat density"
+    ],
+    "rating": 4,
+    "verdict": "Strong WU enchantment deck with premium rares (Enduring Curiosity, Wandering Rescuer, Fear of Abduction), good removal and Glimmer/Room synergy; only 12 real creatures, but tokens and manifest dread pad the board."
+   },
+   "stats": {
+    "curve": [
+     4,
+     7,
+     3,
+     5,
+     3,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 5,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Exorcise",
+     "Fear of Abduction",
+     "Fear of Falling",
+     "Trapped in the Screen",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Get Out",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.66783,
+    "red_flags": []
    }
   },
   {
@@ -2447,6 +5097,50 @@
     "Violent Urge": 1,
     "Waltz of Rage": 1,
     "Withering Torment": 1
+   },
+   "deck_score": 0.54857,
+   "tier": 1,
+   "review": {
+    "archetype": "Mardu pile (B-based midrange)",
+    "coherent": false,
+    "concerns": [
+     "colors",
+     "mana",
+     "few creatures",
+     "filler"
+    ],
+    "rating": 2,
+    "verdict": "The removal is good: Scorching Dragonfire, Withering Torment, Nowhere to Run, Final Vengeance and Miasma Demon. But the deck is spread across three colors with only 6–8 sources each for BB, WW and WWBB costs (Dancers, Shroudstomper, Tenacity, Demon), runs just 11 mostly low-impact creatures, and plays filler like Violent Urge, Ragged Playmate and Glimmerlight. Cut white down to a splash or cut it entirely for a cleaner BR deck."
+   },
+   "stats": {
+    "curve": [
+     4,
+     6,
+     3,
+     5,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Final Vengeance",
+     "Nowhere to Run",
+     "Scorching Dragonfire",
+     "Waltz of Rage",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.47761912401732715,
+    "deck_score_top": 0.66282,
+    "red_flags": [
+     "weak archetype WBR 47.8%"
+    ]
    }
   },
   {
@@ -2485,6 +5179,53 @@
     "Unable to Scream": 2,
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unwilling Vessel": 1
+   },
+   "deck_score": 0.55123,
+   "tier": 1,
+   "review": {
+    "archetype": "UR Rooms control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "win conditions",
+     "card quality"
+    ],
+    "rating": 2,
+    "verdict": "Good removal (Glassworks, Impossible Inferno, Unable to Scream, Meat Locker), but only 7 real creatures, several of them weak, leave it with too few ways to pressure or close games, and the Room payoffs are thin."
+   },
+   "stats": {
+    "curve": [
+     6,
+     6,
+     6,
+     3,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 7,
+    "noncreature_spells": 16,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 4,
+    "soft_removal": 6,
+    "removal_cards": [
+     "Fear of Falling",
+     "Glassworks // Shattered Yard",
+     "Impossible Inferno",
+     "Infernal Phantom"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.65873,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -2527,6 +5268,45 @@
     "Valgavoth, Terror Eater": 1,
     "Walk-In Closet // Forgotten Cellar": 1,
     "Winter's Intervention": 1
+   },
+   "deck_score": 0.54988,
+   "tier": 1,
+   "review": {
+    "archetype": "BG delirium/graveyard splashing W",
+    "coherent": false,
+    "concerns": [
+     "colors",
+     "top-heavy",
+     "few creatures",
+     "splash"
+    ],
+    "rating": 2,
+    "verdict": "The BG delirium core is decent, with Drag to the Roots, Commune, Spineseeker, Tyvar, Miasma Demon and manifest dread, but a WW/WWBB splash on two Plains with no white fixing, a 9-drop Valgavoth, filler like Walk-In Closet and Valgavoth's Faithful, and only 12 real creatures make it clunky and unreliable."
+   },
+   "stats": {
+    "curve": [
+     3,
+     5,
+     6,
+     5,
+     0,
+     4
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 3,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Drag to the Roots",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.66273,
+    "red_flags": []
    }
   },
   {
@@ -2569,6 +5349,53 @@
     "Unstoppable Slasher": 1,
     "Valgavoth's Faithful": 1,
     "Victor, Valgavoth's Seneschal": 2
+   },
+   "deck_score": 0.54825,
+   "tier": 1,
+   "review": {
+    "archetype": "WB reanimator/eerie with a U splash",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "reanimation glut",
+     "splash",
+     "filler",
+     "colors"
+    ],
+    "rating": 2,
+    "verdict": "Victor x2, Shroudstomper and solid removal make a good core, but there are only 12 creatures, about five reanimation effects with too few worthwhile targets or self-mill to feed them, filler like Teddy and Glimmerlights, and a pointless blue splash for a gold WU 2-drop."
+   },
+   "stats": {
+    "curve": [
+     5,
+     6,
+     5,
+     2,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 6,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Exorcise",
+     "Fear of Lost Teeth",
+     "Live or Die",
+     "Seized from Slumber",
+     "Split Up"
+    ],
+    "soft_removal_cards": [
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5232467844183716,
+    "deck_score_top": 0.66228,
+    "red_flags": [
+     "weak archetype WB 52.3%"
+    ]
    }
   },
   {
@@ -2601,6 +5428,47 @@
     "Terramorphic Expanse": 1,
     "Unnerving Grasp": 2,
     "Unwilling Vessel": 2
+   },
+   "deck_score": 0.5559,
+   "tier": 1,
+   "review": {
+    "archetype": "WU enchantments/eerie",
+    "coherent": true,
+    "concerns": [
+     "Skullcrab filler",
+     "removal",
+     "threat density",
+     "low power"
+    ],
+    "rating": 2,
+    "verdict": "The eerie theme hangs together, and Enduring Curiosity and Meat Locker are real cards, but four Scrabbling Skullcrabs are dead weight, it has no hard removal and too few threats, so it plays like a durdly pile with a weak finish."
+   },
+   "stats": {
+    "curve": [
+     4,
+     9,
+     6,
+     2,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 0,
+    "soft_removal": 7,
+    "removal_cards": [],
+    "soft_removal_cards": [
+     "Fear of Immobility",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.66409,
+    "red_flags": []
    }
   },
   {
@@ -2639,6 +5507,47 @@
     "Scorching Dragonfire": 1,
     "Terramorphic Expanse": 1,
     "Vengeful Possession": 1
+   },
+   "deck_score": 0.55088,
+   "tier": 1,
+   "review": {
+    "archetype": "RG delirium midrange",
+    "coherent": true,
+    "concerns": [
+     "creature quality",
+     "weak twos"
+    ],
+    "rating": 3,
+    "verdict": "Plenty of good removal (Dragonfire, Glassworks, Inferno, Bargain, Beatdown, Emergence), Balustrade Wurms, and Fear of Being Hunted give this a solid core. The creature base is filler-heavy, though: three Teddies and two Hand That Feeds. Delirium support is only moderate, so expect a fine deck rather than a strong one."
+   },
+   "stats": {
+    "curve": [
+     0,
+     11,
+     3,
+     5,
+     4,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 9,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Betrayer's Bargain",
+     "Glassworks // Shattered Yard",
+     "Impossible Inferno",
+     "Monstrous Emergence",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.65644,
+    "red_flags": []
    }
   },
   {
@@ -2678,6 +5587,49 @@
     "Unsettling Twins": 2,
     "Vengeful Possession": 2,
     "Violent Urge": 1
+   },
+   "deck_score": 0.56797,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threaten effects",
+     "tricks"
+    ],
+    "rating": 3,
+    "verdict": "Solid removal suite (Dragonfire, 2x Bargain, Trapped in the Screen, Sheltered by Ghosts) and Arabella keep this playable. But 11 creatures is thin for an aggro deck, 2x Vengeful Possession lacks enough sac outlets, and three 1-mana tricks dilute threat density. Swap a Possession and a trick for 2-drop creatures."
+   },
+   "stats": {
+    "curve": [
+     3,
+     10,
+     4,
+     6,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 13,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 6,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Boilerbilges Ripper",
+     "Scorching Dragonfire",
+     "Sheltered by Ghosts",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [
+     "Fear of Missing Out"
+    ],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67434,
+    "red_flags": []
    }
   },
   {
@@ -2720,6 +5672,48 @@
     "Wary Watchdog": 2,
     "Wildfire Wickerfolk": 1,
     "Zimone, All-Questioning": 1
+   },
+   "deck_score": 0.56176,
+   "tier": 1,
+   "review": {
+    "archetype": "RG delirium midrange",
+    "coherent": true,
+    "concerns": [
+     "pointless splash",
+     "few creatures",
+     "top-end",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "Solid RG removal suite and a good two-drop base. The Zimone 'splash' adds two Islands for a weak gold card, and 13 creatures is thin for Monstrous Emergence and a midrange plan. Cut the blue for more Mountains and Forests plus another body."
+   },
+   "stats": {
+    "curve": [
+     1,
+     13,
+     4,
+     3,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Betrayer's Bargain",
+     "Chainsaw",
+     "Fear of Burning Alive",
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66467,
+    "red_flags": []
    }
   },
   {
@@ -2758,6 +5752,47 @@
     "Turn Inside Out": 1,
     "Valgavoth's Onslaught": 1,
     "Vengeful Possession": 2
+   },
+   "deck_score": 0.57081,
+   "tier": 1,
+   "review": {
+    "archetype": "BR sacrifice",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "card quality",
+     "splash",
+     "sac fodder"
+    ],
+    "rating": 2,
+    "verdict": "The removal suite is real (Glassworks, Impossible Inferno, Nowhere to Run, 2x Final Vengeance), but the deck is starved for bodies. Only 8 creatures, three of them weak Percussionists, can't feed 2x Final Vengeance, 2x Vengeful Possession and Diversion Specialist. The one-card green splash for Onslaught isn't worth stretching the mana for."
+   },
+   "stats": {
+    "curve": [
+     7,
+     5,
+     4,
+     4,
+     3,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 8,
+    "noncreature_spells": 15,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Final Vengeance",
+     "Glassworks // Shattered Yard",
+     "Impossible Inferno",
+     "Nowhere to Run"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5497882348930948,
+    "deck_score_top": 0.67193,
+    "red_flags": []
    }
   },
   {
@@ -2797,6 +5832,47 @@
     "Threats Around Every Corner": 1,
     "Twist Reality": 4,
     "Wary Watchdog": 1
+   },
+   "deck_score": 0.56267,
+   "tier": 1,
+   "review": {
+    "archetype": "UG manifest dread tempo/control",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "removal",
+     "off-color cards",
+     "narrow cards"
+    ],
+    "rating": 2,
+    "verdict": "Only six real creatures, and too many slots go to counters, card draw and narrow artifact/enchantment hate. Manifest dread and Glimmer tokens can't make up for so few real threats, and an off-color Gremlin Tamer and a white-splash removal spell stretch the mana for little payoff."
+   },
+   "stats": {
+    "curve": [
+     1,
+     7,
+     8,
+     5,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 6,
+    "noncreature_spells": 17,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 1,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Seized from Slumber"
+    ],
+    "soft_removal_cards": [
+     "Duskmourn's Domination",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "deck_score_top": 0.67181,
+    "red_flags": []
    }
   },
   {
@@ -2835,6 +5911,50 @@
     "Tunnel Surveyor": 2,
     "Turn Inside Out": 2,
     "Violent Urge": 1
+   },
+   "deck_score": 0.55064,
+   "tier": 1,
+   "review": {
+    "archetype": "UR rooms/enchantments",
+    "coherent": true,
+    "concerns": [
+     "card quality",
+     "weak tricks",
+     "few creatures",
+     "Pyroclasm anti-synergy"
+    ],
+    "rating": 2,
+    "verdict": "The Rooms plan is real, with Entity Tracker, Infernal Phantom, Rampaging Soulrager and Glassworks as payoffs, but too many slots go to filler tricks (2x Turn Inside Out, Violent Urge without delirium support), Pyroclasm kills your own 2/2s and Glimmers, and the thin, low-power creature base leaves a below-average UR deck."
+   },
+   "stats": {
+    "curve": [
+     4,
+     6,
+     9,
+     2,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Infernal Phantom",
+     "Roaring Furnace // Steaming Sauna"
+    ],
+    "soft_removal_cards": [
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.65693,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -2874,6 +5994,46 @@
     "Ticket Booth // Tunnel of Hate": 1,
     "Trial of Agony": 1,
     "Turn Inside Out": 1
+   },
+   "deck_score": 0.55801,
+   "tier": 1,
+   "review": {
+    "archetype": "RW low-power aggro",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "filler",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A fast, low-curve Boros deck built around two Arabellas and Enduring Innocence that can punish slow draws, but filler like Clockwork Percussionist, Ethereal Armor and a delirium-less Hand That Feeds, plus thin removal, cap it as a fine but unexceptional aggro build."
+   },
+   "stats": {
+    "curve": [
+     6,
+     11,
+     4,
+     4,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "noncreature_spells": 9,
+    "lands": 15,
+    "fixing_lands": 0,
+    "removal": 3,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Infernal Phantom",
+     "Split Up"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.66388,
+    "red_flags": [
+     "15 lands"
+    ]
    }
   },
   {
@@ -2916,6 +6076,48 @@
     "Split Up": 1,
     "Splitskin Doll": 1,
     "Trapped in the Screen": 1
+   },
+   "deck_score": 0.54543,
+   "tier": 1,
+   "review": {
+    "archetype": "WG survivors midrange (U splash)",
+    "coherent": false,
+    "concerns": [
+     "splash",
+     "removal",
+     "anti-synergy",
+     "mana"
+    ],
+    "rating": 2,
+    "verdict": "The WG core has decent bodies like Shepherding Spirits, Grasping Longneck, Fear of Exposure and Cautious Survivor, but it has only one real removal spell in Trapped in the Screen. Two Islands for Oblivious Bookworm and an uncastable Lecture Hall weaken a WW-heavy mana base. Restricted Office and Split Up also fight the deck's own 4-power creatures, so cut the splash and those for straight WG playables."
+   },
+   "stats": {
+    "curve": [
+     1,
+     8,
+     6,
+     5,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 17,
+    "noncreature_spells": 6,
+    "lands": 17,
+    "fixing_lands": 4,
+    "removal": 3,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Restricted Office // Lecture Hall",
+     "Split Up",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5269779659031972,
+    "deck_score_top": 0.65895,
+    "red_flags": [
+     "weak archetype WG 52.7%"
+    ]
    }
   },
   {
@@ -2953,6 +6155,48 @@
     "Swamp": 9,
     "Tyvar, the Pummeler": 1,
     "Unholy Annex // Ritual Chamber": 1
+   },
+   "deck_score": 0.55022,
+   "tier": 1,
+   "review": {
+    "archetype": "Bg midrange removal",
+    "coherent": true,
+    "concerns": [
+     "mana split",
+     "thin green",
+     "creature quality"
+    ],
+    "rating": 3,
+    "verdict": "Solid removal suite and strong black top end (Unholy Annex, Miasma Demon, Snatchers), but it is nearly mono-black with a light green splash. The 9/8 land split strains BB costs while GG Tyvar sits awkwardly, and the small creatures are mediocre."
+   },
+   "stats": {
+    "curve": [
+     3,
+     6,
+     7,
+     4,
+     0,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 9,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Coordinated Clobbering",
+     "Drag to the Roots",
+     "Fear of Lost Teeth",
+     "Final Vengeance",
+     "Murder",
+     "Nowhere to Run"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.66073,
+    "red_flags": []
    }
   },
   {
@@ -2994,6 +6238,50 @@
     "Unnerving Grasp": 1,
     "Valgavoth's Onslaught": 1,
     "Winter's Intervention": 1
+   },
+   "deck_score": 0.55464,
+   "tier": 1,
+   "review": {
+    "archetype": "UB enchantments/eerie",
+    "coherent": true,
+    "concerns": [
+     "green splash",
+     "few creatures",
+     "mana"
+    ],
+    "rating": 3,
+    "verdict": "A solid UB eerie shell with Unholy Annex, Fear of Impostors, two Meat Lockers and Nowhere to Run, held back by a low creature count and a two-Forest splash for one card that strains the heavy blue base."
+   },
+   "stats": {
+    "curve": [
+     1,
+     8,
+     7,
+     4,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 2,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Nowhere to Run",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "deck_score_top": 0.66848,
+    "red_flags": [
+     "weak archetype UB 51.6%"
+    ]
    }
   },
   {
@@ -3029,6 +6317,44 @@
     "Vengeful Possession": 1,
     "Vicious Clown": 1,
     "Violent Urge": 1
+   },
+   "deck_score": 0.56416,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "mana split",
+     "filler tricks"
+    ],
+    "rating": 3,
+    "verdict": "A solid, low-curve RW go-wide deck. Three Midnight Mayhem, Enduring Courage, Hordecaller and Arabella give it real punch, but it has little interaction beyond Glassworks and Hovership. It leans on marginal tricks and filler, and the 8/8 basics split is awkward with RR costs on Fear of Being Hunted and Enduring Courage alongside Hovership's WW."
+   },
+   "stats": {
+    "curve": [
+     3,
+     6,
+     8,
+     6,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 10,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 2,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Unidentified Hovership"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67155,
+    "red_flags": []
    }
   },
   {
@@ -3068,6 +6394,53 @@
     "Swamp": 8,
     "Unidentified Hovership": 1,
     "Valgavoth's Faithful": 1
+   },
+   "deck_score": 0.5508,
+   "tier": 1,
+   "review": {
+    "archetype": "WB midrange/reanimator",
+    "coherent": true,
+    "concerns": [
+     "top-heavy",
+     "weak 2-drops",
+     "filler",
+     "few creatures"
+    ],
+    "rating": 3,
+    "verdict": "Strong removal suite (Hovership, Live or Die, Seized, Fear of Abduction, Split Up, Infection) and solid top end with cyclers to smooth the five 6+ drops, but the early curve is thin and weak (Goat, Faithful, Ethereal Armor, 3x Fanatic) and the reanimation package is light, so it's a functional grindy deck rather than a great one."
+   },
+   "stats": {
+    "curve": [
+     4,
+     3,
+     4,
+     3,
+     4,
+     5
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Fear of Abduction",
+     "Live or Die",
+     "Seized from Slumber",
+     "Split Up",
+     "Sporogenic Infection",
+     "Unidentified Hovership"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "deck_score_top": 0.66314,
+    "red_flags": [
+     "3 two-drops",
+     "5 cards at 6+",
+     "weak archetype WB 52.3%"
+    ]
    }
   },
   {
@@ -3109,6 +6482,52 @@
     "Unable to Scream": 1,
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unwilling Vessel": 1
+   },
+   "deck_score": 0.56254,
+   "tier": 1,
+   "review": {
+    "archetype": "WU eerie enchantments",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat density"
+    ],
+    "rating": 3,
+    "verdict": "A coherent WU eerie deck with strong cheap interaction (Unable to Scream, Stay Hidden, Sheltered by Ghosts, Floodpits Drowner, Meat Locker) and good payoffs (Entity Tracker, Unwilling Vessel), but only 11 real creatures and a thin top end mean it can run out of pressure."
+   },
+   "stats": {
+    "curve": [
+     4,
+     8,
+     7,
+     1,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 6,
+    "removal_cards": [
+     "Exorcise",
+     "Fear of Abduction",
+     "Seized from Slumber",
+     "Sheltered by Ghosts"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Floodpits Drowner",
+     "Get Out",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67229,
+    "red_flags": []
    }
   },
   {
@@ -3147,6 +6566,52 @@
     "Unnerving Grasp": 1,
     "Unstoppable Slasher": 1,
     "Vile Mutilator": 2
+   },
+   "deck_score": 0.55374,
+   "tier": 1,
+   "review": {
+    "archetype": "UB rooms/enchantments control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat density",
+     "clunky top end"
+    ],
+    "rating": 3,
+    "verdict": "A solid UB control shell: removal is good (2 Murder, Live or Die, Meat Locker, Stay Hidden, Unable to Scream, double Vile Mutilator) and the Rooms give card advantage, but only 10 real creatures plus manifests makes it thin on threats and pressure; it's playable but grindy and can stumble without board presence."
+   },
+   "stats": {
+    "curve": [
+     2,
+     7,
+     9,
+     1,
+     2,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 5,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Live or Die",
+     "Murder",
+     "Vile Mutilator"
+    ],
+    "soft_removal_cards": [
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "deck_score_top": 0.66746,
+    "red_flags": [
+     "weak archetype UB 51.6%"
+    ]
    }
   },
   {
@@ -3188,6 +6653,50 @@
     "Terramorphic Expanse": 2,
     "Unholy Annex // Ritual Chamber": 1,
     "Unstoppable Slasher": 1
+   },
+   "deck_score": 0.56421,
+   "tier": 1,
+   "review": {
+    "archetype": "Jund delirium removal pile",
+    "coherent": false,
+    "concerns": [
+     "colors",
+     "few creatures",
+     "mana"
+    ],
+    "rating": 3,
+    "verdict": "Nine removal spells make this deck strong, but it is a true three-color deck with only about 7-8 sources per color and just 11 creatures, which leaves Beastie Beatdown and Monstrous Emergence without enough bodies to fight with; trimming to BG with a light red splash would play more consistently."
+   },
+   "stats": {
+    "curve": [
+     1,
+     10,
+     4,
+     4,
+     2,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 4,
+    "removal": 9,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Drag to the Roots",
+     "Glassworks // Shattered Yard",
+     "Live or Die",
+     "Monstrous Emergence",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5227593699076589,
+    "deck_score_top": 0.66884,
+    "red_flags": [
+     "weak archetype BRG 52.3%"
+    ]
    }
   },
   {
@@ -3228,6 +6737,46 @@
     "Terramorphic Expanse": 1,
     "Wary Watchdog": 1,
     "Winter's Intervention": 2
+   },
+   "deck_score": 0.56018,
+   "tier": 1,
+   "review": {
+    "archetype": "BG delirium midrange",
+    "coherent": true,
+    "concerns": [
+     "filler",
+     "no 4-drops",
+     "light splash",
+     "threat density"
+    ],
+    "rating": 3,
+    "verdict": "A solid BG shell built around Overlord of the Balemurk, decent cheap removal (2x Final Vengeance, 2x Winter's Intervention) and plenty of 2-drops, held back by three mediocre Glimmerlights, an empty 4-slot, clunky 6-7 drops, and a white splash for only one card that is still worth playing."
+   },
+   "stats": {
+    "curve": [
+     2,
+     12,
+     3,
+     0,
+     3,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Final Vengeance",
+     "Sheltered by Ghosts",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.66548,
+    "red_flags": []
    }
   },
   {
@@ -3269,6 +6818,47 @@
     "Violent Urge": 1,
     "Waltz of Rage": 1,
     "Wary Watchdog": 1
+   },
+   "deck_score": 0.55955,
+   "tier": 1,
+   "review": {
+    "archetype": "RG midrange removal",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "delirium"
+    ],
+    "rating": 3,
+    "verdict": "Strong removal (two Scorching Dragonfire, Beatdown, Emergence, Overlord) props up a thin, low-impact creature base. Manifest dread helps fill the board, but Cathartic Parting, Say Its Name, Violent Urge and Patchwork Beastie without real delirium support make it a fine deck, not a great one."
+   },
+   "stats": {
+    "curve": [
+     3,
+     12,
+     3,
+     2,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Monstrous Emergence",
+     "Overlord of the Boilerbilges",
+     "Scorching Dragonfire",
+     "Waltz of Rage"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66581,
+    "red_flags": []
    }
   },
   {
@@ -3308,6 +6898,47 @@
     "Terramorphic Expanse": 2,
     "Undead Sprinter": 1,
     "Withering Torment": 1
+   },
+   "deck_score": 0.55431,
+   "tier": 1,
+   "review": {
+    "archetype": "BR sacrifice midrange",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "sac fodder"
+    ],
+    "rating": 4,
+    "verdict": "Deep, efficient removal (3 Dragonfire, Murder, Torment, Nowhere to Run) plus bombs like Overlord and Miasma Demon carry a solid BR deck. Only 12 creatures thins the sacrifice fodder, and Charred Foyer is a weak slot."
+   },
+   "stats": {
+    "curve": [
+     1,
+     10,
+     5,
+     5,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 8,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Final Vengeance",
+     "Infernal Phantom",
+     "Murder",
+     "Nowhere to Run",
+     "Scorching Dragonfire",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5497882348930948,
+    "deck_score_top": 0.6621,
+    "red_flags": []
    }
   },
   {
@@ -3345,6 +6976,48 @@
     "Unable to Scream": 1,
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unsettling Twins": 2
+   },
+   "deck_score": 0.5664,
+   "tier": 1,
+   "review": {
+    "archetype": "WU eerie enchantments",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "filler",
+     "small creatures"
+    ],
+    "rating": 3,
+    "verdict": "A coherent WU eerie deck with real payoffs in Gremlin Tamer, Entity Tracker, Scavengers and two Lionheart Glimmers, and 3x Fear of Surveillance makes a solid base, but thin removal and filler like Paranormal Analyst, Shardmage's Rescue and Bear Trap keep it merely fine."
+   },
+   "stats": {
+    "curve": [
+     7,
+     6,
+     4,
+     3,
+     4,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 2,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Bear Trap",
+     "Seized from Slumber"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility",
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67583,
+    "red_flags": []
    }
   },
   {
@@ -3383,6 +7056,49 @@
     "Terramorphic Expanse": 1,
     "Turn Inside Out": 2,
     "Twitching Doll": 1
+   },
+   "deck_score": 0.56805,
+   "tier": 1,
+   "review": {
+    "archetype": "RG removal-heavy midrange",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "curve gaps"
+    ],
+    "rating": 3,
+    "verdict": "Plenty of quality removal (2x Scorching Dragonfire, Bargain, Inferno, Glassworks) plus Overlord of the Boilerbilges and Fear of Burning Alive give real power, but only 13 creatures with weak 1-drops, filler like 2x Turn Inside Out and Glimmerlight, and almost nothing at 3-4 mana make the body count and curve thin."
+   },
+   "stats": {
+    "curve": [
+     4,
+     11,
+     2,
+     1,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 8,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Betrayer's Bargain",
+     "Fear of Burning Alive",
+     "Glassworks // Shattered Yard",
+     "Impossible Inferno",
+     "Overlord of the Boilerbilges",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66762,
+    "red_flags": []
    }
   },
   {
@@ -3420,6 +7136,46 @@
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unsettling Twins": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.56719,
+   "tier": 1,
+   "review": {
+    "archetype": "WU enchantments/go-wide aggro",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "card quality",
+     "low power"
+    ],
+    "rating": 3,
+    "verdict": "Coherent low-curve WU enchantment deck with good glue (Enduring Curiosity, Lionheart Glimmer, Floodpits Drowner), but it is light on real removal, its threats are small, and it has filler like Optimistic Scavenger and three Glimmerlights, so it is a playable but unspectacular build."
+   },
+   "stats": {
+    "curve": [
+     6,
+     9,
+     3,
+     4,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 1,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67438,
+    "red_flags": []
    }
   },
   {
@@ -3461,6 +7217,54 @@
     "Valgavoth's Lair": 1,
     "Waltz of Rage": 1,
     "Winter's Intervention": 2
+   },
+   "deck_score": 0.54476,
+   "tier": 1,
+   "review": {
+    "archetype": "3-color Rooms control (Grixis)",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "colors",
+     "mana",
+     "filler rooms"
+    ],
+    "rating": 2,
+    "verdict": "Strong black removal (3 Murder, Glassworks, Winter's Intervention) but only 9 creatures, a three-color manabase with little fixing for BB/RR/UU costs, and weak Room filler like Central Elevator leave it unable to close games reliably."
+   },
+   "stats": {
+    "curve": [
+     1,
+     7,
+     9,
+     2,
+     2,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 8,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Infernal Phantom",
+     "Murder",
+     "Waltz of Rage",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.49213406292749656,
+    "deck_score_top": 0.65698,
+    "red_flags": [
+     "3 main colors, 2 fixing lands",
+     "weak archetype UBR 49.2%"
+    ]
    }
   },
   {
@@ -3499,6 +7303,45 @@
     "Under the Skin": 1,
     "Untimely Malfunction": 1,
     "Wildfire Wickerfolk": 4
+   },
+   "deck_score": 0.56353,
+   "tier": 1,
+   "review": {
+    "archetype": "RG delirium aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "Four Wildfire Wickerfolk, two Beastie Beatdown and a low curve make a real RG delirium aggro plan with plenty of card types, but only 12 real creatures and filler like Horrid Vigor, Untimely Malfunction and Clockwork Percussionist keep it from being better than solid."
+   },
+   "stats": {
+    "curve": [
+     4,
+     13,
+     4,
+     1,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Bear Trap",
+     "Beastie Beatdown",
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66631,
+    "red_flags": []
    }
   },
   {
@@ -3537,6 +7380,47 @@
     "Wary Watchdog": 1,
     "Wickerfolk Thresher": 1,
     "Wildfire Wickerfolk": 3
+   },
+   "deck_score": 0.57057,
+   "tier": 1,
+   "review": {
+    "archetype": "RG delirium aggro",
+    "coherent": true,
+    "concerns": [
+     "delirium enablers",
+     "top end",
+     "card advantage"
+    ],
+    "rating": 4,
+    "verdict": "Low-curve RG aggro deck with three Wildfire Wickerfolk, Fear of Burning Alive, and plenty of cheap efficient removal (two Scorching Dragonfire, Chainsaw, Glassworks, Trial of Agony); delirium is a bit thin but the deck plays well even when it's off."
+   },
+   "stats": {
+    "curve": [
+     4,
+     12,
+     3,
+     2,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 9,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Chainsaw",
+     "Fear of Burning Alive",
+     "Glassworks // Shattered Yard",
+     "Monstrous Emergence",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.67219,
+    "red_flags": []
    }
   },
   {
@@ -3572,6 +7456,49 @@
     "Swamp": 8,
     "Turn Inside Out": 2,
     "Vengeful Possession": 1
+   },
+   "deck_score": 0.56943,
+   "tier": 1,
+   "review": {
+    "archetype": "BR sacrifice aggro",
+    "coherent": true,
+    "concerns": [
+     "red-heavy",
+     "few creatures"
+    ],
+    "rating": 4,
+    "verdict": "Strong RB sacrifice aggro deck with premium red rares (Screaming Nemesis, Overlord, two Enduring Courage), cheap removal, and plenty of death-trigger fodder. The black splash is light, so a 9-ish Mountain split might fit the RR costs better."
+   },
+   "stats": {
+    "curve": [
+     6,
+     8,
+     4,
+     3,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 9,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 9,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Fear of Burning Alive",
+     "Final Vengeance",
+     "Murder",
+     "Overlord of the Boilerbilges",
+     "Sawblade Skinripper",
+     "Scorching Dragonfire",
+     "Screaming Nemesis"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5497882348930948,
+    "deck_score_top": 0.66468,
+    "red_flags": []
    }
   },
   {
@@ -3614,6 +7541,48 @@
     "Valgavoth's Faithful": 1,
     "Valgavoth's Lair": 1,
     "Winter's Intervention": 2
+   },
+   "deck_score": 0.55297,
+   "tier": 1,
+   "review": {
+    "archetype": "BG self-mill reanimator splashing W",
+    "coherent": true,
+    "concerns": [
+     "colors",
+     "few creatures",
+     "mana"
+    ],
+    "rating": 3,
+    "verdict": "Solid removal and strong top end (2x Shroudstomper, Enduring Vitality, Drag to the Roots) with a real graveyard/reanimation plan. But only 12 creatures, many of them weak 1-2 drops, and a greedy WW splash on 6-drops make it clunky and inconsistent."
+   },
+   "stats": {
+    "curve": [
+     3,
+     7,
+     6,
+     4,
+     0,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Drag to the Roots",
+     "Fear of Lost Teeth",
+     "Murder",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5176401793255799,
+    "deck_score_top": 0.66292,
+    "red_flags": [
+     "weak archetype WBG 51.8%"
+    ]
    }
   },
   {
@@ -3653,6 +7622,51 @@
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unidentified Hovership": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.57394,
+   "tier": 1,
+   "review": {
+    "archetype": "WU enchantments control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "Abhorrent Oculus",
+     "threat density"
+    ],
+    "rating": 4,
+    "verdict": "Deep, high-quality removal (Seized x2, Hovership, Trapped, Unable to Scream x2, Drowner, Vanish) backs a solid eerie enchantment shell and a low curve; the creature count is thin and Oculus is hard to cast without self-mill, but this is a strong, well-built deck."
+   },
+   "stats": {
+    "curve": [
+     3,
+     7,
+     7,
+     4,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 6,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Restricted Office // Lecture Hall",
+     "Seized from Slumber",
+     "Trapped in the Screen",
+     "Unidentified Hovership",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.68403,
+    "red_flags": []
    }
   },
   {
@@ -3692,6 +7706,50 @@
     "Valgavoth's Onslaught": 1,
     "Vile Mutilator": 1,
     "Winter's Intervention": 1
+   },
+   "deck_score": 0.54701,
+   "tier": 1,
+   "review": {
+    "archetype": "BG midrange/reanimator",
+    "coherent": true,
+    "concerns": [
+     "top-heavy",
+     "Fanatic glut",
+     "early defense"
+    ],
+    "rating": 3,
+    "verdict": "Solid black-heavy BG midrange with strong removal (Murder, Live or Die x2, Nowhere to Run, Winter's Intervention, Monstrous Emergence) and premium threats like Enduring Tenacity, Miasma Demon and Vile Mutilator. Five 6+ drops plus three clunky Fanatics make it slow, but the cyclers smooth the mana and the 16 lands are fine."
+   },
+   "stats": {
+    "curve": [
+     2,
+     6,
+     5,
+     4,
+     2,
+     5
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Live or Die",
+     "Monstrous Emergence",
+     "Murder",
+     "Nowhere to Run",
+     "Vile Mutilator",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.65818,
+    "red_flags": [
+     "5 cards at 6+"
+    ]
    }
   },
   {
@@ -3729,6 +7787,49 @@
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unnerving Grasp": 2,
     "Unwilling Vessel": 1
+   },
+   "deck_score": 0.55922,
+   "tier": 1,
+   "review": {
+    "archetype": "UR rooms/eerie",
+    "coherent": true,
+    "concerns": [
+     "mana split",
+     "removal",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "A real UR Rooms deck with good eerie payoffs (Entity Tracker, Unwilling Vessel, Enduring Curiosity) and lots of manifest dread and Glimmer bodies, but the 7/7 land split underserves the heavy blue side, the Clockwork Percussionists are weak filler, and the only hard removal is Chainsaw and Impossible Inferno."
+   },
+   "stats": {
+    "curve": [
+     4,
+     5,
+     10,
+     3,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 2,
+    "removal": 2,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Chainsaw",
+     "Impossible Inferno"
+    ],
+    "soft_removal_cards": [
+     "Meat Locker // Drowned Diner",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.66452,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -3767,6 +7868,47 @@
     "Scorching Dragonfire": 1,
     "Threats Around Every Corner": 2,
     "Ticket Booth // Tunnel of Hate": 2
+   },
+   "deck_score": 0.56853,
+   "tier": 1,
+   "review": {
+    "archetype": "RG manifest dread (blue splash)",
+    "coherent": true,
+    "concerns": [
+     "colors",
+     "few creatures",
+     "blue splash"
+    ],
+    "rating": 3,
+    "verdict": "Good red removal (2 Bargain, Dragonfire, 2 Glassworks) and about nine manifest effects make up for only 9 real creatures, but four blue cards on thin blue sources make the mana shaky and the bodies are mostly vanilla 2/2s."
+   },
+   "stats": {
+    "curve": [
+     1,
+     10,
+     7,
+     3,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 4,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5244383028814167,
+    "deck_score_top": 0.67007,
+    "red_flags": [
+     "weak archetype URG 52.4%"
+    ]
    }
   },
   {
@@ -3806,6 +7948,47 @@
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unholy Annex // Ritual Chamber": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.56997,
+   "tier": 1,
+   "review": {
+    "archetype": "UG manifest dread, light B splash",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "mana",
+     "threat density",
+     "splash"
+    ],
+    "rating": 2,
+    "verdict": "Good cheap interaction in 3x Unable to Scream and Vanish from Sight, but only 11 real creatures, padded by dread manifests and filler like Beastie and Chandelier. Blue is short on sources for UU costs, and the splash includes BB cards, so the deck is thin on power and inconsistent."
+   },
+   "stats": {
+    "curve": [
+     5,
+     8,
+     6,
+     2,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 2,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Monstrous Emergence",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "deck_score_top": 0.67856,
+    "red_flags": []
    }
   },
   {
@@ -3848,6 +8031,51 @@
     "Unsettling Twins": 2,
     "Unwilling Vessel": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.5693,
+   "tier": 1,
+   "review": {
+    "archetype": "WU eerie/enchantments tempo",
+    "coherent": true,
+    "concerns": [
+     "needless splash",
+     "low top-end"
+    ],
+    "rating": 3,
+    "verdict": "Solid WU eerie tempo deck with good blue interaction and a sensible low curve, but the red splash for Midnight Mayhem and Roaring Furnace adds little and strains the mana; cut it for more WU playables."
+   },
+   "stats": {
+    "curve": [
+     1,
+     9,
+     5,
+     5,
+     3,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 4,
+    "soft_removal": 5,
+    "removal_cards": [
+     "Fear of Falling",
+     "Roaring Furnace // Steaming Sauna",
+     "Seized from Slumber",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility",
+     "Floodpits Drowner",
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.6772,
+    "red_flags": []
    }
   },
   {
@@ -3887,6 +8115,50 @@
     "Unable to Scream": 2,
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unwilling Vessel": 1
+   },
+   "deck_score": 0.5574,
+   "tier": 1,
+   "review": {
+    "archetype": "UR rooms",
+    "coherent": true,
+    "concerns": [
+     "creature quality",
+     "few creatures",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "A real rooms deck with good payoffs (Entity Tracker, Unwilling Vessel, both Soulragers, Keybearer) and solid removal (Glassworks, Bargain, 2x Unable to Scream, Fear of Falling), but thin, weak bodies like the 2x Percussionist and filler like Central Elevator keep it a fine deck rather than a strong one."
+   },
+   "stats": {
+    "curve": [
+     6,
+     7,
+     7,
+     3,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 11,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 4,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Fear of Falling",
+     "Glassworks // Shattered Yard",
+     "Roaring Furnace // Steaming Sauna"
+    ],
+    "soft_removal_cards": [
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.66214,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -3928,6 +8200,47 @@
     "Swamp": 5,
     "Wary Watchdog": 2,
     "Zimone, All-Questioning": 2
+   },
+   "deck_score": 0.55528,
+   "tier": 1,
+   "review": {
+    "archetype": "BG self-mill reanimator, 4-color",
+    "coherent": false,
+    "concerns": [
+     "colors",
+     "mana",
+     "few creatures",
+     "reanimation glut",
+     "removal"
+    ],
+    "rating": 2,
+    "verdict": "There's a real BG delirium core with Drag to the Roots, Live or Die, Enduring Vitality and the Centipedes, but the build is too greedy: two Zimones with no Islands, WWBB Shroudstomper and WBB Rite off 2 Plains, and three reanimation spells with only 14 mostly modest creatures to bring back. Cut the U and most of the W for more bodies and interaction."
+   },
+   "stats": {
+    "curve": [
+     1,
+     6,
+     7,
+     3,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 8,
+    "lands": 18,
+    "fixing_lands": 5,
+    "removal": 3,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Drag to the Roots",
+     "Live or Die",
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.6625,
+    "red_flags": []
    }
   },
   {
@@ -3966,6 +8279,45 @@
     "Trapped in the Screen": 3,
     "Turn Inside Out": 1,
     "Unsettling Twins": 1
+   },
+   "deck_score": 0.56545,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro rooms",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "Strong removal suite (3 Trapped in the Screen, 2 Glassworks, Betrayer's Bargain) and some token makers, but only 10 real creatures plus a few tokens and manifests leaves this aggro shell light on bodies. It may run out of pressure, though the interaction should carry it."
+   },
+   "stats": {
+    "curve": [
+     3,
+     9,
+     7,
+     3,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Fear of Burning Alive",
+     "Glassworks // Shattered Yard",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.66866,
+    "red_flags": []
    }
   },
   {
@@ -4000,6 +8352,49 @@
     "Scorching Dragonfire": 1,
     "Seized from Slumber": 1,
     "Trapped in the Screen": 1
+   },
+   "deck_score": 0.57209,
+   "tier": 1,
+   "review": {
+    "archetype": "WR enchantress aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "aura density",
+     "weak one-drops",
+     "thin removal"
+    ],
+    "rating": 2,
+    "verdict": "The low-curve WR aggro plan makes sense, but four Ethereal Armors on 13 creatures, three of them weak 1/1 Percussionists, means frequent blowouts and few threats; it needs more quality two- and three-drop creatures."
+   },
+   "stats": {
+    "curve": [
+     8,
+     6,
+     2,
+     3,
+     4,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 11,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 4,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Fear of Abduction",
+     "Scorching Dragonfire",
+     "Seized from Slumber",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67411,
+    "red_flags": []
    }
   },
   {
@@ -4039,6 +8434,50 @@
     "Unidentified Hovership": 2,
     "Vanish from Sight": 1,
     "Veteran Survivor": 1
+   },
+   "deck_score": 0.5686,
+   "tier": 1,
+   "review": {
+    "archetype": "WU enchantments/control",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "threat density",
+     "filler",
+     "crew"
+    ],
+    "rating": 2,
+    "verdict": "The removal is solid: two Hoverships, two Dominations, Vanish, Exorcise and the auras. But only 8 real creatures plus Glimmerlight and token filler leave too few threats to crew vehicles or close games, so the deck will struggle to turn removal into a win."
+   },
+   "stats": {
+    "curve": [
+     3,
+     12,
+     2,
+     4,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 8,
+    "noncreature_spells": 15,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 4,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Exorcise",
+     "Unidentified Hovership",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Duskmourn's Domination",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67492,
+    "red_flags": []
    }
   },
   {
@@ -4072,6 +8511,52 @@
     "Valgavoth, Terror Eater": 1,
     "Vile Mutilator": 1,
     "Withering Torment": 3
+   },
+   "deck_score": 0.54527,
+   "tier": 1,
+   "review": {
+    "archetype": "WB reanimator control",
+    "coherent": true,
+    "concerns": [
+     "top-heavy curve",
+     "few creatures",
+     "early defense",
+     "WWBB costs"
+    ],
+    "rating": 3,
+    "verdict": "Plenty of quality removal and a powerful top end of Shroudstompers, Valgavoth and Mutilator, with Loner and Emerge as a real reanimation plan; but three Emerge, thin early plays and only 13 creatures make it clunky against fast starts."
+   },
+   "stats": {
+    "curve": [
+     1,
+     4,
+     7,
+     2,
+     3,
+     6
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Murder",
+     "Sporogenic Infection",
+     "Unidentified Hovership",
+     "Vile Mutilator",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "deck_score_top": 0.65978,
+    "red_flags": [
+     "4 two-drops",
+     "6 cards at 6+",
+     "weak archetype WB 52.3%"
+    ]
    }
   },
   {
@@ -4106,6 +8591,47 @@
     "Rip, Spawn Hunter": 1,
     "Savior of the Small": 1,
     "Splitskin Doll": 2
+   },
+   "deck_score": 0.54822,
+   "tier": 1,
+   "review": {
+    "archetype": "WG survivors/manifest aggro",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "card quality",
+     "Patchwork Beastie"
+    ],
+    "rating": 3,
+    "verdict": "A low-curve WG deck where Manifest Dread and Machete pad out 13 creatures and Rip, Lionheart Glimmer and Fear of Exposure give it real punch, but thin removal, filler like Patchwork Beastie and Frantic Strength, and a modest top end make it a solid but unspectacular build."
+   },
+   "stats": {
+    "curve": [
+     1,
+     12,
+     6,
+     4,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 11,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 2,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [
+     "Baseball Bat"
+    ],
+    "archetype_wr": 0.5269779659031972,
+    "deck_score_top": 0.6576,
+    "red_flags": [
+     "weak archetype WG 52.7%"
+    ]
    }
   },
   {
@@ -4145,6 +8671,51 @@
     "Twist Reality": 2,
     "Unable to Scream": 2,
     "Unholy Annex // Ritual Chamber": 1
+   },
+   "deck_score": 0.55005,
+   "tier": 1,
+   "review": {
+    "archetype": "UB control/counterspells",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "win conditions",
+     "filler",
+     "reactive"
+    ],
+    "rating": 2,
+    "verdict": "There is plenty of interaction (Murder, Bear Traps, Unable to Scream, counters) but only 7 real creatures, mostly small, and filler like Keys to the House, so the deck struggles to close games or hold the board against DSK's aggressive decks."
+   },
+   "stats": {
+    "curve": [
+     5,
+     6,
+     8,
+     2,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 7,
+    "noncreature_spells": 16,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 3,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Bear Trap",
+     "Murder"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Get Out",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "deck_score_top": 0.66065,
+    "red_flags": [
+     "weak archetype UB 51.6%"
+    ]
    }
   },
   {
@@ -4183,6 +8754,49 @@
     "Tunnel Surveyor": 1,
     "Underwater Tunnel // Slimy Aquarium": 2,
     "Unwilling Vessel": 1
+   },
+   "deck_score": 0.56341,
+   "tier": 1,
+   "review": {
+    "archetype": "WU enchantments/rooms tempo",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat density",
+     "sweeper anti-synergy",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "The enchantment theme is real: Gremlin Tamer, Inquisitive Glimmer, Unwilling Vessel and Cult Healer get plenty of eerie triggers, and Split Up, Stay Hidden and Restricted Office give real removal. But with only 11 creatures, weak finishers, and sweepers that clash with its own board, Don't Make a Sound and Shardmage's Rescue read as filler in a decent but unspectacular deck."
+   },
+   "stats": {
+    "curve": [
+     4,
+     9,
+     6,
+     3,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 3,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Restricted Office // Lecture Hall",
+     "Split Up"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Fear of Immobility",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.6725,
+    "red_flags": []
    }
   },
   {
@@ -4223,6 +8837,48 @@
     "Unsettling Twins": 1,
     "Vengeful Possession": 1,
     "Vicious Clown": 1
+   },
+   "deck_score": 0.56461,
+   "tier": 1,
+   "review": {
+    "archetype": "WR aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler tricks",
+     "small bodies"
+    ],
+    "rating": 3,
+    "verdict": "A low-curve Boros aggro deck with real removal (Chainsaw, 2x Trapped in the Screen, Sheltered by Ghosts, Exorcise) and solid payoffs like Midnight Mayhem and Most Valuable Slayer. It is held back by only 12 creatures, many fragile 2/1s, and too many low-impact tricks (2x Jump Scare, Turn Inside Out, Vengeful Possession); delirium cards like Hand That Feeds rarely turn on here."
+   },
+   "stats": {
+    "curve": [
+     5,
+     9,
+     6,
+     4,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 5,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Chainsaw",
+     "Exorcise",
+     "Sheltered by Ghosts",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [
+     "Fear of Missing Out"
+    ],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67132,
+    "red_flags": []
    }
   },
   {
@@ -4258,6 +8914,43 @@
     "Unidentified Hovership": 1,
     "Unsettling Twins": 1,
     "Veteran Survivor": 1
+   },
+   "deck_score": 0.5688,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "card quality",
+     "top-end"
+    ],
+    "rating": 3,
+    "verdict": "Low-curve RW aggro with 4 Fear of Being Hunted, 2 Arabella, Enduring Innocence and Hovership; it hits hard, but removal is thin and some filler like Shardmage's Rescue, Turn Inside Out and Glimmerlight could run out of gas."
+   },
+   "stats": {
+    "curve": [
+     7,
+     8,
+     6,
+     2,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 1,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Unidentified Hovership"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67319,
+    "red_flags": []
    }
   },
   {
@@ -4298,6 +8991,47 @@
     "Unable to Scream": 1,
     "Unnerving Grasp": 2,
     "Zimone, All-Questioning": 1
+   },
+   "deck_score": 0.56076,
+   "tier": 1,
+   "review": {
+    "archetype": "UG manifest dread tempo",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "threat density",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG manifest deck built on strong pieces like Floodpits Drowner, Bookworm, Windbreaker and Unnerving Grasp, held back by no hard removal, small bodies and filler like Say Its Name, Enter the Enigma and double Horrid Vigor."
+   },
+   "stats": {
+    "curve": [
+     2,
+     11,
+     7,
+     1,
+     0,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 2,
+    "removal": 0,
+    "soft_removal": 7,
+    "removal_cards": [],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "deck_score_top": 0.66918,
+    "red_flags": []
    }
   },
   {
@@ -4340,6 +9074,49 @@
     "Vanish from Sight": 1,
     "Winter, Misanthropic Guide": 1,
     "Zimone, All-Questioning": 2
+   },
+   "deck_score": 0.56048,
+   "tier": 1,
+   "review": {
+    "archetype": "UG manifest dread/delirium",
+    "coherent": true,
+    "concerns": [
+     "splash",
+     "delirium",
+     "removal"
+    ],
+    "rating": 3,
+    "verdict": "Solid UG shell with good blue interaction (Drowner, Vanish, Grasp, Domination) and Zimone, but the double-color Winter splash on two off-color basics is greedy, and the Patchwork Beasties and Flytrap rely on inconsistent delirium; cut Winter for a playable to make it a cleaner, fine deck."
+   },
+   "stats": {
+    "curve": [
+     3,
+     5,
+     8,
+     2,
+     2,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 2,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Monstrous Emergence",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Duskmourn's Domination",
+     "Floodpits Drowner",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "deck_score_top": 0.66841,
+    "red_flags": []
    }
   },
   {
@@ -4378,6 +9155,45 @@
     "Under the Skin": 1,
     "Waltz of Rage": 1,
     "Wary Watchdog": 2
+   },
+   "deck_score": 0.55806,
+   "tier": 1,
+   "review": {
+    "archetype": "RG manifest dread midrange",
+    "coherent": true,
+    "concerns": [
+     "filler one-drops",
+     "light top end"
+    ],
+    "rating": 3,
+    "verdict": "Solid RG manifest dread midrange. Watchdogs, the Wurm, Bashful Beastie and four real removal spells carry it, and the manifest spells bring the effective body count well above 13. A few weak slots (Percussionist, Turn Inside Out, Patchwork Beastie) keep it from being better than fine."
+   },
+   "stats": {
+    "curve": [
+     5,
+     5,
+     7,
+     2,
+     4,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Bear Trap",
+     "Coordinated Clobbering",
+     "Impossible Inferno",
+     "Waltz of Rage"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66318,
+    "red_flags": []
    }
   },
   {
@@ -4421,6 +9237,53 @@
     "Valgavoth's Faithful": 1,
     "Vengeful Possession": 1,
     "Vile Mutilator": 1
+   },
+   "deck_score": 0.56094,
+   "tier": 1,
+   "review": {
+    "archetype": "BR sacrifice",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "pointless splash",
+     "top-end gap",
+     "low threat density"
+    ],
+    "rating": 3,
+    "verdict": "Deep, efficient BR removal and real sac synergy (Skinripper, Mirth, Rat, Faithful, Mutilator), but only 11 mostly small creatures, a thin 3-5 drop slot, and a Forest plus Bleeding Woods spent on one Broodspinner make it fine rather than strong; cut the green for another solid body."
+   },
+   "stats": {
+    "curve": [
+     5,
+     11,
+     3,
+     1,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 8,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Chainsaw",
+     "Final Vengeance",
+     "Impossible Inferno",
+     "Nowhere to Run",
+     "Sawblade Skinripper",
+     "Sporogenic Infection",
+     "Vile Mutilator"
+    ],
+    "soft_removal_cards": [
+     "Fear of Missing Out"
+    ],
+    "archetype_wr": 0.5497882348930948,
+    "deck_score_top": 0.66486,
+    "red_flags": []
    }
   },
   {
@@ -4459,6 +9322,53 @@
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unwilling Vessel": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.54767,
+   "tier": 1,
+   "review": {
+    "archetype": "UR Rooms control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat density",
+     "clunky rooms",
+     "3x Bottomless Pool"
+    ],
+    "rating": 2,
+    "verdict": "Good red removal and real Room synergy (Rampaging Soulrager, Unwilling Vessel, Misty Salon, Intruding Soulrager), but with only 7 creatures plus a few manifests it struggles to block or close games, and three copies of Bottomless Pool add filler where bodies are needed."
+   },
+   "stats": {
+    "curve": [
+     4,
+     5,
+     11,
+     1,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 7,
+    "noncreature_spells": 16,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 6,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Glassworks // Shattered Yard",
+     "Impossible Inferno",
+     "Scorching Dragonfire",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Get Out"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.65473,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -4502,6 +9412,52 @@
     "Trapped in the Screen": 1,
     "Unable to Scream": 2,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.56532,
+   "tier": 1,
+   "review": {
+    "archetype": "3-color pile (Jeskai)",
+    "coherent": false,
+    "concerns": [
+     "colors",
+     "mana",
+     "few creatures",
+     "weak cards"
+    ],
+    "rating": 2,
+    "verdict": "The removal is solid (Dragonfire, Trapped in the Screen, Inferno, Vanish, 2x Unable to Scream, Drowner) and Razorkin Hordecaller is strong. But the deck spreads across three colors on 16 lands with thin fixing, has only 13 creatures, and runs duds like Abhorrent Oculus with no self-mill, Norin, and Fear of Isolation. It should cut to two colors, likely UR or RW, and add creatures."
+   },
+   "stats": {
+    "curve": [
+     3,
+     8,
+     5,
+     3,
+     4,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 11,
+    "lands": 16,
+    "fixing_lands": 3,
+    "removal": 4,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Impossible Inferno",
+     "Scorching Dragonfire",
+     "Trapped in the Screen",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5035140562248996,
+    "deck_score_top": 0.67066,
+    "red_flags": [
+     "weak archetype WUR 50.4%"
+    ]
    }
   },
   {
@@ -4543,6 +9499,50 @@
     "Twitching Doll": 1,
     "Unsettling Twins": 2,
     "Wary Watchdog": 1
+   },
+   "deck_score": 0.55875,
+   "tier": 1,
+   "review": {
+    "archetype": "WG aggro/go-wide",
+    "coherent": true,
+    "concerns": [
+     "filler",
+     "green depth"
+    ],
+    "rating": 3,
+    "verdict": "A solid white-heavy aggro deck with a low curve, good removal (Sheltered by Ghosts, Trapped in the Screen, Seized from Slumber, Fear of Immobility) and Split Up as a one-sided sweeper after attacks. The green is thin filler, Possessed Goat and Flytrap's delirium don't really fit, and the deck lacks a strong top end, so it lands as a fine but unexceptional build."
+   },
+   "stats": {
+    "curve": [
+     3,
+     9,
+     7,
+     3,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 2,
+    "removal": 4,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Seized from Slumber",
+     "Sheltered by Ghosts",
+     "Split Up",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [
+     "Baseball Bat",
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5269779659031972,
+    "deck_score_top": 0.66837,
+    "red_flags": [
+     "weak archetype WG 52.7%"
+    ]
    }
   },
   {
@@ -4579,6 +9579,47 @@
     "Under the Skin": 1,
     "Wary Watchdog": 5,
     "Winter's Intervention": 1
+   },
+   "deck_score": 0.56161,
+   "tier": 1,
+   "review": {
+    "archetype": "BG delirium",
+    "coherent": true,
+    "concerns": [
+     "threat density",
+     "top end",
+     "card quality",
+     "few creatures"
+    ],
+    "rating": 2,
+    "verdict": "The BG delirium plan is coherent, with good card-type diversity and four solid removal spells, but five Wary Watchdogs and few real threats or top-end finishers leave it underpowered and grindy without payoffs."
+   },
+   "stats": {
+    "curve": [
+     3,
+     13,
+     3,
+     4,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 14,
+    "lands": 16,
+    "fixing_lands": 2,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Final Vengeance",
+     "Murder",
+     "Sporogenic Infection",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.67097,
+    "red_flags": []
    }
   },
   {
@@ -4613,6 +9654,46 @@
     "Unsettling Twins": 3,
     "Veteran Survivor": 1,
     "Vicious Clown": 1
+   },
+   "deck_score": 0.5688,
+   "tier": 1,
+   "review": {
+    "archetype": "WR survivors aggro",
+    "coherent": true,
+    "concerns": [
+     "filler tricks",
+     "card quality",
+     "few creatures"
+    ],
+    "rating": 3,
+    "verdict": "A playable WR aggro shell: Reluctant Role Model, Glimmer Seeker, good removal (Chainsaw, Dragonfire, Seized from Slumber, Fear of Abduction) and a low curve, but three Turn Inside Out and three Unsettling Twins dilute it, and the creature count is light even counting tokens."
+   },
+   "stats": {
+    "curve": [
+     4,
+     9,
+     3,
+     5,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Chainsaw",
+     "Fear of Abduction",
+     "Scorching Dragonfire",
+     "Seized from Slumber"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67108,
+    "red_flags": []
    }
   },
   {
@@ -4657,6 +9738,53 @@
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unnerving Grasp": 1,
     "Unsettling Twins": 1
+   },
+   "deck_score": 0.56635,
+   "tier": 1,
+   "review": {
+    "archetype": "UW enchantments splashing red",
+    "coherent": false,
+    "concerns": [
+     "three colors",
+     "few creatures",
+     "red splash",
+     "unfocused"
+    ],
+    "rating": 2,
+    "verdict": "The deck has some strong individual cards in Overlord, Fear of Falling, Glassworks and Unable to Scream, but it runs only 10 creatures. Red is spread across Betrayer's Bargain, Glassworks, Razorkin and Jolly Balloon Man with just 3 Mountains and light fixing, so the deck is a stretched three-color pile that lacks a clear game plan."
+   },
+   "stats": {
+    "curve": [
+     4,
+     9,
+     4,
+     2,
+     2,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 5,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Exorcise",
+     "Fear of Falling",
+     "Glassworks // Shattered Yard",
+     "Sheltered by Ghosts"
+    ],
+    "soft_removal_cards": [
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5035140562248996,
+    "deck_score_top": 0.67083,
+    "red_flags": [
+     "weak archetype WUR 50.4%"
+    ]
    }
   },
   {
@@ -4701,6 +9829,48 @@
     "Turn Inside Out": 1,
     "Twitching Doll": 1,
     "Under the Skin": 1
+   },
+   "deck_score": 0.56411,
+   "tier": 1,
+   "review": {
+    "archetype": "RG midrange, splash black",
+    "coherent": false,
+    "concerns": [
+     "colors",
+     "mana",
+     "few creatures"
+    ],
+    "rating": 3,
+    "verdict": "Good removal (2 Beastie Beatdown, Dragonfire, Chainsaw, Glassworks, Drag to the Roots) and big green tops. But four black cards on three black sources, plus RR and GG costs, stretch the mana. Only 12 creatures and filler like Needlehead and Hedge Shredder hold it back."
+   },
+   "stats": {
+    "curve": [
+     2,
+     8,
+     8,
+     4,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Chainsaw",
+     "Drag to the Roots",
+     "Glassworks // Shattered Yard",
+     "Sawblade Skinripper",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66738,
+    "red_flags": []
    }
   },
   {
@@ -4741,6 +9911,48 @@
     "Sporogenic Infection": 1,
     "Swamp": 7,
     "Undead Sprinter": 1
+   },
+   "deck_score": 0.55859,
+   "tier": 1,
+   "review": {
+    "archetype": "BR sacrifice aggro",
+    "coherent": true,
+    "concerns": [
+     "delirium filler",
+     "top end"
+    ],
+    "rating": 4,
+    "verdict": "A low-curved, focused Rakdos sacrifice deck: plenty of fodder that pays off when it dies, Skinripper, two Hordecallers and good cheap removal (Dragonfire, Glassworks, Bargain, Final Vengeance). Only the weak delirium cards and a thin top end hold it back."
+   },
+   "stats": {
+    "curve": [
+     5,
+     11,
+     6,
+     0,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 10,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Fear of Lost Teeth",
+     "Final Vengeance",
+     "Glassworks // Shattered Yard",
+     "Sawblade Skinripper",
+     "Scorching Dragonfire",
+     "Sporogenic Infection"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5497882348930948,
+    "deck_score_top": 0.66152,
+    "red_flags": []
    }
   },
   {
@@ -4777,6 +9989,46 @@
     "Swamp": 8,
     "Unholy Annex // Ritual Chamber": 1,
     "Wary Watchdog": 1
+   },
+   "deck_score": 0.55494,
+   "tier": 1,
+   "review": {
+    "archetype": "BG delirium control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat density",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "A deep removal suite (4 Drag to the Roots, 2 Murder, Sporogenic Infection, Miasma Demon) carries the deck, but only 10 mostly small creatures, plus filler like 2 Say Its Name, Frantic Strength and Horrid Vigor, leave it short on ways to actually close games."
+   },
+   "stats": {
+    "curve": [
+     0,
+     13,
+     6,
+     4,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 14,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 8,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Drag to the Roots",
+     "Monstrous Emergence",
+     "Murder",
+     "Sporogenic Infection"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.66113,
+    "red_flags": []
    }
   },
   {
@@ -4811,6 +10063,52 @@
     "Valgavoth, Terror Eater": 1,
     "Vile Mutilator": 1,
     "Withering Torment": 2
+   },
+   "deck_score": 0.54142,
+   "tier": 1,
+   "review": {
+    "archetype": "WB reanimator/control",
+    "coherent": true,
+    "concerns": [
+     "curve",
+     "no 2-drops",
+     "top-heavy",
+     "mana costs"
+    ],
+    "rating": 3,
+    "verdict": "Strong top end (2x Shroudstomper, Valgavoth, Vile Mutilator) with solid removal and real reanimation payoff via Fanatic and Faithful. It has zero two-drops and seven 6+ cards, so it will often stumble against aggro."
+   },
+   "stats": {
+    "curve": [
+     5,
+     0,
+     4,
+     5,
+     2,
+     7
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Fear of Abduction",
+     "Live or Die",
+     "Murder",
+     "Vile Mutilator",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "deck_score_top": 0.65291,
+    "red_flags": [
+     "0 two-drops",
+     "7 cards at 6+",
+     "weak archetype WB 52.3%"
+    ]
    }
   },
   {
@@ -4851,6 +10149,47 @@
     "Under the Skin": 1,
     "Valgavoth's Onslaught": 1,
     "Wildfire Wickerfolk": 1
+   },
+   "deck_score": 0.56738,
+   "tier": 1,
+   "review": {
+    "archetype": "RG delirium/manifest aggro",
+    "coherent": true,
+    "concerns": [
+     "filler",
+     "few creatures",
+     "top end",
+     "delirium consistency"
+    ],
+    "rating": 3,
+    "verdict": "A low-curve RG deck with good removal and manifest dread bodies that make up for only 12 creatures, but filler like Percussionist, Turn Inside Out and Say Its Name, plus inconsistent delirium for the Beasties, cap it at playable-not-great."
+   },
+   "stats": {
+    "curve": [
+     7,
+     9,
+     5,
+     1,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 2,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Impossible Inferno",
+     "Monstrous Emergence",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66953,
+    "red_flags": []
    }
   },
   {
@@ -4892,6 +10231,49 @@
     "Valgavoth's Faithful": 1,
     "Vile Mutilator": 1,
     "Withering Torment": 1
+   },
+   "deck_score": 0.55938,
+   "tier": 1,
+   "review": {
+    "archetype": "BG delirium midrange",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "weak early drops",
+     "black-heavy mana"
+    ],
+    "rating": 3,
+    "verdict": "Strong removal and solid top end (Unholy Annex, Vile Mutilator, Meathook II, Altanak) carry a delirium shell. It is held back by low-impact 1-drops, an empty 4-slot, only 13 creatures for Monstrous Emergence, and BBBB/BB costs on 8 Swamps."
+   },
+   "stats": {
+    "curve": [
+     5,
+     6,
+     6,
+     2,
+     1,
+     4
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 11,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 8,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Drag to the Roots",
+     "Fear of Lost Teeth",
+     "Meathook Massacre II",
+     "Monstrous Emergence",
+     "Murder",
+     "Vile Mutilator",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.66931,
+    "red_flags": []
    }
   },
   {
@@ -4926,6 +10308,44 @@
     "Sheltered by Ghosts": 1,
     "Toby, Beastie Befriender": 1,
     "Vicious Clown": 3
+   },
+   "deck_score": 0.56955,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro go-wide",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "card quality",
+     "top-heavy flood risk"
+    ],
+    "rating": 3,
+    "verdict": "A focused, low-curve RW aggro deck. Three Midnight Mayhem, Lionheart Glimmer, Most Valuable Slayer and Vicious Clowns give it real punch, but with only Chainsaw and Sheltered by Ghosts as removal and filler like Percussionists and Goat, it will struggle against bigger boards. 16 lands might suit the curve better."
+   },
+   "stats": {
+    "curve": [
+     5,
+     9,
+     4,
+     4,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 2,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Chainsaw",
+     "Sheltered by Ghosts"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67766,
+    "red_flags": []
    }
   },
   {
@@ -4968,6 +10388,51 @@
     "Ticket Booth // Tunnel of Hate": 1,
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.55713,
+   "tier": 1,
+   "review": {
+    "archetype": "UW(r) rooms/enchantments",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "colors",
+     "splash",
+     "counterspells"
+    ],
+    "rating": 2,
+    "verdict": "A rooms-matter deck with real payoffs (Inquisitive Glimmer, Ghostly Dancers, Fear of Abduction, Sheltered by Ghosts) and enough removal, but it runs only 8 creatures plus some token makers, has two weak Don't Make a Sound, and plays a three-colour mana base with 3 Mountains and heavy red Rooms (Smoky Lounge x2, Ticket Booth), so it will often stumble or get run over early."
+   },
+   "stats": {
+    "curve": [
+     2,
+     8,
+     7,
+     3,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 8,
+    "noncreature_spells": 15,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 6,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Fear of Abduction",
+     "Infernal Phantom",
+     "Roaring Furnace // Steaming Sauna",
+     "Seized from Slumber",
+     "Sheltered by Ghosts",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Meat Locker // Drowned Diner"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.66609,
+    "red_flags": []
    }
   },
   {
@@ -5008,6 +10473,48 @@
     "Unable to Scream": 1,
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unwilling Vessel": 2
+   },
+   "deck_score": 0.55859,
+   "tier": 1,
+   "review": {
+    "archetype": "UW enchantments/eerie tempo",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "heavy blue",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "Solid UW eerie shell with strong blue (Enduring Curiosity, Entity Tracker, Floodpits Drowner, Niko) and decent enchantment synergy, but light on hard removal and a bit clunky up top with Domination, Emerge, and Megalodon; the white splash-level count makes 8 Plains slightly awkward for a mostly-blue deck."
+   },
+   "stats": {
+    "curve": [
+     3,
+     5,
+     6,
+     4,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 2,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Seized from Slumber",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [
+     "Duskmourn's Domination",
+     "Floodpits Drowner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67129,
+    "red_flags": []
    }
   },
   {
@@ -5045,6 +10552,51 @@
     "Reluctant Role Model": 1,
     "Sheltered by Ghosts": 2,
     "Vanish from Sight": 2
+   },
+   "deck_score": 0.56431,
+   "tier": 1,
+   "review": {
+    "archetype": "WU enchantments/fliers",
+    "coherent": true,
+    "concerns": [
+     "three-drops",
+     "creature count",
+     "top-heavy"
+    ],
+    "rating": 4,
+    "verdict": "Plenty of removal (Sheltered by Ghosts x2, Vanish from Sight x2, Fear of Abduction x2, Meat Locker, Domination, Exorcise) and evasive threats with Glimmer synergy. The thin three-slot and only 13 creatures, with Fear of Abduction needing one to exile, make some draws clunky, but it's a strong build overall."
+   },
+   "stats": {
+    "curve": [
+     2,
+     10,
+     1,
+     5,
+     2,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Exorcise",
+     "Fear of Abduction",
+     "Sheltered by Ghosts",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Duskmourn's Domination",
+     "Fear of Immobility",
+     "Meat Locker // Drowned Diner"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67286,
+    "red_flags": []
    }
   },
   {
@@ -5078,6 +10630,47 @@
     "Unidentified Hovership": 1,
     "Unwilling Vessel": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.5601,
+   "tier": 2,
+   "review": {
+    "archetype": "WU enchantments/eerie",
+    "coherent": true,
+    "concerns": [
+     "3-drop glut",
+     "filler creatures"
+    ],
+    "rating": 4,
+    "verdict": "Five Trapped in the Screen plus two Fear of Abduction, Hovership and Vanish give this WU enchantment deck premium removal and a good eerie payoff density. The 3-drop slot is crowded and Piranha Fly and Tunnel Surveyor are filler, but it is a strong, focused build."
+   },
+   "stats": {
+    "curve": [
+     1,
+     6,
+     10,
+     1,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 9,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Fear of Abduction",
+     "Trapped in the Screen",
+     "Unidentified Hovership",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.66868,
+    "red_flags": []
    }
   },
   {
@@ -5113,6 +10706,47 @@
     "Trial of Agony": 1,
     "Turn Inside Out": 2,
     "Vicious Clown": 3
+   },
+   "deck_score": 0.56654,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A coherent low-curve RW deck with good removal in 3 Glassworks, Scorching Dragonfire, Trial of Agony and Sheltered by Ghosts, but only 13 creatures, three weak Percussionists and too many marginal tricks (2 Turn Inside Out, Jump Scare) leave it short on threats and late-game power."
+   },
+   "stats": {
+    "curve": [
+     7,
+     9,
+     6,
+     1,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 11,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 5,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire",
+     "Sheltered by Ghosts"
+    ],
+    "soft_removal_cards": [
+     "Fear of Missing Out"
+    ],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67172,
+    "red_flags": []
    }
   },
   {
@@ -5154,6 +10788,47 @@
     "Turn Inside Out": 2,
     "Unsettling Twins": 1,
     "Untimely Malfunction": 1
+   },
+   "deck_score": 0.55723,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "filler",
+     "three-drops",
+     "creature count"
+    ],
+    "rating": 3,
+    "verdict": "A real RW aggro shell with good removal (Dragonfire, Glassworks, Inferno, Exorcise) and strong pieces like Arabella, Reluctant Role Model and Lionheart Glimmer, held back by weak filler: 2x Turn Inside Out, Shardmage's Rescue, Clockwork Percussionist, and Hand That Feeds with delirium it can rarely turn on. Only 14 creatures and a thin 3-drop slot make it a fine deck, not a strong one."
+   },
+   "stats": {
+    "curve": [
+     4,
+     10,
+     3,
+     3,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 9,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Exorcise",
+     "Glassworks // Shattered Yard",
+     "Impossible Inferno",
+     "Infernal Phantom",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.66257,
+    "red_flags": []
    }
   },
   {
@@ -5194,6 +10869,49 @@
     "The Swarmweaver": 1,
     "Violent Urge": 2,
     "Wildfire Wickerfolk": 2
+   },
+   "deck_score": 0.56507,
+   "tier": 1,
+   "review": {
+    "archetype": "RG delirium aggro, light B splash",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "delirium enablers",
+     "splash",
+     "filler tricks"
+    ],
+    "rating": 3,
+    "verdict": "Removal and top end are strong: Overlord, Fear of Burning Alive, Inferno, Glassworks, Bargain and two Beatdowns. But with only 14 creatures, a thin delirium engine for Hand That Feeds and Beastie, and a shaky splash just for Swarmweaver, it's a solid but unspectacular deck."
+   },
+   "stats": {
+    "curve": [
+     3,
+     10,
+     4,
+     3,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 9,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Betrayer's Bargain",
+     "Fear of Burning Alive",
+     "Glassworks // Shattered Yard",
+     "Impossible Inferno",
+     "Overlord of the Boilerbilges"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66825,
+    "red_flags": []
    }
   },
   {
@@ -5232,6 +10950,48 @@
     "Twist Reality": 2,
     "Unable to Scream": 1,
     "Unwilling Vessel": 1
+   },
+   "deck_score": 0.55516,
+   "tier": 1,
+   "review": {
+    "archetype": "UW enchantments/eerie tempo",
+    "coherent": true,
+    "concerns": [
+     "threat density",
+     "reactive counters",
+     "few fliers"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UW eerie shell with good pieces (Ghostly Dancers, Fear of Falling, Unwilling Vessel, Glimmerburst, Trapped in the Screen) and a low curve, but too many counterspells and defensive bodies leave it short on evasive threats to close games."
+   },
+   "stats": {
+    "curve": [
+     1,
+     10,
+     6,
+     2,
+     4,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 2,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Fear of Falling",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [
+     "Get Out",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.6657,
+    "red_flags": []
    }
   },
   {
@@ -5267,6 +11027,47 @@
     "Toby, Beastie Befriender": 1,
     "Unable to Scream": 2,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.56869,
+   "tier": 1,
+   "review": {
+    "archetype": "WU enchantments/eerie",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "filler",
+     "few creatures"
+    ],
+    "rating": 3,
+    "verdict": "A coherent WU eerie deck with good payoffs in Overlord of the Floodpits, two Gremlin Tamers, Niko and two Fear of Immobility, plus solid tempo from Unable to Scream and Fear of Impostors. It is held back by thin hard removal, a low real creature count and filler like Ghost Vacuum and Ethereal Armor."
+   },
+   "stats": {
+    "curve": [
+     4,
+     8,
+     5,
+     3,
+     3,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 1,
+    "soft_removal": 5,
+    "removal_cards": [
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility",
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67584,
+    "red_flags": []
    }
   },
   {
@@ -5306,6 +11107,47 @@
     "Twist Reality": 1,
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.5605,
+   "tier": 1,
+   "review": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "splash",
+     "filler",
+     "top-end"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG manifest-dread shell: Bookworms, Cryptid Inspector, Analyst, Growing Dread and Windbreakers support each other well. But removal is thin, Ghost Vacuum and Chandelier are filler, and splashing Hordecaller on two red sources isn't worth it."
+   },
+   "stats": {
+    "curve": [
+     4,
+     7,
+     7,
+     2,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 2,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Coordinated Clobbering",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "deck_score_top": 0.66928,
+    "red_flags": []
    }
   },
   {
@@ -5347,6 +11189,45 @@
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Wary Watchdog": 1,
     "Wickerfolk Thresher": 1
+   },
+   "deck_score": 0.56002,
+   "tier": 1,
+   "review": {
+    "archetype": "UG manifest dread/delirium, light red splash",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "splash",
+     "filler",
+     "few creatures"
+    ],
+    "rating": 2,
+    "verdict": "The UG manifest shell has real threats: Cursed Windbreakers, Fear of Exposure, Balustrade Wurm and Branchsnapper. It is held back by only two real removal spells, a pointless one-drop Norin splash on one Mountain, and filler like Ghost Vacuum and Paranormal Analyst."
+   },
+   "stats": {
+    "curve": [
+     5,
+     6,
+     7,
+     3,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "noncreature_spells": 13,
+    "lands": 16,
+    "fixing_lands": 3,
+    "removal": 2,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Monstrous Emergence",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.556363391358675,
+    "deck_score_top": 0.66753,
+    "red_flags": []
    }
   },
   {
@@ -5386,6 +11267,47 @@
     "Turn Inside Out": 1,
     "Unstoppable Slasher": 1,
     "Untimely Malfunction": 1
+   },
+   "deck_score": 0.5749,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro (mostly mono-R)",
+    "coherent": true,
+    "concerns": [
+     "mana",
+     "splash",
+     "removal"
+    ],
+    "rating": 3,
+    "verdict": "A solid red aggro core with Screaming Nemesis, Razorkin Hordecallers, Most Valuable Slayers and Fear of Burning Alive, but the base is skewed: 7 Plains support only about six white cards while the RR cards want more Mountains, and splashing Unstoppable Slasher off one Swamp plus Expanse isn't worth it. There's only two real removal spells."
+   },
+   "stats": {
+    "curve": [
+     3,
+     8,
+     3,
+     5,
+     2,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 17,
+    "noncreature_spells": 6,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Fear of Abduction",
+     "Fear of Burning Alive",
+     "Scorching Dragonfire",
+     "Screaming Nemesis"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67802,
+    "red_flags": []
    }
   },
   {
@@ -5422,6 +11344,47 @@
     "Splitskin Doll": 2,
     "The Jolly Balloon Man": 1,
     "Turn Inside Out": 1
+   },
+   "deck_score": 0.56658,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "filler",
+     "card quality",
+     "delirium"
+    ],
+    "rating": 3,
+    "verdict": "A low-curve RW aggro deck on 16 lands, carried by three Scorching Dragonfire, Glassworks, Sheltered by Ghosts and Enduring Courage. Filler like Ragged Playmate, Turn Inside Out, Ethereal Armor and the off-plan delirium cards keeps it from being more than solid."
+   },
+   "stats": {
+    "curve": [
+     4,
+     12,
+     4,
+     4,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 5,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire",
+     "Sheltered by Ghosts"
+    ],
+    "soft_removal_cards": [
+     "Fear of Missing Out"
+    ],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67122,
+    "red_flags": []
    }
   },
   {
@@ -5458,6 +11421,47 @@
     "Turn Inside Out": 2,
     "Unidentified Hovership": 1,
     "Violent Urge": 1
+   },
+   "deck_score": 0.5663,
+   "tier": 1,
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "tricks",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "Strong removal suite (Hovership, 2x Trapped in the Screen, Sheltered by Ghosts, Dragonfire, Inferno) and good gold cards in Midnight Mayhem and Arabella hold this up. But only 9 real creatures, propped up by Glimmerlight tokens, plus three low-impact pump spells make the aggro plan thin and prone to running out of threats."
+   },
+   "stats": {
+    "curve": [
+     5,
+     9,
+     4,
+     2,
+     2,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "noncreature_spells": 15,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Impossible Inferno",
+     "Scorching Dragonfire",
+     "Sheltered by Ghosts",
+     "Trapped in the Screen",
+     "Unidentified Hovership"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67124,
+    "red_flags": []
    }
   },
   {
@@ -5500,6 +11504,50 @@
     "Valgavoth's Onslaught": 1,
     "Wary Watchdog": 1,
     "Winter's Intervention": 1
+   },
+   "deck_score": 0.56342,
+   "tier": 1,
+   "review": {
+    "archetype": "BG removal-heavy control/delirium",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat density",
+     "fight spells"
+    ],
+    "rating": 3,
+    "verdict": "Elite removal suite (2 Murder, Live or Die, Drag to the Roots, Nowhere to Run, Miasma Demon) and solid delirium support, but only 8 real creatures leans on manifest-dread bodies and makes Clobbering and Monstrous Emergence awkward. Strong enough to grind, light on pressure."
+   },
+   "stats": {
+    "curve": [
+     3,
+     6,
+     7,
+     2,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 8,
+    "noncreature_spells": 15,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 9,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Coordinated Clobbering",
+     "Drag to the Roots",
+     "Live or Die",
+     "Monstrous Emergence",
+     "Murder",
+     "Nowhere to Run",
+     "Sporogenic Infection",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.66899,
+    "red_flags": []
    }
   },
   {
@@ -5533,6 +11581,47 @@
     "Unable to Scream": 3,
     "Underwater Tunnel // Slimy Aquarium": 4,
     "Vanish from Sight": 2
+   },
+   "deck_score": 0.57042,
+   "tier": 1,
+   "review": {
+    "archetype": "UW enchantment/manifest-dread control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat density",
+     "light white"
+    ],
+    "rating": 3,
+    "verdict": "Solid nearly-mono-blue tempo-control shell with good cheap interaction (3 Unable to Scream, Drowner, Vanish, Stay Hidden) and Room mana sinks, but the creatures are small and few, so it relies on manifests and Overlord to close games."
+   },
+   "stats": {
+    "curve": [
+     8,
+     8,
+     3,
+     3,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 2,
+    "soft_removal": 5,
+    "removal_cards": [
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67897,
+    "red_flags": []
    }
   },
   {
@@ -5571,6 +11660,48 @@
     "Unable to Scream": 1,
     "Under the Skin": 1,
     "Wickerfolk Thresher": 1
+   },
+   "deck_score": 0.57054,
+   "tier": 1,
+   "review": {
+    "archetype": "BG delirium/manifest",
+    "coherent": true,
+    "concerns": [
+     "blue splash",
+     "few creatures",
+     "filler",
+     "removal"
+    ],
+    "rating": 3,
+    "verdict": "A solid BG delirium shell with Swarmweaver, Broodspinners, Centipedes and manifest dread. The blue splash for Bookworm, Glimmerburst and Unable to Scream rests on 2 Islands plus Centipede fetches, which adds little, and the two Say Its Name and light removal keep the deck middling."
+   },
+   "stats": {
+    "curve": [
+     3,
+     8,
+     5,
+     7,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 3,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Drag to the Roots",
+     "Final Vengeance",
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5454671677434881,
+    "deck_score_top": 0.67618,
+    "red_flags": []
    }
   },
   {
@@ -5605,6 +11736,48 @@
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Valgavoth's Onslaught": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.56378,
+   "tier": 1,
+   "review": {
+    "archetype": "WU enchantments",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "weak cards",
+     "splash",
+     "threats"
+    ],
+    "rating": 2,
+    "verdict": "The enchantment theme is there, but 9 creatures, including three 0/3 Skullcrabs whose self-mill does nothing in WU, can't carry three Ethereal Armors, and the green splash for Onslaught on 2 Forests is a strain."
+   },
+   "stats": {
+    "curve": [
+     10,
+     8,
+     1,
+     4,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 1,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Get Out",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.67144,
+    "red_flags": []
    }
   },
   {
@@ -5638,6 +11811,46 @@
     "Unsettling Twins": 2,
     "Veteran Survivor": 1,
     "Vicious Clown": 1
+   },
+   "deck_score": 0.56264,
+   "tier": 1,
+   "review": {
+    "archetype": "WR aggro (low power)",
+    "coherent": true,
+    "concerns": [
+     "card quality",
+     "too many tricks",
+     "three-drops",
+     "removal"
+    ],
+    "rating": 3,
+    "verdict": "A coherent low-curve WR aggro shell with good Arabella, Friendly Ghost and Sheltered/Trapped removal, but four Turn Inside Out plus Jump Scare is too much trick density, there are only two three-drops, and 17 lands is one too many for this curve."
+   },
+   "stats": {
+    "curve": [
+     7,
+     8,
+     2,
+     6,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 3,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Scorching Dragonfire",
+     "Sheltered by Ghosts",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.66993,
+    "red_flags": []
    }
   },
   {
@@ -5675,6 +11888,49 @@
     "Unstoppable Slasher": 1,
     "Veteran Survivor": 1,
     "Victor, Valgavoth's Seneschal": 1
+   },
+   "deck_score": 0.55007,
+   "tier": 1,
+   "review": {
+    "archetype": "WB eerie/enchantments midrange",
+    "coherent": true,
+    "concerns": [
+     "top end",
+     "few creatures",
+     "flood"
+    ],
+    "rating": 4,
+    "verdict": "Deep removal (2 Murder, 2 Trapped in the Screen, Hovership, Nowhere to Run, Final Vengeance) plus Victor, Slasher and solid eerie payoffs make a strong WB deck; the curve is very low at the top and the creature count is thin, so 17 lands risks flooding."
+   },
+   "stats": {
+    "curve": [
+     3,
+     7,
+     11,
+     1,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Final Vengeance",
+     "Murder",
+     "Nowhere to Run",
+     "Trapped in the Screen",
+     "Unidentified Hovership"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "deck_score_top": 0.66508,
+    "red_flags": [
+     "weak archetype WB 52.3%"
+    ]
    }
   },
   {
@@ -5719,6 +11975,50 @@
     "Unable to Scream": 1,
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Vanish from Sight": 2
+   },
+   "deck_score": 0.56455,
+   "tier": 1,
+   "review": {
+    "archetype": "UG manifest dread control splash B",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "Say Its Name",
+     "splash"
+    ],
+    "rating": 3,
+    "verdict": "Strong blue interaction (Drowner, Vanish x2, Stay Hidden, Unable to Scream) and solid manifest dread synergy, but only 10 real creatures plus a dead-ish Say Its Name and a light 4-source black splash make the threat density thin; playable but clunky."
+   },
+   "stats": {
+    "curve": [
+     3,
+     9,
+     2,
+     6,
+     1,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 14,
+    "lands": 16,
+    "fixing_lands": 4,
+    "removal": 4,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Drag to the Roots",
+     "Monstrous Emergence",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Get Out",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "deck_score_top": 0.67148,
+    "red_flags": []
    }
   },
   {
@@ -5758,6 +12058,46 @@
     "Tyvar, the Pummeler": 1,
     "Unwilling Vessel": 1,
     "Vile Mutilator": 1
+   },
+   "deck_score": 0.54736,
+   "tier": 1,
+   "review": {
+    "archetype": "UB enchantments/eerie with green splash",
+    "coherent": false,
+    "concerns": [
+     "colors",
+     "removal",
+     "card quality",
+     "top end"
+    ],
+    "rating": 2,
+    "verdict": "A real three-color deck, not a splash: double-green Tyvar plus five green cards strain a 4/5/5 basic base. Three weak Cracked Skulls stand in for removal. The eerie payoffs are thin, so this plays like a scattered pile with a few good black cards."
+   },
+   "stats": {
+    "curve": [
+     1,
+     7,
+     11,
+     2,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 9,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 3,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Final Vengeance",
+     "Nowhere to Run",
+     "Vile Mutilator"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5302669305011509,
+    "deck_score_top": 0.65998,
+    "red_flags": []
    }
   },
   {
@@ -5797,6 +12137,53 @@
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unwilling Vessel": 1,
     "Vanish from Sight": 1
+   },
+   "deck_score": 0.56122,
+   "tier": 1,
+   "review": {
+    "archetype": "UR rooms control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "win conditions",
+     "pointless splash"
+    ],
+    "rating": 3,
+    "verdict": "Plenty of removal, tempo and Room card advantage (3 Meat Locker, Glassworks, Furnace, auras) with eerie synergy, but only 6 real creatures, a slow clock, and a white splash just for Gremlin Tamer make it grindy and prone to stalling out."
+   },
+   "stats": {
+    "curve": [
+     4,
+     8,
+     10,
+     1,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 6,
+    "noncreature_spells": 17,
+    "lands": 17,
+    "fixing_lands": 4,
+    "removal": 5,
+    "soft_removal": 8,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Glassworks // Shattered Yard",
+     "Roaring Furnace // Steaming Sauna",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "deck_score_top": 0.67002,
+    "red_flags": [
+     "weak archetype UR 52.2%"
+    ]
    }
   },
   {
@@ -5835,6 +12222,48 @@
     "Tyvar, the Pummeler": 1,
     "Under the Skin": 1,
     "Wary Watchdog": 1
+   },
+   "deck_score": 0.5631,
+   "tier": 1,
+   "review": {
+    "archetype": "WG survivors aggro",
+    "coherent": true,
+    "concerns": [
+     "card quality",
+     "few creatures",
+     "no top end",
+     "flood"
+    ],
+    "rating": 2,
+    "verdict": "A low-curve WG survivors shell with real bodies thinned out by four mediocre Glimmerlights and filler like Say Its Name. Only 10 true creatures, nothing above four mana, and 17 lands make it prone to flooding with little power to close games."
+   },
+   "stats": {
+    "curve": [
+     2,
+     12,
+     8,
+     1,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 3,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Exorcise",
+     "Monstrous Emergence",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5269779659031972,
+    "deck_score_top": 0.66815,
+    "red_flags": [
+     "weak archetype WG 52.7%"
+    ]
    }
   },
   {
@@ -5878,6 +12307,54 @@
     "Valgavoth's Lair": 1,
     "Wickerfolk Thresher": 1,
     "Zimone, All-Questioning": 1
+   },
+   "deck_score": 0.56319,
+   "tier": 1,
+   "review": {
+    "archetype": "3-color Temur delirium/manifest pile",
+    "coherent": false,
+    "concerns": [
+     "colors",
+     "few creatures",
+     "mana",
+     "fight reliance"
+    ],
+    "rating": 2,
+    "verdict": "The individual cards are strong (Rollercrusher, Fear of Burning Alive, Impossible Inferno, Beastie Beatdowns, Branchsnapper). But it spreads six blue cards across only 4 Islands, and its 9 real creatures are padded by manifest dread to feed fight spells. That makes it clunky and inconsistent. Cutting to RG with a light touch would be better."
+   },
+   "stats": {
+    "curve": [
+     3,
+     6,
+     5,
+     6,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 6,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Coordinated Clobbering",
+     "Fear of Burning Alive",
+     "Impossible Inferno",
+     "The Rollercrusher Ride"
+    ],
+    "soft_removal_cards": [
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5244383028814167,
+    "deck_score_top": 0.66763,
+    "red_flags": [
+     "3 main colors, 2 fixing lands",
+     "weak archetype URG 52.4%"
+    ]
    }
   },
   {
@@ -5916,6 +12393,46 @@
     "Unidentified Hovership": 1,
     "Veteran Survivor": 1,
     "Vicious Clown": 1
+   },
+   "deck_score": 0.57146,
+   "tier": 2,
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "flood"
+    ],
+    "rating": 4,
+    "verdict": "A low-curve RW aggro deck with excellent removal: two Dragonfire, two Trapped in the Screen, Hovership, Glassworks and Sheltered by Ghosts. Razorkin Hordecallers and Fear of Being Hunted add real pressure. The only knocks are 12 creatures, partly offset by token makers, and 17 lands for a curve that tops out at 5."
+   },
+   "stats": {
+    "curve": [
+     3,
+     8,
+     8,
+     2,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire",
+     "Sheltered by Ghosts",
+     "Trapped in the Screen",
+     "Unidentified Hovership"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "deck_score_top": 0.67477,
+    "red_flags": []
    }
   },
   {
@@ -5957,6 +12474,48 @@
     "Terramorphic Expanse": 1,
     "Tunnel Surveyor": 1,
     "Withering Torment": 2
+   },
+   "deck_score": 0.54967,
+   "tier": 1,
+   "review": {
+    "archetype": "BR sacrifice",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "splash",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "Three Sawblade Skinrippers plus Egotist and deep black removal make a real BR sacrifice engine. But 12 creatures is thin for a sacrifice deck, and splashing blue for Tunnel Surveyor and Glimmerburst adds mana strain for little gain."
+   },
+   "stats": {
+    "curve": [
+     4,
+     5,
+     10,
+     2,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 4,
+    "removal": 10,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Fear of Lost Teeth",
+     "Final Vengeance",
+     "Sawblade Skinripper",
+     "Sporogenic Infection",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5497882348930948,
+    "deck_score_top": 0.65695,
+    "red_flags": []
    }
   },
   {
@@ -6000,6 +12559,47 @@
     "Waltz of Rage": 1,
     "Wary Watchdog": 1,
     "Wickerfolk Thresher": 1
+   },
+   "deck_score": 0.55518,
+   "tier": 1,
+   "review": {
+    "archetype": "RG delirium splash W",
+    "coherent": true,
+    "concerns": [
+     "Pyroclasm anti-synergy",
+     "WW splash",
+     "filler 1-2 drops"
+    ],
+    "rating": 4,
+    "verdict": "Solid RG delirium deck: plenty of removal, good fixing, and strong top end in Fear of Burning Alive, Charred Foyer and a well-supported Overlord splash. Held back slightly by weak early filler and a Pyroclasm that also kills its own X/1s and X/2s."
+   },
+   "stats": {
+    "curve": [
+     2,
+     7,
+     5,
+     3,
+     2,
+     4
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 5,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Fear of Burning Alive",
+     "Impossible Inferno",
+     "Scorching Dragonfire",
+     "Waltz of Rage"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.65982,
+    "red_flags": []
    }
   },
   {
@@ -6038,6 +12638,49 @@
     "Stay Hidden, Stay Silent": 1,
     "Surgical Suite // Hospital Room": 1,
     "Trapped in the Screen": 1
+   },
+   "deck_score": 0.57373,
+   "tier": 1,
+   "review": {
+    "archetype": "WU enchantments/eerie",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "small bodies"
+    ],
+    "rating": 4,
+    "verdict": "A focused WU eerie deck with strong removal (Trapped in the Screen, Sheltered by Ghosts, 2x Seized from Slumber, Exorcise) and premium payoffs like Enduring Innocence, Enduring Curiosity and Ghostly Dancers; only 10 real creatures, but the token makers (3x Grand Entryway, 2x Glimmerlight, Glimmerburst) make up for it, a low curve suits 16 lands, and the main risk is lacking size against bigger boards."
+   },
+   "stats": {
+    "curve": [
+     1,
+     13,
+     4,
+     2,
+     4,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "noncreature_spells": 14,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 5,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Exorcise",
+     "Seized from Slumber",
+     "Sheltered by Ghosts",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.5642279644512316,
+    "deck_score_top": 0.6803,
+    "red_flags": []
    }
   },
   {
@@ -6079,6 +12722,46 @@
     "Unsettling Twins": 1,
     "Valgavoth's Onslaught": 1,
     "Veteran Survivor": 1
+   },
+   "deck_score": 0.55539,
+   "tier": 1,
+   "review": {
+    "archetype": "WG survivors aggro",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "A solid WG attacking shell with good survival payoffs (2x Shrewd Storyteller, Savior, Lionheart Glimmer, Hardened Escort) and a clean two-color manabase. It is held back by very thin interaction, relying on Seized from Slumber and Fear of Immobility, and by weak slots like Hedge Shredder, Cathartic Parting and Shardmage's Rescue."
+   },
+   "stats": {
+    "curve": [
+     3,
+     5,
+     5,
+     5,
+     5,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "noncreature_spells": 8,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 1,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Seized from Slumber"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5269779659031972,
+    "deck_score_top": 0.66439,
+    "red_flags": [
+     "weak archetype WG 52.7%"
+    ]
    }
   },
   {
@@ -6123,6 +12806,45 @@
     "Threats Around Every Corner": 1,
     "Under the Skin": 1,
     "Wary Watchdog": 1
+   },
+   "deck_score": 0.56085,
+   "tier": 1,
+   "review": {
+    "archetype": "RG manifest/aggro splashing U",
+    "coherent": false,
+    "concerns": [
+     "removal",
+     "splash",
+     "unfocused plan",
+     "top-end"
+    ],
+    "rating": 2,
+    "verdict": "The RG core is playable, with good 2-drops, two Fear of Being Hunted, two Slayers and two cyclers, but it has only two real removal spells, and the blue splash is for cheap, low-impact cards (Hallcreeper, Bookworm, Growing Dread) on about four sources, which muddies a deck that can't decide between aggro and manifest value."
+   },
+   "stats": {
+    "curve": [
+     0,
+     12,
+     6,
+     4,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "noncreature_spells": 8,
+    "lands": 16,
+    "fixing_lands": 3,
+    "removal": 2,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66577,
+    "red_flags": []
    }
   },
   {
@@ -6159,6 +12881,49 @@
     "Swamp": 8,
     "Terramorphic Expanse": 1,
     "Vengeful Possession": 1
+   },
+   "deck_score": 0.5519,
+   "tier": 1,
+   "review": {
+    "archetype": "BR sacrifice aggro",
+    "coherent": true,
+    "concerns": [
+     "creature quality",
+     "few creatures"
+    ],
+    "rating": 4,
+    "verdict": "Strong removal suite (Dragonfire x2, Murder, Glassworks, Live or Die, Final Vengeance) with real sac payoffs in Skinripper x2 and Boilerbilges Ripper. The low curve is backed by fodder like Innocuous Rat and Glimmer tokens, and cycling Beasties help the 16-land mana. Some filler bodies (Norin, Percussionist) keep it from being exceptional."
+   },
+   "stats": {
+    "curve": [
+     3,
+     9,
+     6,
+     2,
+     2,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "noncreature_spells": 10,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 11,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Boilerbilges Ripper",
+     "Final Vengeance",
+     "Glassworks // Shattered Yard",
+     "Infernal Phantom",
+     "Live or Die",
+     "Murder",
+     "Sawblade Skinripper",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5497882348930948,
+    "deck_score_top": 0.65751,
+    "red_flags": []
    }
   },
   {
@@ -6197,6 +12962,43 @@
     "Under the Skin": 1,
     "Wary Watchdog": 1,
     "Wildfire Wickerfolk": 2
+   },
+   "deck_score": 0.56242,
+   "tier": 2,
+   "review": {
+    "archetype": "RG manifest midrange",
+    "coherent": true,
+    "concerns": [
+     "delirium thin",
+     "top-end"
+    ],
+    "rating": 4,
+    "verdict": "A clean RG midrange deck with a strong 2-3 drop curve, two Enduring Vitality, solid burn and plenty of manifest dread bodies. Peer Past the Veil is the weak link because delirium support is light."
+   },
+   "stats": {
+    "curve": [
+     2,
+     8,
+     8,
+     2,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 3,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "deck_score_top": 0.66764,
+    "red_flags": []
    }
   }
  ]

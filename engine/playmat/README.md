@@ -74,6 +74,10 @@ Each game of a best-of-three gets its own folder. Playmat also keeps its own rep
   Decks screen), and "Good only" for the starter lists.
 - `patches/0006`: the Claude AI's model and effort in the AI settings (sent as the seat's skill: model index * 3 +
   effort index + 1), and its random deck from the good pool.
+- `patches/0008`: against any AI the player's opponent gets a DSK deck of about the player's deck's strength (the
+  same ★ tier and review rating, then the same rating, then one away; another color pair when possible); a deck the
+  player built counts as review 3/5. The AI's deck name says how it was matched and goes to config.json (`deck_name`).
+  Watching (Claude vs Playmat AI) stays random.
 - `patches/0007`: blocks: attackers that must be blocked if able are marked, blocks that leave one unblocked are held
   back once with a message, and the server's messages to the player (why a block was refused) are shown.
 - Our two XMage rule fixes (`engine/xmage/BecomesFaceDownCreatureEffect.java`, `VeteranSurvivor.java`) are copied over

@@ -245,7 +245,8 @@ def main():
 
     pool = Path(args.pool)
     man = json.loads((pool / "manifest.json").read_text())
-    gih = json.loads((pool / "gih_wr.json").read_text())
+    gih_path = pool / "gih_wr.json" if (pool / "gih_wr.json").exists() else ROOT / "engine/xmage/decks/17lands-good/gih_wr.json"
+    gih = json.loads(gih_path.read_text())  # card win rates for all games: the same file for every pool
     texts = load_card_text()
     color_wr, all_wr = {}, 0.0
     if Path(args.color_ratings).exists():
@@ -280,6 +281,9 @@ def main():
     tg = top_gih(Path(args.game_data), RATINGS / "dsk_gih_top.json") if Path(args.game_data).exists() else None
     if tg:
         for d in decks:
+            if "deck_score" not in d:  # a pool built without one (17lands-r2): the same mean GIH WR of nonland cards
+                pairs = [(n, gih[name]["wr"]) for name, n in d["deck"].items() if not gih[name]["land"]]
+                d["deck_score"] = round(sum(n * w for n, w in pairs) / sum(n for n, _ in pairs), 5)
             num = den = 0
             for name, n in d["deck"].items():
                 if not gih[name]["land"] and name in tg["cards"]:

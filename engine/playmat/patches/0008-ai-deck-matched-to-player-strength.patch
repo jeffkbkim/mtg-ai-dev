@@ -1,0 +1,201 @@
+diff --git a/Mage.Web.Client/src/app/stores/decks.ts b/Mage.Web.Client/src/app/stores/decks.ts
+index 7ca9ecf84a..e8e5f52b96 100644
+--- a/Mage.Web.Client/src/app/stores/decks.ts
++++ b/Mage.Web.Client/src/app/stores/decks.ts
+@@ -6,6 +6,7 @@ import { copyName } from '../../core/decks/exportFormats';
+ import type { DeckCardLists, DeckImportSource } from '../../core/decks/types';
+ import { pickMetaDeck, type MetaDeck, type MetaDeckIndex } from '../../core/decks/metaDecks';
+ import { readJson, writeJson } from './persist';
++import type { DeckStrength } from '../../core/decks/deckStrength';
+ import { RANDOM_SLEEVE, randomSleeveFor } from '../ui/sleeveArt';
+ 
+ export interface StarterDeck {
+@@ -15,6 +16,9 @@ export interface StarterDeck {
+   cover: { name: string; setCode: string; cardNumber: string };
+   /** the deck type it is built for; Freeform when absent */
+   format?: string;
++  /** mtg-ai: our DSK decks' review strength and card signature (core/decks/deckStrength) */
++  strength?: DeckStrength;
++  sig?: string;
+ }
+ 
+ /** A deck in the roster: one the player saved, or a starter deck not saved yet. */
+diff --git a/Mage.Web.Client/src/app/stores/play.ts b/Mage.Web.Client/src/app/stores/play.ts
+index c6b0aeb1e2..ef357a0b66 100644
+--- a/Mage.Web.Client/src/app/stores/play.ts
++++ b/Mage.Web.Client/src/app/stores/play.ts
+@@ -13,6 +13,7 @@ import { claudeSkill, seatableAiType } from '../screens/aiSetup';
+ import type { DeckCardLists } from '../../core/decks/types';
+ import { formatRules, gameTypesFor, isCommanderFormat } from '../../core/decks/formats';
+ import { pickMetaDeck } from '../../core/decks/metaDecks';
++import { matchingStarters, strengthOf, type DeckStrength } from '../../core/decks/deckStrength';
+ import { notify } from './toasts';
+ import { useCoach } from './coach';
+ import { t } from '../i18n';
+@@ -122,9 +123,12 @@ const metaDeck = (file: string, name: string) => deckFile(`/meta-decks/${encodeU
+  * Decks for the AI seats: the one picked in the AI settings for the first seat, then, for a game played in a format,
+  * that format's pool (weighted by recorded share, with a minimum weight of one); otherwise, or when it runs out,
+  * random starter decks of the same kind (commander or not). Never the same deck twice while there are others. `good`
+- * (mtg-ai, the Claude AI): random decks come from the good DSK pool (dsk-good-*), whatever the rules.
++ * (mtg-ai, the Claude AI): random decks come from the good DSK pool (dsk-good-*), whatever the rules. `match` (mtg-ai,
++ * a person against the AI): random decks are DSK decks of about the strength of the player's (matchingStarters), and
++ * each dealt deck's name says how it was matched.
+  */
+-export async function aiDecks(chosenId: string | null, count: number, commander: boolean, format: string | null = null, avoid: string | null = null, good = false): Promise<DeckCardLists[]> {
++export async function aiDecks(chosenId: string | null, count: number, commander: boolean, format: string | null = null, avoid: string | null = null, good = false,
++  match: { strength: DeckStrength; how: string; sig: string } | null = null): Promise<DeckCardLists[]> {
+   const decks: DeckCardLists[] = [];
+   if (chosenId && !chosenId.startsWith(STARTER_PREFIX) && !chosenId.startsWith(META_PREFIX)) {
+     const saved = await deckStorage.loadDeck(chosenId);
+@@ -141,13 +145,18 @@ export async function aiDecks(chosenId: string | null, count: number, commander:
+   const matching = starters.filter((starter) => isCommanderFormat(starter.format) === commander);
+   // mtg-ai: a server with DSK decks (dsk-*.dck) deals the AI one of them
+   const dsk = matching.filter((starter) => starter.file.startsWith(good && matching.some((s) => s.file.startsWith('dsk-good-')) ? 'dsk-good-' : 'dsk-'));
+-  const fitting = !commander && dsk.length > 0 ? dsk : matching;
++  const matched = match && !commander ? matchingStarters(matching.filter((starter) => starter.file.startsWith('dsk-')), match.strength, match.sig) : null;
++  const fitting = matched && matched.pool.length > 0 ? matched.pool : !commander && dsk.length > 0 ? dsk : matching;
++  const describe = (s: DeckStrength) => `${s.tier === 2 ? '★★ ' : s.tier === 1 ? '★ ' : ''}review ${s.rating ?? '?'}/5`;
++  const label = (starter: { name: string; strength?: DeckStrength }) => (matched && match
++    ? `${starter.name} [matched to your ${match.how === 'starter' ? describe(match.strength) : 'unrated deck (taken as review 3/5)'}: ${matched.rule}]`
++    : starter.name);
+   const chosenFile = chosenId?.startsWith(STARTER_PREFIX) ? chosenId.slice(STARTER_PREFIX.length) : null;
+   const chosen = fitting.find((starter) => starter.file === chosenFile);
+   if (decks.length === 0 && chosen) decks.push(await starterDeck(chosen.file, chosen.name));
+   const pool = fitting.filter((starter) => starter !== chosen);
+   while (decks.length < count) {
+-    const meta = format && !good ? pickMetaDeck(metaDecks, format, taken) : null;
++    const meta = format && !good && !matched ? pickMetaDeck(metaDecks, format, taken) : null;
+     if (meta) {
+       taken.add(meta.file);
+       decks.push(await metaDeck(meta.file, meta.name));
+@@ -156,7 +165,7 @@ export async function aiDecks(chosenId: string | null, count: number, commander:
+     const candidates = pool.length > 0 ? pool : fitting;
+     if (candidates.length === 0) throw new Error(commander ? 'No commander deck is available for the AI.' : 'No deck available for the AI.');
+     const starter = candidates.splice(Math.floor(Math.random() * candidates.length), 1)[0];
+-    decks.push(await starterDeck(starter.file, starter.name));
++    decks.push(await starterDeck(starter.file, label(starter)));
+   }
+   return decks;
+ }
+@@ -248,9 +257,11 @@ export const usePlay = create<PlayState>((set, get) => ({
+       const format = options.rules === 'deck' ? deckType : null;
+       // mtg-ai: the Claude AI's random deck is always a good-pool DSK deck
+       const claudeRival = !watch && seatableAiType(options.aiType, queryClient.getQueryData<ServerState>(['serverState'])?.playerTypes) === 'COMPUTER_CLAUDE';
++      // mtg-ai: a person against any AI gets a DSK deck of about their own deck's strength (watching: any deck)
++      const match = !practice && !guided && !watch && !commander ? strengthOf(deck.cards, useDecks.getState().starters) : null;
+       const rivalDecks: WireDeck[] = practice
+         ? [toWire(goldfishDeck(commander))]
+-        : [...(sourced ? [sourced] : []), ...(await aiDecks(source.kind === 'roster' ? source.id : null, opponents - (sourced ? 1 : 0), commander, format, meta?.file ?? null, claudeRival)).map(toWire)];
++        : [...(sourced ? [sourced] : []), ...(await aiDecks(source.kind === 'roster' ? source.id : null, opponents - (sourced ? 1 : 0), commander, format, meta?.file ?? null, claudeRival, match)).map(toWire)];
+       // adaptive: the AI plays at the skill the player's recent results call for
+       const adaptiveFormat = !practice && options.adaptive ? adaptiveFormatFor(commander) : null;
+       const skill = adaptiveFormat ? adaptiveSkill((await api.soloAdaptive(adaptiveFormat).catch(() => null))?.skill, options.skill) : options.skill;
+diff --git a/Mage.Web.Client/src/core/decks/deckStrength.test.ts b/Mage.Web.Client/src/core/decks/deckStrength.test.ts
+new file mode 100644
+index 0000000000..efd9679e73
+--- /dev/null
++++ b/Mage.Web.Client/src/core/decks/deckStrength.test.ts
+@@ -0,0 +1,33 @@
++import { readFileSync } from 'node:fs';
++import { describe, expect, it } from 'vitest';
++import { DeckSerializer } from './DeckSerializer';
++import { deckSig, matchingStarters, strengthOf, UNRATED, type StrengthEntry } from './deckStrength';
++
++const dir = new URL('../../../public/starter-decks/', import.meta.url);
++const index = JSON.parse(readFileSync(new URL('index.json', dir), 'utf8')) as (StrengthEntry & { file: string })[];
++const ours = index.filter((entry) => entry.file.startsWith('dsk-'));
++
++describe('deck strength (mtg-ai)', () => {
++  it('signs a starter as dsk_starters.py does', () => {
++    if (ours.length === 0) return; // a checkout without our decks
++    for (const entry of ours.slice(0, 20)) {
++      const deck = DeckSerializer.importDeck(readFileSync(new URL(entry.file, dir), 'utf8'));
++      expect(deckSig(deck.cards)).toBe(entry.sig);
++    }
++  });
++
++  it('matches the same tier and rating, never the player\'s own deck', () => {
++    if (ours.length === 0) return;
++    const mine = ours.find((entry) => entry.strength?.tier === 2)!;
++    const deck = DeckSerializer.importDeck(readFileSync(new URL(mine.file, dir), 'utf8'));
++    const { strength, how, sig } = strengthOf(deck.cards, ours);
++    expect(how).toBe('starter');
++    const { pool, rule } = matchingStarters(ours, strength, sig);
++    expect(rule).toMatch(/^same tier and rating/);
++    expect(pool.every((entry) => entry.strength!.tier === 2 && entry.strength!.rating === strength.rating && entry.sig !== sig)).toBe(true);
++  });
++
++  it('takes a deck it does not know as average', () => {
++    expect(strengthOf([{ cardName: 'Island', amount: 40 }], ours).strength).toEqual(UNRATED);
++  });
++});
+diff --git a/Mage.Web.Client/src/core/decks/deckStrength.ts b/Mage.Web.Client/src/core/decks/deckStrength.ts
+new file mode 100644
+index 0000000000..ef05623881
+--- /dev/null
++++ b/Mage.Web.Client/src/core/decks/deckStrength.ts
+@@ -0,0 +1,64 @@
++import type { DeckCardInfo } from './types';
++
++/**
++ * mtg-ai: how strong a DSK starter deck is, from our deck review (engine/playmat/dsk_starters.py writes it into
++ * starter-decks/index.json): tier 2 (★★), 1 (★) or 0 (no star), the review's rating out of 5, and its main colors.
++ */
++export interface DeckStrength {
++  tier: number;
++  rating: number | null;
++  colors: string;
++}
++
++export interface StrengthEntry {
++  file: string;
++  name: string;
++  strength?: DeckStrength;
++  /** deckSig of the deck's main cards, to recognise a saved copy of a starter */
++  sig?: string;
++}
++
++/** A deck the player built or changed: no review, so it is taken as an average deck. */
++export const UNRATED: DeckStrength = { tier: 1, rating: 3, colors: '' };
++
++/** FNV-1a over "amount name" lines sorted by name (the same as dsk_starters.py's deck_sig). */
++export function deckSig(cards: DeckCardInfo[]): string {
++  const counts = new Map<string, number>();
++  for (const card of cards) counts.set(card.cardName, (counts.get(card.cardName) ?? 0) + card.amount);
++  const text = [...counts.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([name, n]) => `${n} ${name}`).join('|');
++  let hash = 0x811c9dc5;
++  for (let i = 0; i < text.length; i++) {
++    hash ^= text.charCodeAt(i);
++    hash = Math.imul(hash, 0x01000193) >>> 0;
++  }
++  return hash.toString(16).padStart(8, '0');
++}
++
++/** The player's deck's strength: the starter it is (or a saved copy of), else UNRATED. */
++export function strengthOf(cards: DeckCardInfo[], starters: readonly StrengthEntry[]): { strength: DeckStrength; how: 'starter' | 'unrated'; sig: string } {
++  const sig = deckSig(cards);
++  const same = starters.find((starter) => starter.sig === sig && starter.strength);
++  return same?.strength ? { strength: same.strength, how: 'starter', sig } : { strength: UNRATED, how: 'unrated', sig };
++}
++
++/**
++ * Starters the AI may be dealt against a deck of this strength, and the rule that picked them: the same tier and
++ * rating, else the same rating, else a rating one away; a different color pair when there is enough choice. Never the
++ * player's own deck.
++ */
++export function matchingStarters<T extends StrengthEntry>(starters: readonly T[], strength: DeckStrength, ownSig: string): { pool: T[]; rule: string } {
++  const rated = starters.filter((starter) => starter.strength?.rating != null && starter.sig !== ownSig);
++  const rating = strength.rating ?? 3;
++  const steps: [string, (s: DeckStrength) => boolean][] = [
++    ['same tier and rating', (s) => s.tier === strength.tier && s.rating === rating],
++    ['same rating', (s) => s.rating === rating],
++    ['rating within 1', (s) => Math.abs((s.rating ?? 3) - rating) <= 1],
++  ];
++  for (const [rule, fits] of steps) {
++    const pool = rated.filter((starter) => fits(starter.strength!));
++    if (pool.length < 3) continue;
++    const other = pool.filter((starter) => starter.strength!.colors !== strength.colors);
++    return other.length >= 3 ? { pool: other, rule: `${rule}, other colors` } : { pool, rule };
++  }
++  return { pool: rated, rule: 'any rated deck (too few close matches)' };
++}

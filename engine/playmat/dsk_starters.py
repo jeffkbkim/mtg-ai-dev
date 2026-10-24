@@ -63,6 +63,20 @@ def playable(m, texts):
 BASICS = {"Plains": "W", "Island": "U", "Swamp": "B", "Mountain": "R", "Forest": "G"}
 
 
+def deck_sig(text):
+    """FNV-1a over "amount name" lines sorted by name, as the web client's deckSig (core/decks/deckStrength.ts), so a
+    saved copy of a starter is recognised as that starter."""
+    counts = {}
+    for line in text.splitlines():
+        c = re.match(r"(\d+) \[[^\]]*\] (.+)", line)
+        if c:
+            counts[c.group(2)] = counts.get(c.group(2), 0) + int(c.group(1))
+    h = 0x811C9DC5
+    for ch in "|".join(f"{n} {name}" for name, n in sorted(counts.items())):
+        h = ((h ^ ord(ch)) * 0x01000193) & 0xFFFFFFFF
+    return f"{h:08x}"
+
+
 def main():
     playmat = Path(sys.argv[1])
     decks = ROOT / "engine/xmage/decks"
@@ -105,7 +119,11 @@ def main():
             group = 0 if good else 1 if star else 2
             key = (group, -(m.get("tier") or 0), -(review["rating"] if review else 0), consistency(m, texts),
                    -float(m.get("user_win_rate_bucket") or 0))
-            ours.append(({"file": file, "name": name, "cards": cards, "cover": cover}, key))
+            # mtg-ai web client: the AI is dealt a deck of about the player's deck's strength (deckStrength.ts)
+            strength = {"tier": (m.get("tier") or 1) if good else 0, "rating": review["rating"] if review else None,
+                        "colors": m["main_colors"]}
+            ours.append(({"file": file, "name": name, "cards": cards, "cover": cover, "strength": strength,
+                          "sig": deck_sig(text)}, key))
     ours.sort(key=lambda e: e[1])
     (out / "index.json").write_text(json.dumps([e for e, _ in ours] + index, indent=2, ensure_ascii=False) + "\n")
     print(f"{len(ours)} DSK decks added to {out}; left out by the colour rule: {skipped}")

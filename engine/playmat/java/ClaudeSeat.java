@@ -103,6 +103,8 @@ public class ClaudeSeat extends PySeat {
     public void useDeck(Deck deck, Game game) {
         super.useDeck(deck, game);
         if (game.isSimulation()) return;
+        GameRecorder rec = GameRecorder.find(game);
+        if (rec != null) rec.setSeatInfo(rec.seat(playerId), "deck_name", String.valueOf(deck.getName()));
         java.util.Map<String, Integer> counts = new java.util.TreeMap<>();
         java.util.Map<String, String> setOf = new java.util.HashMap<>();
         for (Card c : deck.getMaindeckCards()) {
