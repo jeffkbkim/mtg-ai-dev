@@ -11,7 +11,7 @@ the menu). Decks of either pool that break the colour rule (two_colors(): two ma
 not listed at all. A good-pool deck the review rated 2 or lower has no star and the file dsk-goodx-NN.dck: "Good only"
 hides it and the Claude AI isn't dealt it (both look for dsk-good-*). index.json lists the starred decks by tier and
 review rating, then the unstarred ones, then the older pool, steadier mana first and then the drafter's long-run win
-rate; Playmat's own starters follow. The cover card is the deck's first nonland card.
+rate. Playmat's own starters (60-card and Commander) are not listed. The cover card is the deck's first nonland card.
 """
 import json, re, sys
 from pathlib import Path
@@ -82,7 +82,9 @@ def main():
     decks = ROOT / "engine/xmage/decks"
     texts = {c["name"]: c for c in json.loads((ROOT / "engine/vocab/dsk_card_text.json").read_text())}
     out = playmat / "Mage.Web.Client/public/starter-decks"
-    index = [e for e in json.loads((out / "index.json").read_text()) if not e["file"].startswith("dsk-")]
+    # Jeff 2026-10-24: only our DSK Limited decks are listed; Playmat's own 60-card and Commander starters are left out
+    # (their files stay)
+    index = []
     ours, skipped, known = [], {}, []
     for pool, prefix, star in (("17lands-good", "dsk-good-", "★ "), ("17lands-r2", "dsk-", "")):
         manifest = {d["file"]: d for d in json.loads((decks / pool / "manifest.json").read_text())["decks"]}
