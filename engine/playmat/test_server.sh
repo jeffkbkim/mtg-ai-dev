@@ -26,7 +26,7 @@ cd $T/server
 PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH" nohup /opt/homebrew/bin/python3 $HOME/dev/mtg-ai/engine/playmat/claude_service.py --port 27180 >> $T/claude.log 2>&1 &
 echo $! > $T/claude.pid
 nohup $JAVA -Xmx3g -Dfile.encoding=UTF-8 -Djava.awt.headless=true -Dxmage.testMode=false -Dxmage.healthPort=27173 \
-  -Dmtgai.recordDir=$T/rec -Dmtgai.claudePort=27180 -Dmtgai.playmatSha=test -Dmtgai.codeSha=test ${EXTRA_OPTS:-} \
+  -Dmtgai.recordDir=$T/rec -Dmtgai.myDecksDir=$T/my-decks -Dmtgai.claudePort=27180 -Dmtgai.playmatSha=test -Dmtgai.codeSha=test ${EXTRA_OPTS:-} \
   -cp "$B/server/lib/*" mage.server.Main >> $T/server.log 2>&1 &
 echo $! > $T/server.pid
 echo started
