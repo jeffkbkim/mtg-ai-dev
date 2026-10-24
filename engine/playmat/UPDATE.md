@@ -31,9 +31,9 @@ that is safe, and holds it for Jeff when it isn't. Each run appends its review t
      `NODE_PATH=$(npm root -g) node engine/playmat/smoke.js claude "Sonnet 5.5" Low` for about 30 seconds: a table
      against the Claude AI must seat and Claude must answer its first decision (check the newest folder under
      `~/playmat-run/test/rec`). Stop the smoke, Vite and `test_server.sh stop` afterwards.
-   - Commit to main (patches, `PLAYMAT_COMMIT`, `upstream-log.md`), push, then `engine/playmat/deploy_next.sh`, which
-     waits for no game in progress (up to an hour), keeps the old build as `~/playmat-run/build-prev` and restarts.
-     If it times out, say so; the next run (or a person) deploys.
+   - Commit to main (patches, `PLAYMAT_COMMIT`, `upstream-log.md`) and push. Do NOT deploy: a person deploys with
+     `engine/playmat/deploy_next.sh --go` after checking nobody is playing (since 2026-10-24, when a deploy killed a
+     live game). Leave the build in `~/playmat-run/build-next` and say it is ready.
 5. Log the run at the top of `upstream-log.md`: date, old and new commit, the commit list with areas, the gate result
    and why, test results, deployed or not. Commit and push it even when holding.
 
