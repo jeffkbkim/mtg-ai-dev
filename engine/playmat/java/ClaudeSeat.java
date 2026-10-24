@@ -28,6 +28,10 @@ import java.net.Socket;
  */
 public class ClaudeSeat extends PySeat {
 
+    // pinned (2026-10-24): Playmat saves games as serialized players; a changed class must still read old saves.
+    // Keep this value when the class changes, and keep new fields transient or safe to default.
+    private static final long serialVersionUID = -2494754680458480489L;
+
     static final String[] MODELS = {"claude-opus-5-5", "claude-sonnet-5-5"};
     static final String[] EFFORTS = {"low", "medium", "high"};
 

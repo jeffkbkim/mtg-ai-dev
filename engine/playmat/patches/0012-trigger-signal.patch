@@ -1,0 +1,566 @@
+diff --git a/Mage.Web.Client/src/app/i18n/en/match.ts b/Mage.Web.Client/src/app/i18n/en/match.ts
+index 606b954188..68f0368921 100644
+--- a/Mage.Web.Client/src/app/i18n/en/match.ts
++++ b/Mage.Web.Client/src/app/i18n/en/match.ts
+@@ -93,4 +93,6 @@ export default {
+   'match.score.won': 'You won game {game} · {wins}–{losses}',
+   'match.score.lost': 'You lost game {game} · {wins}–{losses}',
+   'match.score.draw': 'Game {game} was a draw · {wins}–{losses}',
++  // mtg-ai: the trigger signal beside a permanent whose triggered ability has no ability word
++  'match.trigger.label': 'Triggered',
+ };
+diff --git a/Mage.Web.Client/src/app/i18n/en/settings.ts b/Mage.Web.Client/src/app/i18n/en/settings.ts
+index f6f24ef39a..dcf596e562 100644
+--- a/Mage.Web.Client/src/app/i18n/en/settings.ts
++++ b/Mage.Web.Client/src/app/i18n/en/settings.ts
+@@ -137,6 +137,9 @@ export default {
+   'settings.volume.label': 'Sound volume',
+   'settings.importantCues': 'Only important cues',
+   'settings.importantCues.detail': 'Just your turn, decisions, your clock running low and the result.',
++  // mtg-ai
++  'settings.triggerSounds': 'Trigger sounds',
++  'settings.triggerSounds.detail': 'A short chime when a triggered ability (Eerie, Survival, "whenever"…) goes on the stack. Off, it sounds like a spell.',
+   'settings.careerMusic': 'Career music',
+   'settings.showProgress': 'Show progression',
+   'settings.showProgress.detail': 'Your level in the header, Today on Home and what each game paid. Games count either way. Kept with your account.',
+diff --git a/Mage.Web.Client/src/app/i18n/es.ts b/Mage.Web.Client/src/app/i18n/es.ts
+index 1bd856c2da..5dc6b55b70 100644
+--- a/Mage.Web.Client/src/app/i18n/es.ts
++++ b/Mage.Web.Client/src/app/i18n/es.ts
+@@ -429,6 +429,10 @@ const es: Catalog = {
+   'settings.volume.label': 'Volumen del sonido',
+   'settings.importantCues': 'Solo sonidos importantes',
+   'settings.importantCues.detail': 'Solo tu turno, las decisiones, tu reloj por acabarse y el resultado.',
++  // mtg-ai
++  'settings.triggerSounds': 'Sonidos de habilidades disparadas',
++  'settings.triggerSounds.detail': 'Un breve sonido cuando una habilidad disparada (Eerie, Survival, "siempre que"…) va a la pila. Si está desactivado, suena como un hechizo.',
++  'match.trigger.label': 'Disparada',
+   'settings.careerMusic': 'Música de Carrera',
+   'settings.showProgress': 'Mostrar la progresión',
+   'settings.showProgress.detail': 'Tu nivel arriba, Hoy en el inicio y lo que pagó cada partida. Las partidas cuentan igual. Se guarda con tu cuenta.',
+diff --git a/Mage.Web.Client/src/app/match/TriggerSignals.module.css b/Mage.Web.Client/src/app/match/TriggerSignals.module.css
+new file mode 100644
+index 0000000000..c08a93c171
+--- /dev/null
++++ b/Mage.Web.Client/src/app/match/TriggerSignals.module.css
+@@ -0,0 +1,48 @@
++/* mtg-ai: the trigger signal's label, printed above the permanent whose ability triggered (TriggerSignals.tsx) */
++.label {
++  position: absolute;
++  translate: -50% -100%;
++  padding: 3px 10px;
++  border-radius: 999px;
++  background: var(--mat-600);
++  box-shadow: inset 0 0 0 1.5px rgb(var(--ink-strong-rgb) / 0.85), 0 2px 3px rgb(0 0 0 / 0.35), 0 8px 18px rgb(0 0 0 / 0.45);
++  color: var(--ink-strong);
++  font-size: 15px;
++  font-weight: 600;
++  letter-spacing: 0.02em;
++  white-space: nowrap;
++  animation: signal 1300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
++}
++
++.label i {
++  font-style: italic;
++}
++
++/* placed, held, then gone: no float, no bob */
++@keyframes signal {
++  0% {
++    opacity: 0;
++    scale: 0.9;
++  }
++  15% {
++    opacity: 1;
++    scale: 1;
++  }
++  80% {
++    opacity: 1;
++  }
++  100% {
++    opacity: 0;
++  }
++}
++
++/* animations off: shown plainly for its moment */
++.label[data-still] {
++  animation: none;
++}
++
++@media (prefers-reduced-motion: reduce) {
++  .label {
++    animation: none;
++  }
++}
+diff --git a/Mage.Web.Client/src/app/match/TriggerSignals.tsx b/Mage.Web.Client/src/app/match/TriggerSignals.tsx
+new file mode 100644
+index 0000000000..71ad8da562
+--- /dev/null
++++ b/Mage.Web.Client/src/app/match/TriggerSignals.tsx
+@@ -0,0 +1,114 @@
++import { useEffect, useRef, useState } from 'react';
++import type { GameView } from '../../protocol/generated/views';
++import { useT } from '../i18n';
++import { motionAllowed } from './flip';
++import { matchLayout } from './matchLayout';
++import { toStagePoint, useStage } from './stageContext';
++import { groupBySource, newTriggers, stackIds } from './triggerSignal';
++import styles from './TriggerSignals.module.css';
++
++/**
++ * mtg-ai: the trigger signal on the board (triggerSignal.ts finds the triggers; the chime is a game cue). The source
++ * permanent glows for about a second and gives a small wiggle (glow only with reduced motion or animations off), and
++ * a small label says the ability word above it; a trigger whose source isn't
++ * on the battlefield (a card that died, a spell's delayed trigger) shows its label at the stack.
++ */
++
++const LIFETIME = 1300;
++/** how long a source that just entered may take to land before its label goes to the stack instead */
++const LANDING = 650;
++
++interface Label {
++  key: number;
++  x: number;
++  y: number;
++  text: string;
++  /** the ability word is printed in italics, like on the card */
++  word: boolean;
++  still: boolean;
++}
++
++/** A soft ivory bloom around the card, filter only, so the card's own transform (tapped, attacking) is untouched. */
++function glow(element: Element) {
++  const ink = getComputedStyle(document.documentElement).getPropertyValue('--ink-strong-rgb').trim() || '246 242 232';
++  element.animate(
++    [
++      { filter: `drop-shadow(0 0 0 rgb(${ink} / 0)) brightness(1)` },
++      { filter: `drop-shadow(0 0 10px rgb(${ink} / 0.95)) drop-shadow(0 0 22px rgb(${ink} / 0.5)) brightness(1.12)`, offset: 0.25 },
++      { filter: `drop-shadow(0 0 6px rgb(${ink} / 0.6)) brightness(1.05)`, offset: 0.6 },
++      { filter: `drop-shadow(0 0 0 rgb(${ink} / 0)) brightness(1)` },
++    ],
++    { duration: 1000, easing: 'ease-out' },
++  );
++}
++
++/**
++ * A short, small wiggle (a "vibrate"): a few pixels side to side with a slight turn, through the individual
++ * translate and rotate properties so the card's own transform is untouched. Only when motion is allowed.
++ */
++function wiggle(element: Element) {
++  element.animate(
++    [0, -1, 1, -0.8, 0.6, -0.3, 0].map((factor) => ({ translate: `${factor * 3}px 0`, rotate: `${factor * 1.2}deg` })),
++    { duration: 450, easing: 'ease-out' },
++  );
++}
++
++export function TriggerSignals({ view }: { view: GameView | null }) {
++  const t = useT();
++  const stage = useStage();
++  const [labels, setLabels] = useState<Label[]>([]);
++  const seen = useRef<Set<string> | null>(null);
++  const nextKey = useRef(0);
++
++  useEffect(() => {
++    if (!view) return;
++    const triggers = newTriggers(seen.current, view);
++    seen.current = stackIds(view);
++    if (triggers.length === 0) return;
++
++    const elementOf = (id: string) => stage.element?.querySelector(`[data-object-id="${CSS.escape(id)}"]`) ?? null;
++    const show = (label: Omit<Label, 'key'>) => {
++      const key = nextKey.current++;
++      setLabels((current) => [...current, { ...label, key }]);
++      setTimeout(() => setLabels((current) => current.filter((item) => item.key !== key)), LIFETIME);
++    };
++
++    const onBattlefield = new Set((view.players ?? []).flatMap((player) => Object.values(player.battlefield ?? {}).map((card) => card.id)));
++    for (const signal of groupBySource(triggers)) {
++      const name = signal.word ?? t('match.trigger.label');
++      const text = signal.count > 1 ? `${name} ×${signal.count}` : name;
++      const word = !!signal.word;
++      // only a battlefield permanent glows (not a card with the same id in a hand or graveyard)
++      const permanent = !!signal.sourceId && onBattlefield.has(signal.sourceId);
++      // placed when the board has painted; a source that is still flying in (it just entered) gets a moment
++      const place = (retry: boolean) => {
++        const still = !motionAllowed();
++        const element = permanent ? elementOf(signal.sourceId!) : null;
++        if (permanent && !element && retry) {
++          setTimeout(() => place(false), LANDING);
++          return;
++        }
++        if (element) {
++          // the glow is light, not motion: it shows with reduced motion too; the wiggle doesn't
++          glow(element);
++          if (!still) wiggle(element);
++          const box = element.getBoundingClientRect();
++          show({ ...toStagePoint(stage, box.left + box.width / 2, box.top), text, word, still });
++        } else {
++          show({ ...matchLayout(stage).stackPoint, text, word, still });
++        }
++      };
++      requestAnimationFrame(() => place(true));
++    }
++  }, [view, stage, t]);
++
++  return (
++    <>
++      {labels.map((label) => (
++        <span key={label.key} className={styles.label} style={{ left: label.x, top: label.y }} data-still={label.still ? '' : undefined}>
++          {label.word ? <i>{label.text}</i> : label.text}
++        </span>
++      ))}
++    </>
++  );
++}
+diff --git a/Mage.Web.Client/src/app/match/Vfx.tsx b/Mage.Web.Client/src/app/match/Vfx.tsx
+index 2675e7f2f0..291e0d5731 100644
+--- a/Mage.Web.Client/src/app/match/Vfx.tsx
++++ b/Mage.Web.Client/src/app/match/Vfx.tsx
+@@ -3,6 +3,7 @@ import type { GameView, PermanentView } from '../../protocol/generated/views';
+ import { lastPlacement, motionAllowed } from './flip';
+ import { eventVisuals } from './vfxEvents';
+ import { matchLayout } from './matchLayout';
++import { TriggerSignals } from './TriggerSignals';
+ import { useObjectCenter, useStage } from './stageContext';
+ import styles from './Vfx.module.css';
+ 
+@@ -228,6 +229,8 @@ export function Vfx({ view, myPlayerId, sparks }: {
+     <div className={styles.layer} aria-hidden="true">
+       {effects.map((effect) => <EffectView key={effect.key} effect={effect} />)}
+       {hurt > 0 && <div key={hurt} className={styles.hurt} />}
++      {/* mtg-ai: triggered abilities glow their source and name their ability word */}
++      <TriggerSignals view={view} />
+     </div>
+   );
+ }
+diff --git a/Mage.Web.Client/src/app/match/cueRules.test.ts b/Mage.Web.Client/src/app/match/cueRules.test.ts
+index 70790ba9fc..ba15fc2e90 100644
+--- a/Mage.Web.Client/src/app/match/cueRules.test.ts
++++ b/Mage.Web.Client/src/app/match/cueRules.test.ts
+@@ -1,5 +1,5 @@
+ import { describe, expect, it } from 'vitest';
+-import { cueAllowed, pickCue, type CueSnapshot } from './cueRules';
++import { cueAllowed, cueToPlay, pickCue, type CueSnapshot } from './cueRules';
+ 
+ const base: CueSnapshot = {
+   turn: 3, active: 'opp', deciding: false, stack: 0, hand: 5, life: new Map([['me', 20], ['opp', 20]]),
+@@ -39,6 +39,13 @@ describe('pickCue', () => {
+     expect(pickCue(base, next({ life: new Map([['me', 23], ['opp', 20]]) }), 'me', false)).toBe('lifeGain');
+   });
+ 
++  // mtg-ai
++  it('chimes for a new trigger instead of the spell cue', () => {
++    expect(pickCue(base, next({ stack: 1, triggers: ['a1'] }), 'me', false)).toBe('trigger');
++    expect(pickCue(next({ stack: 1, triggers: ['a1'] }), next({ stack: 2, triggers: ['a1'] }), 'me', false)).toBe('cast');
++    expect(pickCue(next({ stack: 1, triggers: ['a1'] }), next({ stack: 1, triggers: ['a1'] }), 'me', false)).toBeNull();
++  });
++
+   it('hears lands and draws within a turn', () => {
+     expect(pickCue(base, next({ myLands: 4, hand: 4 }), 'me', false)).toBe('land');
+     expect(pickCue(base, next({ hand: 6 }), 'me', false)).toBe('draw');
+@@ -59,3 +66,13 @@ describe('cueAllowed', () => {
+     expect(cueAllowed('turn', { sound: true, volume: 0.5, importantCuesOnly: true })).toBe(true);
+   });
+ });
++
++// mtg-ai
++describe('cueToPlay', () => {
++  it('plays the trigger chime unless "Trigger sounds" is off, then the spell cue', () => {
++    expect(cueToPlay('trigger', { sound: true, volume: 0.5, triggerSounds: true })).toBe('trigger');
++    expect(cueToPlay('trigger', { sound: true, volume: 0.5, triggerSounds: false })).toBe('cast');
++    expect(cueToPlay('trigger', { sound: false, volume: 0.5, triggerSounds: true })).toBeNull();
++    expect(cueToPlay('trigger', { sound: true, volume: 0.5, importantCuesOnly: true })).toBeNull();
++  });
++});
+diff --git a/Mage.Web.Client/src/app/match/cueRules.ts b/Mage.Web.Client/src/app/match/cueRules.ts
+index 0d2e46e9a5..060550b759 100644
+--- a/Mage.Web.Client/src/app/match/cueRules.ts
++++ b/Mage.Web.Client/src/app/match/cueRules.ts
+@@ -1,9 +1,12 @@
+ import type { GameSessionState } from '../../core/game/gameSession';
++import { stackTriggers } from './triggerSignal';
+ 
+ /** Every game cue. Synthesized in sound.ts; chosen here from what changed between two game states. */
+ export type Cue =
+   | 'turn' | 'decide' | 'cast' | 'resolve' | 'land' | 'attack' | 'block' | 'damage' | 'lifeGain' | 'draw'
+-  | 'victory' | 'defeat' | 'timer';
++  | 'victory' | 'defeat' | 'timer'
++  // mtg-ai: a triggered ability went on the stack (triggerSignal.ts)
++  | 'trigger';
+ 
+ /** The cues that still play with "Only important cues": your turn, a decision, combat against you, the clock, the result. */
+ export const IMPORTANT_CUES: ReadonlySet<Cue> = new Set<Cue>(['turn', 'decide', 'timer', 'victory', 'defeat']);
+@@ -16,6 +19,8 @@ export interface CueSnapshot {
+   active: string | null;
+   deciding: boolean;
+   stack: number;
++  /** mtg-ai: stack ids of the triggered abilities on the stack */
++  triggers?: readonly string[];
+   hand: number;
+   life: Map<string, number>;
+   /** lands on your battlefield */
+@@ -36,6 +41,7 @@ export function cueSnapshot(state: GameSessionState, myId: string | null): CueSn
+     active: view?.activePlayerId ?? null,
+     deciding: state.mode === 'play' && state.interaction.mode !== 'waiting' && !state.awaitingServer,
+     stack: Object.keys(view?.stack ?? {}).length,
++    triggers: [...stackTriggers(view).keys()],
+     hand: Object.keys(view?.myHand ?? {}).length,
+     life: new Map((view?.players ?? []).map((player) => [player.playerId ?? '', player.life ?? 0])),
+     myLands: Object.values(me?.battlefield ?? {}).filter((card) => (card.cardTypes ?? []).includes('LAND')).length,
+@@ -60,7 +66,11 @@ export function pickCue(before: CueSnapshot | null, now: CueSnapshot, myId: stri
+   if (now.myClock !== null && now.myClock <= TIMER_WARNING_SECS && (before.myClock === null || before.myClock > TIMER_WARNING_SECS)) return 'timer';
+   if (now.attackers > 0 && before.attackers === 0) return 'attack';
+   if (now.blockers > before.blockers) return 'block';
+-  if (now.stack > before.stack) return 'cast';
++  if (now.stack > before.stack) {
++    // mtg-ai: a new triggered ability chimes instead of the spell cue
++    const triggered = (now.triggers ?? []).some((id) => !(before.triggers ?? []).includes(id));
++    return triggered ? 'trigger' : 'cast';
++  }
+   const lost = [...now.life].some(([id, life]) => life < (before.life.get(id) ?? life));
+   if (lost) return 'damage';
+   const gained = [...now.life].some(([id, life]) => life > (before.life.get(id) ?? life));
+@@ -77,3 +87,12 @@ export function cueAllowed(cue: Cue, settings: { sound: boolean; volume: number;
+   if (!settings.sound || settings.volume <= 0) return false;
+   return !settings.importantCuesOnly || IMPORTANT_CUES.has(cue);
+ }
++
++/**
++ * mtg-ai: the cue that plays for a picked one under the player's settings, or null. With "Trigger sounds" off a
++ * trigger sounds like any other new stack object (the spell cue, as before the trigger chime).
++ */
++export function cueToPlay(cue: Cue, settings: { sound: boolean; volume: number; importantCuesOnly?: boolean; triggerSounds?: boolean }): Cue | null {
++  const played = cue === 'trigger' && settings.triggerSounds === false ? 'cast' : cue;
++  return cueAllowed(played, settings) ? played : null;
++}
+diff --git a/Mage.Web.Client/src/app/match/sound.ts b/Mage.Web.Client/src/app/match/sound.ts
+index 405fc8dbb7..24c2686d0c 100644
+--- a/Mage.Web.Client/src/app/match/sound.ts
++++ b/Mage.Web.Client/src/app/match/sound.ts
+@@ -1,5 +1,5 @@
+ import { useSettings } from '../stores/settings';
+-import { cueAllowed, type Cue } from './cueRules';
++import { cueToPlay, type Cue } from './cueRules';
+ 
+ export type { Cue } from './cueRules';
+ 
+@@ -187,6 +187,13 @@ function render(b: Bus, out: AudioNode, cue: Cue, t: number) {
+       // your clock is running out: a clock's double tick, twice
+       [0, 0.12, 0.5, 0.62].forEach((offset, i) => knock(b, out, i % 2 === 0 ? 1650 : 1350, t + offset, 0.13));
+       break;
++    case 'trigger':
++      // mtg-ai: a triggered ability: a quick rising pair of small bells over a pinch of shimmer, brighter and
++      // shorter than a spell's breath
++      noise(b, out, { start: t, length: 0.16, from: 3000, to: 7000, gain: 0.05, type: 'highpass', q: 0.8 });
++      bell(b, out, NOTE.E5 * 2, t + 0.01, 0.45, 0.06);
++      bell(b, out, NOTE.A4 * 4, t + 0.08, 0.6, 0.055);
++      break;
+     case 'victory':
+       // a bright arpeggio landing on a held chord
+       [NOTE.C5, NOTE.E5, NOTE.G5, NOTE.C6].forEach((freq, i) => bell(b, out, freq, t + i * 0.11, 1.4, 0.11));
+@@ -203,8 +210,10 @@ function render(b: Bus, out: AudioNode, cue: Cue, t: number) {
+ /** Plays a cue if the player's sound settings allow it. */
+ export function playCue(cue: Cue) {
+   const settings = useSettings.getState().settings;
+-  if (!cueAllowed(cue, settings)) return;
+-  previewCue(cue, settings.volume);
++  // mtg-ai: through cueToPlay, for the "Trigger sounds" setting
++  const played = cueToPlay(cue, settings);
++  if (!played) return;
++  previewCue(played, settings.volume);
+ }
+ 
+ /** Plays a cue regardless of the on/off settings (the volume preview in Settings). */
+diff --git a/Mage.Web.Client/src/app/match/triggerSignal.test.ts b/Mage.Web.Client/src/app/match/triggerSignal.test.ts
+new file mode 100644
+index 0000000000..1de6a8ff5c
+--- /dev/null
++++ b/Mage.Web.Client/src/app/match/triggerSignal.test.ts
+@@ -0,0 +1,61 @@
++import { describe, expect, it } from 'vitest';
++import type { CardView, GameView } from '../../protocol/generated/views';
++import { abilityWord, groupBySource, isTriggeredAbility, newTriggers, stackIds } from './triggerSignal';
++
++// a triggered ability as the server sends it: name "Ability", the source card, an ABILITY_* object type
++const ability = (id: string, sourceId: string, rule: string, abilityType: CardView['abilityType'] = 'TRIGGERED_NONMANA'): CardView => ({
++  id,
++  name: 'Ability',
++  mageObjectType: 'ABILITY_STACK_FROM_CARD',
++  abilityType,
++  rules: [rule],
++  sourceCard: { id: sourceId, name: 'Entity Tracker' },
++} as CardView);
++const spell = (id: string): CardView => ({ id, name: 'Optimistic Scavenger', cardTypes: ['CREATURE'], rules: [] });
++const viewOf = (...stack: CardView[]): GameView => ({ stack: Object.fromEntries(stack.map((card) => [card.id!, card])) });
++
++const EERIE = '<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, draw a card.';
++const PLAIN = 'When {this} enters, you gain 2 life.';
++
++describe('triggerSignal', () => {
++  it('signals a new trigger once, with its source and ability word', () => {
++    const before = viewOf(spell('s1'));
++    const now = viewOf(spell('s1'), ability('a1', 'perm1', EERIE));
++    expect(newTriggers(stackIds(before), now)).toEqual([{ stackId: 'a1', sourceId: 'perm1', word: 'Eerie' }]);
++    // the same view again (a re-render, a patch elsewhere): nothing new
++    expect(newTriggers(stackIds(now), now)).toEqual([]);
++    expect(newTriggers(stackIds(now), viewOf(spell('s1'), ability('a1', 'perm1', EERIE)))).toEqual([]);
++  });
++
++  it('labels a trigger without an ability word as plain', () => {
++    expect(newTriggers(new Set(), viewOf(ability('a2', 'perm2', PLAIN)))).toEqual([{ stackId: 'a2', sourceId: 'perm2', word: null }]);
++  });
++
++  it('stays silent on the first view, for spells and for activated abilities', () => {
++    expect(newTriggers(null, viewOf(ability('a1', 'perm1', EERIE)))).toEqual([]);
++    expect(newTriggers(new Set(), viewOf(spell('s2')))).toEqual([]);
++    expect(newTriggers(new Set(), viewOf(ability('a3', 'perm3', '{2}, {T}: Draw a card.', 'ACTIVATED_NONMANA')))).toEqual([]);
++  });
++
++  it('reads ability words, not saga chapters', () => {
++    expect(abilityWord(ability('a', 'p', '<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, draw a card.'))).toBe('Survival');
++    expect(abilityWord(ability('a', 'p', '<i>Delirium</i> &mdash; At the beginning of your end step, if there are four or more card types among cards in your graveyard, …'))).toBe('Delirium');
++    expect(abilityWord(ability('a', 'p', 'II &mdash; Draw a card.'))).toBeNull();
++    expect(abilityWord(ability('a', 'p', PLAIN))).toBeNull();
++  });
++
++  it('knows a trigger by its text when the ability type is missing', () => {
++    const untyped = (rule: string): CardView => ({ ...ability('a', 'p', rule), abilityType: undefined });
++    expect(isTriggeredAbility(untyped(EERIE))).toBe(true);
++    expect(isTriggeredAbility(untyped('Whenever you cast a spell, scry 1.'))).toBe(true);
++    expect(isTriggeredAbility(untyped('{T}: Add {W}.'))).toBe(false);
++  });
++
++  it('groups triggers of one source and word', () => {
++    const triggers = newTriggers(new Set(), viewOf(ability('a1', 'perm1', EERIE), ability('a2', 'perm1', EERIE), ability('a3', 'perm2', PLAIN)));
++    expect(groupBySource(triggers)).toEqual([
++      { sourceId: 'perm1', word: 'Eerie', count: 2 },
++      { sourceId: 'perm2', word: null, count: 1 },
++    ]);
++  });
++});
+diff --git a/Mage.Web.Client/src/app/match/triggerSignal.ts b/Mage.Web.Client/src/app/match/triggerSignal.ts
+new file mode 100644
+index 0000000000..1326423e52
+--- /dev/null
++++ b/Mage.Web.Client/src/app/match/triggerSignal.ts
+@@ -0,0 +1,86 @@
++import type { CardView, GameView, StackAbilityView } from '../../protocol/generated/views';
++import { isStackAbility } from '../../core/game/cards';
++import { stripMarkup } from '../../core/game/prompt';
++
++/**
++ * mtg-ai: Arena's trigger signal. When a triggered ability goes on the stack (either player's), its source glows on
++ * the battlefield with the ability word ("Eerie", "Survival") or "Triggered" beside it, and a short chime plays.
++ * Found from the difference between two game views: a stack object that wasn't there before and is a triggered
++ * ability, not a spell or an activated ability.
++ */
++export interface TriggerSignal {
++  /** the ability's id on the stack */
++  stackId: string;
++  /** the object it triggered from (a permanent's id while it is on the battlefield); null when the server sends none */
++  sourceId: string | null;
++  /** the ability word the text starts with ("Eerie"), or null: shown as "Triggered" */
++  word: string | null;
++}
++
++/** The ability's text, markup gone: "Eerie — Whenever an enchantment you control enters, …". */
++function ruleText(card: CardView): string {
++  return stripMarkup((card.rules ?? [])[0] ?? '').trim();
++}
++
++// "Eerie — ", "Survival — ": up to three capitalised words before an em dash (how XMage prints ability and flavor
++// words). Saga chapters ("I — ", "II, III — ") are not words.
++const WORD = /^([A-Z][A-Za-z'’-]*(?: [A-Za-z'’-]+){0,2})\s*—\s*/;
++const CHAPTER = /^[IVX]+$/;
++
++/** The ability word an ability's text starts with, or null. */
++export function abilityWord(card: CardView): string | null {
++  const match = WORD.exec(ruleText(card));
++  if (!match || CHAPTER.test(match[1])) return null;
++  return match[1];
++}
++
++/** Whether a stack object is a triggered ability (the server's ability type, else its text: "When", "Whenever", "At"). */
++export function isTriggeredAbility(card: CardView): boolean {
++  if (!isStackAbility(card)) return false;
++  if (card.abilityType) return card.abilityType.startsWith('TRIGGERED');
++  return /^(?:when|whenever|at)\b/i.test(ruleText(card).replace(WORD, ''));
++}
++
++/** The triggered abilities on a view's stack, by stack id. */
++export function stackTriggers(view: GameView | null | undefined): Map<string, TriggerSignal> {
++  const triggers = new Map<string, TriggerSignal>();
++  for (const [key, card] of Object.entries(view?.stack ?? {})) {
++    if (!isTriggeredAbility(card)) continue;
++    const stackId = card.id ?? key;
++    triggers.set(stackId, { stackId, sourceId: (card as StackAbilityView).sourceCard?.id ?? null, word: abilityWord(card) });
++  }
++  return triggers;
++}
++
++/**
++ * The triggers that went on the stack since the stack ids seen before (null: the first view, a baseline that
++ * signals nothing). The same view, or one that only changed elsewhere, signals nothing.
++ */
++export function newTriggers(seen: ReadonlySet<string> | null, view: GameView | null | undefined): TriggerSignal[] {
++  if (!seen) return [];
++  return [...stackTriggers(view).values()].filter((trigger) => !seen.has(trigger.stackId));
++}
++
++/** Every stack id of a view, to diff the next view against. */
++export function stackIds(view: GameView | null | undefined): Set<string> {
++  return new Set(Object.entries(view?.stack ?? {}).map(([key, card]) => card.id ?? key));
++}
++
++export interface SourceSignal {
++  sourceId: string | null;
++  word: string | null;
++  /** triggers of this source and word in one update ("Eerie ×2") */
++  count: number;
++}
++
++/** One signal per source and word: two eerie triggers of one creature glow once, "Eerie ×2". */
++export function groupBySource(triggers: readonly TriggerSignal[]): SourceSignal[] {
++  const groups = new Map<string, SourceSignal>();
++  for (const trigger of triggers) {
++    const key = `${trigger.sourceId ?? trigger.stackId}|${trigger.word ?? ''}`;
++    const group = groups.get(key);
++    if (group) group.count += 1;
++    else groups.set(key, { sourceId: trigger.sourceId, word: trigger.word, count: 1 });
++  }
++  return [...groups.values()];
++}
+diff --git a/Mage.Web.Client/src/app/screens/SettingsDialog.tsx b/Mage.Web.Client/src/app/screens/SettingsDialog.tsx
+index bad6147157..582dcca722 100644
+--- a/Mage.Web.Client/src/app/screens/SettingsDialog.tsx
++++ b/Mage.Web.Client/src/app/screens/SettingsDialog.tsx
+@@ -238,6 +238,8 @@ export function SettingsDialog({ open, onOpenChange }: { open: boolean; onOpenCh
+             </div>
+           </Row>
+           <Row label={t('settings.importantCues')} detail={t('settings.importantCues.detail')}>{toggle('importantCuesOnly')}</Row>
++          {/* mtg-ai: the trigger chime */}
++          <Row label={t('settings.triggerSounds')} detail={t('settings.triggerSounds.detail')}>{toggle('triggerSounds')}</Row>
+           {showProgress !== null && (
+             <Row label={t('settings.showProgress')} detail={t('settings.showProgress.detail')}>
+               <Switch checked={showProgress} onChange={(value) => void setShowProgress(value)} />
+diff --git a/Mage.Web.Client/src/app/stores/settings.ts b/Mage.Web.Client/src/app/stores/settings.ts
+index b814d7f14e..45a223b1c4 100644
+--- a/Mage.Web.Client/src/app/stores/settings.ts
++++ b/Mage.Web.Client/src/app/stores/settings.ts
+@@ -76,6 +76,8 @@ export interface PlaySettings {
+   volume: number;
+   /** only your turn, decisions, the clock and the result make a sound */
+   importantCuesOnly: boolean;
++  /** mtg-ai: a short chime when a triggered ability goes on the stack (else the spell cue) */
++  triggerSounds: boolean;
+   /** browser notifications while the tab is in the background: your move, a draft pick, a game starting, a whisper */
+   notifications: boolean;
+   /** profile: the sigil shown for the player (server avatar ids 10 to 32; 10 shows the initial) */
+@@ -157,6 +159,7 @@ export const DEFAULT_SETTINGS: PlaySettings = {
+   sound: true,
+   volume: 0.6,
+   importantCuesOnly: false,
++  triggerSounds: true,
+   notifications: false,
+   avatarId: 10,
+   flag: 'world',

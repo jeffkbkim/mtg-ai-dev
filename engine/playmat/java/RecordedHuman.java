@@ -35,6 +35,10 @@ import java.util.*;
  */
 public class RecordedHuman extends HumanPlayer {
 
+    // pinned (2026-10-24): Playmat saves games as serialized players; a changed class must still read old saves.
+    // Keep this value when the class changes, and keep new fields transient or safe to default.
+    private static final long serialVersionUID = 1749539587898916129L;
+
     private transient Shadow shadow;
     private transient int waits;               // browser prompts since the decision started
     private transient int depth;               // nested decisions (a target asked while casting from priority)
@@ -364,6 +368,7 @@ public class RecordedHuman extends HumanPlayer {
 
     /** Tells the defending RecordedHuman when the engine has accepted its blocks. */
     static final class BlocksDeclared extends mage.watchers.Watcher {
+        private static final long serialVersionUID = 3609735809894604730L;  // pinned, see above
         BlocksDeclared(UUID playerId) {
             super(mage.constants.WatcherScope.PLAYER);
             this.controllerId = playerId;

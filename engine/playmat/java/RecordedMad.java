@@ -24,6 +24,10 @@ import java.util.*;
  */
 public class RecordedMad extends ComputerPlayerControllableProxy {
 
+    // pinned (2026-10-24): Playmat saves games as serialized players; a changed class must still read old saves.
+    // Keep this value when the class changes, and keep new fields transient or safe to default.
+    private static final long serialVersionUID = 3138256323939889280L;
+
     private transient Shadow shadow;
     private transient Shadow.Pending pendingPriority;
     private transient int depth;
