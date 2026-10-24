@@ -101,10 +101,30 @@ def read_deck(deck_path):
     return out
 
 
-def system_prompt(deck_path, texts, lessons=None, plan=False, facts=False):
+PRIMERS = ("v1", "v2")
+
+
+def card_roles(path=PRIMER_DIR / "dsk_card_roles.json"):
+    """One-line playing role per card (play/primer/card_roles.py writes it)."""
+    return json.loads(Path(path).read_text())
+
+
+def system_prompt(deck_path, texts, lessons=None, plan=False, facts=False, primer="v1"):
     """lessons: text of a lessons file (play/primer/lessons_v*.md) placed right after the rules, or None.
-    plan: ask for a plan that is updated in every reply (PLAN_RULES). facts: explain the "Facts:" block (FACTS_RULES)."""
+    plan: ask for a plan that is updated in every reply (PLAN_RULES). facts: explain the "Facts:" block (FACTS_RULES).
+    primer: "v1" (dsk_meta.md + the 17lands GIH table) or "v2" (dsk_meta_v2.md: archetypes, checks, cards to respect;
+    each card in the deck gets its role from dsk_card_roles.json)."""
+    if primer not in PRIMERS:
+        raise ValueError(f"primer must be one of {PRIMERS}, not {primer!r}")
     deck = read_deck(deck_path)
+    if primer == "v2":
+        roles = card_roles()
+        # reminder text in parentheses is dropped: the primer explains the set's mechanics
+        deck_lines = [f"{n}x {re.sub(r' ?[(][^()]*[)]', '', card_text(texts[name])) if name in texts else name}"
+                      + (f" -- role: {roles[name]}" if name in roles else "") for n, name in deck]
+        return "\n\n".join([RULES] + ([PLAN_RULES] if plan else []) + ([FACTS_RULES] if facts else []) + ([lessons] if lessons else [])
+                            + [(PRIMER_DIR / "dsk_meta_v2.md").read_text().strip(),
+                               "Your deck (the opponent's deck is unknown to you):\n" + "\n".join(deck_lines)])
     deck_lines = [f"{n}x {card_text(texts[name])}" if name in texts else f"{n}x {name}" for n, name in deck]
     return "\n\n".join([RULES] + ([PLAN_RULES] if plan else []) + ([FACTS_RULES] if facts else []) + ([lessons] if lessons else []) + [(PRIMER_DIR / "dsk_meta.md").read_text(), gih_table(),
                         "Your deck (the opponent's deck is unknown to you):\n" + "\n".join(deck_lines)])
@@ -131,13 +151,16 @@ class ClaudePlayer:
     MAX_ERRORS = 2
 
     def __init__(self, model="claude-opus-5-5", effort="high", lessons=None, plan=False, facts=False, check=False,
-                 timeout_s=600):
+                 timeout_s=600, primer=None):
         self.model, self.effort, self.timeout_s = model, effort, timeout_s
+        self.primer = primer or os.environ.get("PRIMER") or "v1"  # an explicit argument wins over $PRIMER
+        if self.primer not in PRIMERS:
+            raise ValueError(f"primer must be one of {PRIMERS}, not {self.primer!r}")
         self.lessons = Path(lessons).read_text() if lessons else None
         self.plan_mode = plan
         self.facts = facts
         self.check = check  # a second look at combat and near-lethal decisions (_check_gate)
-        self.name = f"claude:{model}:{effort}" + (f":{Path(lessons).stem}" if lessons else "") + (":plan" if plan else "") + (":facts" if facts else "") + (":check" if check else "")
+        self.name = f"claude:{model}:{effort}" + (f":{Path(lessons).stem}" if lessons else "") + (":plan" if plan else "") + (":facts" if facts else "") + (":check" if check else "") + (":primer2" if self.primer == "v2" else "")
         self.texts = load_card_text()
         self.proc = None
         self.fresh = False  # the process was started before the game's first decision (prewarm) and has seen nothing
@@ -155,7 +178,7 @@ class ClaudePlayer:
         self.plan = None           # latest plan from the player's replies (plan mode)
         self.checked_combat = None  # (turn, ATTACK/BLOCK) of the last combat that got its self-check
         self.workdir = tempfile.mkdtemp(prefix="claude-seat-")
-        system = system_prompt(deck_path, self.texts, self.lessons, self.plan_mode, self.facts)
+        system = system_prompt(deck_path, self.texts, self.lessons, self.plan_mode, self.facts, self.primer)
         self.prompt_sha = hashlib.sha256(system.encode()).hexdigest()[:12]  # recorded per decision: prompt versions must not be pooled
         Path(self.workdir, "system.txt").write_text(system)
 

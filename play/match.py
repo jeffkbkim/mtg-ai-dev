@@ -23,7 +23,8 @@ def make_player(kind, seed, args, lessons=None, plan=False, facts=False, check=F
     if kind == "random":
         return RandomPlayer(seed)
     if kind == "claude":
-        return ClaudePlayer(model=args.model, effort=args.effort, lessons=lessons, plan=plan, facts=facts, check=check)
+        return ClaudePlayer(model=args.model, effort=args.effort, lessons=lessons, plan=plan, facts=facts, check=check,
+                            primer=args.primer)
     raise ValueError(kind)
 
 
@@ -84,6 +85,7 @@ def main():
     p.add_argument("--plan-a", action="store_true"); p.add_argument("--plan-b", action="store_true")  # plan updated in every reply
     p.add_argument("--facts-a", action="store_true"); p.add_argument("--facts-b", action="store_true")  # play/facts.py block
     p.add_argument("--check-a", action="store_true"); p.add_argument("--check-b", action="store_true")  # self-check
+    p.add_argument("--primer", choices=("v1", "v2"))  # Claude seats' primer; default $PRIMER, else v1
     p.add_argument("--out", required=True)
     args = p.parse_args()
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)

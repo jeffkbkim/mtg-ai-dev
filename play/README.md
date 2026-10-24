@@ -20,6 +20,11 @@ using as extra training data or as an opponent.
   `lessons_v*.md` are optional card-agnostic play habits drawn from reviewed games, added per seat with
   `--lessons-a` / `--lessons-b`. The player name in each record carries the lessons version and each decision the
   system prompt's hash (`prompt_sha`), so games from different prompts are never pooled by accident.
+  Primer v2 (`--primer v2`, or `PRIMER=v2`; v1 is the default; names gain `:primer2`): `dsk_meta_v2.md` (per-pair
+  plans, synergies, key cards, rares, how to beat each pair; mandatory attack/block/tap-out/mulligan checks;
+  instant-speed cards to respect per color; no win rates, 17lands data only picked the cards, via
+  `archetype_stats_17lands.py`) instead of `dsk_meta.md` + the GIH table, and each deck card gets a one-line role
+  from `dsk_card_roles.json` (written by `card_roles.py`: rules from card text plus hand corrections).
 - `--plan-a` / `--plan-b` make a Claude seat keep a plan (role, win condition, race, opponent read, this turn, next
   turn) that it rewrites in every reply; the latest plan is shown in each prompt and recorded with each decision.
 - `--facts-a` / `--facts-b` add a "Facts:" block to each decision (`facts.py`), computed from the seat's own
