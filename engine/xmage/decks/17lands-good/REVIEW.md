@@ -84,3 +84,11 @@ Made by `python3 play/review_decks.py` (claude-opus-5-5, effort medium, one head
 | good_67 | UG+B | UG manifest/delirium tempo | 4/9/5/4/1/0 | 12 | 0 (4) | 17 (3 fix) | 55.6% | 57.7% | 68.2% | 7-1 | platinum | 0.60 | 3 | ★ | - | Solid low-curve UG shell with real power in Overlord, Enduring Curiosity, Onslaught and two Unable to Scream, but Say Its Name, Glimmerlight and Tunnel Surveyor are filler and the black splash is only for Swarmweaver; a fine deck, not a great one. |
 | good_68 | WU | WU enchantments/eerie aggro | 7/10/6/0/1/0 | 11 | 4 (3) | 16 (1 fix) | 56.4% | 57.6% | 68.3% | 7-0 | gold | 0.60 | 4 | ★★ | - | A focused, low-curve WU eerie deck: cheap enchantment payoffs, two Sheltered by Ghosts plus Trapped in the Screen for removal, and 16 lands is right; it can stall against bigger boards and relies on auras on small bodies, but it's a strong, coherent build. |
 | good_69 | WR | WR go-wide aggro | 1/7/6/6/0/3 | 14 | 5 (0) | 17 (1 fix) | 57.0% | 57.6% | 68.2% | 7-1 | gold | 0.70 | 4 | ★★ | - | Two Overlords of the Mistmoors, three Glassworks and Trapped in the Screen give this mostly-white deck strong top end and removal. It has a solid 2-drop curve, though a few weak red cards (Turn Inside Out, Untimely Malfunction) pad out a light red half. |
+
+## Offered in Playmat (Jeff, 2026-10-23: two colors, at most a light splash of a third)
+
+`engine/playmat/dsk_starters.py` `playable()` keeps a deck only if it has two main colors; at most one splash color, in
+at most 3 nonland cards, with at least 3 lands that make it; and a review rating above 2 (so the greedy-mana and
+too-few-creatures decks are out). 51 decks pass (14 ★★, 37 ★): WU 24, WR 19, WU+G 2, UG+B 2, UG+W 1, UG+R 1, UG 1,
+RG 1. The other 19 stay as plain starters (`dsk-goodx-NN`, no star): the Claude AI isn't dealt them and "Good only"
+hides them.
