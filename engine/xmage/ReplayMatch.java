@@ -82,6 +82,7 @@ public class ReplayMatch {
             if (error != null) end.addProperty("error", error);
             end.add("state", ReplaySeat.dump(game));
             AbilityKeys.forget(game);
+            Observer.forget(game);
             link.out.println(gson.toJson(end));
             link.in.readLine();  // Python acknowledges before the next game
         }

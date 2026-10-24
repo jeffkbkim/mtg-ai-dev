@@ -53,6 +53,7 @@ public class SeatSpike {
             long start = System.nanoTime();
             game.start(null);
             double secs = (System.nanoTime()-start)/1e9;
+            Observer.forget(game);
             boolean terminal = py.hasWon() || ai.hasWon() || (py.hasLost() && ai.hasLost());
             System.out.printf("RESULT game=%d first=%s terminal=%s winner=%s turns=%d seconds=%.3f life_py=%d life_ai=%d%n",
                 g, g % 2 == 0 ? "PY" : "AI", terminal, game.getWinner(), game.getTurnNum(), secs, py.getLife(), ai.getLife());

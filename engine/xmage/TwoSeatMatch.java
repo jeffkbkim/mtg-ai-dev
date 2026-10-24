@@ -56,6 +56,7 @@ public class TwoSeatMatch {
             long start = System.nanoTime();
             game.start(null);
             double secs = (System.nanoTime() - start) / 1e9;
+            Observer.forget(game);
             String winner = seats[0].hasWon() ? "A" : seats[1].hasWon() ? "B" : null;
             System.out.printf("RESULT game=%d first=%s winner=%s turns=%d seconds=%.3f life_a=%d life_b=%d%n",
                 g, names[g % 2], winner, game.getTurnNum(), secs, seats[0].getLife(), seats[1].getLife());

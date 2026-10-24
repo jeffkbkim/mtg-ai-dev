@@ -60,7 +60,114 @@ public final class Observer {
         return obs.add(id, e);
     }
 
+    // ---- cards revealed from a hand, remembered while they stay there ----
+    // XMage keeps reveals in one game-wide map that it empties at every priority and update event, often before this
+    // seat's next decision, while the card is still in its owner's hand. A card revealed from another player's hand
+    // stays visible to that observer (zone HAND, revealed:true) until it leaves the hand: while it is the same card
+    // object with the same zone change counter. Cards revealed from anywhere else (a library) are not remembered,
+    // even if they then go to a hand. Kept per game and observing seat; cleared by forget(game) or dropped with the
+    // oldest game once MAX_GAMES games are held, and trimmed after a turn rollback.
+
+    private static final int MAX_GAMES = 32;
+
+    /** One remembered card: its zone change counter when seen revealed, and the turn it was seen in. */
+    private static final class Seen {
+        final int zcc, turn;
+        Seen(int zcc, int turn) { this.zcc = zcc; this.turn = turn; }
+    }
+
+    private static final class Memory {
+        final Map<UUID, Map<UUID, Seen>> bySeat = new HashMap<>();  // observing player id -> card id -> when seen
+        // cards in XMage's revealed map at the last look, and whether each was in a hand when first seen there:
+        // one reveal lasts until the map is emptied, so a card first seen in a library stays "not from hand"
+        Map<UUID, Boolean> fromHand = new HashMap<>();
+    }
+
+    private static final Map<UUID, Memory> memory = new LinkedHashMap<UUID, Memory>() {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<UUID, Memory> eldest) {
+            return size() > MAX_GAMES;
+        }
+    };
+    private static final Set<Game> watched = Collections.newSetFromMap(new WeakHashMap<>());
+
+    /**
+     * Listen to the game's own events: XMage fires an info event as each reveal is logged and empties the revealed
+     * map right after its update and priority events, so every reveal is seen while it lasts, even when no seat is
+     * asked anything meanwhile. Simulated copies of the game have no listeners. Idempotent.
+     */
+    public static synchronized void watch(Game game) {
+        if (game.isSimulation() || !watched.add(game)) return;
+        game.addTableEventListener(ev -> {
+            // a turn rollback (ReplaySeat's rewind, or a player's request on a server) logs this after restoring the
+            // state: reveals seen since the start of that turn did not happen
+            if (ev.getMessage() != null && ev.getMessage().contains("Rolling back to start of turn")) forgetSince(game, game.getTurnNum());
+            rememberRevealed(game);
+        });
+        game.addPlayerQueryEventListener(ev -> rememberRevealed(game));
+    }
+
+    /** Note every card revealed from a player's hand that is still there, for each other player. */
+    public static synchronized void rememberRevealed(Game game) {
+        if (game.isSimulation()) return;
+        Memory mem = memory.computeIfAbsent(game.getId(), g -> new Memory());
+        Map<UUID, Boolean> fromHand = new HashMap<>();
+        for (mage.cards.Cards cards : game.getState().getRevealed().values()) {
+            for (UUID id : cards) {
+                UUID owner = game.getOwnerId(id);
+                Player p = owner == null ? null : game.getPlayer(owner);
+                boolean inHand = p != null && game.getState().getZone(id) == mage.constants.Zone.HAND && p.getHand().contains(id);
+                Boolean before = mem.fromHand.get(id);
+                boolean revealedFromHand = before == null ? inHand : before && inHand;
+                fromHand.put(id, revealedFromHand);
+                if (!revealedFromHand) continue;
+                for (UUID seat : game.getState().getPlayers().keySet()) {
+                    if (seat.equals(owner)) continue;  // my own hand is visible anyway
+                    mem.bySeat.computeIfAbsent(seat, s -> new HashMap<>())
+                        .putIfAbsent(id, new Seen(game.getState().getZoneChangeCounter(id), game.getTurnNum()));
+                }
+            }
+        }
+        mem.fromHand = fromHand;
+    }
+
+    /** Drop the per-game memory once a game is over. */
+    public static synchronized void forget(Game game) {
+        memory.remove(game.getId());
+    }
+
+    /** After a rollback to the start of turn `turn`: forget reveals seen in that turn or later (they did not happen). */
+    public static synchronized void forgetSince(Game game, int turn) {
+        Memory mem = memory.get(game.getId());
+        if (mem == null) return;
+        for (Map<UUID, Seen> m : mem.bySeat.values()) m.values().removeIf(s -> s.turn >= turn);
+        mem.fromHand.clear();
+    }
+
+    /** Remembered cards still in the same hand as the same object, for this seat; forgets the rest. */
+    private static synchronized List<Card> stillRevealedInHand(Game game, UUID me) {
+        List<Card> out = new ArrayList<>();
+        Memory mem = memory.get(game.getId());
+        Map<UUID, Seen> mine = mem == null ? null : mem.bySeat.get(me);
+        if (mine == null) return out;
+        for (Iterator<Map.Entry<UUID, Seen>> it = mine.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<UUID, Seen> en = it.next();
+            UUID id = en.getKey();
+            Card card = game.getCard(id);
+            UUID owner = game.getOwnerId(id);
+            Player p = owner == null ? null : game.getPlayer(owner);
+            boolean stays = card != null && p != null && !owner.equals(me)
+                && game.getState().getZone(id) == mage.constants.Zone.HAND && p.getHand().contains(id)
+                && game.getState().getZoneChangeCounter(id) == en.getValue().zcc;
+            if (stays) out.add(card);
+            else it.remove();
+        }
+        return out;
+    }
+
     public static Obs build(Game game, UUID me, Collection<UUID> offered) {
+        watch(game);
+        rememberRevealed(game);
         Obs obs = new Obs();
         obs.me = me;
         obs.opp = game.getOpponents(me).iterator().next();
@@ -116,6 +223,12 @@ public final class Observer {
                 obs.whitelist.add(c.getId());
                 addCard(game, obs, c, "REVEALED", me.equals(game.getOwnerId(c.getId())), attacking, blocking);
             }
+        }
+        // cards an opponent revealed from hand earlier and still holds (one being revealed right now stays REVEALED)
+        for (Card card : stillRevealedInHand(game, me)) {
+            if (obs.index.containsKey(card.getId())) continue;
+            obs.whitelist.add(card.getId());
+            addCard(game, obs, new CardView(card, game), "HAND", false, attacking, blocking).addProperty("revealed", true);
         }
         for (LookedAtView l : view.getLookedAt()) obs.whitelist.addAll(l.getCards().keySet());
         // cards the current prompt shows me (e.g. manifest dread's two cards); names come from the engine
@@ -216,7 +329,7 @@ public final class Observer {
         return obs;
     }
 
-    private static void addCard(Game game, Obs obs, CardView c, String zone, boolean mine, Set<UUID> attacking, Set<UUID> blocking) {
+    private static JsonObject addCard(Game game, Obs obs, CardView c, String zone, boolean mine, Set<UUID> attacking, Set<UUID> blocking) {
         JsonObject e = new JsonObject();
         e.addProperty("kind", "card");
         e.addProperty("zone", zone);
@@ -265,6 +378,7 @@ public final class Observer {
         }
         obs.names.put(c.getId(), c.getName().isEmpty() ? "face-down card" : c.getName());
         obs.add(c.getId(), e);
+        return e;
     }
 
     /** Compare the observation with the full game state. Every hit is a hidden-information leak. */

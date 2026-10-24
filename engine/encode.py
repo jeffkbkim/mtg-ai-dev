@@ -313,6 +313,10 @@ def encode_file(path: Path, vocab: Vocab) -> tuple[list[Example], dict[str, int]
         d = json.loads(line)
         if d.get("type", "decision") != "decision":
             continue
+        if d.get("choice", 0) < 0:  # no label: an unmapped answer, or blocks the engine refused (Playmat records)
+            key = f"no label: choice -1 ({d.get('mapping', '?')})"
+            problems[key] = problems.get(key, 0) + 1
+            continue
         try:
             examples.append(encode_decision(d, vocab))
         except Unmapped as err:

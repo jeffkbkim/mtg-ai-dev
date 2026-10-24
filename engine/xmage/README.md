@@ -9,7 +9,11 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   answered in Java. Rejected moves and unmapped abilities are logged, never hidden.
 - `Observer.java`: builds the observation from XMage's per-seat view (`GameView`, what a human client sees),
   entries in contract order `[global | cards | stack abilities]`, plus edges. Checks every message against the
-  full game state for hidden-information leaks.
+  full game state for hidden-information leaks. A card being revealed is an entry with zone `REVEALED`; a card an
+  opponent revealed from its hand stays in later observations as zone `HAND`, `mine: false`, `revealed: true` while
+  the same card object stays in that hand (XMage forgets reveals at every priority and update event, so Observer
+  remembers them per game and seat, and forgets them when the card changes zone, the game ends or the turn is rolled
+  back).
 - `AbilityKeys.java`: stable ability keys `"<card name>#<i>"` (printed) and `"<card name>#g<i>"` (granted to
   another object or put on a token), and named choices: `alt_cost:none` / `alt_cost:ImpendingAbility` for an
   alternative-cost prompt, `"<card name>#mode<i>"` for a mode of a modal card (printed order), `choice:<text>`
@@ -42,6 +46,10 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
 - `VeteranSurvivor.java`: our patched copy of that XMage card (see "Our patches to XMage").
 - `VeteranSurvivorCheck.java`: regression check for that patch: after exiling three cards it is 5/4 with hexproof.
   Prints PASS or FAIL.
+- `RevealCheck.java`: regression check that a card the opponent reveals from hand stays in this seat's observation
+  (zone HAND, revealed) after priority and update events, disappears once it is shuffled away, discarded or back in
+  hand as a new object or its turn is rolled back, that a card revealed from the library and put into the hand is not
+  remembered, and that a never-revealed hand card never shows. Prints PASS or FAIL.
 - `BlockCheck.java`: builds a combat board directly and asks XMage's AI to block (for chasing block bugs).
 - `decks/`: smoke-test decks; `dsk_ug_modal.dck` swaps in modal spells to exercise MODE prompts.
 
@@ -86,6 +94,7 @@ VocabDump keeps the `tokens` list already in the file (token names come from rec
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP FaceDownRoomCheck) # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP ColorChoiceCheck) # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP VeteranSurvivorCheck) # expect PASS
+(cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP RevealCheck)      # expect PASS
 ```
 
 Same seed does not reproduce the same game (XMage's own randomness), so every action is logged.

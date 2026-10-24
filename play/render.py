@@ -61,7 +61,9 @@ def _entry(e, entries=()):
     name = e.get("name") or (e.get("card_name") if not e.get("face_down") else None) or "face-down card"
     if e.get("card_name") and e["card_name"] != name:
         name += f" (card: {e['card_name']})"
-    parts = [f"{who} {e['zone']} {name}"]
+    # a card the opponent revealed from its hand and still holds: "opp HAND (revealed) <name>"
+    zone = e["zone"] + (" (revealed)" if e.get("revealed") else "")
+    parts = [f"{who} {zone} {name}"]
     if "types" in e:
         parts.append(e["types"].strip("[]"))
         if "Creature" in e["types"]:
@@ -137,7 +139,7 @@ def events(prev, cur):
     def bag(obs):
         b = {}
         for e in obs["entries"][1:]:
-            if e["kind"] != "card" or e["zone"] in ("OFFERED", "CASTING", "REVEALED"):
+            if e["kind"] != "card" or e["zone"] in ("OFFERED", "CASTING", "REVEALED") or e.get("revealed"):
                 continue
             k = ("your" if e["mine"] else "opponent's", e["zone"].lower(), e.get("card_name") or e.get("name") or "face-down card")
             b[k] = b.get(k, 0) + 1
@@ -148,6 +150,23 @@ def events(prev, cur):
         if d:
             who, zone, name = k
             out.append(f"{name} {'entered' if d > 0 else 'left'} {who} {zone}" + (f" (x{abs(d)})" if abs(d) > 1 else ""))
+    # cards the opponent revealed from its hand (shown while they stay there), kept out of the bag above: they were
+    # in that hand all along
+    def revealed(obs):
+        b = {}
+        for e in obs["entries"][1:]:
+            if e["kind"] == "card" and e.get("revealed") and e["zone"] == "HAND":
+                n = e.get("card_name") or e.get("name") or "?"
+                b[n] = b.get(n, 0) + 1
+        return b
+    r0, r1 = revealed(prev), revealed(cur)
+    for name in sorted(set(r0) | set(r1)):
+        d = r1.get(name, 0) - r0.get(name, 0)
+        x = f" (x{abs(d)})" if abs(d) > 1 else ""
+        if d > 0:
+            out.append(f"opponent revealed {name} from hand" + x)
+        elif d < 0:
+            out.append(f"revealed {name} left the opponent's hand" + x)
     return out
 
 

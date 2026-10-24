@@ -107,6 +107,22 @@ def test_face_down_cards(vocab, decisions, examples):
     assert seen_hidden > 0 and seen_mine > 0
 
 
+def test_opponent_revealed_hand_card(vocab, decisions):
+    """A card the opponent revealed from hand and still holds (zone HAND, mine false, revealed true) encodes as a
+    known card in the HAND zone, not mine; the extra "revealed" field is ignored."""
+    from engine.encode import CARD_FEATURES
+    d = copy.deepcopy(decisions[0])
+    entries = d["obs"]["entries"]
+    entries.append({"kind": "card", "zone": "HAND", "name": "Glimmerburst", "card_name": "Glimmerburst", "mine": False,
+                    "revealed": True, "face_down": False, "token": False, "types": "[INSTANT]", "mana_value": 2,
+                    "power": "0", "toughness": "0", "i": len(entries)})
+    x = encode_decision(d, vocab)
+    n_cards = sum(e["kind"] == "card" for e in entries[1:])
+    assert x.card_ids[n_cards - 1] == vocab.card("Glimmerburst")
+    f = dict(zip(CARD_FEATURES, x.card_features[n_cards - 1]))
+    assert f["zone_hand"] == 1.0 and f["mine"] == 0.0
+
+
 def test_edges_follow_entries(decisions, examples):
     batch = collate(examples)
     N = batch["card_ids"].shape[1]
