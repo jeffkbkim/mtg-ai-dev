@@ -92,3 +92,7 @@ at most 3 nonland cards, with at least 3 lands that make it; and a review rating
 too-few-creatures decks are out). 51 decks pass (14 ★★, 37 ★): WU 24, WR 19, WU+G 2, UG+B 2, UG+W 1, UG+R 1, UG 1,
 RG 1. The other 19 stay as plain starters (`dsk-goodx-NN`, no star): the Claude AI isn't dealt them and "Good only"
 hides them.
+
+Update 2026-10-24 (Jeff: "no 4 color"): the colour rule now applies to every deck Playmat lists, both pools. Decks that
+break it are not listed at all (their .dck files stay here): 12 of the good pool and 22 of `17lands-r2`. Listed: 51
+good decks with a star (14 ★★), 7 good decks without one (rated 2 by the review, two colors), 138 of the 160.
