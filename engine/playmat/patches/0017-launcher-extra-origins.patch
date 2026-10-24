@@ -1,0 +1,19 @@
+diff --git a/ops/desktop/launcher/src/playmat/launcher/Network.java b/ops/desktop/launcher/src/playmat/launcher/Network.java
+index ae0cb11417..f58e59807b 100644
+--- a/ops/desktop/launcher/src/playmat/launcher/Network.java
++++ b/ops/desktop/launcher/src/playmat/launcher/Network.java
+@@ -72,6 +72,14 @@ final class Network {
+         for (String host : hosts) {
+             origins.add("http://" + host + ":" + port);
+         }
++        // mtg-ai: extra origins the game server accepts, e.g. a public HTTPS name in front of this launcher (a Cloudflare
++        // tunnel): PLAYMAT_EXTRA_ORIGINS="https://play.example.com", several separated by commas or spaces
++        String extra = System.getenv("PLAYMAT_EXTRA_ORIGINS");
++        if (extra != null) {
++            for (String origin : extra.split("[,\\s]+")) {
++                if (!origin.isEmpty() && !origins.contains(origin)) origins.add(origin);
++            }
++        }
+         return origins;
+     }
+ 

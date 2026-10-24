@@ -130,6 +130,8 @@ with the earlier recording's 40 cards (the short one kept as `deck-X.partial.dck
   starter name, exact duplicates are merged, copies of retired decks are labelled "Retired" and sorted last (hidden by
   Good only); one sort for saved and starter decks by real strength; tiles say "Your copy · ★★ starter". Decks the
   player renamed, duplicated, imported or built are flagged and never touched.
+- `patches/0017`: the launcher also accepts the origins in `$PLAYMAT_EXTRA_ORIGINS` (run.sh: https://play.devpick.sh, the
+  Cloudflare tunnel behind Cloudflare Access).
 - `patches/0007`: blocks: attackers that must be blocked if able are marked, blocks that leave one unblocked are held
   back once with a message, and the server's messages to the player (why a block was refused) are shown.
 - Our two XMage rule fixes (`engine/xmage/BecomesFaceDownCreatureEffect.java`, `VeteranSurvivor.java`) are copied over

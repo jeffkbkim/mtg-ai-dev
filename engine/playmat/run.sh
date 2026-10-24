@@ -52,6 +52,8 @@ PRIMER=${PRIMER:-v2} nohup "$PY" "$HERE/claude_service.py" --port "$PORT" --play
 echo $! > "$DATA/claude_service.pid"
 
 export PLAYMAT_DATA=$DATA
+# the public name in front of this launcher (Cloudflare tunnel, behind Cloudflare Access): the game server accepts it
+export PLAYMAT_EXTRA_ORIGINS=${PLAYMAT_EXTRA_ORIGINS:-https://play.devpick.sh}
 export PLAYMAT_SERVER_OPTS="-Dmtgai.recordDir=$REC -Dmtgai.claudePort=$PORT -Dmtgai.playmatSha=$(cat "$HERE/PLAYMAT_COMMIT") -Dmtgai.codeSha=$(git -C "$ROOT" rev-parse HEAD)"
 nohup "$JAVA_HOME/bin/java" -jar "$OUT/app/playmat-launcher.jar" --headless --no-browser >> "$DATA/launcher.out" 2>&1 &
 echo $! > "$DATA/launcher.pid"
