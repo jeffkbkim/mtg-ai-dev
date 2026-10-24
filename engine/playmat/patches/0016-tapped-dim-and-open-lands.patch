@@ -1,0 +1,148 @@
+diff --git a/Mage.Web.Client/src/app/match/PermanentStack.module.css b/Mage.Web.Client/src/app/match/PermanentStack.module.css
+index 764af196df..320189b13f 100644
+--- a/Mage.Web.Client/src/app/match/PermanentStack.module.css
++++ b/Mage.Web.Client/src/app/match/PermanentStack.module.css
+@@ -350,6 +350,15 @@
+   transition: filter var(--dur-quick) linear;
+ }
+ 
++/* mtg-ai: a tapped permanent is dimmed as well as turned, so open lands stand out; rings and badges stay bright */
++.body > :last-child {
++  transition: filter var(--dur-place, 240ms) ease;
++}
++
++.body.tapped > :last-child {
++  filter: brightness(0.62) saturate(0.45);
++}
++
+ .sleep {
+   position: absolute;
+   top: -6%;
+diff --git a/Mage.Web.Client/src/app/match/PermanentStack.tsx b/Mage.Web.Client/src/app/match/PermanentStack.tsx
+index af9aed7905..3f99408fd1 100644
+--- a/Mage.Web.Client/src/app/match/PermanentStack.tsx
++++ b/Mage.Web.Client/src/app/match/PermanentStack.tsx
+@@ -9,7 +9,7 @@ import type { PermanentView } from '../../protocol/generated/views';
+ import { useSettings } from '../stores/settings';
+ import { CardFace } from '../ui/CardFace';
+ import { CounterBadges } from './CounterBadges';
+-import { cardKey, stackOffsetRatio, type PermanentGroup } from './boardModel';
++import { cardKey, stackBadge, stackOffsetRatio, type PermanentGroup } from './boardModel';
+ import { useFlip } from './flip';
+ import { useMatchUi } from './matchUi';
+ import { useStage } from './stageContext';
+@@ -118,7 +118,7 @@ export const PermanentStack = memo(function PermanentStack(props: PermanentStack
+           left={group.attachments.length * attachOffset + (reversed.length - 1 - index) * stackOffset}
+           top={group.attachments.length * attachOffset}
+           depth={group.attachments.length + index}
+-          count={index === reversed.length - 1 && group.members.length > 1 ? group.members.length : undefined}
++          count={index === reversed.length - 1 ? stackBadge(group) ?? undefined : undefined}
+         />
+       ))}
+     </div>
+@@ -130,7 +130,7 @@ interface PlacedCardProps extends PermanentStackProps {
+   left: number;
+   top: number;
+   depth: number;
+-  count?: number;
++  count?: string;
+ }
+ 
+ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, attacking, blocking, forward, targeting, onClick, onBlockDrop, dropTargets, pending, left, top, depth, count }: PlacedCardProps) {
+@@ -247,7 +247,7 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+       data-object-id={id}
+     >
+       {flying && <span className={styles.flightShadow} data-still={motion ? undefined : ''} aria-hidden="true" />}
+-      <div className={[styles.body, flying ? styles.floating : '', asleep ? styles.asleep : ''].join(' ')} data-still={motion ? undefined : ''}>
++      <div className={[styles.body, flying ? styles.floating : '', asleep ? styles.asleep : '', tapped ? styles.tapped : ''].join(' ')} data-still={motion ? undefined : ''}>
+         {effects.map((effect) => <span key={effect} className={[styles.fx, styles[FX_CLASS[effect]]].join(' ')} aria-hidden="true" />)}
+         <CardFace card={permanent} sleeve={sleeve} size={width > 140 ? 'normal' : 'small'} />
+       </div>
+@@ -301,7 +301,7 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+         </span>
+       )}
+       {!isCreature && loyalty && <span className={[styles.pt, styles.loyalty].join(' ')}>{loyalty}</span>}
+-      {count !== undefined && <span className={styles.count}>×{count}</span>}
++      {count !== undefined && <span className={styles.count}>{count}</span>}
+     </div>
+   );
+ }
+diff --git a/Mage.Web.Client/src/app/match/boardModel.test.ts b/Mage.Web.Client/src/app/match/boardModel.test.ts
+index 7c6dc32948..154b82930b 100644
+--- a/Mage.Web.Client/src/app/match/boardModel.test.ts
++++ b/Mage.Web.Client/src/app/match/boardModel.test.ts
+@@ -1,6 +1,6 @@
+ import { describe, expect, it } from 'vitest';
+ import type { GameView, PermanentView, PlayerView } from '../../protocol/generated/views';
+-import { buildBoard, buildPlayerBoard, cardKey, fitRow, ROW_FLOOR, zoneKeys, type PermanentGroup, type RowFit } from './boardModel';
++import { buildBoard, buildPlayerBoard, cardKey, fitRow, ROW_FLOOR, splitOpenFirst, stackBadge, zoneKeys, type PermanentGroup, type RowFit } from './boardModel';
+ 
+ function permanent(id: string, overrides: Partial<PermanentView> = {}): PermanentView {
+   return { id, name: 'Forest', expansionSetCode: 'M21', cardTypes: ['LAND'], ...overrides };
+@@ -137,3 +137,35 @@ describe('card identity across zones', () => {
+     expect(zoneKeys([{ id: 's1', cardId: 'c1' }, { id: 's2', cardId: 'c1' }, { id: 's3' }])).toEqual(['c1', 'c1:s2', 's3']);
+   });
+ });
++
++// mtg-ai: land piles split open lands first, and the badge counts what's open
++describe('land piles: open first, and how many are open', () => {
++  it('puts untapped lands first and tapped after, keeping arrival order and the stack key', () => {
++    const board = buildPlayerBoard(player('me', [
++      permanent('a', { tapped: true }), permanent('b'), permanent('c', { tapped: true }), permanent('d'),
++    ]), true);
++    expect(board.back).toHaveLength(1);
++    expect(board.back[0].key).toBe('a');
++    expect(board.back[0].members.map((p) => p.id)).toEqual(['b', 'd', 'a', 'c']);
++    expect(stackBadge(board.back[0])).toBe('2 / 4 open');
++  });
++
++  it('keeps ×N when none is tapped, and says 0 / N open when all are', () => {
++    const open = buildPlayerBoard(player('me', [permanent('a'), permanent('b'), permanent('c')]), true);
++    expect(stackBadge(open.back[0])).toBe('×3');
++    const closed = buildPlayerBoard(player('me', [permanent('a', { tapped: true }), permanent('b', { tapped: true })]), true);
++    expect(stackBadge(closed.back[0])).toBe('0 / 2 open');
++  });
++
++  it('has no badge for a single card, and leaves token stacks in arrival order with ×N', () => {
++    expect(stackBadge(buildPlayerBoard(player('me', [permanent('a', { tapped: true })]), true).back[0])).toBeNull();
++    const token: Partial<PermanentView> = { name: 'Clue', cardTypes: ['ARTIFACT'], isToken: true };
++    const board = buildPlayerBoard(player('me', [permanent('t1', { ...token, tapped: true }), permanent('t2', token)]), true);
++    expect(board.back[0].members.map((p) => p.id)).toEqual(['t1', 't2']);
++    expect(stackBadge(board.back[0])).toBe('×2');
++  });
++
++  it('splitOpenFirst is stable within each half', () => {
++    expect(splitOpenFirst([permanent('x', { tapped: true }), permanent('y'), permanent('z')]).map((p) => p.id)).toEqual(['y', 'z', 'x']);
++  });
++});
+diff --git a/Mage.Web.Client/src/app/match/boardModel.ts b/Mage.Web.Client/src/app/match/boardModel.ts
+index b9e716a978..042130e008 100644
+--- a/Mage.Web.Client/src/app/match/boardModel.ts
++++ b/Mage.Web.Client/src/app/match/boardModel.ts
+@@ -81,9 +81,26 @@ function groupRow(permanents: PermanentView[], attachmentsByHost: Map<string, Pe
+     groups.push(group);
+     if (signature) bySignature.set(signature, group);
+   }
++  // mtg-ai: a land pile shows its untapped lands first (upright) and the tapped ones after (turned), so you can count what's open
++  for (const group of groups) {
++    if (group.members.length > 1 && isLand(group.lead)) group.members = splitOpenFirst(group.members);
++  }
+   return groups;
+ }
+ 
++/** mtg-ai: untapped first, then tapped, each in arrival order. */
++export function splitOpenFirst(members: PermanentView[]): PermanentView[] {
++  return [...members.filter((member) => !member.tapped), ...members.filter((member) => member.tapped)];
++}
++
++/** mtg-ai: a stack's badge: "×4", or for a land pile with any tapped "3 / 4 open"; null for a single card. */
++export function stackBadge(group: PermanentGroup): string | null {
++  const total = group.members.length;
++  if (total < 2) return null;
++  const open = group.members.filter((member) => !member.tapped).length;
++  return isLand(group.lead) && open < total ? `${open} / ${total} open` : `×${total}`;
++}
++
+ /**
+  * Board rows keep the order in which permanents arrived (the server's order), so nothing reshuffles
+  * when a new permanent enters; lands are pulled to the left of the back row.
