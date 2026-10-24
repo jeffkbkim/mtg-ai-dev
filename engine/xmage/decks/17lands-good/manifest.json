@@ -575,7 +575,7 @@
     "Unnerving Grasp": 2,
     "Vanish from Sight": 1
    },
-   "tier": 1,
+   "tier": 2,
    "review": {
     "archetype": "WU enchantments/eerie tempo",
     "coherent": true,
@@ -732,7 +732,7 @@
     "Unnerving Grasp": 1,
     "Vanish from Sight": 2
    },
-   "tier": 1,
+   "tier": 2,
    "review": {
     "archetype": "WU eerie enchantments/tempo",
     "coherent": true,
@@ -813,7 +813,7 @@
     "Unidentified Hovership": 1,
     "Unnerving Grasp": 2
    },
-   "tier": 1,
+   "tier": 2,
    "review": {
     "archetype": "WU enchantments/Glimmers",
     "coherent": true,
@@ -1046,7 +1046,7 @@
     "Unnerving Grasp": 2,
     "Vanish from Sight": 1
    },
-   "tier": 1,
+   "tier": 2,
    "review": {
     "archetype": "WU eerie control",
     "coherent": true,
@@ -3071,7 +3071,7 @@
     "Unsettling Twins": 2,
     "Veteran Survivor": 2
    },
-   "tier": 1,
+   "tier": 2,
    "review": {
     "archetype": "WU enchantments/fliers",
     "coherent": true,
@@ -3150,7 +3150,7 @@
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Unsettling Twins": 1
    },
-   "tier": 1,
+   "tier": 2,
    "review": {
     "archetype": "WU enchantments (Gremlin Tamer eerie)",
     "coherent": true,
@@ -3229,7 +3229,7 @@
     "Unsettling Twins": 1,
     "Vicious Clown": 1
    },
-   "tier": 1,
+   "tier": 2,
    "review": {
     "archetype": "RW low-power aggro",
     "coherent": true,
@@ -3304,7 +3304,7 @@
     "Turn Inside Out": 1,
     "Unsettling Twins": 2
    },
-   "tier": 1,
+   "tier": 2,
    "review": {
     "archetype": "RW aggro",
     "coherent": true,
@@ -3711,7 +3711,7 @@
     "Trapped in the Screen": 2,
     "Vicious Clown": 1
    },
-   "tier": 1,
+   "tier": 2,
    "review": {
     "archetype": "RW aggro",
     "coherent": true,
@@ -3872,7 +3872,7 @@
     "Wary Watchdog": 1,
     "Wildfire Wickerfolk": 3
    },
-   "tier": 1,
+   "tier": 2,
    "review": {
     "archetype": "RG aggro",
     "coherent": true,
@@ -5586,7 +5586,7 @@
     "Tunnel Surveyor": 1,
     "Underwater Tunnel // Slimy Aquarium": 1
    },
-   "tier": 1,
+   "tier": 2,
    "review": {
     "archetype": "WU enchantments/eerie aggro",
     "coherent": true,
@@ -5664,7 +5664,7 @@
     "Untimely Malfunction": 1,
     "Vicious Clown": 1
    },
-   "tier": 1,
+   "tier": 2,
    "review": {
     "archetype": "WR go-wide aggro",
     "coherent": true,

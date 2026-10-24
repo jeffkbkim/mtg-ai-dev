@@ -1,0 +1,1269 @@
+{
+ "d011c5229963a89c": {
+  "review": {
+   "archetype": "WR low-power aggro",
+   "coherent": true,
+   "concerns": [
+    "card quality",
+    "removal",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A focused WR toys/aggro deck with a very low curve, Arabella, Overlord and two Sheltered by Ghosts. Filler like Turn Inside Out and Jump Scare plus thin interaction keep it a solid but unexceptional build."
+  },
+  "reply": "{\"archetype\": \"WR low-power aggro\", \"coherent\": true, \"concerns\": [\"card quality\", \"removal\", \"top end\"], \"rating\": 3, \"verdict\": \"A focused WR toys/aggro deck with a very low curve, Arabella, Overlord and two Sheltered by Ghosts. Filler like Turn Inside Out and Jump Scare plus thin interaction keep it a solid but unexceptional build.\"}",
+  "cost_usd": 0.0151,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "57a8116a5cbe2c94": {
+  "review": {
+   "archetype": "4-color blue enchantments/value pile",
+   "coherent": false,
+   "concerns": [
+    "colors",
+    "few creatures",
+    "mana",
+    "threats"
+   ],
+   "rating": 2,
+   "verdict": "Solid blue core with good removal (Trapped in the Screen x2, Drowner, Domination, Stay Hidden) and some eerie synergy, but spread across four colors with only 10 creatures, few real threats, and a shaky three-color-plus-splash manabase."
+  },
+  "reply": "{\"archetype\": \"4-color blue enchantments/value pile\", \"coherent\": false, \"concerns\": [\"colors\", \"few creatures\", \"mana\", \"threats\"], \"rating\": 2, \"verdict\": \"Solid blue core with good removal (Trapped in the Screen x2, Drowner, Domination, Stay Hidden) and some eerie synergy, but spread across four colors with only 10 creatures, few real threats, and a shaky three-color-plus-splash manabase.\"}",
+  "cost_usd": 0.01557,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "25e53810869f7c89": {
+  "review": {
+   "archetype": "WU enchantments/eerie",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "thin 3-drops",
+    "filler auras"
+   ],
+   "rating": 3,
+   "verdict": "A solid WU eerie deck: three Gremlin Tamers, two Lionheart Glimmers, Ghostly Dancers and Overlord of the Mistmoors give it real power, and Stay Hidden, Unable to Scream and Exorcise answer threats, but only 11 true creatures, a hollow 3-drop slot and weak cards like Ethereal Armor and Shardmage's Rescue keep it at a fine level rather than a great one."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/eerie\", \"coherent\": true, \"concerns\": [\"few creatures\", \"thin 3-drops\", \"filler auras\"], \"rating\": 3, \"verdict\": \"A solid WU eerie deck: three Gremlin Tamers, two Lionheart Glimmers, Ghostly Dancers and Overlord of the Mistmoors give it real power, and Stay Hidden, Unable to Scream and Exorcise answer threats, but only 11 true creatures, a hollow 3-drop slot and weak cards like Ethereal Armor and Shardmage's Rescue keep it at a fine level rather than a great one.\"}",
+  "cost_usd": 0.01973,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "14500c99c8882780": {
+  "review": {
+   "archetype": "RW go-wide tokens",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "Ethereal Armor",
+    "few creatures"
+   ],
+   "rating": 3,
+   "verdict": "Four Midnight Mayhem plus Arabella, Toby, Hordecaller and token makers give a real go-wide aggro plan with a low curve, but there is almost no removal (one Dragonfire), the two Ethereal Armors are weak with few enchantments, and Turn Inside Out is filler."
+  },
+  "reply": "{\"archetype\": \"RW go-wide tokens\", \"coherent\": true, \"concerns\": [\"removal\", \"Ethereal Armor\", \"few creatures\"], \"rating\": 3, \"verdict\": \"Four Midnight Mayhem plus Arabella, Toby, Hordecaller and token makers give a real go-wide aggro plan with a low curve, but there is almost no removal (one Dragonfire), the two Ethereal Armors are weak with few enchantments, and Turn Inside Out is filler.\"}",
+  "cost_usd": 0.01489,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "7a52c209a210ff7c": {
+  "review": {
+   "archetype": "WU eerie enchantments",
+   "coherent": true,
+   "concerns": [
+    "low curve",
+    "few creatures",
+    "top end",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "A real WU eerie shell with strong payoffs (2 Entity Tracker, 2 Gremlin Tamer, Ghostly Dancers, Inquisitive Glimmer) and good removal (Trapped in the Screen, Sheltered by Ghosts, Unable to Scream, Drowner), but it is very low-curve and short on bodies. Enter the Enigma and Jump Scare are filler, so it is a solid but unspectacular deck."
+  },
+  "reply": "{\"archetype\": \"WU eerie enchantments\", \"coherent\": true, \"concerns\": [\"low curve\", \"few creatures\", \"top end\", \"filler\"], \"rating\": 3, \"verdict\": \"A real WU eerie shell with strong payoffs (2 Entity Tracker, 2 Gremlin Tamer, Ghostly Dancers, Inquisitive Glimmer) and good removal (Trapped in the Screen, Sheltered by Ghosts, Unable to Scream, Drowner), but it is very low-curve and short on bodies. Enter the Enigma and Jump Scare are filler, so it is a solid but unspectacular deck.\"}",
+  "cost_usd": 0.016,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "c4c1bed519cd5db9": {
+  "review": {
+   "archetype": "WU enchantments/eerie tempo",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "small threats",
+    "thin top end"
+   ],
+   "rating": 4,
+   "verdict": "A synergistic, well-built WU eerie deck with strong removal and card flow (Sheltered x2, Seized, Vanish, Drowner, Glimmerburst). Its main weakness is a low real creature count and small bodies that can stall against bigger boards, with only Fear of Falling and Enduring Curiosity as genuine finishers."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/eerie tempo\", \"coherent\": true, \"concerns\": [\"few creatures\", \"small threats\", \"thin top end\"], \"rating\": 4, \"verdict\": \"A synergistic, well-built WU eerie deck with strong removal and card flow (Sheltered x2, Seized, Vanish, Drowner, Glimmerburst). Its main weakness is a low real creature count and small bodies that can stall against bigger boards, with only Fear of Falling and Enduring Curiosity as genuine finishers.\"}",
+  "cost_usd": 0.01895,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "e5de744f3904ce1a": {
+  "review": {
+   "archetype": "4-color green delirium/value pile (UG base, red and black splashes)",
+   "coherent": false,
+   "concerns": [
+    "colors",
+    "mana base",
+    "red splash depth",
+    "top-end thin",
+    "weak filler"
+   ],
+   "rating": 2,
+   "verdict": "There are real cards here: Enduring Vitality, Floodpits Drowner, two Scorching Dragonfire, Swarmweaver and Balustrade Wurm. But five red cards run on about 4 red sources, black is splashed on top, and filler like Glimmerlight, Bookworm and a half-supported delirium Beastie make it a shaky three-plus-color pile that will often stumble on mana."
+  },
+  "reply": "{\"archetype\": \"4-color green delirium/value pile (UG base, red and black splashes)\", \"coherent\": false, \"concerns\": [\"colors\", \"mana base\", \"red splash depth\", \"top-end thin\", \"weak filler\"], \"rating\": 2, \"verdict\": \"There are real cards here: Enduring Vitality, Floodpits Drowner, two Scorching Dragonfire, Swarmweaver and Balustrade Wurm. But five red cards run on about 4 red sources, black is splashed on top, and filler like Glimmerlight, Bookworm and a half-supported delirium Beastie make it a shaky three-plus-color pile that will often stumble on mana.\"}",
+  "cost_usd": 0.0261,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "f903ef4f6a270640": {
+  "review": {
+   "archetype": "UG manifest dread, splash B",
+   "coherent": true,
+   "concerns": [
+    "threat density",
+    "top end",
+    "splash",
+    "filler"
+   ],
+   "rating": 2,
+   "verdict": "The manifest plan is real: about eight dread sources make up for having only 9 creatures, and Drowner, Grasp and Vanish give tempo. But the threats are mostly 2/2 face-downs, there's almost nothing above 4 mana, and filler like Beastie without self-mill, double Threats, a lone Say Its Name and Fungus is padding. The black splash for Broodspinner and a BB Room is greedy for a low-power deck."
+  },
+  "reply": "```json\n{\"archetype\": \"UG manifest dread, splash B\", \"coherent\": true, \"concerns\": [\"threat density\", \"top end\", \"splash\", \"filler\"], \"rating\": 2, \"verdict\": \"The manifest plan is real: about eight dread sources make up for having only 9 creatures, and Drowner, Grasp and Vanish give tempo. But the threats are mostly 2/2 face-downs, there's almost nothing above 4 mana, and filler like Beastie without self-mill, double Threats, a lone Say Its Name and Fungus is padding. The black splash for Broodspinner and a BB Room is greedy for a low-power deck.\"}\n```",
+  "cost_usd": 0.02533,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "e373b369326067e2": {
+  "review": {
+   "archetype": "WU enchantments/Glimmers",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "light top-end"
+   ],
+   "rating": 4,
+   "verdict": "Strong WU enchantment deck: a low curve, plenty of premium removal (two Sheltered by Ghosts, Trapped in the Screen, Hovership, Fear of Abduction) and Glimmer synergy. Only 12 creatures, but token makers help, and a few filler slots like Shardmage's Rescue keep it short of exceptional."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/Glimmers\", \"coherent\": true, \"concerns\": [\"few creatures\", \"light top-end\"], \"rating\": 4, \"verdict\": \"Strong WU enchantment deck: a low curve, plenty of premium removal (two Sheltered by Ghosts, Trapped in the Screen, Hovership, Fear of Abduction) and Glimmer synergy. Only 12 creatures, but token makers help, and a few filler slots like Shardmage's Rescue keep it short of exceptional.\"}",
+  "cost_usd": 0.01882,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "a6e13d96aa6c950e": {
+  "review": {
+   "archetype": "WU enchantments/eerie control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "threat density",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Deep in cheap aura removal with Overlord as a finisher and decent eerie synergy, but the creatures are small and few, so it may struggle to close games; a solid, playable but unspectacular build."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/eerie control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"threat density\", \"top end\"], \"rating\": 3, \"verdict\": \"Deep in cheap aura removal with Overlord as a finisher and decent eerie synergy, but the creatures are small and few, so it may struggle to close games; a solid, playable but unspectacular build.\"}",
+  "cost_usd": 0.0187,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "c0a1d87e99543d7f": {
+  "review": {
+   "archetype": "WU eerie enchantments/tempo",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "small threats"
+   ],
+   "rating": 4,
+   "verdict": "A cohesive WU eerie deck. Gremlin Tamer, two Inquisitive Glimmer, Ghostly Dancers and the Rooms fit together, it has plenty of tap-down and bounce interaction (3x Stay Hidden, 2x Vanish, Hovership, Drowner), and Overlord tops it off; the bodies are small, so it can stall if the tokens don't keep pressure up."
+  },
+  "reply": "{\"archetype\": \"WU eerie enchantments/tempo\", \"coherent\": true, \"concerns\": [\"few creatures\", \"small threats\"], \"rating\": 4, \"verdict\": \"A cohesive WU eerie deck. Gremlin Tamer, two Inquisitive Glimmer, Ghostly Dancers and the Rooms fit together, it has plenty of tap-down and bounce interaction (3x Stay Hidden, 2x Vanish, Hovership, Drowner), and Overlord tops it off; the bodies are small, so it can stall if the tokens don't keep pressure up.\"}",
+  "cost_usd": 0.02288,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "c7988c4056f9b266": {
+  "review": {
+   "archetype": "WU enchantments/eerie tokens",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "threat quality",
+    "aura risk",
+    "removal"
+   ],
+   "rating": 2,
+   "verdict": "The enchantment theme is real, with Gremlin Tamer, Scavengers, Dancers and Ethereal Armor. But only 5 actual creatures backed by 1/1 Glimmer tokens make a fragile board for three Armors, and the soft removal (Stay Hidden, Unable to Scream) can't carry the game."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/eerie tokens\", \"coherent\": true, \"concerns\": [\"few creatures\", \"threat quality\", \"aura risk\", \"removal\"], \"rating\": 2, \"verdict\": \"The enchantment theme is real, with Gremlin Tamer, Scavengers, Dancers and Ethereal Armor. But only 5 actual creatures backed by 1/1 Glimmer tokens make a fragile board for three Armors, and the soft removal (Stay Hidden, Unable to Scream) can't carry the game.\"}",
+  "cost_usd": 0.01684,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "e9be27d1d15cb92d": {
+  "review": {
+   "archetype": "WU eerie control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "threat density"
+   ],
+   "rating": 4,
+   "verdict": "A removal-heavy UW enchantments deck with Overlord of the Mistmoors as a bomb, good interaction (Hovership, Trapped in the Screen, Drowner, two Stay Hidden) and tokens and manifests covering the low creature count, though it can struggle to close games quickly."
+  },
+  "reply": "{\"archetype\": \"WU eerie control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"threat density\"], \"rating\": 4, \"verdict\": \"A removal-heavy UW enchantments deck with Overlord of the Mistmoors as a bomb, good interaction (Hovership, Trapped in the Screen, Drowner, two Stay Hidden) and tokens and manifests covering the low creature count, though it can struggle to close games quickly.\"}",
+  "cost_usd": 0.02158,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "9e08de6370805323": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "low threat density",
+    "splash"
+   ],
+   "rating": 3,
+   "verdict": "Solid UG manifest shell with good interaction (Drowner, Stay Hidden, Vanish) and Bookworm card flow, but only 11 real creatures, a light top end, and two thin single-card splashes (Swarmweaver, Beastie Beatdown/Furnace) make it more grindy than powerful."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"few creatures\", \"low threat density\", \"splash\"], \"rating\": 3, \"verdict\": \"Solid UG manifest shell with good interaction (Drowner, Stay Hidden, Vanish) and Bookworm card flow, but only 11 real creatures, a light top end, and two thin single-card splashes (Swarmweaver, Beastie Beatdown/Furnace) make it more grindy than powerful.\"}",
+  "cost_usd": 0.01582,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "9d70f305d8124242": {
+  "review": {
+   "archetype": "RG manifest dread splashing U",
+   "coherent": false,
+   "concerns": [
+    "mana",
+    "colors",
+    "splash",
+    "few creatures"
+   ],
+   "rating": 2,
+   "verdict": "The Gx manifest-dread core is solid, with Dragonfires, Fears and Hordecallers, but splashing three UG gold cards including two 2-drop Bookworms leaves only about 7 green sources for a heavy green deck that also needs RR, so the mana is shaky."
+  },
+  "reply": "{\"archetype\": \"RG manifest dread splashing U\", \"coherent\": false, \"concerns\": [\"mana\", \"colors\", \"splash\", \"few creatures\"], \"rating\": 2, \"verdict\": \"The Gx manifest-dread core is solid, with Dragonfires, Fears and Hordecallers, but splashing three UG gold cards including two 2-drop Bookworms leaves only about 7 green sources for a heavy green deck that also needs RR, so the mana is shaky.\"}",
+  "cost_usd": 0.02159,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "b004948d7eb2c9fd": {
+  "review": {
+   "archetype": "RW aggro/enchantments",
+   "coherent": true,
+   "concerns": [
+    "delirium filler",
+    "few creatures"
+   ],
+   "rating": 3,
+   "verdict": "A solid, low-curve RW aggro deck with real top end in Overlord of the Mistmoors and Fear of Burning Alive, plus good exile-based removal. Hand That Feeds and Ethereal Armor are weak in a deck that rarely turns on delirium or stacks enchantments, and the creature count is light."
+  },
+  "reply": "{\"archetype\": \"RW aggro/enchantments\", \"coherent\": true, \"concerns\": [\"delirium filler\", \"few creatures\"], \"rating\": 3, \"verdict\": \"A solid, low-curve RW aggro deck with real top end in Overlord of the Mistmoors and Fear of Burning Alive, plus good exile-based removal. Hand That Feeds and Ethereal Armor are weak in a deck that rarely turns on delirium or stacks enchantments, and the creature count is light.\"}",
+  "cost_usd": 0.02098,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "483b0052fec27286": {
+  "review": {
+   "archetype": "WU enchantments/eerie tempo",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "small threats",
+    "top end"
+   ],
+   "rating": 4,
+   "verdict": "Strong WU eerie shell with premium cards (Enduring Curiosity, Sheltered by Ghosts x2, Floodpits Drowner x3, Fear of Abduction, Inquisitive Glimmer) and a low curve full of tempo removal; the main weakness is 12 small creatures, so it can run out of pressure, but the Rooms and Glimmer tokens fill in bodies and card flow."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/eerie tempo\", \"coherent\": true, \"concerns\": [\"few creatures\", \"small threats\", \"top end\"], \"rating\": 4, \"verdict\": \"Strong WU eerie shell with premium cards (Enduring Curiosity, Sheltered by Ghosts x2, Floodpits Drowner x3, Fear of Abduction, Inquisitive Glimmer) and a low curve full of tempo removal; the main weakness is 12 small creatures, so it can run out of pressure, but the Rooms and Glimmer tokens fill in bodies and card flow.\"}",
+  "cost_usd": 0.01572,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "9e22ffa04f948d87": {
+  "review": {
+   "archetype": "WU enchantments",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "aura risk",
+    "low top end"
+   ],
+   "rating": 3,
+   "verdict": "A low-curve WU enchantment deck with real synergy (Glimmers, Gremlin Tamer, Ethereal Armor) and good removal (Trapped in the Screen x2, Hovership, Sheltered by Ghosts, Overlord). It is held back by only 11 creatures to carry three Ethereal Armors, so it is fragile to 2-for-1s and can run out of threats; solid but not exceptional."
+  },
+  "reply": "{\"archetype\": \"WU enchantments\", \"coherent\": true, \"concerns\": [\"few creatures\", \"aura risk\", \"low top end\"], \"rating\": 3, \"verdict\": \"A low-curve WU enchantment deck with real synergy (Glimmers, Gremlin Tamer, Ethereal Armor) and good removal (Trapped in the Screen x2, Hovership, Sheltered by Ghosts, Overlord). It is held back by only 11 creatures to carry three Ethereal Armors, so it is fragile to 2-for-1s and can run out of threats; solid but not exceptional.\"}",
+  "cost_usd": 0.01583,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "fedb67639067b524": {
+  "review": {
+   "archetype": "WU enchantments/rooms tempo",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "Abhorrent Oculus",
+    "red splash",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A real enchantment/Room shell: five Fear of Isolation re-buying Rooms, three Unable to Scream, and Glimmer, Scavenger and Dancers payoffs. It's held back by only 12 creatures, an Oculus that rarely gets six cards in the graveyard, and a pointless Mountain for Smoky Lounge."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/rooms tempo\", \"coherent\": true, \"concerns\": [\"few creatures\", \"Abhorrent Oculus\", \"red splash\", \"top end\"], \"rating\": 3, \"verdict\": \"A real enchantment/Room shell: five Fear of Isolation re-buying Rooms, three Unable to Scream, and Glimmer, Scavenger and Dancers payoffs. It's held back by only 12 creatures, an Oculus that rarely gets six cards in the graveyard, and a pointless Mountain for Smoky Lounge.\"}",
+  "cost_usd": 0.01913,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "9f4a1c7803a60d05": {
+  "review": {
+   "archetype": "UW enchantments/tempo",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "threat density",
+    "light white"
+   ],
+   "rating": 3,
+   "verdict": "Coherent low-curve UW enchantment shell: 4 Fear of Isolation, plenty of aura-based soft removal, and manifest/Glimmer tokens to fill out a thin creature count. The bodies are small and the white is shallow, so it may struggle to close games against bigger boards."
+  },
+  "reply": "{\"archetype\": \"UW enchantments/tempo\", \"coherent\": true, \"concerns\": [\"few creatures\", \"threat density\", \"light white\"], \"rating\": 3, \"verdict\": \"Coherent low-curve UW enchantment shell: 4 Fear of Isolation, plenty of aura-based soft removal, and manifest/Glimmer tokens to fill out a thin creature count. The bodies are small and the white is shallow, so it may struggle to close games against bigger boards.\"}",
+  "cost_usd": 0.0205,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "b94479b9be361c33": {
+  "review": {
+   "archetype": "WR go-wide aggro",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "filler",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Solid WR tokens shell with good top cards: Fear of Abduction x2, Hovership, Glassworks, Arabella and Midnight Mayhem. It runs only 10 real creatures, though, which leaves the double Surgical Suite, Turn Inside Out and Jump Scare as thin filler, and Fear of Abduction sometimes lacks something to exile."
+  },
+  "reply": "{\"archetype\": \"WR go-wide aggro\", \"coherent\": true, \"concerns\": [\"few creatures\", \"filler\", \"top end\"], \"rating\": 3, \"verdict\": \"Solid WR tokens shell with good top cards: Fear of Abduction x2, Hovership, Glassworks, Arabella and Midnight Mayhem. It runs only 10 real creatures, though, which leaves the double Surgical Suite, Turn Inside Out and Jump Scare as thin filler, and Fear of Abduction sometimes lacks something to exile.\"}",
+  "cost_usd": 0.01942,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "c6426f3d54868613": {
+  "review": {
+   "archetype": "UW eerie/enchantments",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "mana split",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A coherent blue-heavy eerie deck with good interaction (Hovership, Sheltered by Ghosts, Unable to Scream, Meat Locker, Drowner), but few real bodies, little top end beyond two Fear of Falling, and a WW card on an even 8/8 split when blue is clearly the main color."
+  },
+  "reply": "{\"archetype\": \"UW eerie/enchantments\", \"coherent\": true, \"concerns\": [\"few creatures\", \"mana split\", \"top end\"], \"rating\": 3, \"verdict\": \"A coherent blue-heavy eerie deck with good interaction (Hovership, Sheltered by Ghosts, Unable to Scream, Meat Locker, Drowner), but few real bodies, little top end beyond two Fear of Falling, and a WW card on an even 8/8 split when blue is clearly the main color.\"}",
+  "cost_usd": 0.02055,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "457e6f3bc7cd76d6": {
+  "review": {
+   "archetype": "WU enchantments/tempo",
+   "coherent": true,
+   "concerns": [
+    "unneeded splash",
+    "WW/UU mana",
+    "few creatures"
+   ],
+   "rating": 4,
+   "verdict": "Strong WU removal-and-value deck with Overlord, Enduring Innocence, Hovership, Drowners and plenty of interaction. Cutting the Onslaught splash for a Plains would steady the double-pip mana."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/tempo\", \"coherent\": true, \"concerns\": [\"unneeded splash\", \"WW/UU mana\", \"few creatures\"], \"rating\": 4, \"verdict\": \"Strong WU removal-and-value deck with Overlord, Enduring Innocence, Hovership, Drowners and plenty of interaction. Cutting the Onslaught splash for a Plains would steady the double-pip mana.\"}",
+  "cost_usd": 0.02346,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "7c9822d988b5d945": {
+  "review": {
+   "archetype": "RW aggro",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "card quality",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A low-curve RW aggro deck with solid removal (Chainsaw, Dragonfire, 2x Trapped, Sheltered) and a fine 16-land base, but it relies on weak bodies like 3x Clockwork Percussionist and has only 13 creatures, so it can run out of pressure after the early turns."
+  },
+  "reply": "{\"archetype\": \"RW aggro\", \"coherent\": true, \"concerns\": [\"few creatures\", \"card quality\", \"top end\"], \"rating\": 3, \"verdict\": \"A low-curve RW aggro deck with solid removal (Chainsaw, Dragonfire, 2x Trapped, Sheltered) and a fine 16-land base, but it relies on weak bodies like 3x Clockwork Percussionist and has only 13 creatures, so it can run out of pressure after the early turns.\"}",
+  "cost_usd": 0.01756,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "5663821cea30c62d": {
+  "review": {
+   "archetype": "WR go-wide aggro",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "removal",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "A solid Boros go-wide shell: three Midnight Mayhem plus Arabella, Enduring Courage and Lionheart Glimmer give real punch, but the creature count is light, removal is thin and Turn Inside Out and Optimistic Scavenger are weak filler."
+  },
+  "reply": "{\"archetype\": \"WR go-wide aggro\", \"coherent\": true, \"concerns\": [\"few creatures\", \"removal\", \"filler\"], \"rating\": 3, \"verdict\": \"A solid Boros go-wide shell: three Midnight Mayhem plus Arabella, Enduring Courage and Lionheart Glimmer give real punch, but the creature count is light, removal is thin and Turn Inside Out and Optimistic Scavenger are weak filler.\"}",
+  "cost_usd": 0.02044,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "74d6dc153a07b4d3": {
+  "review": {
+   "archetype": "WU enchantments/tempo",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "filler auras",
+    "low top end"
+   ],
+   "rating": 3,
+   "verdict": "A coherent WU Eerie/enchantment deck. Enduring Curiosity, two Floodpits Drowner, Hovership, Sheltered by Ghosts, Unable to Scream and Seized from Slumber give it real tempo and removal, and Gremlin Tamer and Inquisitive Glimmer reward the enchantment count. But only 11 real creatures, two Shardmage's Rescue and weak token makers keep the board presence thin, so it's a solid but unspectacular deck."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/tempo\", \"coherent\": true, \"concerns\": [\"few creatures\", \"filler auras\", \"low top end\"], \"rating\": 3, \"verdict\": \"A coherent WU Eerie/enchantment deck. Enduring Curiosity, two Floodpits Drowner, Hovership, Sheltered by Ghosts, Unable to Scream and Seized from Slumber give it real tempo and removal, and Gremlin Tamer and Inquisitive Glimmer reward the enchantment count. But only 11 real creatures, two Shardmage's Rescue and weak token makers keep the board presence thin, so it's a solid but unspectacular deck.\"}",
+  "cost_usd": 0.02237,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "6e0dd91caed6803e": {
+  "review": {
+   "archetype": "RW go-wide aggro",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "creature quality",
+    "flood"
+   ],
+   "rating": 3,
+   "verdict": "A real RW low-power plan with two Arabellas, Midnight Mayhem and solid removal (Glassworks x2, Dragonfire, Hovership, Seized). The body count leans on tokens and filler like Percussionist and Playmate, and 17 lands is heavy for such a low curve, so it's a fine but unexceptional deck."
+  },
+  "reply": "{\"archetype\": \"RW go-wide aggro\", \"coherent\": true, \"concerns\": [\"few creatures\", \"creature quality\", \"flood\"], \"rating\": 3, \"verdict\": \"A real RW low-power plan with two Arabellas, Midnight Mayhem and solid removal (Glassworks x2, Dragonfire, Hovership, Seized). The body count leans on tokens and filler like Percussionist and Playmate, and 17 lands is heavy for such a low curve, so it's a fine but unexceptional deck.\"}",
+  "cost_usd": 0.01934,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "56c20006e23be60b": {
+  "review": {
+   "archetype": "UW control/rooms, light G splash",
+   "coherent": false,
+   "concerns": [
+    "few creatures",
+    "threats",
+    "splash",
+    "card quality"
+   ],
+   "rating": 2,
+   "verdict": "Lots of good blue interaction (Drowners, Unable to Scream, Trapped in the Screen, Meat Locker, Overlord), but only 7 real creatures leans on manifests to win, and the green splash for Growing Dread and Under the Skin isn't worth it; cut it for more bodies."
+  },
+  "reply": "{\"archetype\": \"UW control/rooms, light G splash\", \"coherent\": false, \"concerns\": [\"few creatures\", \"threats\", \"splash\", \"card quality\"], \"rating\": 2, \"verdict\": \"Lots of good blue interaction (Drowners, Unable to Scream, Trapped in the Screen, Meat Locker, Overlord), but only 7 real creatures leans on manifests to win, and the green splash for Growing Dread and Under the Skin isn't worth it; cut it for more bodies.\"}",
+  "cost_usd": 0.02524,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "b23b70c34a7ef9f0": {
+  "review": {
+   "archetype": "WU enchantments/eerie",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "low top end"
+   ],
+   "rating": 3,
+   "verdict": "A coherent WU eerie shell with good payoffs (Gremlin Tamers, Enduring Innocence, Sheltered by Ghosts, Hovership) and decent interaction, but only 10 real creatures plus tokens, and a very low curve with little top end could leave it short on board presence and Aura targets."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/eerie\",\n \"coherent\": true,\n \"concerns\": [\"few creatures\", \"low top end\"],\n \"rating\": 3,\n \"verdict\": \"A coherent WU eerie shell with good payoffs (Gremlin Tamers, Enduring Innocence, Sheltered by Ghosts, Hovership) and decent interaction, but only 10 real creatures plus tokens, and a very low curve with little top end could leave it short on board presence and Aura targets.\"}",
+  "cost_usd": 0.01545,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "a56d3098b1622ffc": {
+  "review": {
+   "archetype": "RW aggro",
+   "coherent": true,
+   "concerns": [
+    "curve",
+    "few creatures",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Solid RW go-wide shell with good removal (2 Dragonfire, Betrayer's Bargain, Trapped in the Screen) and strong top end in Overlord and Fear of Burning Alive, but the 3-drop slot is nearly empty, the count of real creatures is low, and Turn Inside Out x2 plus Norin are weak filler."
+  },
+  "reply": "{\"archetype\": \"RW aggro\", \"coherent\": true, \"concerns\": [\"curve\", \"few creatures\", \"top end\"], \"rating\": 3, \"verdict\": \"Solid RW go-wide shell with good removal (2 Dragonfire, Betrayer's Bargain, Trapped in the Screen) and strong top end in Overlord and Fear of Burning Alive, but the 3-drop slot is nearly empty, the count of real creatures is low, and Turn Inside Out x2 plus Norin are weak filler.\"}",
+  "cost_usd": 0.01549,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "f2c0fbc649988568": {
+  "review": {
+   "archetype": "WU enchantments/eerie",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "small threats",
+    "counterspells"
+   ],
+   "rating": 3,
+   "verdict": "A real WU eerie shell with good removal (2 Sheltered by Ghosts, Stay Hidden, Seized, Vanish) and payoffs in Gremlin Tamer and Entity Tracker. Only 6 true creatures, propped up by Glimmer tokens and manifest dread, leaves it short on pressure. Two counterspells and a low-impact top end make it fine but unspectacular."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/eerie\", \"coherent\": true, \"concerns\": [\"few creatures\", \"small threats\", \"counterspells\"], \"rating\": 3, \"verdict\": \"A real WU eerie shell with good removal (2 Sheltered by Ghosts, Stay Hidden, Seized, Vanish) and payoffs in Gremlin Tamer and Entity Tracker. Only 6 true creatures, propped up by Glimmer tokens and manifest dread, leaves it short on pressure. Two counterspells and a low-impact top end make it fine but unspectacular.\"}",
+  "cost_usd": 0.02095,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "fad59897c5acc2fb": {
+  "review": {
+   "archetype": "RW aggro (low-power go-wide)",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "few creatures"
+   ],
+   "rating": 3,
+   "verdict": "A real RW go-wide plan with good glue: Enduring Innocence, Arabella, two Midnight Mayhem, Hordecaller, Hovership, Seized from Slumber and Betrayer's Bargain. Weak one-drops (2x Optimistic Scavenger with few enchantments, Turn Inside Out, Shardmage's Rescue) and a thin creature count cap it at a solid but unspectacular deck."
+  },
+  "reply": "{\"archetype\": \"RW aggro (low-power go-wide)\", \"coherent\": true, \"concerns\": [\"filler\", \"few creatures\"], \"rating\": 3, \"verdict\": \"A real RW go-wide plan with good glue: Enduring Innocence, Arabella, two Midnight Mayhem, Hordecaller, Hovership, Seized from Slumber and Betrayer's Bargain. Weak one-drops (2x Optimistic Scavenger with few enchantments, Turn Inside Out, Shardmage's Rescue) and a thin creature count cap it at a solid but unspectacular deck.\"}",
+  "cost_usd": 0.02164,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "07221879c80f5e2c": {
+  "review": {
+   "archetype": "UG manifest value splashing B",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "splash",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Five Oblivious Bookworms with the manifest-dread package give this real card advantage, but removal is thin and the B splash for Broodspinner and Swarmweaver is greedy on one Swamp plus fetch effects. A fine but unspectacular deck."
+  },
+  "reply": "{\"archetype\": \"UG manifest value splashing B\", \"coherent\": true, \"concerns\": [\"removal\", \"splash\", \"top end\"], \"rating\": 3, \"verdict\": \"Five Oblivious Bookworms with the manifest-dread package give this real card advantage, but removal is thin and the B splash for Broodspinner and Swarmweaver is greedy on one Swamp plus fetch effects. A fine but unspectacular deck.\"}",
+  "cost_usd": 0.01794,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "1047eb5954f2f1a2": {
+  "review": {
+   "archetype": "4-5 color manifest dread pile",
+   "coherent": false,
+   "concerns": [
+    "colors",
+    "mana",
+    "few creatures",
+    "splash depth"
+   ],
+   "rating": 2,
+   "verdict": "The green manifest dread core (Shrieker, two Threats Around Every Corner, Beastie) is reasonable. But it is spread across five colors: three Broodspinners rely on about three black sources, WW Ghostly Dancers sits on light white, and a red single-card splash makes the mana unreliable. Cut to a firm two colors plus one splash."
+  },
+  "reply": "{\"archetype\": \"4-5 color manifest dread pile\", \"coherent\": false, \"concerns\": [\"colors\", \"mana\", \"few creatures\", \"splash depth\"], \"rating\": 2, \"verdict\": \"The green manifest dread core (Shrieker, two Threats Around Every Corner, Beastie) is reasonable. But it is spread across five colors: three Broodspinners rely on about three black sources, WW Ghostly Dancers sits on light white, and a red single-card splash makes the mana unreliable. Cut to a firm two colors plus one splash.\"}",
+  "cost_usd": 0.02316,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "acc10de418475b12": {
+  "review": {
+   "archetype": "Esper enchantments/eerie",
+   "coherent": true,
+   "concerns": [
+    "colors",
+    "mana",
+    "few creatures",
+    "Shroudstomper"
+   ],
+   "rating": 3,
+   "verdict": "Strong eerie payoffs and cheap blue/black interaction (Unable to Scream x2, Nowhere to Run, Meat Locker, Drowner, Annex x2, Ghostly Dancers) make a real enchantment plan. But it is a true three-color deck on 5/5/5 basics with only two duals, and it asks for UU, WW, BB and even WWBB, with only 12 creatures and filler like Emerge from the Cocoon. Cutting to two colors (UB or UW) with a light splash would be cleaner."
+  },
+  "reply": "{\"archetype\": \"Esper enchantments/eerie\", \"coherent\": true, \"concerns\": [\"colors\", \"mana\", \"few creatures\", \"Shroudstomper\"], \"rating\": 3, \"verdict\": \"Strong eerie payoffs and cheap blue/black interaction (Unable to Scream x2, Nowhere to Run, Meat Locker, Drowner, Annex x2, Ghostly Dancers) make a real enchantment plan. But it is a true three-color deck on 5/5/5 basics with only two duals, and it asks for UU, WW, BB and even WWBB, with only 12 creatures and filler like Emerge from the Cocoon. Cutting to two colors (UB or UW) with a light splash would be cleaner.\"}",
+  "cost_usd": 0.02476,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "e94de14bb2fc5f1f": {
+  "review": {
+   "archetype": "WU enchantments/fliers",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "few creatures"
+   ],
+   "rating": 4,
+   "verdict": "Two Overlord of the Mistmoors, Enduring Innocence, and clean white removal (Hovership, Trapped in the Screen, Exorcise) make a strong WU deck; Glimmerlights and a light creature count are minor drags, offset by token makers."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/fliers\", \"coherent\": true, \"concerns\": [\"filler\", \"few creatures\"], \"rating\": 4, \"verdict\": \"Two Overlord of the Mistmoors, Enduring Innocence, and clean white removal (Hovership, Trapped in the Screen, Exorcise) make a strong WU deck; Glimmerlights and a light creature count are minor drags, offset by token makers.\"}",
+  "cost_usd": 0.0171,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "6e8bbe86288f743f": {
+  "review": {
+   "archetype": "WU enchantments (Gremlin Tamer eerie)",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "top-end",
+    "threats"
+   ],
+   "rating": 4,
+   "verdict": "Five Gremlin Tamers plus Inquisitive Glimmer, Rooms and many enchantments give a strong, focused eerie engine. Good removal (Trapped in the Screen, Sheltered, Stay Hidden, Meat Locker) and card flow back it up. The creature count is light and there are few real finishers, but the Tamers' tokens and the Glimmers make up for much of that."
+  },
+  "reply": "{\"archetype\": \"WU enchantments (Gremlin Tamer eerie)\", \"coherent\": true, \"concerns\": [\"few creatures\", \"top-end\", \"threats\"], \"rating\": 4, \"verdict\": \"Five Gremlin Tamers plus Inquisitive Glimmer, Rooms and many enchantments give a strong, focused eerie engine. Good removal (Trapped in the Screen, Sheltered, Stay Hidden, Meat Locker) and card flow back it up. The creature count is light and there are few real finishers, but the Tamers' tokens and the Glimmers make up for much of that.\"}",
+  "cost_usd": 0.01609,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "5ad6a28d83a4cc86": {
+  "review": {
+   "archetype": "WU enchantments/manifest tempo",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "card quality"
+   ],
+   "rating": 3,
+   "verdict": "Coherent WU enchantment-tempo deck. Overlord of the Mistmoors, Unidentified Hovership, Trapped in the Screen, Ghostly Dancers and four Unnerving Grasp give real power, and the low curve is offset by Rooms, Glimmers and manifest-dread bodies. Filler like Orphans of the Wheat and the shallow top end keep it at solid rather than great."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/manifest tempo\", \"coherent\": true, \"concerns\": [\"few creatures\", \"card quality\"], \"rating\": 3, \"verdict\": \"Coherent WU enchantment-tempo deck. Overlord of the Mistmoors, Unidentified Hovership, Trapped in the Screen, Ghostly Dancers and four Unnerving Grasp give real power, and the low curve is offset by Rooms, Glimmers and manifest-dread bodies. Filler like Orphans of the Wheat and the shallow top end keep it at solid rather than great.\"}",
+  "cost_usd": 0.02382,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "f2dfad8acfed4421": {
+  "review": {
+   "archetype": "RW low-power aggro",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "filler"
+   ],
+   "rating": 4,
+   "verdict": "A focused, low-curve RW go-wide deck: three Arabella, three Midnight Mayhem and two Hordecallers fit the power-2-or-less plan well, but only three removal spells and some filler (Ragged Playmate, Turn Inside Out, Percussionist) keep it short of exceptional."
+  },
+  "reply": "{\"archetype\": \"RW low-power aggro\", \"coherent\": true, \"concerns\": [\"removal\", \"filler\"], \"rating\": 4, \"verdict\": \"A focused, low-curve RW go-wide deck: three Arabella, three Midnight Mayhem and two Hordecallers fit the power-2-or-less plan well, but only three removal spells and some filler (Ragged Playmate, Turn Inside Out, Percussionist) keep it short of exceptional.\"}",
+  "cost_usd": 0.01845,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "0c672ee56f945f2d": {
+  "review": {
+   "archetype": "UG manifest dread tempo, white splash",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "splash",
+    "threat density"
+   ],
+   "rating": 3,
+   "verdict": "A playable UG value deck: Floodpits, Vanish from Sight, Unable to Scream and the manifest cards give solid card advantage and interaction, but the small, low-quality creature base and the WW splash for Mistmoors (plus a pointless Shardmage's Rescue) make it slow and shaky."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread tempo, white splash\",\"coherent\": true,\"concerns\": [\"few creatures\", \"splash\", \"threat density\"],\"rating\": 3,\"verdict\": \"A playable UG value deck: Floodpits, Vanish from Sight, Unable to Scream and the manifest cards give solid card advantage and interaction, but the small, low-quality creature base and the WW splash for Mistmoors (plus a pointless Shardmage's Rescue) make it slow and shaky.\"}",
+  "cost_usd": 0.02675,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "312564a4369858cb": {
+  "review": {
+   "archetype": "UW tempo/control (tap-and-kill, manifest dread)",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "threat density",
+    "white splash-light"
+   ],
+   "rating": 3,
+   "verdict": "Plenty of interaction: three Seized from Slumber pair well with Drowner and Meat Locker, and Overlord and Enduring Curiosity are real payoffs, but only 9 true creatures and some filler (Windbreaker, Dissection Tools) leave the clock thin."
+  },
+  "reply": "{\"archetype\": \"UW tempo/control (tap-and-kill, manifest dread)\", \"coherent\": true, \"concerns\": [\"few creatures\", \"threat density\", \"white splash-light\"], \"rating\": 3, \"verdict\": \"Plenty of interaction: three Seized from Slumber pair well with Drowner and Meat Locker, and Overlord and Enduring Curiosity are real payoffs, but only 9 true creatures and some filler (Windbreaker, Dissection Tools) leave the clock thin.\"}",
+  "cost_usd": 0.01994,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "0d0c36aab63e4a0e": {
+  "review": {
+   "archetype": "RW aggro",
+   "coherent": true,
+   "concerns": [
+    "filler one-drops",
+    "card advantage"
+   ],
+   "rating": 4,
+   "verdict": "A focused low-curve RW go-wide deck. Overlord, Arabella, Lionheart Glimmer, Hordecaller and Enduring Innocence are strong, backed by solid removal (Trapped, Sheltered, 2x Seized), though it carries weak filler like Norin, Turn Inside Out and Jump Scare."
+  },
+  "reply": "```json\n{\"archetype\": \"RW aggro\", \"coherent\": true, \"concerns\": [\"filler one-drops\", \"card advantage\"], \"rating\": 4, \"verdict\": \"A focused low-curve RW go-wide deck. Overlord, Arabella, Lionheart Glimmer, Hordecaller and Enduring Innocence are strong, backed by solid removal (Trapped, Sheltered, 2x Seized), though it carries weak filler like Norin, Turn Inside Out and Jump Scare.\"}\n```",
+  "cost_usd": 0.01981,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "aa0d97919333fa7e": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "threat quality",
+    "small bodies"
+   ],
+   "rating": 3,
+   "verdict": "Only 8 real creatures, but about 7 manifest dread sources fill the board. Unable to Scream x2, Vanish from Sight x3 and the equipment give it solid interaction and value, though the 2/2 bodies and lack of top-end threats can leave it short on pressure."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"few creatures\", \"threat quality\", \"small bodies\"], \"rating\": 3, \"verdict\": \"Only 8 real creatures, but about 7 manifest dread sources fill the board. Unable to Scream x2, Vanish from Sight x3 and the equipment give it solid interaction and value, though the 2/2 bodies and lack of top-end threats can leave it short on pressure.\"}",
+  "cost_usd": 0.01898,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "bd68fc36f58111e1": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "splash",
+    "fight removal",
+    "delirium"
+   ],
+   "rating": 3,
+   "verdict": "A real manifest-dread deck: about ten dread sources plus Zimone, Analyst and Dissection Tools make up for the low creature count, but the two-Mountain splash for one Beastie Beatdown, a Patchwork Beastie that rarely turns on, and Ghost Vacuum are weak spots, and the three fight spells struggle when the board is mostly 2/2 manifests."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"few creatures\", \"splash\", \"fight removal\", \"delirium\"], \"rating\": 3, \"verdict\": \"A real manifest-dread deck: about ten dread sources plus Zimone, Analyst and Dissection Tools make up for the low creature count, but the two-Mountain splash for one Beastie Beatdown, a Patchwork Beastie that rarely turns on, and Ghost Vacuum are weak spots, and the three fight spells struggle when the board is mostly 2/2 manifests.\"}",
+  "cost_usd": 0.02244,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "0706f9bb73fed872": {
+  "review": {
+   "archetype": "RG aggro",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "weak 1-drops",
+    "thin top end"
+   ],
+   "rating": 4,
+   "verdict": "Aggressive RG deck with strong removal in triple Glassworks, Chainsaw and Monstrous Emergence, plus quality threats like Screaming Nemesis, Enduring Vitality and triple Wickerfolk; the creature count is a bit low and Norin and the Percussionists are filler, but the scalable Onslaughts cover the late game."
+  },
+  "reply": "{\"archetype\": \"RG aggro\", \"coherent\": true, \"concerns\": [\"few creatures\", \"weak 1-drops\", \"thin top end\"], \"rating\": 4, \"verdict\": \"Aggressive RG deck with strong removal in triple Glassworks, Chainsaw and Monstrous Emergence, plus quality threats like Screaming Nemesis, Enduring Vitality and triple Wickerfolk; the creature count is a bit low and Norin and the Percussionists are filler, but the scalable Onslaughts cover the late game.\"}",
+  "cost_usd": 0.02003,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "43c79434fb7be737": {
+  "review": {
+   "archetype": "UG manifest dread value with B/R splash",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "few creatures",
+    "splash",
+    "Patchwork Beastie"
+   ],
+   "rating": 3,
+   "verdict": "A solid UG manifest value deck: Under the Skin, Bookworm and Threats are good, and manifests make up for the 11 creatures. But interaction is thin and tempo-based, and two Swamps for one Unholy Annex weakens the base mana."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread value with B/R splash\",\"coherent\": true,\"concerns\": [\"removal\", \"few creatures\", \"splash\", \"Patchwork Beastie\"],\"rating\": 3,\"verdict\": \"A solid UG manifest value deck: Under the Skin, Bookworm and Threats are good, and manifests make up for the 11 creatures. But interaction is thin and tempo-based, and two Swamps for one Unholy Annex weakens the base mana.\"}",
+  "cost_usd": 0.02437,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "f583aa245e505826": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "card quality",
+    "removal",
+    "pointless splash"
+   ],
+   "rating": 3,
+   "verdict": "A coherent UG face-down deck: three Oblivious Bookworms, two Growing Dreads, the Overlord, and three Unable to Scream give it a real engine and decent answers. It leans heavily on vanilla 2/2 manifests rather than strong creatures, and splashing black for just Broodspinner adds mana strain for little gain."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"few creatures\", \"card quality\", \"removal\", \"pointless splash\"], \"rating\": 3, \"verdict\": \"A coherent UG face-down deck: three Oblivious Bookworms, two Growing Dreads, the Overlord, and three Unable to Scream give it a real engine and decent answers. It leans heavily on vanilla 2/2 manifests rather than strong creatures, and splashing black for just Broodspinner adds mana strain for little gain.\"}",
+  "cost_usd": 0.02125,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "825386fd08ed0764": {
+  "review": {
+   "archetype": "UW control",
+   "coherent": false,
+   "concerns": [
+    "few creatures",
+    "win conditions",
+    "too many counters",
+    "WW costs"
+   ],
+   "rating": 2,
+   "verdict": "There is real removal and card advantage (Split Up x2, Seized from Slumber, Sheltered by Ghosts, Overlord, Enduring Curiosity), but with only 7 creatures, three conditional counterspells and several tempo bounce spells, the deck struggles to close games or block. The light white splash also strains Split Up and Overlord's WW costs."
+  },
+  "reply": "{\"archetype\": \"UW control\", \"coherent\": false, \"concerns\": [\"few creatures\", \"win conditions\", \"too many counters\", \"WW costs\"], \"rating\": 2, \"verdict\": \"There is real removal and card advantage (Split Up x2, Seized from Slumber, Sheltered by Ghosts, Overlord, Enduring Curiosity), but with only 7 creatures, three conditional counterspells and several tempo bounce spells, the deck struggles to close games or block. The light white splash also strains Split Up and Overlord's WW costs.\"}",
+  "cost_usd": 0.01877,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "ff281aa92d46e7c7": {
+  "review": {
+   "archetype": "3-color WUR enchantments/tokens",
+   "coherent": false,
+   "concerns": [
+    "colors",
+    "few creatures",
+    "mana",
+    "3x Midnight Mayhem"
+   ],
+   "rating": 2,
+   "verdict": "Good blue-white cards and some red removal, but the deck plays three colors on 2 fixing lands. It runs three RW gold Mayhems alongside UW eerie pieces and has only 11 creatures, so it's an unfocused pile with shaky mana."
+  },
+  "reply": "{\"archetype\": \"3-color WUR enchantments/tokens\", \"coherent\": false, \"concerns\": [\"colors\", \"few creatures\", \"mana\", \"3x Midnight Mayhem\"], \"rating\": 2, \"verdict\": \"Good blue-white cards and some red removal, but the deck plays three colors on 2 fixing lands. It runs three RW gold Mayhems alongside UW eerie pieces and has only 11 creatures, so it's an unfocused pile with shaky mana.\"}",
+  "cost_usd": 0.01567,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "1186866df89baf02": {
+  "review": {
+   "archetype": "RW aggro",
+   "coherent": true,
+   "concerns": [
+    "card advantage",
+    "Norin"
+   ],
+   "rating": 4,
+   "verdict": "A fast, low-curve RW aggro deck with three Fear of Being Hunted, solid removal (Chainsaw, Glassworks, 2x Trapped in the Screen), and two Overlords for late power. A few weak fillers like Norin and the Scavenger hold it back slightly."
+  },
+  "reply": "{\"archetype\": \"RW aggro\", \"coherent\": true, \"concerns\": [\"card advantage\", \"Norin\"], \"rating\": 4, \"verdict\": \"A fast, low-curve RW aggro deck with three Fear of Being Hunted, solid removal (Chainsaw, Glassworks, 2x Trapped in the Screen), and two Overlords for late power. A few weak fillers like Norin and the Scavenger hold it back slightly.\"}",
+  "cost_usd": 0.01706,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "092c2324dd1da69c": {
+  "review": {
+   "archetype": "WU enchantments/eerie tempo",
+   "coherent": true,
+   "concerns": [
+    "small creatures",
+    "top end",
+    "flood risk"
+   ],
+   "rating": 3,
+   "verdict": "Coherent low-curve WU eerie deck with real payoffs (Enduring Curiosity, Entity Tracker, Gremlin Tamer, Inquisitive Glimmer) and three Stay Hidden plus Drowner for removal, but its bodies are small, it has nothing above four mana, and 17 lands is a lot for this curve, so it can stall out against bigger boards."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/eerie tempo\", \"coherent\": true, \"concerns\": [\"small creatures\", \"top end\", \"flood risk\"], \"rating\": 3, \"verdict\": \"Coherent low-curve WU eerie deck with real payoffs (Enduring Curiosity, Entity Tracker, Gremlin Tamer, Inquisitive Glimmer) and three Stay Hidden plus Drowner for removal, but its bodies are small, it has nothing above four mana, and 17 lands is a lot for this curve, so it can stall out against bigger boards.\"}",
+  "cost_usd": 0.01975,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "2c845943d4c5e9f4": {
+  "review": {
+   "archetype": "WU eerie enchantments",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "pointless splash",
+    "low power"
+   ],
+   "rating": 3,
+   "verdict": "A playable WU eerie deck: Glimmerlights, Rooms, and manifest dread make up for the low creature count, and removal is decent (Trapped in the Screen, Seized from Slumber, Domination, Unable to Scream, Vanish), but the threats are small and the green splash for just Under the Skin isn't worth it."
+  },
+  "reply": "{\"archetype\": \"WU eerie enchantments\", \"coherent\": true, \"concerns\": [\"few creatures\", \"pointless splash\", \"low power\"], \"rating\": 3, \"verdict\": \"A playable WU eerie deck: Glimmerlights, Rooms, and manifest dread make up for the low creature count, and removal is decent (Trapped in the Screen, Seized from Slumber, Domination, Unable to Scream, Vanish), but the threats are small and the green splash for just Under the Skin isn't worth it.\"}",
+  "cost_usd": 0.02078,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "8f95d3614b06ff3e": {
+  "review": {
+   "archetype": "UG manifest dread splashing black",
+   "coherent": false,
+   "concerns": [
+    "colors",
+    "mana",
+    "no 4-drops",
+    "black splash"
+   ],
+   "rating": 2,
+   "verdict": "The UG dread core (4 Bookworms, Growing Dread, Onslaught, Under the Skin) and black removal are good, but five black cards on 4 sources leave the green and blue double-pip cards stuck on about 8 sources each, so this three-color mana base will stumble too often."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread splashing black\", \"coherent\": false, \"concerns\": [\"colors\", \"mana\", \"no 4-drops\", \"black splash\"], \"rating\": 2, \"verdict\": \"The UG dread core (4 Bookworms, Growing Dread, Onslaught, Under the Skin) and black removal are good, but five black cards on 4 sources leave the green and blue double-pip cards stuck on about 8 sources each, so this three-color mana base will stumble too often.\"}",
+  "cost_usd": 0.02425,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "4776f22f55a2f620": {
+  "review": {
+   "archetype": "RW aggro",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "cheap tricks",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Low-curve RW aggro with real removal (Overlord, Hovership, Sheltered x2, Glassworks), but only 12 creatures and too many 1-mana tricks and auras make it thin on bodies to carry its pump effects."
+  },
+  "reply": "{\"archetype\": \"RW aggro\", \"coherent\": true, \"concerns\": [\"few creatures\", \"cheap tricks\", \"top end\"], \"rating\": 3, \"verdict\": \"Low-curve RW aggro with real removal (Overlord, Hovership, Sheltered x2, Glassworks), but only 12 creatures and too many 1-mana tricks and auras make it thin on bodies to carry its pump effects.\"}",
+  "cost_usd": 0.01579,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "891314119092c00b": {
+  "review": {
+   "archetype": "WU enchantments/eerie",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "filler auras",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A coherent WU eerie deck with strong pieces like Enduring Innocence, Niko, Ghostly Dancers, Gremlin Tamer, Trapped in the Screen and two Unable to Scream, but thin real threats and filler like Ethereal Armor, Shardmage's Rescue and Get Out keep it at a solid but unspectacular level."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/eerie\", \"coherent\": true, \"concerns\": [\"few creatures\", \"filler auras\", \"top end\"], \"rating\": 3, \"verdict\": \"A coherent WU eerie deck with strong pieces like Enduring Innocence, Niko, Ghostly Dancers, Gremlin Tamer, Trapped in the Screen and two Unable to Scream, but thin real threats and filler like Ethereal Armor, Shardmage's Rescue and Get Out keep it at a solid but unspectacular level.\"}",
+  "cost_usd": 0.0198,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "a0c8d61bc8f81bd5": {
+  "review": {
+   "archetype": "3-color W-based go-wide/enchantments (Naya pile)",
+   "coherent": false,
+   "concerns": [
+    "colors",
+    "mana",
+    "few creatures",
+    "red splash"
+   ],
+   "rating": 2,
+   "verdict": "Three Trapped in the Screen and the Mayhem tokens are real power, but 4 gold RW Mayhems plus 2 double-red Painter's Studios on 3 Mountains and one dual, layered over a green base, make the mana unworkable. With only 10 creatures, the Ethereal Armor and Tyvar plan is thin, so the deck should cut a color, ideally green or red."
+  },
+  "reply": "{\"archetype\": \"3-color W-based go-wide/enchantments (Naya pile)\", \"coherent\": false, \"concerns\": [\"colors\", \"mana\", \"few creatures\", \"red splash\"], \"rating\": 2, \"verdict\": \"Three Trapped in the Screen and the Mayhem tokens are real power, but 4 gold RW Mayhems plus 2 double-red Painter's Studios on 3 Mountains and one dual, layered over a green base, make the mana unworkable. With only 10 creatures, the Ethereal Armor and Tyvar plan is thin, so the deck should cut a color, ideally green or red.\"}",
+  "cost_usd": 0.02006,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "c95889422672ba8c": {
+  "review": {
+   "archetype": "RW aggro (go-wide toys/gremlins)",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "filler",
+    "card quality"
+   ],
+   "rating": 3,
+   "verdict": "A low-curve RW aggro deck with real payoffs: 3x Midnight Mayhem, Arabella, Overlord, Jolly Balloon Man and solid removal. It runs a bit thin on quality creatures, though, and leans on filler like Ragged Playmate, Percussionist, the pump spells and two Painter's Studios, which makes it fine but not special."
+  },
+  "reply": "{\"archetype\": \"RW aggro (go-wide toys/gremlins)\", \"coherent\": true, \"concerns\": [\"few creatures\", \"filler\", \"card quality\"], \"rating\": 3, \"verdict\": \"A low-curve RW aggro deck with real payoffs: 3x Midnight Mayhem, Arabella, Overlord, Jolly Balloon Man and solid removal. It runs a bit thin on quality creatures, though, and leans on filler like Ragged Playmate, Percussionist, the pump spells and two Painter's Studios, which makes it fine but not special.\"}",
+  "cost_usd": 0.01907,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "f1dd1f2c9400a1b0": {
+  "review": {
+   "archetype": "RW go-wide aggro",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "filler tricks"
+   ],
+   "rating": 4,
+   "verdict": "A focused RW aggro deck: three Midnight Mayhem, Overlord of the Mistmoors, and solid removal (Hovership, Sheltered by Ghosts, two Glassworks) carry it, though only 12 real creatures plus filler like Turn Inside Out and Norin keep it from being exceptional."
+  },
+  "reply": "{\"archetype\": \"RW go-wide aggro\", \"coherent\": true, \"concerns\": [\"few creatures\", \"filler tricks\"], \"rating\": 4, \"verdict\": \"A focused RW aggro deck: three Midnight Mayhem, Overlord of the Mistmoors, and solid removal (Hovership, Sheltered by Ghosts, two Glassworks) carry it, though only 12 real creatures plus filler like Turn Inside Out and Norin keep it from being exceptional.\"}",
+  "cost_usd": 0.02022,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "8cbe5fc9c6336012": {
+  "review": {
+   "archetype": "WR go-wide aggro",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "filler",
+    "few creatures"
+   ],
+   "rating": 3,
+   "verdict": "A real WR aggro shell with Overlord of the Mistmoors, Arabella and two Midnight Mayhem, but three Turn Inside Out, Shardmage's Rescue and thin removal (Glassworks, Seized from Slumber) leave it reliant on curving out."
+  },
+  "reply": "{\"archetype\": \"WR go-wide aggro\", \"coherent\": true, \"concerns\": [\"removal\", \"filler\", \"few creatures\"], \"rating\": 3, \"verdict\": \"A real WR aggro shell with Overlord of the Mistmoors, Arabella and two Midnight Mayhem, but three Turn Inside Out, Shardmage's Rescue and thin removal (Glassworks, Seized from Slumber) leave it reliant on curving out.\"}",
+  "cost_usd": 0.01782,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "2dd7cb3ed00ba19d": {
+  "review": {
+   "archetype": "WU enchantments/eerie",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "few creatures",
+    "low power"
+   ],
+   "rating": 3,
+   "verdict": "A coherent WU eerie shell with a bomb in Overlord and good synergy pieces in Tracker, Tamer, Inquisitive Glimmer and the Glimmer makers. It leans on token filler like three Glimmerlights and has thin real removal, so it's solid but not a standout."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/eerie\", \"coherent\": true, \"concerns\": [\"removal\", \"few creatures\", \"low power\"], \"rating\": 3, \"verdict\": \"A coherent WU eerie shell with a bomb in Overlord and good synergy pieces in Tracker, Tamer, Inquisitive Glimmer and the Glimmer makers. It leans on token filler like three Glimmerlights and has thin real removal, so it's solid but not a standout.\"}",
+  "cost_usd": 0.01998,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "260e5f7f0b217292": {
+  "review": {
+   "archetype": "WU enchantments",
+   "coherent": false,
+   "concerns": [
+    "few creatures",
+    "aura overload",
+    "counterspells",
+    "threat density"
+   ],
+   "rating": 2,
+   "verdict": "The removal suite (2 Unable to Scream, Trapped in the Screen, Sheltered by Ghosts, Seized from Slumber) and Enduring Curiosity are strong. But 6 real creatures plus a few 1/1 Glimmer tokens can't support Ethereal Armor, Shardmage's Rescue, Sheltered by Ghosts, Hospital Room, Dollmaker's Shop and Porcelain Gallery, and the two counterspells make the shell even more reactive and threat-light."
+  },
+  "reply": "{\"archetype\": \"WU enchantments\", \"coherent\": false, \"concerns\": [\"few creatures\", \"aura overload\", \"counterspells\", \"threat density\"], \"rating\": 2, \"verdict\": \"The removal suite (2 Unable to Scream, Trapped in the Screen, Sheltered by Ghosts, Seized from Slumber) and Enduring Curiosity are strong. But 6 real creatures plus a few 1/1 Glimmer tokens can't support Ethereal Armor, Shardmage's Rescue, Sheltered by Ghosts, Hospital Room, Dollmaker's Shop and Porcelain Gallery, and the two counterspells make the shell even more reactive and threat-light.\"}",
+  "cost_usd": 0.01986,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "2958985a9fbb29ab": {
+  "review": {
+   "archetype": "RW low-power aggro",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "filler tricks",
+    "removal"
+   ],
+   "rating": 3,
+   "verdict": "A real RW go-wide shell with Arabella, three Splitskin Dolls, Vicious Clown and Midnight Mayhem, but only 12 creatures plus low-impact cards like 2x Turn Inside Out, Jump Scare and Vengeful Possession make it fragile once the board stalls."
+  },
+  "reply": "{\"archetype\": \"RW low-power aggro\", \"coherent\": true, \"concerns\": [\"few creatures\", \"filler tricks\", \"removal\"], \"rating\": 3, \"verdict\": \"A real RW go-wide shell with Arabella, three Splitskin Dolls, Vicious Clown and Midnight Mayhem, but only 12 creatures plus low-impact cards like 2x Turn Inside Out, Jump Scare and Vengeful Possession make it fragile once the board stalls.\"}",
+  "cost_usd": 0.01538,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "f3f14d2f0ae8f911": {
+  "review": {
+   "archetype": "UG manifest/value with red and black splashes",
+   "coherent": false,
+   "concerns": [
+    "colors",
+    "mana",
+    "few creatures",
+    "Waltz RR"
+   ],
+   "rating": 3,
+   "verdict": "The UG core is strong (Overlord, Enduring Curiosity, Enduring Vitality, two Floodpits Drowners, Vanish from Sight), but splashing four red cards, including the double-red Waltz of Rage, plus Unstoppable Slasher stretches thin mana and leaves only 13 creatures; trimming to UG with a light red splash would be cleaner."
+  },
+  "reply": "{\"archetype\": \"UG manifest/value with red and black splashes\", \"coherent\": false, \"concerns\": [\"colors\", \"mana\", \"few creatures\", \"Waltz RR\"], \"rating\": 3, \"verdict\": \"The UG core is strong (Overlord, Enduring Curiosity, Enduring Vitality, two Floodpits Drowners, Vanish from Sight), but splashing four red cards, including the double-red Waltz of Rage, plus Unstoppable Slasher stretches thin mana and leaves only 13 creatures; trimming to UG with a light red splash would be cleaner.\"}",
+  "cost_usd": 0.02558,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "013e5e54afd835d1": {
+  "review": {
+   "archetype": "WR aggro",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "auras"
+   ],
+   "rating": 3,
+   "verdict": "Solid low-curve Boros deck with strong removal (Glassworks, Bargain, Sheltered by Ghosts) and good top-end in Wandering Rescuer and Ghostly Dancers. Only 13 creatures plus several auras makes it vulnerable to removal-heavy draws and flooding on non-creature spells."
+  },
+  "reply": "{\"archetype\": \"WR aggro\", \"coherent\": true, \"concerns\": [\"few creatures\", \"auras\"], \"rating\": 3, \"verdict\": \"Solid low-curve Boros deck with strong removal (Glassworks, Bargain, Sheltered by Ghosts) and good top-end in Wandering Rescuer and Ghostly Dancers. Only 13 creatures plus several auras makes it vulnerable to removal-heavy draws and flooding on non-creature spells.\"}",
+  "cost_usd": 0.01922,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "3a75d66f6ad3c572": {
+  "review": {
+   "archetype": "UG manifest dread tempo, splash B",
+   "coherent": false,
+   "concerns": [
+    "few creatures",
+    "threat quality",
+    "Oculus",
+    "splash"
+   ],
+   "rating": 2,
+   "verdict": "Good interaction (Unable to Scream x2, Meat Locker, Vanish, bounce) and many manifest dread effects, but only 7 real creatures, a weak 2/2-face-down board, an awkward Abhorrent Oculus and a double-B-card splash for Swarmweaver and Fear of Infinity leave this deck short on pressure and consistency."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread tempo, splash B\", \"coherent\": false, \"concerns\": [\"few creatures\", \"threat quality\", \"Oculus\", \"splash\"], \"rating\": 2, \"verdict\": \"Good interaction (Unable to Scream x2, Meat Locker, Vanish, bounce) and many manifest dread effects, but only 7 real creatures, a weak 2/2-face-down board, an awkward Abhorrent Oculus and a double-B-card splash for Swarmweaver and Fear of Infinity leave this deck short on pressure and consistency.\"}",
+  "cost_usd": 0.02213,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "8d1b3289bcf213a7": {
+  "review": {
+   "archetype": "UG manifest/rooms tempo, light red splash",
+   "coherent": true,
+   "concerns": [
+    "splash sources",
+    "few creatures",
+    "low threat density"
+   ],
+   "rating": 3,
+   "verdict": "Solid UG shell with strong blue rares like Overlord, Enduring Curiosity and Drowner, and manifest dread pads the low creature count. But the double Glassworks splash on just two Mountains (plus Centipede fetches) is shaky, and the deck lacks a clear finishing plan."
+  },
+  "reply": "{\"archetype\": \"UG manifest/rooms tempo, light red splash\", \"coherent\": true, \"concerns\": [\"splash sources\", \"few creatures\", \"low threat density\"], \"rating\": 3, \"verdict\": \"Solid UG shell with strong blue rares like Overlord, Enduring Curiosity and Drowner, and manifest dread pads the low creature count. But the double Glassworks splash on just two Mountains (plus Centipede fetches) is shaky, and the deck lacks a clear finishing plan.\"}",
+  "cost_usd": 0.02104,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "f0e5d943edb41acb": {
+  "review": {
+   "archetype": "WU enchantments/eerie",
+   "coherent": true,
+   "concerns": [
+    "low power",
+    "top end",
+    "few creatures"
+   ],
+   "rating": 3,
+   "verdict": "A focused WU eerie deck with good synergy: three Unable to Scream, Trapped in the Screen, Sheltered by Ghosts, Gremlin Tamers, Entity Tracker and Ghostly Dancers. But it is light on threats and finishers, so it can run out of pressure, and 17 lands is slightly heavy for such a low curve, though the Rooms help soak up the extra mana."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/eerie\", \"coherent\": true, \"concerns\": [\"low power\", \"top end\", \"few creatures\"], \"rating\": 3, \"verdict\": \"A focused WU eerie deck with good synergy: three Unable to Scream, Trapped in the Screen, Sheltered by Ghosts, Gremlin Tamers, Entity Tracker and Ghostly Dancers. But it is light on threats and finishers, so it can run out of pressure, and 17 lands is slightly heavy for such a low curve, though the Rooms help soak up the extra mana.\"}",
+  "cost_usd": 0.01957,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "a439a427135c6ce5": {
+  "review": {
+   "archetype": "WR go-wide aggro",
+   "coherent": true,
+   "concerns": [
+    "red depth",
+    "filler"
+   ],
+   "rating": 4,
+   "verdict": "Two Overlords of the Mistmoors, three Glassworks and Trapped in the Screen give this mostly-white deck strong top end and removal. It has a solid 2-drop curve, though a few weak red cards (Turn Inside Out, Untimely Malfunction) pad out a light red half."
+  },
+  "reply": "{\"archetype\": \"WR go-wide aggro\", \"coherent\": true, \"concerns\": [\"red depth\", \"filler\"], \"rating\": 4, \"verdict\": \"Two Overlords of the Mistmoors, three Glassworks and Trapped in the Screen give this mostly-white deck strong top end and removal. It has a solid 2-drop curve, though a few weak red cards (Turn Inside Out, Untimely Malfunction) pad out a light red half.\"}",
+  "cost_usd": 0.01674,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "15c8933561006af6": {
+  "review": {
+   "archetype": "UG manifest/delirium tempo",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "unneeded splash",
+    "threat density"
+   ],
+   "rating": 3,
+   "verdict": "Solid low-curve UG shell with real power in Overlord, Enduring Curiosity, Onslaught and two Unable to Scream, but Say Its Name, Glimmerlight and Tunnel Surveyor are filler and the black splash is only for Swarmweaver; a fine deck, not a great one."
+  },
+  "reply": "{\"archetype\": \"UG manifest/delirium tempo\", \"coherent\": true, \"concerns\": [\"filler\", \"unneeded splash\", \"threat density\"], \"rating\": 3, \"verdict\": \"Solid low-curve UG shell with real power in Overlord, Enduring Curiosity, Onslaught and two Unable to Scream, but Say Its Name, Glimmerlight and Tunnel Surveyor are filler and the black splash is only for Swarmweaver; a fine deck, not a great one.\"}",
+  "cost_usd": 0.02109,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "1eef271a47638609": {
+  "review": {
+   "archetype": "WU enchantments/eerie aggro",
+   "coherent": true,
+   "concerns": [
+    "aura risk",
+    "small creatures",
+    "few creatures"
+   ],
+   "rating": 4,
+   "verdict": "A focused, low-curve WU eerie deck: cheap enchantment payoffs, two Sheltered by Ghosts plus Trapped in the Screen for removal, and 16 lands is right; it can stall against bigger boards and relies on auras on small bodies, but it's a strong, coherent build."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/eerie aggro\", \"coherent\": true, \"concerns\": [\"aura risk\", \"small creatures\", \"few creatures\"], \"rating\": 4, \"verdict\": \"A focused, low-curve WU eerie deck: cheap enchantment payoffs, two Sheltered by Ghosts plus Trapped in the Screen for removal, and 16 lands is right; it can stall against bigger boards and relies on auras on small bodies, but it's a strong, coherent build.\"}",
+  "cost_usd": 0.02216,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ }
+}
