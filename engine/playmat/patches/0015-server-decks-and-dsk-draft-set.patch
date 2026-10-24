@@ -1,0 +1,1822 @@
+diff --git a/Mage.Server/src/main/java/mage/server/decks/DeckSyncEntry.java b/Mage.Server/src/main/java/mage/server/decks/DeckSyncEntry.java
+index e2ff037006..f01a69ade2 100644
+--- a/Mage.Server/src/main/java/mage/server/decks/DeckSyncEntry.java
++++ b/Mage.Server/src/main/java/mage/server/decks/DeckSyncEntry.java
+@@ -11,6 +11,19 @@ public class DeckSyncEntry {
+     public boolean deleted;
+     /** the deck's JSON; only in deckSyncGet */
+     public String data;
++    /** mtg-ai: the shared deck folder (SharedDeckFolder) only: deckSig of the main cards and of the sideboard, whether
++     * it is a 40-card DSK deck, and its review strength once play/review_decks.py rated it */
++    public String sig;
++    public String sideboardSig;
++    public Boolean dskDraft;
++    public Strength strength;
++
++    /** mtg-ai: a deck's review strength, as the web client's DeckStrength (core/decks/deckStrength.ts) */
++    public static class Strength {
++        public int tier;
++        public Integer rating;
++        public String colors;
++    }
+ 
+     public DeckSyncEntry() {
+     }
+diff --git a/Mage.Server/src/main/java/mage/server/decks/SharedDeckFolder.java b/Mage.Server/src/main/java/mage/server/decks/SharedDeckFolder.java
+new file mode 100644
+index 0000000000..bbb278617f
+--- /dev/null
++++ b/Mage.Server/src/main/java/mage/server/decks/SharedDeckFolder.java
+@@ -0,0 +1,505 @@
++package mage.server.decks;
++
++import com.google.gson.Gson;
++import com.google.gson.GsonBuilder;
++import com.google.gson.JsonArray;
++import com.google.gson.JsonElement;
++import com.google.gson.JsonObject;
++import com.google.gson.JsonParser;
++import org.apache.log4j.Logger;
++
++import java.io.IOException;
++import java.nio.charset.StandardCharsets;
++import java.nio.file.Files;
++import java.nio.file.Path;
++import java.nio.file.Paths;
++import java.nio.file.StandardCopyOption;
++import java.time.LocalDate;
++import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.HashSet;
++import java.util.LinkedHashMap;
++import java.util.List;
++import java.util.Locale;
++import java.util.Map;
++import java.util.Set;
++import java.util.TreeMap;
++import java.util.function.Function;
++import java.util.regex.Pattern;
++
++/**
++ * mtg-ai: one shared set of web client decks for a server without accounts (Playmat on the Mac mini: anyone on the
++ * home network signs in with any name). The decks live as plain files in one folder (system property
++ * {@code mtgai.myDecksDir}, default ~/mtg-data/my-decks), so every browser sees the same decks:
++ * <ul>
++ * <li>{@code <id>.dck}: the deck as XMage deck text (NAME:, "N [SET:NUM] Name", "SB: ..."), for people and scripts;</li>
++ * <li>{@code <id>.json}: the web client's own deck (layouts, sideboard plans, change time), what the client syncs;</li>
++ * <li>{@code index.json}: every deck's id, name, change time and card signatures, deletions too (tombstones, 90 days);</li>
++ * <li>{@code manifest.json}: the 40-card DSK decks in play/review_decks.py's pool format ({"decks": [{file, deck,
++ * main_colors, splash_colors, ...}]}); the review, tier and stats that script adds are kept while a deck's cards stay
++ * the same, and are what the AI deck matcher reads (with {@code strengths.json} [{sig, strength}], when present, on top);</li>
++ * <li>{@code backup/<file>}: the previous version of every file this class overwrote, and {@code backup/<date>/<file>}
++ * the first version it replaced that day; {@code deleted/}: deleted decks' files (nothing is removed for good).</li>
++ * </ul>
++ * The sync protocol is the account deck sync's (DeckStore): the newer change wins; deletions travel as tombstones.
++ */
++public final class SharedDeckFolder {
++
++    private static final Logger logger = Logger.getLogger(SharedDeckFolder.class);
++
++    public static final String DIR_PROP = "mtgai.myDecksDir";
++    private static final Pattern DECK_ID = Pattern.compile("[A-Za-z0-9_:.-]{1,64}");
++    private static final Set<String> BASICS = new HashSet<>(Arrays.asList(
++            "Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes", "Snow-Covered Plains", "Snow-Covered Island",
++            "Snow-Covered Swamp", "Snow-Covered Mountain", "Snow-Covered Forest")); // as core/decks/dskDraft.ts
++    private static final String WUBRG = "WUBRG";
++    /** review fields play/review_decks.py writes into a manifest entry; kept while the deck's cards don't change */
++    private static final List<String> REVIEW_FIELDS = Arrays.asList("review", "tier", "stats", "deck_score");
++
++    private static volatile SharedDeckFolder instance;
++
++    private final Path dir;
++    /** a card's colors ("WU", "" for colorless) and whether it is a land, by name; null when it isn't known */
++    private final Function<String, CardFacts> cards;
++    private final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().create(); // nulls: review_decks.py reads rank, user_win_rate_bucket
++
++    /** What the folder needs to know about a card to describe a deck for the deck review. */
++    public static class CardFacts {
++        public final String colors;
++        public final boolean land;
++
++        public CardFacts(String colors, boolean land) {
++            this.colors = colors;
++            this.land = land;
++        }
++    }
++
++    public SharedDeckFolder(Path dir, Function<String, CardFacts> cards) {
++        this.dir = dir;
++        this.cards = cards;
++    }
++
++    public static SharedDeckFolder get() {
++        SharedDeckFolder current = instance;
++        if (current == null) {
++            synchronized (SharedDeckFolder.class) {
++                current = instance;
++                if (current == null) {
++                    String configured = System.getProperty(DIR_PROP, "").trim();
++                    Path path = configured.isEmpty()
++                            ? Paths.get(System.getProperty("user.home"), "mtg-data", "my-decks")
++                            : Paths.get(configured);
++                    current = new SharedDeckFolder(path, SharedDeckFolder::repositoryFacts);
++                    instance = current;
++                    logger.info("mtg-ai: shared decks in " + path.toAbsolutePath());
++                }
++            }
++        }
++        return current;
++    }
++
++    public Path dir() {
++        return dir;
++    }
++
++    private static CardFacts repositoryFacts(String name) {
++        try {
++            mage.cards.repository.CardInfo info = mage.cards.repository.CardRepository.instance.findCard(name);
++            if (info == null) {
++                return null;
++            }
++            mage.ObjectColor color = info.getColor();
++            StringBuilder colors = new StringBuilder();
++            if (color.isWhite()) colors.append('W');
++            if (color.isBlue()) colors.append('U');
++            if (color.isBlack()) colors.append('B');
++            if (color.isRed()) colors.append('R');
++            if (color.isGreen()) colors.append('G');
++            return new CardFacts(colors.toString(), info.getTypes().contains(mage.constants.CardType.LAND));
++        } catch (RuntimeException | LinkageError e) {
++            return null;
++        }
++    }
++
++    // ---------------------------------------------------------------------------------------------------------------
++    // the sync protocol
++
++    /** Every deck without its data, tombstones included (old ones dropped), each rated deck with its strength. */
++    public synchronized List<DeckSyncEntry> list(long now) {
++        Map<String, IndexEntry> index = readIndex();
++        boolean pruned = index.values().removeIf((entry) -> entry.deleted && entry.updatedAt < now - DeckStore.TOMBSTONE_MILLIS);
++        if (pruned) {
++            writeIndex(index);
++        }
++        Map<String, DeckSyncEntry.Strength> ratings = ratings();
++        List<DeckSyncEntry> entries = new ArrayList<>();
++        for (Map.Entry<String, IndexEntry> e : index.entrySet()) {
++            DeckSyncEntry entry = e.getValue().toSync(e.getKey());
++            entry.strength = entry.deleted || entry.sig == null ? null : ratings.get(entry.sig);
++            entries.add(entry);
++        }
++        return entries;
++    }
++
++    /** The deck with its data, or null when there is none (or it was deleted). */
++    public synchronized DeckSyncEntry get(String deckId) {
++        IndexEntry entry = readIndex().get(checkId(deckId));
++        if (entry == null || entry.deleted) {
++            return null;
++        }
++        DeckSyncEntry out = entry.toSync(deckId);
++        Path file = dir.resolve(stem(deckId) + ".json");
++        out.data = Files.exists(file) ? read(file) : null;
++        return out.data == null ? null : out;
++    }
++
++    public synchronized DeckStore.DeckPutResult put(String deckId, String name, long updatedAt, String data) {
++        checkId(deckId);
++        if (data == null || data.isEmpty()) {
++            throw new IllegalArgumentException("The deck is empty");
++        }
++        if (data.length() > DeckStore.MAX_DECK_CHARS) {
++            throw new IllegalArgumentException("The deck is too large to store (" + data.length() / 1024 + " KB)");
++        }
++        JsonObject deck;
++        try {
++            deck = JsonParser.parseString(data).getAsJsonObject();
++        } catch (RuntimeException e) {
++            throw new IllegalArgumentException("The deck is not a web client deck");
++        }
++        if (!deck.has("cards") || !deck.get("cards").isJsonArray()) {
++            throw new IllegalArgumentException("The deck has no card list");
++        }
++        Map<String, IndexEntry> index = readIndex();
++        IndexEntry existing = index.get(deckId);
++        if (existing != null && existing.updatedAt > updatedAt) {
++            return new DeckStore.DeckPutResult(false, existing.updatedAt);
++        }
++        if (existing == null || existing.deleted) {
++            long live = index.values().stream().filter((entry) -> !entry.deleted).count();
++            if (live >= DeckStore.MAX_DECKS) {
++                throw new IllegalArgumentException("The shared deck folder holds up to " + DeckStore.MAX_DECKS + " decks");
++            }
++        }
++        IndexEntry entry = new IndexEntry();
++        entry.name = name == null ? "" : name.length() > 200 ? name.substring(0, 200) : name;
++        entry.updatedAt = updatedAt;
++        entry.deleted = false;
++        Map<String, Integer> main = counts(deck.get("cards"));
++        entry.sig = sig(main);
++        entry.sideboardSig = sig(counts(deck.get("sideboard")));
++        entry.dskDraft = dskDraft(deck, main);
++        entry.file = stem(deckId) + ".dck";
++        write(dir.resolve(stem(deckId) + ".json"), data);
++        write(dir.resolve(entry.file), dckText(entry.name, deck));
++        index.put(deckId, entry);
++        writeIndex(index);
++        writeManifest(index);
++        return new DeckStore.DeckPutResult(true, updatedAt);
++    }
++
++    /** Deletes a deck (its files move to deleted/), unless the folder has a version newer than the deletion. */
++    public synchronized DeckStore.DeckPutResult delete(String deckId, long deletedAt) {
++        checkId(deckId);
++        Map<String, IndexEntry> index = readIndex();
++        IndexEntry existing = index.get(deckId);
++        if (existing != null && existing.updatedAt > deletedAt) {
++            return new DeckStore.DeckPutResult(false, existing.updatedAt);
++        }
++        for (String name : new String[]{stem(deckId) + ".json", stem(deckId) + ".dck"}) {
++            Path file = dir.resolve(name);
++            if (Files.exists(file)) {
++                try {
++                    Path deleted = dir.resolve("deleted");
++                    Files.createDirectories(deleted);
++                    Files.move(file, deleted.resolve(deletedAt + "-" + name), StandardCopyOption.REPLACE_EXISTING);
++                } catch (IOException e) {
++                    throw new IllegalStateException("Couldn't move the deleted deck aside: " + e.getMessage(), e);
++                }
++            }
++        }
++        IndexEntry entry = new IndexEntry();
++        entry.name = existing == null ? "" : existing.name;
++        entry.updatedAt = deletedAt;
++        entry.deleted = true;
++        index.put(deckId, entry);
++        writeIndex(index);
++        writeManifest(index);
++        return new DeckStore.DeckPutResult(true, deletedAt);
++    }
++
++    // ---------------------------------------------------------------------------------------------------------------
++    // the deck review's view of the folder
++
++    /** Rated decks by their main cards' signature: manifest.json reviews, then strengths.json on top. */
++    Map<String, DeckSyncEntry.Strength> ratings() {
++        Map<String, DeckSyncEntry.Strength> out = new LinkedHashMap<>();
++        JsonObject manifest = readJsonObject(dir.resolve("manifest.json"));
++        if (manifest != null && manifest.has("decks") && manifest.get("decks").isJsonArray()) {
++            for (JsonElement element : manifest.getAsJsonArray("decks")) {
++                if (!element.isJsonObject()) continue;
++                JsonObject d = element.getAsJsonObject();
++                JsonObject review = d.has("review") && d.get("review").isJsonObject() ? d.getAsJsonObject("review") : null;
++                if (review == null || !review.has("rating") || !d.has("sig")) continue;
++                DeckSyncEntry.Strength s = new DeckSyncEntry.Strength();
++                s.tier = d.has("tier") && d.get("tier").isJsonPrimitive() ? d.get("tier").getAsInt() : 1;
++                s.rating = review.get("rating").getAsInt();
++                s.colors = d.has("main_colors") ? d.get("main_colors").getAsString() : "";
++                out.put(d.get("sig").getAsString(), s);
++            }
++        }
++        Path strengths = dir.resolve("strengths.json");
++        if (Files.exists(strengths)) {
++            try {
++                for (JsonElement element : JsonParser.parseString(read(strengths)).getAsJsonArray()) {
++                    JsonObject e = element.getAsJsonObject();
++                    if (!e.has("sig") || !e.has("strength")) continue;
++                    out.put(e.get("sig").getAsString(), gson.fromJson(e.get("strength"), DeckSyncEntry.Strength.class));
++                }
++            } catch (RuntimeException e) {
++                logger.warn("mtg-ai: " + strengths + " can't be read: " + e.getMessage());
++            }
++        }
++        return out;
++    }
++
++    /** manifest.json: the DSK decks for the deck review; a review already there stays while the cards are the same. */
++    private void writeManifest(Map<String, IndexEntry> index) {
++        Path path = dir.resolve("manifest.json");
++        JsonObject old = readJsonObject(path);
++        Map<String, JsonObject> before = new LinkedHashMap<>();
++        if (old != null && old.has("decks") && old.get("decks").isJsonArray()) {
++            for (JsonElement element : old.getAsJsonArray("decks")) {
++                if (element.isJsonObject() && element.getAsJsonObject().has("file")) {
++                    before.put(element.getAsJsonObject().get("file").getAsString(), element.getAsJsonObject());
++                }
++            }
++        }
++        JsonObject manifest = old != null ? old : new JsonObject();
++        manifest.addProperty("source", "Playmat's shared decks (mage.server.decks.SharedDeckFolder): 40-card DSK decks, "
++                + "main_colors and splash_colors inferred from card colors (4+ nonland cards of a color: main)");
++        JsonArray decks = new JsonArray();
++        for (Map.Entry<String, IndexEntry> e : index.entrySet()) {
++            IndexEntry entry = e.getValue();
++            if (entry.deleted || !entry.dskDraft) continue;
++            JsonObject deck = readJsonObject(dir.resolve(stem(e.getKey()) + ".json"));
++            if (deck == null) continue;
++            Map<String, Integer> main = counts(deck.get("cards"));
++            String[] colors = colors(main);
++            JsonObject d = new JsonObject();
++            d.addProperty("file", entry.file);
++            d.addProperty("name", entry.name);
++            d.addProperty("sig", entry.sig);
++            d.addProperty("main_colors", colors[0]);
++            d.addProperty("splash_colors", colors[1]);
++            d.addProperty("colors_inferred", true);
++            d.add("rank", null);
++            d.add("user_win_rate_bucket", null);
++            JsonObject list = new JsonObject();
++            for (Map.Entry<String, Integer> card : main.entrySet()) list.addProperty(card.getKey(), card.getValue());
++            d.add("deck", list);
++            JsonObject previous = before.get(entry.file);
++            if (previous != null && previous.has("sig") && entry.sig.equals(previous.get("sig").getAsString())) {
++                for (String field : REVIEW_FIELDS) {
++                    if (previous.has(field)) d.add(field, previous.get(field));
++                }
++            }
++            decks.add(d);
++        }
++        manifest.add("decks", decks);
++        write(path, gson.toJson(manifest) + "\n");
++    }
++
++    /** Main and splash colors (WUBRG order): 4+ nonland cards of a color make it a main color, 1-3 a splash. */
++    String[] colors(Map<String, Integer> main) {
++        int[] count = new int[5];
++        for (Map.Entry<String, Integer> card : main.entrySet()) {
++            CardFacts facts = cards.apply(card.getKey());
++            if (facts == null || facts.land) continue;
++            for (char c : facts.colors.toCharArray()) {
++                int i = WUBRG.indexOf(c);
++                if (i >= 0) count[i] += card.getValue();
++            }
++        }
++        StringBuilder mainColors = new StringBuilder();
++        StringBuilder splash = new StringBuilder();
++        for (int i = 0; i < 5; i++) {
++            if (count[i] >= 4) mainColors.append(WUBRG.charAt(i));
++            else if (count[i] > 0) splash.append(WUBRG.charAt(i));
++        }
++        return new String[]{mainColors.toString(), splash.toString()};
++    }
++
++    /** A Freeform deck of 40+ main cards, all of them DSK printings (basic lands from any set). */
++    static boolean dskDraft(JsonObject deck, Map<String, Integer> main) {
++        String format = deck.has("format") && deck.get("format").isJsonPrimitive() ? deck.get("format").getAsString() : "";
++        if (!format.isEmpty() && (!format.contains("Freeform") || format.contains("Commander"))) return false;
++        int total = main.values().stream().mapToInt(Integer::intValue).sum();
++        if (total < 40) return false;
++        for (JsonElement element : deck.getAsJsonArray("cards")) {
++            JsonObject card = element.getAsJsonObject();
++            String name = card.has("cardName") ? card.get("cardName").getAsString() : "";
++            String set = card.has("setCode") && card.get("setCode").isJsonPrimitive() ? card.get("setCode").getAsString() : "";
++            if (!BASICS.contains(name) && !"DSK".equalsIgnoreCase(set)) return false;
++        }
++        return true;
++    }
++
++    // ---------------------------------------------------------------------------------------------------------------
++    // cards, signatures, deck text
++
++    /** Copies by card name, in name order. */
++    static Map<String, Integer> counts(JsonElement list) {
++        Map<String, Integer> counts = new TreeMap<>();
++        if (list == null || !list.isJsonArray()) return counts;
++        for (JsonElement element : list.getAsJsonArray()) {
++            if (!element.isJsonObject()) continue;
++            JsonObject card = element.getAsJsonObject();
++            if (!card.has("cardName")) continue;
++            int amount = card.has("amount") ? card.get("amount").getAsInt() : 1;
++            counts.merge(card.get("cardName").getAsString(), amount, Integer::sum);
++        }
++        return counts;
++    }
++
++    /** FNV-1a over "amount name" lines sorted by name, as the web client's deckSig (core/decks/deckStrength.ts). */
++    static String sig(Map<String, Integer> counts) {
++        StringBuilder text = new StringBuilder();
++        for (Map.Entry<String, Integer> e : counts.entrySet()) {
++            if (text.length() > 0) text.append('|');
++            text.append(e.getValue()).append(' ').append(e.getKey());
++        }
++        int hash = 0x811c9dc5;
++        for (int i = 0; i < text.length(); i++) {
++            hash ^= text.charAt(i);
++            hash *= 0x01000193;
++        }
++        return String.format(Locale.ROOT, "%08x", hash);
++    }
++
++    static String dckText(String name, JsonObject deck) {
++        StringBuilder out = new StringBuilder("NAME:").append(name.replace('\n', ' ')).append('\n');
++        appendCards(out, deck.get("cards"), "");
++        appendCards(out, deck.get("sideboard"), "SB: ");
++        return out.toString();
++    }
++
++    private static void appendCards(StringBuilder out, JsonElement list, String prefix) {
++        if (list == null || !list.isJsonArray()) return;
++        for (JsonElement element : list.getAsJsonArray()) {
++            if (!element.isJsonObject()) continue;
++            JsonObject card = element.getAsJsonObject();
++            if (!card.has("cardName")) continue;
++            String set = card.has("setCode") && card.get("setCode").isJsonPrimitive() ? card.get("setCode").getAsString() : "";
++            String number = card.has("cardNumber") && card.get("cardNumber").isJsonPrimitive() ? card.get("cardNumber").getAsString() : "";
++            out.append(prefix).append(card.has("amount") ? card.get("amount").getAsInt() : 1).append(' ');
++            if (!set.isEmpty()) out.append('[').append(set).append(':').append(number).append("] ");
++            out.append(card.get("cardName").getAsString()).append('\n');
++        }
++    }
++
++    // ---------------------------------------------------------------------------------------------------------------
++    // files
++
++    /** One line of index.json. */
++    static class IndexEntry {
++        String name;
++        long updatedAt;
++        boolean deleted;
++        String file;
++        String sig;
++        String sideboardSig;
++        boolean dskDraft;
++
++        DeckSyncEntry toSync(String id) {
++            DeckSyncEntry out = new DeckSyncEntry();
++            out.id = id;
++            out.name = name;
++            out.updatedAt = updatedAt;
++            out.deleted = deleted;
++            out.sig = deleted ? null : sig;
++            out.sideboardSig = deleted ? null : sideboardSig;
++            out.dskDraft = deleted ? null : dskDraft;
++            return out;
++        }
++    }
++
++    private static class Index {
++        Map<String, IndexEntry> decks = new LinkedHashMap<>();
++    }
++
++    private Map<String, IndexEntry> readIndex() {
++        Path path = dir.resolve("index.json");
++        if (!Files.exists(path)) return new LinkedHashMap<>();
++        try {
++            Index index = gson.fromJson(read(path), Index.class);
++            return index == null || index.decks == null ? new LinkedHashMap<>() : index.decks;
++        } catch (RuntimeException e) {
++            // never start over silently: a broken index would forget every deck
++            throw new IllegalStateException("The shared deck index can't be read (" + path + "): " + e.getMessage(), e);
++        }
++    }
++
++    private void writeIndex(Map<String, IndexEntry> decks) {
++        Index index = new Index();
++        index.decks = decks;
++        write(dir.resolve("index.json"), gson.toJson(index) + "\n");
++    }
++
++    private JsonObject readJsonObject(Path path) {
++        if (!Files.exists(path)) return null;
++        try {
++            JsonElement element = JsonParser.parseString(read(path));
++            return element.isJsonObject() ? element.getAsJsonObject() : null;
++        } catch (RuntimeException e) {
++            logger.warn("mtg-ai: " + path + " can't be read: " + e.getMessage());
++            return null;
++        }
++    }
++
++    private static String read(Path path) {
++        try {
++            return new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
++        } catch (IOException e) {
++            throw new IllegalStateException("Couldn't read " + path + ": " + e.getMessage(), e);
++        }
++    }
++
++    /**
++     * Writes a file through a temporary one; an existing file is first copied to backup/ (the previous version) and,
++     * the first time each day, to backup/<date>/.
++     */
++    private void write(Path path, String text) {
++        try {
++            Files.createDirectories(dir);
++            if (Files.exists(path)) {
++                byte[] old = Files.readAllBytes(path);
++                if (Arrays.equals(old, text.getBytes(StandardCharsets.UTF_8))) return;
++                Path backup = dir.resolve("backup");
++                Path daily = backup.resolve(LocalDate.now().toString());
++                Files.createDirectories(daily);
++                Files.copy(path, backup.resolve(path.getFileName()), StandardCopyOption.REPLACE_EXISTING);
++                if (!Files.exists(daily.resolve(path.getFileName()))) {
++                    Files.copy(path, daily.resolve(path.getFileName()));
++                }
++            }
++            Path tmp = path.resolveSibling(path.getFileName() + ".tmp");
++            Files.write(tmp, text.getBytes(StandardCharsets.UTF_8));
++            Files.move(tmp, path, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
++        } catch (IOException e) {
++            throw new IllegalStateException("Couldn't write " + path + ": " + e.getMessage(), e);
++        }
++    }
++
++    /** A deck id as a file name (ids are UUIDs; anything else outside [A-Za-z0-9_-] becomes "_"). */
++    static String stem(String deckId) {
++        return deckId.replaceAll("[^A-Za-z0-9_-]", "_");
++    }
++
++    private static String checkId(String deckId) {
++        if (deckId == null || !DECK_ID.matcher(deckId).matches()) {
++            throw new IllegalArgumentException("Bad deck id");
++        }
++        return deckId;
++    }
++}
+diff --git a/Mage.Server/src/main/java/mage/server/websocket/api/AccountApi.java b/Mage.Server/src/main/java/mage/server/websocket/api/AccountApi.java
+index 272321a560..370736895e 100644
+--- a/Mage.Server/src/main/java/mage/server/websocket/api/AccountApi.java
++++ b/Mage.Server/src/main/java/mage/server/websocket/api/AccountApi.java
+@@ -6,6 +6,7 @@ import mage.server.admin.AccessPolicy;
+ import mage.server.admin.RuntimeSettings;
+ import mage.server.decks.DeckStore;
+ import mage.server.decks.DeckSyncEntry;
++import mage.server.decks.SharedDeckFolder;
+ import mage.server.managers.ConfigSettings;
+ import mage.server.notify.DiscordNotifier;
+ import mage.server.moderation.ClientErrors;
+@@ -50,6 +51,8 @@ final class AccountApi {
+         public int maxPasswordLength;
+         /** decks are kept on the server for each account */
+         public boolean deckSync;
++        /** mtg-ai: no accounts: every browser shares one set of decks kept in a folder on the server */
++        public boolean deckSyncShared;
+         /** the optional single-player Career is offered (accounts on, and not switched off) */
+         public boolean career;
+         /** open, or allowlist: a contributors server, where only listed or invited accounts get in */
+@@ -89,6 +92,9 @@ final class AccountApi {
+                         .doc("Every deck kept on the server for the signed-in account, without the deck data, deleted ones included "
+                                 + "(as tombstones, for " + 90 + " days). Only on servers with accounts.")
+                         .handler(call -> {
++                            if (sharedDecks(ctx, call)) {
++                                return decks(() -> SharedDeckFolder.get().list(System.currentTimeMillis())); // mtg-ai
++                            }
+                             String owner = account(ctx, call);
+                             return decks(() -> DeckStore.get().list(owner, System.currentTimeMillis()));
+                         }),
+@@ -98,6 +104,10 @@ final class AccountApi {
+                         .returns("DeckSyncEntry | null")
+                         .doc("One deck of the signed-in account with its data, or null when there is none.")
+                         .handler(call -> {
++                            if (sharedDecks(ctx, call)) {
++                                String deckId = call.string(0);
++                                return decks(() -> SharedDeckFolder.get().get(deckId)); // mtg-ai
++                            }
+                             String owner = account(ctx, call);
+                             return decks(() -> DeckStore.get().get(owner, call.string(0)));
+                         }),
+@@ -109,6 +119,13 @@ final class AccountApi {
+                                 + "nothing is stored and its updatedAt comes back. Up to " + DeckStore.MAX_DECKS + " decks of "
+                                 + DeckStore.MAX_DECK_CHARS / 1024 + " KB each.")
+                         .handler(call -> {
++                            if (sharedDecks(ctx, call)) {
++                                long at = longValue(call, 2);
++                                String deckId = call.string(0);
++                                String name = call.string(1);
++                                String data = call.string(3);
++                                return decks(() -> SharedDeckFolder.get().put(deckId, name, at, data)); // mtg-ai
++                            }
+                             String owner = account(ctx, call);
+                             long updatedAt = longValue(call, 2);
+                             return decks(() -> DeckStore.get().put(owner, call.string(0), call.string(1), updatedAt, call.string(3)));
+@@ -119,6 +136,11 @@ final class AccountApi {
+                         .returns("DeckPutResult")
+                         .doc("Delete a deck of the signed-in account, unless the server has a change newer than the deletion.")
+                         .handler(call -> {
++                            if (sharedDecks(ctx, call)) {
++                                long at = longValue(call, 1);
++                                String deckId = call.string(0);
++                                return decks(() -> SharedDeckFolder.get().delete(deckId, at)); // mtg-ai
++                            }
+                             String owner = account(ctx, call);
+                             long deletedAt = longValue(call, 1);
+                             return decks(() -> DeckStore.get().delete(owner, call.string(0), deletedAt));
+@@ -165,7 +187,9 @@ final class AccountApi {
+             info.minPasswordLength = config.getMinPasswordLength();
+             info.maxPasswordLength = config.getMaxPasswordLength();
+         }
+-        info.deckSync = info.accounts;
++        // mtg-ai: without accounts, one shared set of decks in a folder on the server (SharedDeckFolder)
++        info.deckSyncShared = config != null && sharedDecksOn(config);
++        info.deckSync = info.accounts || info.deckSyncShared;
+         info.turnstileSiteKey = ctx.turnstile.siteKey();
+         info.contactEmail = contactEmail();
+         if (ctx.managers != null && ctx.managers.threadExecutor() != null
+@@ -221,6 +245,44 @@ final class AccountApi {
+         return userName;
+     }
+ 
++    /** mtg-ai: the shared deck folder is on: no accounts, and not switched off with -Dmtgai.myDecks=off */
++    static boolean sharedDecksOn(ConfigSettings config) {
++        return !config.isAuthenticationActivated() && !"off".equalsIgnoreCase(System.getProperty("mtgai.myDecks", ""));
++    }
++
++    /**
++     * mtg-ai: this call goes to the shared deck folder: the server has no accounts and keeps the shared folder, the
++     * caller is signed in (any name) and on this computer or the home network (loopback, private or link-local
++     * address); refused from anywhere else.
++     */
++    static boolean sharedDecks(ApiContext ctx, RpcCall call) throws RpcException {
++        if (ctx.managers == null || !sharedDecksOn(ctx.managers.configSettings())) {
++            return false;
++        }
++        ctx.sessions.userName(call.sessionId()).orElseThrow(() -> RpcException.notAuthorized("Sign in first"));
++        String host = call.getConnection() == null ? null : call.getConnection().getRemoteHost();
++        if (!lanAddress(host)) {
++            throw RpcException.notAuthorized("The shared decks are only reachable from the home network");
++        }
++        return true;
++    }
++
++    static boolean lanAddress(String host) {
++        if (host == null || host.isEmpty()) {
++            return false;
++        }
++        try {
++            java.net.InetAddress address = java.net.InetAddress.getByName(host);
++            if (address.isLoopbackAddress() || address.isSiteLocalAddress() || address.isLinkLocalAddress()) {
++                return true;
++            }
++            byte[] raw = address.getAddress();
++            return raw.length == 16 && (raw[0] & 0xfe) == 0xfc; // IPv6 unique local (fc00::/7)
++        } catch (java.net.UnknownHostException | SecurityException e) {
++            return false;
++        }
++    }
++
+     static long longValue(RpcCall call, int index) throws RpcException {
+         JsonElement value = call.raw(index);
+         try {
+diff --git a/Mage.Server/src/test/java/mage/server/decks/SharedDeckFolderTest.java b/Mage.Server/src/test/java/mage/server/decks/SharedDeckFolderTest.java
+new file mode 100644
+index 0000000000..6edf680561
+--- /dev/null
++++ b/Mage.Server/src/test/java/mage/server/decks/SharedDeckFolderTest.java
+@@ -0,0 +1,154 @@
++package mage.server.decks;
++
++import com.google.gson.JsonObject;
++import com.google.gson.JsonParser;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.io.TempDir;
++
++import java.nio.charset.StandardCharsets;
++import java.nio.file.Files;
++import java.nio.file.Path;
++import java.time.LocalDate;
++import java.util.List;
++import java.util.Map;
++import java.util.TreeMap;
++
++import static org.assertj.core.api.Assertions.assertThat;
++import static org.assertj.core.api.Assertions.assertThatThrownBy;
++
++/** mtg-ai: the shared deck folder of a server without accounts. */
++public class SharedDeckFolderTest {
++
++    @TempDir
++    Path dir;
++
++    private SharedDeckFolder folder;
++
++    @BeforeEach
++    void setUp() {
++        folder = new SharedDeckFolder(dir, (name) -> {
++            switch (name) {
++                case "Plains":
++                case "Island":
++                    return new SharedDeckFolder.CardFacts("", true);
++                case "Fear of Isolation":
++                    return new SharedDeckFolder.CardFacts("U", false);
++                case "Splash Card":
++                    return new SharedDeckFolder.CardFacts("B", false);
++                default:
++                    return new SharedDeckFolder.CardFacts("W", false);
++            }
++        });
++    }
++
++    /** A 40-card DSK deck: 17 basics, 20 white cards, 3 blue ones (a splash by count). */
++    private static String dskDeck(String name, int whites) {
++        return "{\"name\":\"" + name + "\",\"format\":\"Constructed - Freeform\",\"cards\":["
++                + "{\"cardName\":\"Plains\",\"setCode\":\"DSK\",\"cardNumber\":\"272\",\"amount\":17},"
++                + "{\"cardName\":\"Toby, Beastie Befriender\",\"setCode\":\"DSK\",\"cardNumber\":\"35\",\"amount\":" + whites + "},"
++                + "{\"cardName\":\"Fear of Isolation\",\"setCode\":\"DSK\",\"cardNumber\":\"58\",\"amount\":3}],"
++                + "\"sideboard\":[{\"cardName\":\"Splash Card\",\"setCode\":\"DSK\",\"cardNumber\":\"1\",\"amount\":1}],\"updatedAt\":100}";
++    }
++
++    @Test
++    void storesEveryDeckAsFilesAndSharesThem() throws Exception {
++        assertThat(folder.put("d-1", "Mine", 100, dskDeck("Mine", 20)).stored).isTrue();
++        String dck = new String(Files.readAllBytes(dir.resolve("d-1.dck")), StandardCharsets.UTF_8);
++        assertThat(dck).startsWith("NAME:Mine\n").contains("17 [DSK:272] Plains\n").contains("SB: 1 [DSK:1] Splash Card\n");
++        assertThat(dir.resolve("d-1.json")).exists();
++        assertThat(dir.resolve("index.json")).exists();
++
++        // another folder object on the same files (another browser, a restarted server) sees the same deck
++        SharedDeckFolder again = new SharedDeckFolder(dir, (name) -> null);
++        List<DeckSyncEntry> list = again.list(200);
++        assertThat(list).hasSize(1);
++        assertThat(list.get(0).data).as("the list leaves data out").isNull();
++        assertThat(list.get(0).dskDraft).isTrue();
++        Map<String, Integer> main = new TreeMap<>();
++        main.put("Plains", 17);
++        main.put("Toby, Beastie Befriender", 20);
++        main.put("Fear of Isolation", 3);
++        assertThat(list.get(0).sig).isEqualTo(SharedDeckFolder.sig(main));
++        assertThat(again.get("d-1").data).contains("Toby");
++    }
++
++    @Test
++    void signsAsTheWebClient() {
++        // deckSig([{cardName: 'Island', amount: 40}]) in core/decks/deckStrength.ts
++        Map<String, Integer> islands = new TreeMap<>();
++        islands.put("Island", 40);
++        assertThat(SharedDeckFolder.sig(islands)).isEqualTo(fnv("40 Island"));
++    }
++
++    private static String fnv(String text) {
++        long hash = 0x811c9dc5L;
++        for (char c : text.toCharArray()) {
++            hash = ((hash ^ c) * 0x01000193L) & 0xffffffffL;
++        }
++        return String.format("%08x", hash);
++    }
++
++    @Test
++    void backsUpAFileBeforeOverwritingIt() throws Exception {
++        folder.put("d-1", "First", 100, dskDeck("First", 20));
++        folder.put("d-1", "Second", 200, dskDeck("Second", 20));
++        String backup = new String(Files.readAllBytes(dir.resolve("backup/d-1.dck")), StandardCharsets.UTF_8);
++        assertThat(backup).startsWith("NAME:First");
++        assertThat(dir.resolve("backup/" + LocalDate.now() + "/d-1.json")).exists();
++        assertThat(dir.resolve("backup/index.json")).exists();
++    }
++
++    @Test
++    void theNewerChangeWinsAndDeletionsMoveFilesAside() {
++        folder.put("d-1", "New", 300, dskDeck("New", 20));
++        DeckStore.DeckPutResult stale = folder.put("d-1", "Old", 200, dskDeck("Old", 20));
++        assertThat(stale.stored).isFalse();
++        assertThat(stale.updatedAt).isEqualTo(300);
++        assertThat(folder.delete("d-1", 250).stored).as("a change newer than the deletion stays").isFalse();
++
++        assertThat(folder.delete("d-1", 400).stored).isTrue();
++        assertThat(folder.get("d-1")).isNull();
++        assertThat(dir.resolve("d-1.dck")).doesNotExist();
++        assertThat(dir.resolve("deleted/400-d-1.dck")).exists();
++        DeckSyncEntry tombstone = folder.list(500).get(0);
++        assertThat(tombstone.deleted).isTrue();
++        assertThat(folder.list(400 + DeckStore.TOMBSTONE_MILLIS + 1)).as("old tombstones are dropped").isEmpty();
++    }
++
++    @Test
++    void refusesBadDecks() {
++        assertThatThrownBy(() -> folder.put("../x", "Bad", 1, dskDeck("Bad", 20))).isInstanceOf(IllegalArgumentException.class);
++        assertThatThrownBy(() -> folder.put("d-1", "Bad", 1, "not json")).isInstanceOf(IllegalArgumentException.class);
++        assertThatThrownBy(() -> folder.put("d-1", "Bad", 1, "{\"name\":\"x\"}")).isInstanceOf(IllegalArgumentException.class);
++    }
++
++    @Test
++    void listsDskDecksForTheReviewAndKeepsTheirRatings() throws Exception {
++        folder.put("d-1", "Mine", 100, dskDeck("Mine", 20));
++        folder.put("d-2", "Short", 100, dskDeck("Short", 5)); // 25 cards: not a DSK Draft deck
++        JsonObject manifest = JsonParser.parseString(new String(Files.readAllBytes(dir.resolve("manifest.json")), StandardCharsets.UTF_8)).getAsJsonObject();
++        assertThat(manifest.getAsJsonArray("decks")).hasSize(1);
++        JsonObject d = manifest.getAsJsonArray("decks").get(0).getAsJsonObject();
++        assertThat(d.get("file").getAsString()).isEqualTo("d-1.dck");
++        assertThat(d.get("main_colors").getAsString()).isEqualTo("W");
++        assertThat(d.get("splash_colors").getAsString()).isEqualTo("U");
++        assertThat(d.getAsJsonObject("deck").get("Plains").getAsInt()).isEqualTo(17);
++        assertThat(d.has("rank") && d.has("user_win_rate_bucket")).as("review_decks.py reads them (null)").isTrue();
++
++        // play/review_decks.py rates it
++        d.add("review", JsonParser.parseString("{\"rating\": 4, \"archetype\": \"W aggro\"}"));
++        d.addProperty("tier", 1);
++        Files.write(dir.resolve("manifest.json"), manifest.toString().getBytes(StandardCharsets.UTF_8));
++        DeckSyncEntry rated = folder.list(200).stream().filter((e) -> e.id.equals("d-1")).findFirst().get();
++        assertThat(rated.strength.rating).isEqualTo(4);
++        assertThat(rated.strength.tier).isEqualTo(1);
++        assertThat(rated.strength.colors).isEqualTo("W");
++
++        // the review stays while the cards are the same (a rename), and goes when they change
++        folder.put("d-1", "Renamed", 200, dskDeck("Renamed", 20));
++        assertThat(folder.list(300).stream().filter((e) -> e.id.equals("d-1")).findFirst().get().strength.rating).isEqualTo(4);
++        folder.put("d-1", "Changed", 300, dskDeck("Changed", 21));
++        assertThat(folder.list(400).stream().filter((e) -> e.id.equals("d-1")).findFirst().get().strength).isNull();
++    }
++}
+diff --git a/Mage.Server/src/test/java/mage/server/websocket/api/SharedDecksAccessTest.java b/Mage.Server/src/test/java/mage/server/websocket/api/SharedDecksAccessTest.java
+new file mode 100644
+index 0000000000..cc83bb4640
+--- /dev/null
++++ b/Mage.Server/src/test/java/mage/server/websocket/api/SharedDecksAccessTest.java
+@@ -0,0 +1,23 @@
++package mage.server.websocket.api;
++
++import org.junit.jupiter.api.Test;
++
++import static org.assertj.core.api.Assertions.assertThat;
++
++/** mtg-ai: the shared deck folder answers this computer and the home network only. */
++public class SharedDecksAccessTest {
++
++    @Test
++    void onlyTheHomeNetwork() {
++        assertThat(AccountApi.lanAddress("127.0.0.1")).isTrue();
++        assertThat(AccountApi.lanAddress("192.168.1.82")).isTrue();
++        assertThat(AccountApi.lanAddress("10.0.0.5")).isTrue();
++        assertThat(AccountApi.lanAddress("169.254.10.1")).isTrue();
++        assertThat(AccountApi.lanAddress("::1")).isTrue();
++        assertThat(AccountApi.lanAddress("fd12:3456::1")).isTrue();
++        assertThat(AccountApi.lanAddress("8.8.8.8")).isFalse();
++        assertThat(AccountApi.lanAddress("2001:4860:4860::8888")).isFalse();
++        assertThat(AccountApi.lanAddress("")).isFalse();
++        assertThat(AccountApi.lanAddress(null)).isFalse();
++    }
++}
+diff --git a/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx b/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx
+index 94c2a8836d..f22d6eec74 100644
+--- a/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx
++++ b/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx
+@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
+ import type { CardView } from '../../protocol/generated/views';
+ import { BASIC_FOR, MANA_LETTERS, suggestLands, type ManaLetter } from '../../core/decks/analysis';
+ import { canCommand, commanderIdentity, formatMenu, formatRules, withinIdentity, type FormatRules } from '../../core/decks/formats';
++import { builderDskLabel, DSK_DRAFT_SIZE } from '../../core/decks/dskDraft';
+ import { appendDeckCardLists } from '../../core/decks/merge';
+ import { deckStorage } from '../../core/decks/DeckStorageService';
+ import type { DeckCardInfo, DeckCardLists } from '../../core/decks/types';
+@@ -288,6 +289,9 @@ function DeckPanel({ deck, zone, view, onView, info, formats, rules, identity, s
+   const [plansOpen, setPlansOpen] = useState(false);
+   const commandZone = rules.commandZone;
+   const listed = formats.some((group) => group.types.includes(format));
++  // mtg-ai: a Freeform deck of DSK cards is a DSK Draft (40) deck: named so here, still Freeform for the server
++  const dskLabel = builderDskLabel(deck);
++  const optionLabel = (type: string) => (dskLabel && type === format ? `${dskLabel} (Freeform)` : formatRules(type).label);
+   // a commander deck counts its command zone; other decks count the main deck only
+   const total = commandZone ? mainCount + sideCount : mainCount;
+ 
+@@ -325,18 +329,19 @@ function DeckPanel({ deck, zone, view, onView, info, formats, rules, identity, s
+             onChange((current) => ({ ...current, format: value }));
+           }}
+           aria-label="Format"
++          title={dskLabel ? 'DSK Draft (40): 40 cards of DSK; tables take it as Freeform' : undefined}
+         >
+-          {!listed && <option value={format}>{formatRules(format).label}</option>}
++          {!listed && <option value={format}>{optionLabel(format)}</option>}
+           {formats.map((group) => (
+             <optgroup key={group.label} label={group.label}>
+-              {group.types.map((type) => <option key={type} value={type}>{formatRules(type).label}</option>)}
++              {group.types.map((type) => <option key={type} value={type}>{optionLabel(type)}</option>)}
+             </optgroup>
+           ))}
+         </select>
+       </header>
+ 
+       <div className={styles.status}>
+-        <span className={styles.total}>{total}{rules.deckSize ? <small> / {rules.deckSize}</small> : <small> cards</small>}</span>
++        <span className={styles.total}>{total}{rules.deckSize ? <small> / {rules.deckSize}</small> : dskLabel ? <small> / {DSK_DRAFT_SIZE}</small> : <small> cards</small>}</span>
+         {validation.data && (validation.data.valid ? (
+           <span className={[styles.chip, styles.chipOk].join(' ')}><Check size={15} aria-hidden="true" /> Legal</span>
+         ) : (
+diff --git a/Mage.Web.Client/src/app/decks/DeckSetTabs.module.css b/Mage.Web.Client/src/app/decks/DeckSetTabs.module.css
+new file mode 100644
+index 0000000000..49b688afe4
+--- /dev/null
++++ b/Mage.Web.Client/src/app/decks/DeckSetTabs.module.css
+@@ -0,0 +1,27 @@
++/* mtg-ai: DSK Draft / All */
++.tabs {
++  display: inline-flex;
++  border: 1px solid rgb(var(--ink-rgb) / 0.28);
++  border-radius: var(--radius-control);
++  overflow: hidden;
++}
++
++.tab {
++  padding: 2px 9px;
++  border: 0;
++  background: transparent;
++  color: var(--ink-dim);
++  font: inherit;
++  font-size: var(--text-sm);
++  cursor: pointer;
++  white-space: nowrap;
++}
++
++.tab + .tab {
++  border-left: 1px solid rgb(var(--ink-rgb) / 0.28);
++}
++
++.on {
++  background: rgb(var(--ink-rgb) / 0.16);
++  color: var(--ink-strong);
++}
+diff --git a/Mage.Web.Client/src/app/decks/DeckSetTabs.tsx b/Mage.Web.Client/src/app/decks/DeckSetTabs.tsx
+new file mode 100644
+index 0000000000..09d4811c5e
+--- /dev/null
++++ b/Mage.Web.Client/src/app/decks/DeckSetTabs.tsx
+@@ -0,0 +1,33 @@
++// mtg-ai: "DSK Draft" or "All" over the deck lists (Home and Decks; stores/decks.ts, inDeckSet)
++import { useT } from '../i18n';
++import { useDeckSet, useDecks, type DeckSet } from '../stores/decks';
++import styles from './DeckSetTabs.module.css';
++
++const SETS: { id: DeckSet; key: 'decks.set.dsk' | 'decks.set.all' }[] = [
++  { id: 'dsk', key: 'decks.set.dsk' },
++  { id: 'all', key: 'decks.set.all' },
++];
++
++/** Shown only while there are DSK decks (our dsk-* starters, or a saved DSK deck). */
++export function DeckSetTabs() {
++  const t = useT();
++  const shown = useDecks((state) => state.starters.some((starter) => starter.file.startsWith('dsk-')) || state.saved.some((deck) => deck.dskDraft));
++  const { set, choose } = useDeckSet();
++  if (!shown) return null;
++  return (
++    <span className={styles.tabs} role="radiogroup" aria-label={t('decks.set.label')} title={t('decks.set.detail')}>
++      {SETS.map((item) => (
++        <button
++          key={item.id}
++          type="button"
++          role="radio"
++          aria-checked={set === item.id}
++          className={[styles.tab, set === item.id ? styles.on : ''].join(' ')}
++          onClick={() => choose(item.id)}
++        >
++          {t(item.key)}
++        </button>
++      ))}
++    </span>
++  );
++}
+diff --git a/Mage.Web.Client/src/app/i18n/en/core.ts b/Mage.Web.Client/src/app/i18n/en/core.ts
+index a335a65f18..205a2c68fd 100644
+--- a/Mage.Web.Client/src/app/i18n/en/core.ts
++++ b/Mage.Web.Client/src/app/i18n/en/core.ts
+@@ -254,6 +254,14 @@ export default {
+   'decks.sync.saving': 'Saving to your account',
+   'decks.sync.failed': "Couldn't save to your account",
+   'decks.sync.saved': 'Saved to your account',
++  // mtg-ai: a server without accounts keeps one shared set of decks (its deck folder), and the DSK Draft (40) set
++  'decks.sync.shared.saving': 'Saving on the server',
++  'decks.sync.shared.failed': "Couldn't reach the server: kept in this browser (tap to retry)",
++  'decks.sync.shared.saved': 'Saved on the server (shared)',
++  'decks.set.label': 'Deck set',
++  'decks.set.detail': 'DSK Draft (40): our DSK starters and every 40-card deck of DSK cards; All: every deck',
++  'decks.set.dsk': 'DSK Draft',
++  'decks.set.all': 'All',
+ 
+   // shared UI kit
+   'ui.back': 'Back',
+diff --git a/Mage.Web.Client/src/app/i18n/es.ts b/Mage.Web.Client/src/app/i18n/es.ts
+index 5dc6b55b70..cadc3274f7 100644
+--- a/Mage.Web.Client/src/app/i18n/es.ts
++++ b/Mage.Web.Client/src/app/i18n/es.ts
+@@ -274,6 +274,13 @@ const es: Catalog = {
+   'decks.sync.saving': 'Guardando en tu cuenta',
+   'decks.sync.failed': 'No se pudo guardar en tu cuenta',
+   'decks.sync.saved': 'Guardado en tu cuenta',
++  'decks.sync.shared.saving': 'Guardando en el servidor',
++  'decks.sync.shared.failed': 'No se pudo conectar con el servidor: guardado en este navegador (toca para reintentar)',
++  'decks.sync.shared.saved': 'Guardado en el servidor (compartido)',
++  'decks.set.label': 'Conjunto de mazos',
++  'decks.set.detail': 'DSK Draft (40): nuestros mazos iniciales de DSK y cada mazo de 40 cartas de DSK; Todos: todos los mazos',
++  'decks.set.dsk': 'DSK Draft',
++  'decks.set.all': 'Todos',
+ 
+   // "What's new"
+   'whatsNew.title': 'Novedades de la {version}',
+diff --git a/Mage.Web.Client/src/app/screens/DecksScreen.tsx b/Mage.Web.Client/src/app/screens/DecksScreen.tsx
+index 72bf901934..570dc813e3 100644
+--- a/Mage.Web.Client/src/app/screens/DecksScreen.tsx
++++ b/Mage.Web.Client/src/app/screens/DecksScreen.tsx
+@@ -12,7 +12,8 @@ import { deckStorage } from '../../core/decks/DeckStorageService';
+ import { applyUpdate } from '../../core/deckImport/diff';
+ import { t as translate, useT } from '../i18n';
+ import { RichText } from '../i18n/RichText';
+-import { SLEEVE_COLORS, chosenSleeve, pickableRoster, rosterOf, sleeveFor, useDecks, useGoodStartersOnly, type RosterDeck } from '../stores/decks';
++import { SLEEVE_COLORS, chosenSleeve, inDeckSet, pickableRoster, rosterOf, sleeveFor, useDeckSet, useDecks, useGoodStartersOnly, type RosterDeck } from '../stores/decks';
++import { DeckSetTabs } from '../decks/DeckSetTabs';
+ import { GoodStartersToggle } from '../decks/GoodStartersToggle';
+ import { DeckCardsDialog } from '../decks/ManaColumns';
+ import { useDeckSyncStatus } from '../stores/deckSyncStatus';
+@@ -43,7 +44,9 @@ export function DecksScreen() {
+   const roster = useMemo(() => rosterOf(decks), [decks]);
+   // mtg-ai: "Good only" leaves our other DSK starters off the shelf, and a deck's cards can be seen by mana value
+   const goodOnly = useGoodStartersOnly((state) => state.on);
+-  const shelf = useMemo(() => pickableRoster(roster, decks.starters, goodOnly), [roster, decks.starters, goodOnly]);
++  // mtg-ai: and the DSK Draft (40) set, or every deck
++  const deckSet = useDeckSet((state) => state.set);
++  const shelf = useMemo(() => inDeckSet(pickableRoster(roster, decks.starters, goodOnly), deckSet), [roster, decks.starters, goodOnly, deckSet]);
+   const [viewing, setViewing] = useState<RosterDeck | null>(null);
+   const [removing, setRemoving] = useState<RosterDeck | null>(null);
+   const [updating, setUpdating] = useState<string | null>(null);
+@@ -99,6 +102,7 @@ export function DecksScreen() {
+         aside={
+           <>
+             <SyncNote />
++            <DeckSetTabs />
+             <GoodStartersToggle />
+             <Button size="sm" icon={<Download size={16} />} onClick={() => openImport()}>{t('decks.import')}</Button>
+             <Button size="sm" icon={<PencilRuler size={16} />} onClick={() => navigate('/decks/new')}>{t('decks.build')}</Button>
+@@ -282,16 +286,27 @@ function RenameForm({ deck, onClose }: { deck: RosterDeck; onClose(): void }) {
+   );
+ }
+ 
+-/** On servers with accounts: whether the decks are saved to the account. */
++/** On servers with accounts: whether the decks are saved to the account. mtg-ai: or to the server's shared deck folder. */
+ function SyncNote() {
+-  const { status, error } = useDeckSyncStatus();
++  const { status, error, shared } = useDeckSyncStatus();
+   const t = useT();
+   if (status === 'off') return null;
+   const failed = status === 'error';
++  const text = shared
++    ? t(status === 'syncing' ? 'decks.sync.shared.saving' : failed ? 'decks.sync.shared.failed' : 'decks.sync.shared.saved')
++    : t(status === 'syncing' ? 'decks.sync.saving' : failed ? 'decks.sync.failed' : 'decks.sync.saved');
++  // mtg-ai: a failed sync can be tried again at once (it also retries on its own)
++  const retry = failed ? () => void import('../stores/deckSync').then((sync) => sync.syncNow()) : undefined;
+   return (
+-    <span className={[styles.sync, failed ? styles.syncFailed : ''].join(' ')} role="status" title={failed ? error ?? undefined : undefined}>
++    <span
++      className={[styles.sync, failed ? styles.syncFailed : ''].join(' ')}
++      role="status"
++      title={failed ? error ?? undefined : undefined}
++      onClick={retry}
++      style={retry ? { cursor: 'pointer' } : undefined}
++    >
+       {failed ? <CloudOff size={15} aria-hidden="true" /> : <Cloud size={15} aria-hidden="true" />}
+-      {t(status === 'syncing' ? 'decks.sync.saving' : failed ? 'decks.sync.failed' : 'decks.sync.saved')}
++      {text}
+     </span>
+   );
+ }
+diff --git a/Mage.Web.Client/src/app/screens/HomeScreen.module.css b/Mage.Web.Client/src/app/screens/HomeScreen.module.css
+index cd88fdee1c..bb65f81c69 100644
+--- a/Mage.Web.Client/src/app/screens/HomeScreen.module.css
++++ b/Mage.Web.Client/src/app/screens/HomeScreen.module.css
+@@ -305,6 +305,18 @@
+   gap: var(--space-1);
+ }
+ 
++/* mtg-ai: DSK Draft / All and Good only, under the heading */
++.rosterFilters {
++  display: flex;
++  align-items: center;
++  gap: var(--space-3);
++  padding-bottom: var(--space-2);
++}
++
++.rosterFilters:empty {
++  display: none;
++}
++
+ /* a deck file, link or list dragged over the roster */
+ .dropping {
+   border-radius: var(--radius-zone);
+diff --git a/Mage.Web.Client/src/app/screens/HomeScreen.tsx b/Mage.Web.Client/src/app/screens/HomeScreen.tsx
+index 1c99a57bd3..173a86e6fb 100644
+--- a/Mage.Web.Client/src/app/screens/HomeScreen.tsx
++++ b/Mage.Web.Client/src/app/screens/HomeScreen.tsx
+@@ -1,7 +1,8 @@
+ import { SlidersHorizontal } from 'lucide-react';
+ import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties } from 'react';
+ import { useNavigate } from 'react-router-dom';
+-import { META_PREFIX, RANDOM_META_PREFIX, pickableRoster, rosterOf, sleeveFor, sortByStrength, useDecks, useGoodStartersOnly } from '../stores/decks';
++import { META_PREFIX, RANDOM_META_PREFIX, inDeckSet, pickableRoster, rosterOf, sleeveFor, sortByStrength, useDeckSet, useDecks, useGoodStartersOnly } from '../stores/decks';
++import { DeckSetTabs } from '../decks/DeckSetTabs';
+ import { GoodStartersToggle } from '../decks/GoodStartersToggle';
+ import { formatRules } from '../../core/decks/formats';
+ import { metaDecksFor } from '../../core/decks/metaDecks';
+@@ -65,7 +66,9 @@ export function HomeScreen() {
+   // mtg-ai: "Good only" leaves our other DSK starters (and retired copies) out of the list; saved and starter decks
+   // in one order: ★★ decks first, then ★, then the rest, then retired copies
+   const goodOnly = useGoodStartersOnly((state) => state.on);
+-  const roster = useMemo(() => sortByStrength(pickableRoster(rosterOf(decks), decks.starters, goodOnly), decks.starters, decks.strengths), [decks, goodOnly]);
++  // mtg-ai: and the DSK Draft (40) set, or every deck
++  const deckSet = useDeckSet((state) => state.set);
++  const roster = useMemo(() => sortByStrength(inDeckSet(pickableRoster(rosterOf(decks), decks.starters, goodOnly), deckSet), decks.starters, decks.strengths), [decks, goodOnly, deckSet]);
+   // a meta, ghost or mirror opponent, or adaptive skill, is described with the solo messages
+   const soloReady = useCareerMessages(mode === 'meta' || play.aiOptions.adaptive || opponentSource(play.aiOptions.opponentDeckId).kind !== 'roster');
+   const selected = roster.find((deck) => deck.id === decks.selectedId) ?? roster[0] ?? null;
+@@ -128,11 +131,15 @@ export function HomeScreen() {
+         <header className={styles.rosterHead}>
+           <h2>{t('home.yourDecks')}</h2>
+           <span className={styles.rosterActions}>
+-            <GoodStartersToggle />
+             <Button variant="quiet" size="sm" onClick={() => openImport()}>{t('home.import')}</Button>
+             <Button variant="quiet" size="sm" onClick={() => navigate('/decks')}>{t('home.manage')}</Button>
+           </span>
+         </header>
++        {/* mtg-ai: which decks the list shows: the DSK Draft (40) set or all, and Good only */}
++        <div className={styles.rosterFilters}>
++          <DeckSetTabs />
++          <GoodStartersToggle />
++        </div>
+         <div className={[styles.rosterList, dragging ? styles.dropping : ''].join(' ')} role="list" {...dropProps}>
+           {roster.map((deck) => (
+             <div role="listitem" key={deck.id}>
+diff --git a/Mage.Web.Client/src/app/stores/deckSync.ts b/Mage.Web.Client/src/app/stores/deckSync.ts
+index cd33cc0bc4..f5cbbfdbcf 100644
+--- a/Mage.Web.Client/src/app/stores/deckSync.ts
++++ b/Mage.Web.Client/src/app/stores/deckSync.ts
+@@ -1,18 +1,29 @@
+ import { api } from '../connection';
+ import { deckStorage, type DeckChange } from '../../core/decks/DeckStorageService';
+-import { planSync } from '../../core/decks/deckSync';
++import { planSharedImport, planSync } from '../../core/decks/deckSync';
++import { deckSig, type StrengthEntry } from '../../core/decks/deckStrength';
+ import { useDecks } from './decks';
+ import { readJson, writeJson } from './persist';
+ import { useDeckSyncStatus } from './deckSyncStatus';
+ import { useSession } from './session';
++import type { DeckSyncEntry } from '../../protocol/generated/views';
+ 
+ /** Which decks this browser has synced with each account, so one account's decks never land in another's. */
+ const KNOWN_KEY = 'playmat.deckSync';
+ const PUSH_DELAY_MS = 1500;
++/** mtg-ai: the shared deck folder: browsers that already moved their decks into it, by server */
++const IMPORTED_KEY = 'mtgai.sharedDecksImported';
++/** mtg-ai: decks the one-time import found already in the folder (same cards), kept here in case one is missed */
++const DUPLICATES_KEY = 'mtgai.sharedDecksDuplicates';
++const RETRY_MS = 30_000;
++const POLL_MS = 60_000;
++
++/** mtg-ai: the server keeps one set of decks for every browser (no accounts): Playmat on the Mac mini */
++let shared = false;
+ 
+ function accountKey(): string {
+   const { serverUrl, userName } = useSession.getState();
+-  return `${serverUrl}|${userName.toLowerCase()}`;
++  return shared ? `${serverUrl}|*shared*` : `${serverUrl}|${userName.toLowerCase()}`;
+ }
+ 
+ function knownBook(): Record<string, string[]> {
+@@ -29,6 +40,7 @@ function rememberKnown(ids: Iterable<string>, replace = false) {
+ 
+ /** Decks this browser synced with other accounts and not with this one. */
+ function foreignIds(): Set<string> {
++  if (shared) return new Set(); // mtg-ai: every deck of this browser belongs to the shared set
+   const book = knownBook();
+   const key = accountKey();
+   const mine = new Set(book[key] ?? []);
+@@ -47,6 +59,53 @@ function describe(error: unknown): string {
+ let enabled = false;
+ let running: Promise<void> | null = null;
+ const pending = new Map<string, ReturnType<typeof setTimeout>>();
++let retryTimer: ReturnType<typeof setTimeout> | null = null;
++
++/** mtg-ai: after a failed sync or push the decks stay in this browser, and the sync tries again a little later */
++function retryLater() {
++  if (!enabled || retryTimer) return;
++  retryTimer = setTimeout(() => {
++    retryTimer = null;
++    void syncNow();
++  }, RETRY_MS);
++}
++
++/**
++ * mtg-ai: the first sync of this browser with a shared folder: decks here whose cards are already in the folder (under
++ * another id: the same deck saved in another browser) are not sent again; this browser takes the folder's copy, with
++ * the selection and sleeve moved to it, and the local copy is kept aside in localStorage.
++ */
++async function importOnce(remote: { id: string; sig?: string | null; sideboardSig?: string | null; deleted?: boolean }[]): Promise<boolean> {
++  const { serverUrl } = useSession.getState();
++  const imported = readJson<Record<string, number>>(IMPORTED_KEY, {});
++  if (imported[serverUrl]) return false;
++  const local = [];
++  for (const { id } of deckStorage.stamps()) {
++    const deck = await deckStorage.loadDeck(id);
++    if (deck) local.push({ id, sig: deckSig(deck.cards), sideboardSig: deckSig(deck.sideboard ?? []), deck });
++  }
++  const { duplicates } = planSharedImport(local, remote);
++  if (duplicates.length) {
++    const kept = readJson<unknown[]>(DUPLICATES_KEY, []);
++    const decks = useDecks.getState();
++    for (const { id, keptId } of duplicates) {
++      kept.push({ ...local.find((entry) => entry.id === id)!.deck, id, keptId, at: Date.now() });
++      deckStorage.removeFromSync(id);
++      if (decks.selectedId === id) decks.select(keptId);
++      if (decks.sleeves[id] && !decks.sleeves[keptId]) decks.setSleeve(keptId, decks.sleeves[id]);
++    }
++    writeJson(DUPLICATES_KEY, kept);
++  }
++  writeJson(IMPORTED_KEY, { ...imported, [serverUrl]: Date.now() });
++  return duplicates.length > 0;
++}
++
++/** mtg-ai: the folder's rated decks (play/review_decks.py), for the deck matcher and the tiles */
++function ratingsOf(remote: DeckSyncEntry[]): StrengthEntry[] {
++  return remote.flatMap((entry) => (!entry.deleted && entry.sig && entry.strength
++    ? [{ file: `my-decks/${entry.id}.dck`, name: entry.name ?? '', sig: entry.sig, strength: { tier: entry.strength.tier ?? 1, rating: entry.strength.rating ?? null, colors: entry.strength.colors ?? '' } }]
++    : []));
++}
+ 
+ async function upload(id: string): Promise<void> {
+   const deck = await deckStorage.exportForSync(id);
+@@ -67,11 +126,12 @@ export async function syncNow(): Promise<void> {
+   running = (async () => {
+     useDeckSyncStatus.setState({ status: 'syncing', error: null });
+     try {
+-      const remote = (await api.deckSyncList())
+-        .filter((entry) => !!entry.id)
+-        .map((entry) => ({ id: entry.id!, updatedAt: entry.updatedAt ?? 0, deleted: !!entry.deleted }));
++      const listed = (await api.deckSyncList()).filter((entry) => !!entry.id);
++      const remote = listed.map((entry) => ({ id: entry.id!, updatedAt: entry.updatedAt ?? 0, deleted: !!entry.deleted, sig: entry.sig, sideboardSig: entry.sideboardSig }));
++      // mtg-ai: a shared folder: the one-time move of this browser's decks into it, and the folder's deck ratings
++      let changedHere = shared ? await importOnce(remote) : false;
++      if (shared) useDecks.getState().setOwnRatings(ratingsOf(listed));
+       const plan = planSync(deckStorage.stamps(), deckStorage.tombstones(), remote, foreignIds());
+-      let changedHere = false;
+       for (const id of plan.upload) await upload(id);
+       for (const id of plan.download) {
+         const deck = await api.deckSyncGet(id);
+@@ -85,9 +145,10 @@ export async function syncNow(): Promise<void> {
+       for (const id of plan.dropTombstones) deckStorage.forgetTombstone(id);
+       rememberKnown(deckStorage.stamps().map((deck) => deck.id), true);
+       if (changedHere || plan.upload.length) await useDecks.getState().refresh();
+-      useDeckSyncStatus.setState({ status: 'synced', lastSyncedAt: Date.now() });
++      useDeckSyncStatus.setState({ status: 'synced', lastSyncedAt: Date.now(), error: null });
+     } catch (error) {
+       useDeckSyncStatus.setState({ status: 'error', error: describe(error) });
++      retryLater(); // mtg-ai
+     } finally {
+       running = null;
+     }
+@@ -107,7 +168,10 @@ function push(change: DeckChange) {
+     useDeckSyncStatus.setState({ status: 'syncing' });
+     work
+       .then(() => useDeckSyncStatus.setState({ status: 'synced', lastSyncedAt: Date.now(), error: null }))
+-      .catch((error) => useDeckSyncStatus.setState({ status: 'error', error: describe(error) }));
++      .catch((error) => {
++        useDeckSyncStatus.setState({ status: 'error', error: describe(error) });
++        retryLater(); // mtg-ai: the change stays here, and the next full sync sends it
++      });
+   }, PUSH_DELAY_MS));
+ }
+ 
+@@ -119,7 +183,7 @@ function onSession(state: ReturnType<typeof useSession.getState>) {
+   if (state.phase !== 'signedIn') {
+     if (enabled) {
+       enabled = false;
+-      useDeckSyncStatus.setState({ status: 'off' });
++      useDeckSyncStatus.setState({ status: 'off', shared: false });
+     }
+     return;
+   }
+@@ -128,13 +192,24 @@ function onSession(state: ReturnType<typeof useSession.getState>) {
+   api.serverInfo()
+     .then((info) => {
+       enabled = !!info?.deckSync;
+-      useDeckSyncStatus.setState({ status: enabled ? 'syncing' : 'off', error: null });
++      shared = enabled && !!info?.deckSyncShared; // mtg-ai
++      useDeckSyncStatus.setState({ status: enabled ? 'syncing' : 'off', error: null, shared });
+       if (enabled) return syncNow();
+     })
+     .catch(() => {
+       enabled = false;
+-      useDeckSyncStatus.setState({ status: 'off' });
++      useDeckSyncStatus.setState({ status: 'off', shared: false });
++      // mtg-ai: the server did not answer: asked again at the next session change (decks stay in this browser)
++      lastLogin = 0;
+     });
+ }
+ useSession.subscribe(onSession);
+ onSession(useSession.getState());
++
++// mtg-ai: a shared folder changes from other browsers too: sync every minute while this one is shown, and on return
++setInterval(() => {
++  if (enabled && shared && document.visibilityState === 'visible') void syncNow();
++}, POLL_MS);
++document.addEventListener('visibilitychange', () => {
++  if (enabled && shared && document.visibilityState === 'visible') void syncNow();
++});
+diff --git a/Mage.Web.Client/src/app/stores/deckSyncStatus.ts b/Mage.Web.Client/src/app/stores/deckSyncStatus.ts
+index defe372800..e7eb610b22 100644
+--- a/Mage.Web.Client/src/app/stores/deckSyncStatus.ts
++++ b/Mage.Web.Client/src/app/stores/deckSyncStatus.ts
+@@ -3,8 +3,10 @@ import { create } from 'zustand';
+ export type DeckSyncStatus = 'off' | 'syncing' | 'synced' | 'error';
+ 
+ /** Whether decks are kept on the server for this account, and how the last sync went (see stores/deckSync). */
+-export const useDeckSyncStatus = create<{ status: DeckSyncStatus; lastSyncedAt: number | null; error: string | null }>(() => ({
++export const useDeckSyncStatus = create<{ status: DeckSyncStatus; lastSyncedAt: number | null; error: string | null; shared?: boolean }>(() => ({
+   status: 'off',
+   lastSyncedAt: null,
+   error: null,
++  // mtg-ai: a server without accounts keeps one shared set of decks for every browser (its deck folder)
++  shared: false,
+ }));
+diff --git a/Mage.Web.Client/src/app/stores/decks.test.ts b/Mage.Web.Client/src/app/stores/decks.test.ts
+index e1dfe7c186..b270d4deab 100644
+--- a/Mage.Web.Client/src/app/stores/decks.test.ts
++++ b/Mage.Web.Client/src/app/stores/decks.test.ts
+@@ -4,7 +4,7 @@ import { deckStorage } from '../../core/decks/DeckStorageService';
+ import type { DeckCardLists } from '../../core/decks/types';
+ import { DeckSerializer } from '../../core/decks/DeckSerializer';
+ import { deckSig } from '../../core/decks/deckStrength';
+-import { pickableRoster, RANDOM_META_PREFIX, rosterOf, sortByStrength, STARTER_PREFIX, useDecks } from './decks';
++import { inDeckSet, pickableRoster, RANDOM_META_PREFIX, rosterOf, sortByStrength, STARTER_PREFIX, useDecks } from './decks';
+ 
+ const BURN: DeckCardLists = {
+   name: 'Burn',
+@@ -30,7 +30,7 @@ beforeEach(async () => {
+     if (url.endsWith('red.dck') || url.endsWith('modern-burn.dck')) return new Response('20 [M19:156] Shock\n40 [M19:280] Mountain\n', { status: 200 });
+     return new Response(null, { status: 404 });
+   }));
+-  useDecks.setState({ saved: [], starters: [], metaDecks: [], strengths: [], selectedId: null, sleeves: {}, loaded: false });
++  useDecks.setState({ saved: [], starters: [], metaDecks: [], strengths: [], ownRatings: [], selectedId: null, sleeves: {}, loaded: false });
+ });
+ 
+ describe('deck library', () => {
+@@ -211,3 +211,42 @@ describe('starter copy sync', () => {
+     expect(useDecks.getState().saved.map((deck) => deck.id).sort()).toEqual([id, copyId].sort());
+   });
+ });
++
++describe('the DSK Draft (40) set (mtg-ai)', () => {
++  const dskCards = (n: number) => [
++    { amount: 17, cardName: 'Plains', setCode: 'DSK', cardNumber: '272' },
++    { amount: n - 17, cardName: 'Fear of Isolation', setCode: 'DSK', cardNumber: '58' },
++  ];
++
++  test('a built 40-card DSK deck is in the set, labelled unrated until the reviewer rates it', async () => {
++    const built = await deckStorage.saveDeck({ name: 'My WU', format: 'Constructed - Freeform', cards: dskCards(40), sideboard: [], playerNamed: true }, { forceNew: true });
++    const short = await deckStorage.saveDeck({ name: 'Half done', format: 'Constructed - Freeform', cards: dskCards(30), sideboard: [], playerNamed: true }, { forceNew: true });
++    await deckStorage.saveDeck(BURN, { forceNew: true });
++    await useDecks.getState().refresh();
++    const roster = rosterOf(useDecks.getState());
++    const mine = roster.find((deck) => deck.id === built)!;
++    expect(mine.dskDraft).toBe(true);
++    expect(mine.note).toBe('DSK Draft (40) · unrated · 40 cards');
++    expect(roster.find((deck) => deck.id === short)!.dskDraft).toBe(false);
++    expect(roster.find((deck) => deck.id === short)!.note).toMatch(/^Freeform/);
++    // the starter here is Playmat's own (red.dck): not ours
++    expect(inDeckSet(roster, 'dsk').map((deck) => deck.id)).toEqual([built]);
++    expect(inDeckSet(roster, 'all')).toHaveLength(roster.length);
++
++    // rated in the shared deck folder: its review shows, and it sorts by it
++    useDecks.getState().setOwnRatings([{ file: 'my-decks/x.dck', name: 'My WU', sig: deckSig(dskCards(40)), strength: { tier: 1, rating: 4, colors: 'WU' } }]);
++    await useDecks.getState().refresh();
++    const rated = rosterOf(useDecks.getState()).find((deck) => deck.id === built)!;
++    expect(rated.note).toBe('DSK Draft (40) · review 4/5 · 40 cards');
++    expect(rated.standing).toEqual({ group: 2, rating: 4 });
++  });
++
++  test('our dsk-* starters are in the set; with no DSK deck at all the set shows everything', async () => {
++    await useDecks.getState().refresh();
++    const plain = rosterOf(useDecks.getState());
++    expect(inDeckSet(plain, 'dsk')).toEqual(plain);
++    useDecks.setState({ starters: [{ ...STARTER, file: 'dsk-good-08.dck', name: '★★ good_08 · WU · review 4/5', cards: 40 }] });
++    const roster = rosterOf(useDecks.getState());
++    expect(roster[0]).toMatchObject({ dskDraft: true, note: 'DSK Draft (40) · starter · 40 cards' });
++  });
++});
+diff --git a/Mage.Web.Client/src/app/stores/decks.ts b/Mage.Web.Client/src/app/stores/decks.ts
+index 7850900d16..3f4fef857f 100644
+--- a/Mage.Web.Client/src/app/stores/decks.ts
++++ b/Mage.Web.Client/src/app/stores/decks.ts
+@@ -8,6 +8,7 @@ import { pickMetaDeck, type MetaDeck, type MetaDeckIndex } from '../../core/deck
+ import { readJson, writeJson } from './persist';
+ import { knownStrengths, type DeckStrength, type StrengthEntry } from '../../core/decks/deckStrength';
+ import { copyLabel, copyOf, looksLikeStarterName, planStarterSync, sortByStanding, standingOf, type Standing } from '../../core/decks/starterCopies';
++import { DSK_DRAFT_LABEL, isDskStarterFile } from '../../core/decks/dskDraft';
+ import { notify } from './toasts';
+ import { RANDOM_SLEEVE, randomSleeveFor } from '../ui/sleeveArt';
+ 
+@@ -42,6 +43,8 @@ export interface RosterDeck {
+   copy?: 'starter' | 'retired';
+   /** mtg-ai: where it sorts on Home (sortByStrength); a saved deck's comes from its cards, not its name */
+   standing?: Standing;
++  /** mtg-ai: one of the DSK Draft (40) set: a dsk-* starter, a copy of one, or a 40-card deck of DSK cards (dskDraft.ts) */
++  dskDraft?: boolean;
+ }
+ 
+ const SELECTED_KEY = 'playmat.selectedDeck';
+@@ -58,20 +61,27 @@ const COLOR_LETTER: Record<(typeof COLOR_ORDER)[number], string> = { white: 'W',
+ /** Sleeve colors: matte dyes, picked to stay readable around card art. */
+ export const SLEEVE_COLORS = ['#20302b', '#1f2a44', '#3b1f2b', '#4a2a17', '#2c2c2e', '#3e3a2a', '#24403f', '#5a2320'];
+ 
+-function summaryToRoster(deck: DeckSummary, starters: StarterDeck[] = [], strengths: StrengthEntry[] = []): RosterDeck {
++function summaryToRoster(deck: DeckSummary, starters: StarterDeck[] = [], strengths: StrengthEntry[] = [], ownRatings: StrengthEntry[] = []): RosterDeck {
+   const colors = COLOR_ORDER.filter((color) => deck.colors?.[color]).map((color) => COLOR_LETTER[color]);
+   const size = `${deck.cardCount ?? 0} cards${deck.sideboardCount ? ` + ${deck.sideboardCount}` : ''}`;
+   // mtg-ai: a copy of one of our DSK decks says so ("Your copy · ★★ starter", "Retired: …") instead of its format; a
+   // changed one that still looks like ours by its name is no longer rated
+   const copy = copyOf(deck.sig, starters, strengths);
+-  const note = deck.format ? `${formatRules(deck.format).label} · ${size}` : size;
++  // mtg-ai: a 40-card DSK deck the player built is in the DSK Draft (40) set, with its review once the deck folder's
++  // reviewer rated it (play/review_decks.py on the mini's deck folder), else "unrated"
++  const dskDraft = !!copy || !!deck.dskDraft;
++  const rated = !copy && deck.sig ? ownRatings.find((entry) => entry.sig === deck.sig && entry.strength) : undefined;
++  const note = dskDraft
++    ? `${DSK_DRAFT_LABEL} · ${rated?.strength?.rating != null ? `review ${rated.strength.rating}/5` : 'unrated'} · ${size}`
++    : deck.format ? `${formatRules(deck.format).label} · ${size}` : size;
+   const name = deck.name || 'Untitled deck';
+   return {
+     id: deck.id,
+     name,
+-    note: copyLabel(copy, size) ?? (looksLikeStarterName(name) ? `${note} · unrated` : note),
++    note: copyLabel(copy, size) ?? (looksLikeStarterName(name) && !dskDraft ? `${note} · unrated` : note),
+     copy: copy?.kind,
+-    standing: copy?.kind === 'starter' ? standingOf(copy.starter.strength) : copy ? standingOf(copy.entry.strength, true) : standingOf(null),
++    dskDraft,
++    standing: copy?.kind === 'starter' ? standingOf(copy.starter.strength) : copy ? standingOf(copy.entry.strength, true) : standingOf(rated?.strength),
+     cardCount: deck.cardCount ?? 0,
+     cover: deck.coverCard ?? null,
+     colors,
+@@ -82,10 +92,14 @@ function summaryToRoster(deck: DeckSummary, starters: StarterDeck[] = [], streng
+ }
+ 
+ function starterToRoster(starter: StarterDeck): RosterDeck {
++  const dskDraft = isDskStarterFile(starter.file); // mtg-ai: our DSK starters are the DSK Draft (40) set's
+   return {
+     id: STARTER_PREFIX + starter.file,
+     name: starter.name,
+-    note: `${isCommanderFormat(starter.format) ? 'Commander starter' : 'Starter deck'} · ${starter.cards} cards`,
++    dskDraft,
++    note: dskDraft
++      ? `${DSK_DRAFT_LABEL} · starter · ${starter.cards} cards`
++      : `${isCommanderFormat(starter.format) ? 'Commander starter' : 'Starter deck'} · ${starter.cards} cards`,
+     cardCount: starter.cards,
+     cover: starter.cover,
+     colors: [],
+@@ -100,6 +114,9 @@ export interface DeckLibraryState {
+   metaDecks: MetaDeck[];
+   /** mtg-ai: every rated DSK deck, the ones no longer listed too (starter-decks/strengths.json) */
+   strengths: StrengthEntry[];
++  /** mtg-ai: the player's own decks the reviewer rated (the server's shared deck folder; stores/deckSync) */
++  ownRatings: StrengthEntry[];
++  setOwnRatings(ratings: StrengthEntry[]): void;
+   selectedId: string | null;
+   sleeves: Record<string, string>;
+   loaded: boolean;
+@@ -191,6 +208,7 @@ export const useDecks = create<DeckLibraryState>((set, get) => ({
+   starters: [],
+   metaDecks: [],
+   strengths: [],
++  ownRatings: [],
+   selectedId: readJson<string | null>(SELECTED_KEY, null),
+   sleeves: readJson<Record<string, string>>(SLEEVES_KEY, {}),
+   loaded: false,
+@@ -205,7 +223,7 @@ export const useDecks = create<DeckLibraryState>((set, get) => ({
+     const synced = starterSyncQueue.then(() => syncStarterCopies(starters, strengths, get, set));
+     starterSyncQueue = synced.catch(() => undefined);
+     const summaries = await synced.catch(() => deckStorage.listDecks());
+-    const saved = summaries.map((summary) => summaryToRoster(summary, starters, strengths));
++    const saved = summaries.map((summary) => summaryToRoster(summary, starters, strengths, get().ownRatings));
+     let selectedId = get().selectedId;
+     const known = new Set([...saved.map((deck) => deck.id), ...starters.map((starter) => STARTER_PREFIX + starter.file)]);
+     if (!selectedId || !known.has(selectedId)) {
+@@ -214,6 +232,13 @@ export const useDecks = create<DeckLibraryState>((set, get) => ({
+     set({ saved, starters, metaDecks, strengths, selectedId, loaded: true });
+   },
+ 
++  setOwnRatings(ratings) {
++    const key = (list: StrengthEntry[]) => JSON.stringify(list.map((entry) => [entry.sig, entry.strength]));
++    if (key(ratings) === key(get().ownRatings)) return;
++    set({ ownRatings: ratings });
++    if (get().loaded) void get().refresh();
++  },
++
+   select(id) {
+     writeJson(SELECTED_KEY, id);
+     set({ selectedId: id });
+@@ -359,6 +384,24 @@ export function sortByStrength(roster: RosterDeck[], starters: StarterDeck[], st
+   return sortByStanding(roster, (deck) => rosterStanding(deck, starters, strengths));
+ }
+ 
++// mtg-ai: the deck lists show the DSK Draft (40) set, or every deck; remembered per browser, DSK Draft by default
++const DECK_SET_KEY = 'mtgai.deckSet';
++export type DeckSet = 'dsk' | 'all';
++
++export const useDeckSet = create<{ set: DeckSet; choose(set: DeckSet): void }>((set) => ({
++  set: readJson<DeckSet>(DECK_SET_KEY, 'dsk') === 'all' ? 'all' : 'dsk',
++  choose(choice) {
++    writeJson(DECK_SET_KEY, choice);
++    set({ set: choice });
++  },
++}));
++
++/** mtg-ai: the roster in the chosen set; DSK Draft shows everything while there is no DSK deck at all. */
++export function inDeckSet(roster: RosterDeck[], set: DeckSet): RosterDeck[] {
++  if (set === 'all' || !roster.some((deck) => deck.dskDraft)) return roster;
++  return roster.filter((deck) => deck.dskDraft);
++}
++
+ export function sleeveFor(sleeves: Record<string, string>, deck: RosterDeck | null | undefined): string {
+   if (!deck) return SLEEVE_COLORS[0];
+   // "random": one of the player's Career sleeves, a different one each game (ui/sleeveArt.ts)
+diff --git a/Mage.Web.Client/src/app/stores/play.ts b/Mage.Web.Client/src/app/stores/play.ts
+index 98bd286c85..40b04eae3c 100644
+--- a/Mage.Web.Client/src/app/stores/play.ts
++++ b/Mage.Web.Client/src/app/stores/play.ts
+@@ -258,7 +258,7 @@ export const usePlay = create<PlayState>((set, get) => ({
+       // mtg-ai: the Claude AI's random deck is always a good-pool DSK deck
+       const claudeRival = !watch && seatableAiType(options.aiType, queryClient.getQueryData<ServerState>(['serverState'])?.playerTypes) === 'COMPUTER_CLAUDE';
+       // mtg-ai: a person against any AI gets a DSK deck of about their own deck's strength (watching: any deck)
+-      const match = !practice && !guided && !watch && !commander ? strengthOf(deck.cards, [...useDecks.getState().starters, ...await knownStrengths()]) : null;
++      const match = !practice && !guided && !watch && !commander ? strengthOf(deck.cards, [...useDecks.getState().starters, ...useDecks.getState().ownRatings, ...await knownStrengths()]) : null;
+       const rivalDecks: WireDeck[] = practice
+         ? [toWire(goldfishDeck(commander))]
+         : [...(sourced ? [sourced] : []), ...(await aiDecks(source.kind === 'roster' ? source.id : null, opponents - (sourced ? 1 : 0), commander, format, meta?.file ?? null, claudeRival, match)).map(toWire)];
+diff --git a/Mage.Web.Client/src/core/decks/DeckStorageService.ts b/Mage.Web.Client/src/core/decks/DeckStorageService.ts
+index 6952ca7f2f..80fca55027 100644
+--- a/Mage.Web.Client/src/core/decks/DeckStorageService.ts
++++ b/Mage.Web.Client/src/core/decks/DeckStorageService.ts
+@@ -1,4 +1,5 @@
+ import { deckSig } from "./deckStrength.js"; // mtg-ai
++import { isDskDraftDeck } from "./dskDraft.js"; // mtg-ai
+ import type { DeckCardLists, DeckImportSource } from "./types.js";
+ import { DeckSerializer } from "./DeckSerializer.js";
+ import { newId } from "../util/uuid.js";
+@@ -29,6 +30,8 @@ export interface DeckSummary {
+     sig?: string;
+     /** mtg-ai: the player named or made this deck, so the starter sync leaves it alone (starterCopies.ts) */
+     playerNamed?: boolean;
++    /** mtg-ai: a deck of the DSK Draft (40) set (core/decks/dskDraft.ts) */
++    dskDraft?: boolean;
+ }
+ 
+ export interface IDeckStorage {
+@@ -76,6 +79,8 @@ interface DeckMeta {
+     sig?: string;
+     /** mtg-ai: the player named or made this deck, so the starter sync leaves it alone (starterCopies.ts) */
+     playerNamed?: boolean;
++    /** mtg-ai: a deck of the DSK Draft (40) set (core/decks/dskDraft.ts) */
++    dskDraft?: boolean;
+ }
+ 
+ export class LocalDeckStorage implements IDeckStorage {
+@@ -134,6 +139,7 @@ export class LocalDeckStorage implements IDeckStorage {
+             source: deck.source,
+             sig: deckSig(deck.cards), // mtg-ai
+             playerNamed: deck.playerNamed, // mtg-ai
++            dskDraft: isDskDraftDeck(deck), // mtg-ai
+         };
+         const newMeta = meta.filter(m => m.id !== deck.id);
+         newMeta.push(newMetaItem);
+@@ -235,21 +241,34 @@ export class LocalDeckStorage implements IDeckStorage {
+             // mtg-ai: decks saved before the signature was kept are signed from their stored list
+             sig: m.sig ?? this.storedSig(m.id),
+             playerNamed: m.playerNamed, // mtg-ai
++            dskDraft: m.dskDraft ?? this.storedDskDraft(m.id, m.format), // mtg-ai
+         })).sort((a, b) => b.updatedAt - a.updatedAt);
+     }
+ 
+     /** mtg-ai: deckSig of a stored deck that has no signature in its summary yet (JSON or legacy .dck) */
+     private storedSig(id: string): string | undefined {
++        const cards = this.storedCards(id);
++        return cards ? deckSig(cards) : undefined;
++    }
++
++    /** mtg-ai: whether a deck saved before the DSK Draft set was kept in its summary belongs to it */
++    private storedDskDraft(id: string, format: string | undefined): boolean {
++        const cards = this.storedCards(id);
++        return !!cards && isDskDraftDeck({ format, cards });
++    }
++
++    /** mtg-ai: a stored deck's main cards (JSON or legacy .dck text) */
++    private storedCards(id: string): DeckCardLists["cards"] | undefined {
+         const content = localStorage.getItem(STORAGE_PREFIX + id);
+         if (!content) return undefined;
+         try {
+             const parsed = JSON.parse(content);
+-            if (parsed && Array.isArray(parsed.cards)) return deckSig(parsed.cards);
++            if (parsed && Array.isArray(parsed.cards)) return parsed.cards;
+         } catch {
+             // legacy .dck text
+         }
+         try {
+-            return deckSig(DeckSerializer.importDeck(content).cards);
++            return DeckSerializer.importDeck(content).cards;
+         } catch {
+             return undefined;
+         }
+diff --git a/Mage.Web.Client/src/core/decks/deckSync.test.ts b/Mage.Web.Client/src/core/decks/deckSync.test.ts
+index 58a65b6d72..9340900be4 100644
+--- a/Mage.Web.Client/src/core/decks/deckSync.test.ts
++++ b/Mage.Web.Client/src/core/decks/deckSync.test.ts
+@@ -1,5 +1,5 @@
+ import { describe, expect, test } from 'vitest';
+-import { planSync } from './deckSync';
++import { planSharedImport, planSync } from './deckSync';
+ 
+ describe('planSync', () => {
+   test('newer side wins for decks both have', () => {
+@@ -51,3 +51,30 @@ describe('planSync', () => {
+     expect(plan.upload).toEqual(['ana']);
+   });
+ });
++
++describe('the shared deck folder\'s one-time import (mtg-ai)', () => {
++  test('a deck whose cards are already in the folder is not sent again; the rest are', () => {
++    const { duplicates } = planSharedImport(
++      [
++        { id: 'here-copy', sig: 'aaaa', sideboardSig: 'empty' },
++        { id: 'here-new', sig: 'bbbb', sideboardSig: 'empty' },
++        { id: 'other-sideboard', sig: 'aaaa', sideboardSig: 'side' },
++        { id: 'same-id', sig: 'aaaa', sideboardSig: 'empty' },
++        { id: 'no-sig' },
++      ],
++      [
++        { id: 'folder-copy', sig: 'aaaa', sideboardSig: 'empty' },
++        { id: 'same-id', sig: 'cccc', sideboardSig: 'empty' },
++        { id: 'deleted', sig: 'bbbb', sideboardSig: 'empty', deleted: true },
++      ],
++    );
++    expect(duplicates).toEqual([{ id: 'here-copy', keptId: 'folder-copy' }]);
++  });
++
++  test('two decks here with the same cards are both kept (nothing in the folder yet)', () => {
++    const { duplicates } = planSharedImport([{ id: 'a', sig: 'x', sideboardSig: 'e' }, { id: 'b', sig: 'x', sideboardSig: 'e' }], []);
++    expect(duplicates).toEqual([]);
++    // and the sync then sends both
++    expect(planSync([{ id: 'a', updatedAt: 1 }, { id: 'b', updatedAt: 1 }], {}, [], new Set()).upload).toEqual(['a', 'b']);
++  });
++});
+diff --git a/Mage.Web.Client/src/core/decks/deckSync.ts b/Mage.Web.Client/src/core/decks/deckSync.ts
+index f665c5fa15..e17c56b519 100644
+--- a/Mage.Web.Client/src/core/decks/deckSync.ts
++++ b/Mage.Web.Client/src/core/decks/deckSync.ts
+@@ -72,3 +72,34 @@ export function planSync(
+   }
+   return plan;
+ }
++
++/** mtg-ai: a deck as the shared deck folder's one-time import compares them: its main cards' and sideboard's deckSig. */
++export interface DeckCards {
++  id: string;
++  sig?: string | null;
++  sideboardSig?: string | null;
++  deleted?: boolean;
++}
++
++/**
++ * mtg-ai: the first sync of this browser with a server's shared deck folder (no accounts: one set of decks for every
++ * browser). Every deck here goes to the folder, except one whose cards (main and sideboard) are already there under
++ * another id: that one is a duplicate, and this browser takes the folder's deck instead (`keptId`). Two decks here with
++ * the same cards are both kept (the player made both). Decks without a signature are always kept.
++ */
++export function planSharedImport(local: readonly DeckCards[], remote: readonly DeckCards[]): { duplicates: { id: string; keptId: string }[] } {
++  const remoteIds = new Set(remote.map((deck) => deck.id));
++  const byCards = new Map<string, string>();
++  for (const deck of remote) {
++    if (deck.deleted || !deck.sig) continue;
++    const key = `${deck.sig}/${deck.sideboardSig ?? ''}`;
++    if (!byCards.has(key)) byCards.set(key, deck.id);
++  }
++  const duplicates: { id: string; keptId: string }[] = [];
++  for (const deck of local) {
++    if (remoteIds.has(deck.id) || !deck.sig) continue;
++    const keptId = byCards.get(`${deck.sig}/${deck.sideboardSig ?? ''}`);
++    if (keptId) duplicates.push({ id: deck.id, keptId });
++  }
++  return { duplicates };
++}
+diff --git a/Mage.Web.Client/src/core/decks/dskDraft.test.ts b/Mage.Web.Client/src/core/decks/dskDraft.test.ts
+new file mode 100644
+index 0000000000..721c9567b0
+--- /dev/null
++++ b/Mage.Web.Client/src/core/decks/dskDraft.test.ts
+@@ -0,0 +1,37 @@
++import { describe, expect, it } from 'vitest';
++import { builderDskLabel, isDskDraftDeck, isDskStarterFile, playsAsFreeform } from './dskDraft';
++
++const dsk = (n: number, extra: { cardName: string; setCode?: string; amount: number }[] = []) => [
++  { cardName: 'Plains', setCode: 'M21', cardNumber: '260', amount: 17 },
++  { cardName: 'Fear of Isolation', setCode: 'DSK', cardNumber: '58', amount: n - 17 },
++  ...extra,
++];
++
++describe('DSK Draft (40) (mtg-ai)', () => {
++  it('takes a Freeform deck of 40+ DSK cards (basic lands from any set)', () => {
++    expect(isDskDraftDeck({ format: 'Constructed - Freeform', cards: dsk(40) })).toBe(true);
++    expect(isDskDraftDeck({ cards: dsk(41) })).toBe(true);
++    expect(isDskDraftDeck({ format: 'Constructed - Freeform', cards: [...dsk(40)].map((c) => ({ ...c, setCode: c.setCode?.toLowerCase() })) })).toBe(true);
++  });
++
++  it('leaves out short decks, other sets, unknown printings and other formats', () => {
++    expect(isDskDraftDeck({ format: 'Constructed - Freeform', cards: dsk(39) })).toBe(false);
++    expect(isDskDraftDeck({ cards: dsk(40, [{ cardName: 'Lightning Bolt', setCode: 'M10', amount: 1 }]) })).toBe(false);
++    expect(isDskDraftDeck({ cards: dsk(40, [{ cardName: 'Unknown Printing', amount: 1 }]) })).toBe(false);
++    expect(isDskDraftDeck({ format: 'Constructed - Standard', cards: dsk(40) })).toBe(false);
++    expect(isDskDraftDeck({ format: 'Variant Magic - Freeform Commander', cards: dsk(40) })).toBe(false);
++    expect(playsAsFreeform('Limited')).toBe(false);
++  });
++
++  it('names a new or growing DSK deck in the builder, and nothing else', () => {
++    expect(builderDskLabel({ format: 'Constructed - Freeform', cards: [] })).toBe('DSK Draft (40)');
++    expect(builderDskLabel({ format: 'Constructed - Freeform', cards: dsk(23) })).toBe('DSK Draft (40)');
++    expect(builderDskLabel({ format: 'Constructed - Freeform', cards: dsk(40, [{ cardName: 'Lightning Bolt', setCode: 'M10', amount: 1 }]) })).toBeNull();
++    expect(builderDskLabel({ format: 'Constructed - Modern', cards: [] })).toBeNull();
++  });
++
++  it('knows our starter files', () => {
++    expect(isDskStarterFile('dsk-good-08.dck')).toBe(true);
++    expect(isDskStarterFile('red.dck')).toBe(false);
++  });
++});
+diff --git a/Mage.Web.Client/src/core/decks/dskDraft.ts b/Mage.Web.Client/src/core/decks/dskDraft.ts
+new file mode 100644
+index 0000000000..e46ad80f6e
+--- /dev/null
++++ b/Mage.Web.Client/src/core/decks/dskDraft.ts
+@@ -0,0 +1,45 @@
++import type { DeckCardInfo } from './types';
++
++/**
++ * mtg-ai: "DSK Draft (40)": our 40-card DSK Limited decks as one set: the dsk-* starters, saved copies of them, and
++ * decks built from DSK cards only (basic lands from any set) with 40 or more main cards. It is a label and a filter in
++ * the client only: such a deck's XMage deck type stays Freeform ('Constructed - Freeform'), so tables take it as before.
++ */
++export const DSK_DRAFT_LABEL = 'DSK Draft (40)';
++export const DSK_DRAFT_SIZE = 40;
++
++const BASICS = new Set(['Plains', 'Island', 'Swamp', 'Mountain', 'Forest', 'Wastes', 'Snow-Covered Plains', 'Snow-Covered Island',
++  'Snow-Covered Swamp', 'Snow-Covered Mountain', 'Snow-Covered Forest']);
++
++/** The deck type a DSK Draft deck plays as (Freeform, or no type, which is Freeform). */
++export function playsAsFreeform(format: string | null | undefined): boolean {
++  return !format || /Freeform/.test(format) && !/Commander/.test(format);
++}
++
++/** Every card a DSK printing or a basic land (an empty list too). A card without a set code is not known to be DSK. */
++export function onlyDskCards(cards: readonly DeckCardInfo[]): boolean {
++  return cards.every((card) => BASICS.has(card.cardName) || (card.setCode ?? '').toUpperCase() === 'DSK');
++}
++
++/** 40+ main cards, every one a DSK printing or a basic land. */
++export function isDskCards(cards: readonly DeckCardInfo[]): boolean {
++  return onlyDskCards(cards) && cards.reduce((total, card) => total + card.amount, 0) >= DSK_DRAFT_SIZE;
++}
++
++/**
++ * The deck builder's name for a Freeform deck made of DSK cards so far (a new deck too): "DSK Draft (40)", the deck
++ * type staying Freeform; null for any other deck.
++ */
++export function builderDskLabel(deck: { format?: string | null; cards: readonly DeckCardInfo[] }): string | null {
++  return playsAsFreeform(deck.format) && onlyDskCards(deck.cards) ? DSK_DRAFT_LABEL : null;
++}
++
++/** A deck of the DSK Draft (40) set: a Freeform deck made of DSK cards (isDskCards). */
++export function isDskDraftDeck(deck: { format?: string | null; cards: readonly DeckCardInfo[] }): boolean {
++  return playsAsFreeform(deck.format) && isDskCards(deck.cards);
++}
++
++/** One of our DSK starter files (dsk_starters.py names them dsk-*.dck). */
++export function isDskStarterFile(file: string): boolean {
++  return file.startsWith('dsk-');
++}
+diff --git a/Mage.Web.Client/src/protocol/generated/views.ts b/Mage.Web.Client/src/protocol/generated/views.ts
+index dc3f8a0831..d4460f0e6e 100644
+--- a/Mage.Web.Client/src/protocol/generated/views.ts
++++ b/Mage.Web.Client/src/protocol/generated/views.ts
+@@ -1284,8 +1284,12 @@ export interface DeckSourceStatus {
+ export interface DeckSyncEntry {
+     data?: string;
+     deleted?: boolean;
++    dskDraft?: boolean;
+     id?: string;
+     name?: string;
++    sideboardSig?: string;
++    sig?: string;
++    strength?: Strength;
+     updatedAt?: number;
+ }
+ 
+@@ -1977,6 +1981,7 @@ export interface ServerInfo {
+     career?: boolean;
+     contactEmail?: string;
+     deckSync?: boolean;
++    deckSyncShared?: boolean;
+     gamesRunning?: number;
+     gamesWaiting?: number;
+     github?: boolean;
+@@ -2128,6 +2133,12 @@ export interface StartOptions {
+     variant?: string;
+ }
+ 
++export interface Strength {
++    colors?: string;
++    rating?: number;
++    tier?: number;
++}
++
+ export interface SupportLedger {
+     goalCents?: number;
+     month?: string;
