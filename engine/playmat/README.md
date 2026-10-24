@@ -24,10 +24,10 @@ home network, sign in with any name, and on Home open the AI settings (the oppon
 | Claude AI | you against our Claude player (`play/players.py`, facts and self-check on; model Opus 5.5 or Sonnet 5.5 and effort low/medium/high in the same dialog, default Opus high) |
 | Claude vs Playmat AI | Claude plays your selected deck against XMage's AI; you watch |
 
-Pick a deck. Our starters are real 17lands DSK decks, named with their deck score (mean 17lands GIH WR of the nonland
-cards), colors, record and rank, strongest first: the 70 `★ good_NN` decks (`engine/xmage/decks/17lands-good`) and
-the 160 `typical_NN` / `trophy_NN` decks (`engine/xmage/decks/17lands-r2`). "Good only" (Home, Decks; on by default)
-hides the 160. The Claude AI is dealt a random good deck, whatever the Rules setting; the other AIs any DSK starter;
+Pick a deck. Our starters are real 17lands DSK decks, two colors with at most a light splash: the reviewed good pool
+(`engine/xmage/decks/17lands-good`), named with tier, archetype and review rating, e.g. "★★ good_08 · WU eerie
+enchantments/tempo · review 4/5", then the older `typical_NN` / `trophy_NN` decks (`engine/xmage/decks/17lands-r2`).
+"Good only" (Home, Decks; on by default) shows only the starred decks. The Claude AI is dealt a random good deck, whatever the Rules setting; the other AIs any DSK starter;
 choosing the AI's deck in the settings overrides both. Claude always plays first (`PLAY_DRAW=rule`, the default, recorded
 as `"source": "rule"`; `PLAY_DRAW=claude engine/playmat/run.sh` lets the model choose).
 Claude takes a while per decision (tens of seconds, longer when it self-checks) and costs about $5 a game

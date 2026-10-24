@@ -3,22 +3,20 @@ one (the patched client deals the Claude AI a dsk-good-* starter, other AIs any 
 
   python3 engine/playmat/dsk_starters.py <playmat checkout>
 
-Two pools: engine/xmage/decks/17lands-good (70 strong decks, files dsk-good-NN.dck) and engine/xmage/decks/17lands-r2
-(160 decks, dsk-typical_NN / dsk-trophy_NN). Each deck's menu name carries its deck score (mean 17lands GIH WR of its
-nonland cards, from 17lands-good/gih_wr.json), colors, record and rank, e.g. "★ good_00 · 58.6% · WUG · 7-2 Plat" or
-"trophy_00 · 55.4% · UB · 7-2 Plat"; the good pool's names start with ★, or ★★ for its top tier (manifest "tier": 2,
-see 17lands-good/REVIEW.md). Decks of either pool that break the colour rule (two_colors(): two main colors, at most a
-light splash) are not listed at all. A good-pool deck the review rated 2 or lower has no star and the file
-dsk-goodx-NN.dck: "Good only" hides it and the Claude AI isn't dealt it (both look for dsk-good-*). index.json lists ours strongest first, then
-Playmat's own starters. The cover card is the deck's first nonland card.
+Two pools: engine/xmage/decks/17lands-good (70 reviewed decks, files dsk-good-NN.dck) and engine/xmage/decks/17lands-r2
+(160 decks, dsk-typical_NN / dsk-trophy_NN). A good-pool name gives its tier, the review's archetype and rating, e.g.
+"★★ good_08 · WU eerie enchantments/tempo · review 4/5" (★★: tier 2, see 17lands-good/REVIEW.md); an older deck's name
+gives its colors, e.g. "trophy_00 · UB". Records and deck scores stay in the manifests (Jeff 2026-10-24: misleading in
+the menu). Decks of either pool that break the colour rule (two_colors(): two main colors, at most a light splash) are
+not listed at all. A good-pool deck the review rated 2 or lower has no star and the file dsk-goodx-NN.dck: "Good only"
+hides it and the Claude AI isn't dealt it (both look for dsk-good-*). index.json lists the starred decks by tier and
+review rating, then the unstarred ones, then the older pool, steadier mana first and then the drafter's long-run win
+rate; Playmat's own starters follow. The cover card is the deck's first nonland card.
 """
 import json, re, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-
-
-RANKS = {"bronze": "Bronze", "silver": "Silver", "gold": "Gold", "platinum": "Plat", "diamond": "Diamond", "mythic": "Mythic"}
 
 
 def two_colors(m, texts):
@@ -29,16 +27,30 @@ def two_colors(m, texts):
         return False
     if not splash:
         return True
-    cards = sources = 0
-    for name, n in m["deck"].items():
+    return color_cards(m, texts, splash) <= 3 and sources(m, texts, splash) >= 3
+
+
+def sources(m, texts, color):
+    """Lands in the deck that make this color (basics, duals, fetches of basics, any-color lands)."""
+    n = 0
+    for name, k in m["deck"].items():
         c = texts[name]
         if "Land" in c["types"]:
             text = " ".join(c["rules"])
-            if BASICS.get(name) == splash or f"{{{splash}}}" in text or "any color" in text or "basic land" in text.lower():
-                sources += n
-        elif f"{{{splash}}}" in c["cost"] + "".join(c[h]["cost"] for h in ("left", "right") if h in c):
-            cards += n
-    return cards <= 3 and sources >= 3
+            if BASICS.get(name) == color or f"{{{color}}}" in text or "any color" in text or "basic land" in text.lower():
+                n += k
+    return n
+
+
+def color_cards(m, texts, color):
+    """Nonland cards whose cost (either door, for a Room) has this color."""
+    return sum(k for name, k in m["deck"].items() if "Land" not in texts[name]["types"]
+               and f"{{{color}}}" in texts[name]["cost"] + "".join(texts[name][h]["cost"] for h in ("left", "right") if h in texts[name]))
+
+
+def consistency(m, texts):
+    """Sort key for mana, best first: no splash before a splash, then the fewest sources of a main color (more is better)."""
+    return (len(m.get("splash_colors", "")), -min(sources(m, texts, c) for c in m["main_colors"]))
 
 
 def playable(m, texts):
@@ -54,7 +66,6 @@ BASICS = {"Plains": "W", "Island": "U", "Swamp": "B", "Mountain": "R", "Forest":
 def main():
     playmat = Path(sys.argv[1])
     decks = ROOT / "engine/xmage/decks"
-    gih = json.loads((decks / "17lands-good/gih_wr.json").read_text())
     texts = {c["name"]: c for c in json.loads((ROOT / "engine/vocab/dsk_card_text.json").read_text())}
     out = playmat / "Mage.Web.Client/public/starter-decks"
     index = [e for e in json.loads((out / "index.json").read_text()) if not e["file"].startswith("dsk-")]
@@ -68,27 +79,34 @@ def main():
                 continue
             good = star and playable(m, texts)
             text = deck.read_text()
-            cards, cover, wr, nonland = 0, None, 0.0, 0
+            cards, cover = 0, None
             for line in text.splitlines():
                 c = re.match(r"(\d+) \[(\w+):(\w+)\] (.+)", line)
                 if not c:
                     continue
-                n, card = int(c.group(1)), c.group(4)
-                cards += n
-                if not gih[card]["land"]:
-                    wr += n * gih[card]["wr"]; nonland += n
-                    if cover is None:
-                        cover = {"name": card, "setCode": c.group(2), "cardNumber": c.group(3)}
-            score = wr / nonland
-            rank = RANKS.get(m.get("rank", ""), "")
+                cards += int(c.group(1))
+                if cover is None and "Land" not in texts[c.group(4)]["types"]:
+                    cover = {"name": c.group(4), "setCode": c.group(2), "cardNumber": c.group(3)}
             colors = m["main_colors"] + (f"+{m['splash_colors']}" if m.get("splash_colors") else "")
-            mark = ("★★ " if m.get("tier") == 2 else star) if good else ""  # tier 2: passed the deck review (17lands-good/REVIEW.md)
-            name = f"{mark}{deck.stem} · {100 * score:.1f}% · {colors} · {m['wins']}-{m['losses']}" + (f" {rank}" if rank else "")
+            review = m.get("review")
+            # Jeff 2026-10-24: no 7-X record or card-quality score in the name (misleading); they stay in the manifest
+            if review:
+                mark = ("★★ " if m.get("tier") == 2 else star) if good else ""  # tier 2: passed the deck review (REVIEW.md)
+                arch = re.sub(r"\s*\([^)]*\)?", "", review["archetype"]).split(",")[0].strip()
+                arch = arch if len(arch) <= 34 else arch[:34].rsplit(" ", 1)[0]
+                name = f"{mark}{deck.stem} · {arch} · review {review['rating']}/5"
+            else:
+                name = f"{deck.stem} · {colors}"
             file = (f"{prefix}{deck.stem.removeprefix('good_')}.dck" if good else f"dsk-goodx-{deck.stem.removeprefix('good_')}.dck") if star \
                 else f"{prefix}{deck.stem}.dck"
             (out / file).write_text(f"NAME:{name}\n" + "\n".join(text.splitlines()[1:]) + "\n")
-            ours.append(({"file": file, "name": name, "cards": cards, "cover": cover}, score))
-    ours.sort(key=lambda e: -e[1])
+            # order: starred good decks by tier and review, then unstarred ones, then the older pool; within each, the
+            # steadier mana first, then the drafter's long-run win rate
+            group = 0 if good else 1 if star else 2
+            key = (group, -(m.get("tier") or 0), -(review["rating"] if review else 0), consistency(m, texts),
+                   -float(m.get("user_win_rate_bucket") or 0))
+            ours.append(({"file": file, "name": name, "cards": cards, "cover": cover}, key))
+    ours.sort(key=lambda e: e[1])
     (out / "index.json").write_text(json.dumps([e for e, _ in ours] + index, indent=2, ensure_ascii=False) + "\n")
     print(f"{len(ours)} DSK decks added to {out}; left out by the colour rule: {skipped}")
 
