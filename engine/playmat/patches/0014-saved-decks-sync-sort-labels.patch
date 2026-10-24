@@ -1,0 +1,730 @@
+diff --git a/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx b/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx
+index f4d4102a67..94c2a8836d 100644
+--- a/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx
++++ b/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx
+@@ -80,7 +80,8 @@ function DeckLoader({ deckId }: { deckId: string }) {
+     let cancelled = false;
+     (async () => {
+       if (deckId === 'new') {
+-        const id = await deckStorage.saveDeck({ name: 'New deck', format: DEFAULT_FORMAT, cards: [], sideboard: [] }, { forceNew: true });
++        // mtg-ai: playerNamed: the player's own deck, never taken for a starter copy (core/decks/starterCopies.ts)
++        const id = await deckStorage.saveDeck({ name: 'New deck', format: DEFAULT_FORMAT, cards: [], sideboard: [], playerNamed: true }, { forceNew: true });
+         await useDecks.getState().refresh();
+         useDecks.getState().select(id);
+         if (!cancelled) navigate(`/decks/${id}`, { replace: true });
+@@ -148,12 +149,13 @@ export function DeckBuilder({ initial, mode }: { initial: DeckCardLists; mode?:
+         setSavedDeck(deck);
+         return;
+       }
+-      void deckStorage.saveDeck(finished)
++      // mtg-ai: a deck renamed here has the player's name: the starter sync leaves it alone
++      void deckStorage.saveDeck(finished.name !== initial.name ? { ...finished, playerNamed: true } : finished)
+         .then(() => setSavedDeck(deck))
+         .catch((reason) => notify("Couldn't save the deck", String(reason), 'error'));
+     }, 500);
+     return () => clearTimeout(timer);
+-  }, [deck, saving, mode]);
++  }, [deck, saving, mode, initial.name]);
+   useEffect(() => () => {
+     if (!mode) void useDecks.getState().refresh();
+   }, [mode]);
+diff --git a/Mage.Web.Client/src/app/screens/HomeScreen.tsx b/Mage.Web.Client/src/app/screens/HomeScreen.tsx
+index 029088b55f..1c99a57bd3 100644
+--- a/Mage.Web.Client/src/app/screens/HomeScreen.tsx
++++ b/Mage.Web.Client/src/app/screens/HomeScreen.tsx
+@@ -62,9 +62,10 @@ export function HomeScreen() {
+   if (aiOpen && !aiLoaded) setAiLoaded(true);
+   const emailStatus = useEmailStatus().data;
+   const emailUnconfirmed = !!emailStatus?.email && !emailStatus.verified && !!emailStatus.mail;
+-  // mtg-ai: "Good only" leaves our other DSK starters out of the list; ★★ decks first, then ★, then the rest
++  // mtg-ai: "Good only" leaves our other DSK starters (and retired copies) out of the list; saved and starter decks
++  // in one order: ★★ decks first, then ★, then the rest, then retired copies
+   const goodOnly = useGoodStartersOnly((state) => state.on);
+-  const roster = useMemo(() => sortByStrength(pickableRoster(rosterOf(decks), decks.starters, goodOnly), decks.starters), [decks, goodOnly]);
++  const roster = useMemo(() => sortByStrength(pickableRoster(rosterOf(decks), decks.starters, goodOnly), decks.starters, decks.strengths), [decks, goodOnly]);
+   // a meta, ghost or mirror opponent, or adaptive skill, is described with the solo messages
+   const soloReady = useCareerMessages(mode === 'meta' || play.aiOptions.adaptive || opponentSource(play.aiOptions.opponentDeckId).kind !== 'roster');
+   const selected = roster.find((deck) => deck.id === decks.selectedId) ?? roster[0] ?? null;
+diff --git a/Mage.Web.Client/src/app/stores/decks.test.ts b/Mage.Web.Client/src/app/stores/decks.test.ts
+index e80c8c8bc8..e1dfe7c186 100644
+--- a/Mage.Web.Client/src/app/stores/decks.test.ts
++++ b/Mage.Web.Client/src/app/stores/decks.test.ts
+@@ -2,7 +2,9 @@
+ import { beforeEach, describe, expect, test, vi } from 'vitest';
+ import { deckStorage } from '../../core/decks/DeckStorageService';
+ import type { DeckCardLists } from '../../core/decks/types';
+-import { RANDOM_META_PREFIX, rosterOf, sortByStrength, STARTER_PREFIX, useDecks } from './decks';
++import { DeckSerializer } from '../../core/decks/DeckSerializer';
++import { deckSig } from '../../core/decks/deckStrength';
++import { pickableRoster, RANDOM_META_PREFIX, rosterOf, sortByStrength, STARTER_PREFIX, useDecks } from './decks';
+ 
+ const BURN: DeckCardLists = {
+   name: 'Burn',
+@@ -28,7 +30,7 @@ beforeEach(async () => {
+     if (url.endsWith('red.dck') || url.endsWith('modern-burn.dck')) return new Response('20 [M19:156] Shock\n40 [M19:280] Mountain\n', { status: 200 });
+     return new Response(null, { status: 404 });
+   }));
+-  useDecks.setState({ saved: [], starters: [], metaDecks: [], selectedId: null, sleeves: {}, loaded: false });
++  useDecks.setState({ saved: [], starters: [], metaDecks: [], strengths: [], selectedId: null, sleeves: {}, loaded: false });
+ });
+ 
+ describe('deck library', () => {
+@@ -116,19 +118,96 @@ describe('sortByStrength', () => {
+   ];
+   const saved = (id: string, name: string, sig?: string) => ({ id, name, note: '', cardCount: 40, cover: null, colors: [], starter: null, sig });
+ 
+-  test('★★ then ★ then the rest, by rating; saved copies by their cards, then by their name', () => {
++  test('★★ then ★ then the rest, by rating; saved copies by their cards, never by their name', () => {
+     const roster = rosterOf({
+-      saved: [saved('mine', 'My brew'), saved('copy', 'renamed copy', 'dddd'), saved('named', '★ old_09 · review 5/5')],
++      saved: [saved('mine', 'My brew'), saved('copy', 'renamed copy', 'dddd'), saved('named', '★ old_09 · review 5/5'), saved('old', '★ GOOD_00 · 58.6%', 'eeee')],
+       starters,
+     });
+-    expect(sortByStrength(roster, starters).map((deck) => deck.name)).toEqual([
++    const strengths = [{ file: '', name: 'good_00', sig: 'eeee', listed: false, strength: { tier: 0, rating: 5, colors: 'WUG' } }];
++    expect(sortByStrength(roster, starters, strengths).map((deck) => deck.name)).toEqual([
+       'renamed copy', // ★★ 5/5 by its cards (saved decks come first in the roster)
+       '★★ good_04 · review 5/5',
+       '★★ good_03 · review 4/5',
+-      '★ old_09 · review 5/5', // ★ by its name
+       '★ good_02 · review 3/5',
+       'typical_01', // no star, rated
+-      'My brew', // unknown strength
++      'My brew', // not rated
++      '★ old_09 · review 5/5', // not one of our decks by its cards: its stars count for nothing
++      '★ GOOD_00 · 58.6%', // a copy of a retired deck, last
+     ]);
+   });
+ });
++
++// mtg-ai: saved starter copies follow today's starters on every load (starterCopies.planStarterSync)
++describe('starter copy sync', () => {
++  const DSK_TEXT = '9 [DSK:273] Island\n8 [DSK:272] Plains\n23 [DSK:217] Inquisitive Glimmer\n';
++  const RETIRED_TEXT = '17 [DSK:276] Forest\n23 [DSK:225] Oblivious Bookworm\n';
++  const dskCards = DeckSerializer.importDeck(DSK_TEXT).cards;
++  const retiredCards = DeckSerializer.importDeck(RETIRED_TEXT).cards;
++  const GOOD = {
++    file: 'dsk-good-08.dck', name: '★★ good_08 · WU eerie enchantments/tempo · review 4/5', cards: 40,
++    cover: { name: 'Inquisitive Glimmer', setCode: 'DSK', cardNumber: '217' }, strength: { tier: 2, rating: 4, colors: 'WU' }, sig: deckSig(dskCards),
++  };
++  const STRENGTHS = [{ sig: deckSig(retiredCards), name: 'good_00', listed: false, strength: { tier: 0, rating: 2, colors: 'WUG' } }];
++  const save = (name: string, cards = dskCards, extra: Partial<DeckCardLists> = {}) =>
++    deckStorage.saveDeck({ name, format: 'Constructed - Freeform', cards, sideboard: [], ...extra }, { forceNew: true });
++
++  beforeEach(() => {
++    vi.stubGlobal('fetch', vi.fn(async (url: string) => {
++      if (url.endsWith('starter-decks/index.json')) return new Response(JSON.stringify([GOOD, STARTER]), { status: 200 });
++      if (url.endsWith('starter-decks/strengths.json')) return new Response(JSON.stringify(STRENGTHS), { status: 200 });
++      if (url.endsWith('meta-decks/index.json')) return new Response(JSON.stringify({ updated: '', source: '', decks: [] }), { status: 200 });
++      if (url.endsWith('dsk-good-08.dck')) return new Response(DSK_TEXT, { status: 200 });
++      return new Response(null, { status: 404 });
++    }));
++  });
++
++  test('renames and dedupes unmodified copies, keeps retired and edited decks, moves the selection and sleeve', async () => {
++    const first = await save('DSK GOOD_08 (7-2, WU)');
++    vi.setSystemTime(Date.now() + 1000);
++    const second = await save('DSK GOOD_08 (7-2, WU)');
++    vi.setSystemTime(Date.now() + 1000);
++    const newest = await save('DSK GOOD_08 (7-2, WU)');
++    const retired = await save('★ GOOD_00 · 58.6% · WUG+B · 7-2 PLAT', retiredCards);
++    const edited = await save('★★ good_08 · WU eerie enchantments/tempo · review 4/5', dskCards.slice(1));
++    const named = await save('My WU', dskCards, { playerNamed: true });
++    vi.useRealTimers();
++    useDecks.getState().select(first);
++    useDecks.getState().setSleeve(second, '#5a2320');
++
++    await useDecks.getState().refresh();
++    const state = useDecks.getState();
++    const ids = state.saved.map((deck) => deck.id).sort();
++    expect(ids).toEqual([newest, retired, edited, named].sort());
++    expect(await deckStorage.loadDeck(first)).toBeNull();
++    expect(await deckStorage.loadDeck(second)).toBeNull();
++    expect((await deckStorage.loadDeck(newest))?.name).toBe(GOOD.name);
++    expect((await deckStorage.loadDeck(retired))?.name).toBe('★ GOOD_00 · 58.6% · WUG+B · 7-2 PLAT');
++    expect((await deckStorage.loadDeck(named))?.name).toBe('My WU');
++    expect(state.selectedId).toBe(newest);
++    expect(state.sleeves).toEqual({ [newest]: '#5a2320' });
++
++    // labels: the copy stands in for the starter, the retired one says why, the edited one is no longer rated
++    const roster = rosterOf(state);
++    const note = (id: string) => roster.find((deck) => deck.id === id)?.note;
++    expect(roster.some((deck) => deck.id === STARTER_PREFIX + GOOD.file)).toBe(false);
++    expect(note(newest)).toBe('Your copy · ★★ starter · 40 cards');
++    expect(note(named)).toBe('Your copy · ★★ starter · 40 cards');
++    expect(note(retired)).toBe('Retired: breaks the colour rule');
++    expect(note(edited)).toBe('Freeform · 31 cards · unrated');
++    expect(sortByStrength(roster, state.starters, state.strengths).at(-1)?.id).toBe(retired);
++    expect(pickableRoster(roster, [{ ...GOOD, file: 'dsk-good-08.dck' }], true).some((deck) => deck.id === retired)).toBe(false);
++
++    // the next load changes nothing
++    const before = await deckStorage.listDecks();
++    await useDecks.getState().refresh();
++    expect(await deckStorage.listDecks()).toEqual(before);
++  });
++
++  test('a duplicate the player asks for is kept', async () => {
++    await useDecks.getState().refresh();
++    const { id } = await useDecks.getState().loadForPlay(STARTER_PREFIX + GOOD.file);
++    const copyId = await useDecks.getState().duplicate(id);
++    await useDecks.getState().refresh();
++    expect(useDecks.getState().saved.map((deck) => deck.id).sort()).toEqual([id, copyId].sort());
++  });
++});
+diff --git a/Mage.Web.Client/src/app/stores/decks.ts b/Mage.Web.Client/src/app/stores/decks.ts
+index 6fa6bed1c8..7850900d16 100644
+--- a/Mage.Web.Client/src/app/stores/decks.ts
++++ b/Mage.Web.Client/src/app/stores/decks.ts
+@@ -6,7 +6,9 @@ import { copyName } from '../../core/decks/exportFormats';
+ import type { DeckCardLists, DeckImportSource } from '../../core/decks/types';
+ import { pickMetaDeck, type MetaDeck, type MetaDeckIndex } from '../../core/decks/metaDecks';
+ import { readJson, writeJson } from './persist';
+-import type { DeckStrength } from '../../core/decks/deckStrength';
++import { knownStrengths, type DeckStrength, type StrengthEntry } from '../../core/decks/deckStrength';
++import { copyLabel, copyOf, looksLikeStarterName, planStarterSync, sortByStanding, standingOf, type Standing } from '../../core/decks/starterCopies';
++import { notify } from './toasts';
+ import { RANDOM_SLEEVE, randomSleeveFor } from '../ui/sleeveArt';
+ 
+ export interface StarterDeck {
+@@ -36,6 +38,10 @@ export interface RosterDeck {
+   source?: DeckImportSource;
+   /** mtg-ai: deckSig of a saved deck's main cards (a starter carries its own in `starter.sig`) */
+   sig?: string;
++  /** mtg-ai: a saved deck whose cards are one of our DSK decks: a starter listed today, or one retired since */
++  copy?: 'starter' | 'retired';
++  /** mtg-ai: where it sorts on Home (sortByStrength); a saved deck's comes from its cards, not its name */
++  standing?: Standing;
+ }
+ 
+ const SELECTED_KEY = 'playmat.selectedDeck';
+@@ -52,13 +58,20 @@ const COLOR_LETTER: Record<(typeof COLOR_ORDER)[number], string> = { white: 'W',
+ /** Sleeve colors: matte dyes, picked to stay readable around card art. */
+ export const SLEEVE_COLORS = ['#20302b', '#1f2a44', '#3b1f2b', '#4a2a17', '#2c2c2e', '#3e3a2a', '#24403f', '#5a2320'];
+ 
+-function summaryToRoster(deck: DeckSummary): RosterDeck {
++function summaryToRoster(deck: DeckSummary, starters: StarterDeck[] = [], strengths: StrengthEntry[] = []): RosterDeck {
+   const colors = COLOR_ORDER.filter((color) => deck.colors?.[color]).map((color) => COLOR_LETTER[color]);
+   const size = `${deck.cardCount ?? 0} cards${deck.sideboardCount ? ` + ${deck.sideboardCount}` : ''}`;
++  // mtg-ai: a copy of one of our DSK decks says so ("Your copy · ★★ starter", "Retired: …") instead of its format; a
++  // changed one that still looks like ours by its name is no longer rated
++  const copy = copyOf(deck.sig, starters, strengths);
++  const note = deck.format ? `${formatRules(deck.format).label} · ${size}` : size;
++  const name = deck.name || 'Untitled deck';
+   return {
+     id: deck.id,
+-    name: deck.name || 'Untitled deck',
+-    note: deck.format ? `${formatRules(deck.format).label} · ${size}` : size,
++    name,
++    note: copyLabel(copy, size) ?? (looksLikeStarterName(name) ? `${note} · unrated` : note),
++    copy: copy?.kind,
++    standing: copy?.kind === 'starter' ? standingOf(copy.starter.strength) : copy ? standingOf(copy.entry.strength, true) : standingOf(null),
+     cardCount: deck.cardCount ?? 0,
+     cover: deck.coverCard ?? null,
+     colors,
+@@ -85,6 +98,8 @@ export interface DeckLibraryState {
+   starters: StarterDeck[];
+   /** the AI's format decks */
+   metaDecks: MetaDeck[];
++  /** mtg-ai: every rated DSK deck, the ones no longer listed too (starter-decks/strengths.json) */
++  strengths: StrengthEntry[];
+   selectedId: string | null;
+   sleeves: Record<string, string>;
+   loaded: boolean;
+@@ -137,27 +152,66 @@ function starterFormat(starters: StarterDeck[], id: string): string {
+   return starters.find((starter) => STARTER_PREFIX + starter.file === id)?.format ?? 'Constructed - Freeform';
+ }
+ 
++let starterSyncQueue: Promise<unknown> = Promise.resolve();
++
++/**
++ * mtg-ai: brings the saved starter copies up to date with today's starters (planStarterSync): exact duplicates removed
++ * (the selection and sleeve move to the copy kept), copies of listed starters renamed to today's names. Idempotent;
++ * returns the saved decks afterwards. Waits for the starters: with none known it changes nothing.
++ */
++async function syncStarterCopies(
++  starters: StarterDeck[],
++  strengths: StrengthEntry[],
++  get: () => DeckLibraryState,
++  set: (partial: Partial<DeckLibraryState>) => void,
++): Promise<DeckSummary[]> {
++  const summaries = await deckStorage.listDecks();
++  if (!starters.some((starter) => starter.sig)) return summaries;
++  const plan = planStarterSync(summaries, starters, strengths, get().selectedId, get().sleeves);
++  if (!plan.message) return summaries;
++  for (const { id } of plan.removals) await deckStorage.deleteDeck(id);
++  for (const { id, name } of plan.renames) {
++    const deck = await deckStorage.loadDeck(id);
++    if (deck) await deckStorage.saveDeck({ ...deck, id, name });
++  }
++  if (plan.removals.length) {
++    writeJson(SLEEVES_KEY, plan.sleeves);
++    set({ sleeves: plan.sleeves });
++  }
++  if (plan.selectedId && plan.selectedId !== get().selectedId) {
++    writeJson(SELECTED_KEY, plan.selectedId);
++    set({ selectedId: plan.selectedId });
++  }
++  notify('Saved decks', plan.message);
++  return deckStorage.listDecks();
++}
++
+ export const useDecks = create<DeckLibraryState>((set, get) => ({
+   saved: [],
+   starters: [],
+   metaDecks: [],
++  strengths: [],
+   selectedId: readJson<string | null>(SELECTED_KEY, null),
+   sleeves: readJson<Record<string, string>>(SLEEVES_KEY, {}),
+   loaded: false,
+ 
+   async refresh() {
+-    const [summaries, starters, metaDecks] = await Promise.all([
+-      deckStorage.listDecks(),
++    const [starters, metaDecks, strengths] = await Promise.all([
+       get().starters.length ? get().starters : fetchStarters(),
+       get().metaDecks.length ? get().metaDecks : fetchMetaDecks(),
++      get().strengths.length ? get().strengths : knownStrengths(), // mtg-ai
+     ]);
+-    const saved = summaries.map(summaryToRoster);
++    // mtg-ai: saved starter copies follow today's starters (one at a time: refresh runs from several places)
++    const synced = starterSyncQueue.then(() => syncStarterCopies(starters, strengths, get, set));
++    starterSyncQueue = synced.catch(() => undefined);
++    const summaries = await synced.catch(() => deckStorage.listDecks());
++    const saved = summaries.map((summary) => summaryToRoster(summary, starters, strengths));
+     let selectedId = get().selectedId;
+     const known = new Set([...saved.map((deck) => deck.id), ...starters.map((starter) => STARTER_PREFIX + starter.file)]);
+     if (!selectedId || !known.has(selectedId)) {
+       selectedId = saved[0]?.id ?? (starters[0] ? STARTER_PREFIX + starters[0].file : null);
+     }
+-    set({ saved, starters, metaDecks, selectedId, loaded: true });
++    set({ saved, starters, metaDecks, strengths, selectedId, loaded: true });
+   },
+ 
+   select(id) {
+@@ -197,7 +251,7 @@ export const useDecks = create<DeckLibraryState>((set, get) => ({
+   },
+ 
+   async saveImported(deck) {
+-    const id = await deckStorage.saveDeck({ ...deck, id: undefined }, { forceNew: true });
++    const id = await deckStorage.saveDeck({ ...deck, id: undefined, playerNamed: true }, { forceNew: true }); // mtg-ai
+     await get().refresh();
+     get().select(id);
+     return id;
+@@ -222,7 +276,8 @@ export const useDecks = create<DeckLibraryState>((set, get) => ({
+     const starter = id.startsWith(STARTER_PREFIX);
+     const name = copyName(deck.name, taken);
+     // a copy is the player's own deck: it no longer follows the site it was imported from
+-    const copy: DeckCardLists = { ...deck, id: undefined, name, source: undefined, createdAt: undefined };
++    // mtg-ai: playerNamed: the player asked for this copy, so the starter sync never takes it for a duplicate
++    const copy: DeckCardLists = { ...deck, id: undefined, name, source: undefined, createdAt: undefined, playerNamed: true };
+     if (starter) copy.format = starterFormat(get().starters, id);
+     const newId = await deckStorage.saveDeck(copy, { forceNew: true });
+     await get().refresh();
+@@ -236,7 +291,7 @@ export const useDecks = create<DeckLibraryState>((set, get) => ({
+     if (!trimmed) throw new Error('A deck needs a name.');
+     const deck = await deckStorage.loadDeck(id);
+     if (!deck) throw new Error('That deck is no longer saved.');
+-    await deckStorage.saveDeck({ ...deck, id, name: trimmed });
++    await deckStorage.saveDeck({ ...deck, id, name: trimmed, playerNamed: true }); // mtg-ai: the name is the player's now
+     await get().refresh();
+   },
+ 
+@@ -256,7 +311,8 @@ export function rosterOf(state: Pick<DeckLibraryState, 'saved' | 'starters'>): R
+   const savedNames = new Set(state.saved.map((deck) => deck.name));
+   const starterNames = new Set(state.starters.map((starter) => starter.name));
+   // starters already saved by the player don't show twice: the copy stands in for them, and says where it came from
+-  const saved = state.saved.map((deck) => (starterNames.has(deck.name) ? { ...deck, fromStarter: true } : deck));
++  // (mtg-ai: a copy of one of our DSK decks says so in its own note)
++  const saved = state.saved.map((deck) => (starterNames.has(deck.name) && !deck.copy ? { ...deck, fromStarter: true } : deck));
+   return [...saved, ...state.starters.filter((starter) => !savedNames.has(starter.name)).map(starterToRoster)];
+ }
+ 
+@@ -279,36 +335,28 @@ export function hasGoodStarters(starters: StarterDeck[]): boolean {
+ /** The roster the player picks from: the other DSK starters left out while "Good only" is on. */
+ export function pickableRoster(roster: RosterDeck[], starters: StarterDeck[], goodOnly: boolean): RosterDeck[] {
+   if (!goodOnly || !hasGoodStarters(starters)) return roster;
+-  return roster.filter((deck) => !deck.starter || !deck.starter.file.startsWith('dsk-') || deck.starter.file.startsWith('dsk-good-'));
++  // mtg-ai: saved copies of retired decks are left out too
++  return roster.filter((deck) => (!deck.starter || !deck.starter.file.startsWith('dsk-') || deck.starter.file.startsWith('dsk-good-')) && !deck.standing?.retired);
+ }
+ 
+ /**
+- * mtg-ai: a roster deck's review strength: a starter's own; a saved deck's when its cards are one of our rated
+- * starters (deckSig), else when its name carries a starter's stars ("★★ good_08 · … · review 4/5"); else none.
++ * mtg-ai: where a roster deck sorts: a starter by its own review strength; a saved deck by its cards (deckSig): a copy
++ * of a starter as that starter, a copy of a retired deck as retired, anything else as not rated. Never by its name
++ * (old copies keep old names and stars, and a deck the player changed is not the deck it was named after).
+  */
+-export function rosterStrength(deck: RosterDeck, starters: StarterDeck[]): DeckStrength | null {
+-  if (deck.starter) return deck.starter.strength ?? null;
+-  const same = deck.sig ? starters.find((starter) => starter.sig === deck.sig && starter.strength) : undefined;
+-  if (same?.strength) return same.strength;
+-  const stars = /^(★{1,2})\s/.exec(deck.name);
+-  if (!stars) return null;
+-  const rating = /review (\d)\/5/.exec(deck.name);
+-  return { tier: stars[1].length, rating: rating ? Number(rating[1]) : null, colors: '' };
++export function rosterStanding(deck: RosterDeck, starters: StarterDeck[], strengths: StrengthEntry[] = []): Standing {
++  if (deck.starter) return standingOf(deck.starter.strength);
++  if (deck.standing) return deck.standing;
++  const copy = copyOf(deck.sig, starters, strengths);
++  return copy?.kind === 'starter' ? standingOf(copy.starter.strength) : copy ? standingOf(copy.entry.strength, true) : standingOf(null);
+ }
+ 
+ /**
+- * mtg-ai: the Home deck list by stars: ★★, then ★, then the rest (no star, or no known strength); within each by
+- * review rating (unknown last), then in the roster's own order.
++ * mtg-ai: the Home deck list, saved and starter decks together: ★★, then ★, then the rest (no star, or not rated),
++ * then retired copies; within each by review rating (unknown last), then in the roster's own order.
+  */
+-export function sortByStrength(roster: RosterDeck[], starters: StarterDeck[]): RosterDeck[] {
+-  const key = (deck: RosterDeck) => {
+-    const strength = rosterStrength(deck, starters);
+-    return [strength && strength.tier > 0 ? strength.tier : 0, strength?.rating ?? -1] as const;
+-  };
+-  return roster
+-    .map((deck, index) => ({ deck, index, key: key(deck) }))
+-    .sort((a, b) => b.key[0] - a.key[0] || b.key[1] - a.key[1] || a.index - b.index)
+-    .map(({ deck }) => deck);
++export function sortByStrength(roster: RosterDeck[], starters: StarterDeck[], strengths: StrengthEntry[] = []): RosterDeck[] {
++  return sortByStanding(roster, (deck) => rosterStanding(deck, starters, strengths));
+ }
+ 
+ export function sleeveFor(sleeves: Record<string, string>, deck: RosterDeck | null | undefined): string {
+diff --git a/Mage.Web.Client/src/core/decks/DeckStorageService.ts b/Mage.Web.Client/src/core/decks/DeckStorageService.ts
+index b2a3a89579..6952ca7f2f 100644
+--- a/Mage.Web.Client/src/core/decks/DeckStorageService.ts
++++ b/Mage.Web.Client/src/core/decks/DeckStorageService.ts
+@@ -27,6 +27,8 @@ export interface DeckSummary {
+     source?: DeckImportSource;
+     /** mtg-ai: deckSig of the main cards, to recognise a saved copy of one of our rated starters */
+     sig?: string;
++    /** mtg-ai: the player named or made this deck, so the starter sync leaves it alone (starterCopies.ts) */
++    playerNamed?: boolean;
+ }
+ 
+ export interface IDeckStorage {
+@@ -72,6 +74,8 @@ interface DeckMeta {
+     source?: DeckImportSource;
+     /** mtg-ai: deckSig of the main cards, to recognise a saved copy of one of our rated starters */
+     sig?: string;
++    /** mtg-ai: the player named or made this deck, so the starter sync leaves it alone (starterCopies.ts) */
++    playerNamed?: boolean;
+ }
+ 
+ export class LocalDeckStorage implements IDeckStorage {
+@@ -129,6 +133,7 @@ export class LocalDeckStorage implements IDeckStorage {
+             colors: deck.colors,
+             source: deck.source,
+             sig: deckSig(deck.cards), // mtg-ai
++            playerNamed: deck.playerNamed, // mtg-ai
+         };
+         const newMeta = meta.filter(m => m.id !== deck.id);
+         newMeta.push(newMetaItem);
+@@ -229,6 +234,7 @@ export class LocalDeckStorage implements IDeckStorage {
+             source: m.source,
+             // mtg-ai: decks saved before the signature was kept are signed from their stored list
+             sig: m.sig ?? this.storedSig(m.id),
++            playerNamed: m.playerNamed, // mtg-ai
+         })).sort((a, b) => b.updatedAt - a.updatedAt);
+     }
+ 
+diff --git a/Mage.Web.Client/src/core/decks/deckStrength.ts b/Mage.Web.Client/src/core/decks/deckStrength.ts
+index 37ef308fdc..bd46cac923 100644
+--- a/Mage.Web.Client/src/core/decks/deckStrength.ts
++++ b/Mage.Web.Client/src/core/decks/deckStrength.ts
+@@ -16,6 +16,8 @@ export interface StrengthEntry {
+   strength?: DeckStrength;
+   /** deckSig of the deck's main cards, to recognise a saved copy of a starter */
+   sig?: string;
++  /** strengths.json only: false when dsk_starters.py leaves the deck out of the starters (its colour rule) */
++  listed?: boolean;
+ }
+ 
+ /** A deck the player built or changed: no review, so it is taken as an average deck. */
+diff --git a/Mage.Web.Client/src/core/decks/starterCopies.test.ts b/Mage.Web.Client/src/core/decks/starterCopies.test.ts
+new file mode 100644
+index 0000000000..03ed301a6c
+--- /dev/null
++++ b/Mage.Web.Client/src/core/decks/starterCopies.test.ts
+@@ -0,0 +1,125 @@
++// mtg-ai: saved copies of our DSK starters (starterCopies.ts)
++import { describe, expect, test } from 'vitest';
++import type { StrengthEntry } from './deckStrength';
++import { copyLabel, copyOf, planStarterSync, sortByStanding, standingOf, type SavedCopy } from './starterCopies';
++
++const starter = (name: string, tier: number, rating: number, sig: string): StrengthEntry =>
++  ({ file: `dsk-${sig}.dck`, name, strength: { tier, rating, colors: 'WU' }, sig });
++const STARTERS = [
++  starter('★★ good_08 · WU eerie enchantments/tempo · review 4/5', 2, 4, 'g08'),
++  starter('★ good_57 · RW go-wide aggro · review 4/5', 1, 4, 'g57'),
++  starter('trophy_00 · UB', 0, 3, 't00'),
++];
++const STRENGTHS: StrengthEntry[] = [
++  { file: '', sig: 'g00', name: 'good_00', listed: false, strength: { tier: 0, rating: 2, colors: 'WUG' } },
++  { file: '', sig: 'g15', name: 'good_15', listed: false, strength: { tier: 0, rating: 3, colors: 'UG' } },
++  { file: '', sig: 'g99', name: 'good_99', listed: true, strength: { tier: 1, rating: 3, colors: 'WR' } },
++  { file: '', sig: 'g08', name: 'good_08', listed: true, strength: { tier: 2, rating: 4, colors: 'WU' } },
++];
++
++describe('copyOf', () => {
++  test('a listed starter by its cards, else a retired rated deck, else nothing', () => {
++    expect(copyOf('g08', STARTERS, STRENGTHS)).toMatchObject({ kind: 'starter', starter: { name: STARTERS[0].name } });
++    expect(copyOf('g00', STARTERS, STRENGTHS)).toMatchObject({ kind: 'retired', reason: 'colour' });
++    // two main colours but not listed (a heavy splash): the reason is not known here
++    expect(copyOf('g15', STARTERS, STRENGTHS)).toMatchObject({ kind: 'retired', reason: null });
++    // rated, said to be listed, yet not among today's starters
++    expect(copyOf('g99', STARTERS, STRENGTHS)).toMatchObject({ kind: 'retired', reason: null });
++    expect(copyOf('mine', STARTERS, STRENGTHS)).toBeNull();
++    expect(copyOf(undefined, STARTERS, STRENGTHS)).toBeNull();
++  });
++
++  test('nothing is retired while the starters are not known', () => {
++    expect(copyOf('g00', [], STRENGTHS)).toBeNull();
++  });
++});
++
++describe('copyLabel', () => {
++  test('says whose copy it is and of what, with the card count', () => {
++    const label = (sig: string) => copyLabel(copyOf(sig, STARTERS, STRENGTHS), '40 cards');
++    expect(label('g08')).toBe('Your copy · ★★ starter · 40 cards');
++    expect(label('g57')).toBe('Your copy · ★ starter · 40 cards');
++    expect(label('t00')).toBe('Your copy · starter · 40 cards');
++    expect(label('g00')).toBe('Retired: breaks the colour rule');
++    expect(label('g15')).toBe('Retired');
++    expect(label('mine')).toBeNull();
++  });
++});
++
++describe('sortByStanding', () => {
++  test('★★, ★, the rest, retired; then rating; then the given order', () => {
++    const decks = [
++      { name: 'retired 5/5', s: standingOf({ tier: 2, rating: 5, colors: '' }, true) },
++      { name: 'mine', s: standingOf(null) },
++      { name: 'trophy 4/5', s: standingOf({ tier: 0, rating: 4, colors: '' }) },
++      { name: '★ 3/5', s: standingOf({ tier: 1, rating: 3, colors: '' }) },
++      { name: '★★ 4/5 a', s: standingOf({ tier: 2, rating: 4, colors: '' }) },
++      { name: '★ 4/5', s: standingOf({ tier: 1, rating: 4, colors: '' }) },
++      { name: '★★ 4/5 b', s: standingOf({ tier: 2, rating: 4, colors: '' }) },
++    ];
++    expect(sortByStanding(decks, (deck) => deck.s).map((deck) => deck.name)).toEqual([
++      '★★ 4/5 a', '★★ 4/5 b', '★ 4/5', '★ 3/5', 'trophy 4/5', 'mine', 'retired 5/5',
++    ]);
++  });
++});
++
++describe('planStarterSync', () => {
++  const copy = (id: string, name: string, sig: string | undefined, updatedAt: number, extra: Partial<SavedCopy> = {}): SavedCopy =>
++    ({ id, name, sig, updatedAt, sideboardCount: 0, ...extra });
++  // the owner's library: three copies of trophy_00 under its old name, a retired good_00, a current good_57, his own
++  const OWNER = [
++    copy('t-old', 'DSK TROPHY_00 (7-2, UB)', 't00', 100),
++    copy('t-new', 'DSK TROPHY_00 (7-2, UB)', 't00', 300),
++    copy('t-mid', 'DSK TROPHY_00 (7-2, UB)', 't00', 200),
++    copy('g00', '★ GOOD_00 · 58.6% · WUG+B · 7-2 PLAT', 'g00', 150),
++    copy('g57', STARTERS[1].name, 'g57', 50),
++    copy('edited', '★★ good_08 · WU eerie enchantments/tempo · review 4/5', 'changed', 400),
++  ];
++
++  test('dedupes, renames to today\'s names, keeps retired names, never touches an edited deck', () => {
++    const plan = planStarterSync(OWNER, STARTERS, STRENGTHS, 't-old', { 't-old': '#5a2320', 't-mid': '#1f2a44' });
++    expect(plan.removals).toEqual([{ id: 't-mid', keptId: 't-new' }, { id: 't-old', keptId: 't-new' }]);
++    expect(plan.renames).toEqual([{ id: 't-new', name: 'trophy_00 · UB' }]);
++    expect(plan.retired).toEqual(['g00']);
++    // the selected copy was removed: the kept one is selected, and wears the selected one's sleeve
++    expect(plan.selectedId).toBe('t-new');
++    expect(plan.sleeves).toEqual({ 't-new': '#5a2320' });
++    expect(plan.message).toBe('Updated 1 saved deck to the current starter name; removed 2 duplicate copies');
++  });
++
++  test('the kept copy keeps its own sleeve, and an unrelated selection stays', () => {
++    const plan = planStarterSync(OWNER, STARTERS, STRENGTHS, 'edited', { 't-new': '#20302b', 't-old': '#5a2320', edited: '#3b1f2b' });
++    expect(plan.selectedId).toBe('edited');
++    expect(plan.sleeves).toEqual({ 't-new': '#20302b', edited: '#3b1f2b' });
++  });
++
++  test('is idempotent: its own result plans nothing', () => {
++    const plan = planStarterSync(OWNER, STARTERS, STRENGTHS, null, {});
++    const removed = new Set(plan.removals.map((removal) => removal.id));
++    const after = OWNER.filter((deck) => !removed.has(deck.id))
++      .map((deck) => ({ ...deck, name: plan.renames.find((rename) => rename.id === deck.id)?.name ?? deck.name }));
++    const again = planStarterSync(after, STARTERS, STRENGTHS, plan.selectedId, plan.sleeves);
++    expect(again).toMatchObject({ renames: [], removals: [], message: null, retired: ['g00'] });
++  });
++
++  test('decks the player named, made with a sideboard, or changed are left alone', () => {
++    const decks = [
++      copy('a', 'trophy_00 · UB', 't00', 10),
++      copy('b', 'trophy_00 · UB (copy)', 't00', 20, { playerNamed: true }),
++      copy('c', 'my UB', 't00', 30, { playerNamed: true }),
++      copy('d', 'DSK TROPHY_00', 't00', 5, { sideboardCount: 3 }),
++      copy('e', 'DSK GOOD_08 edited', 'zzz', 40),
++      copy('f', 'retired twin', 'g00', 1),
++      copy('g', 'retired twin', 'g00', 2),
++    ];
++    const plan = planStarterSync(decks, STARTERS, STRENGTHS, null, {});
++    expect(plan.renames).toEqual([]);
++    expect(plan.removals).toEqual([{ id: 'f', keptId: 'g' }]); // exact copies of a retired deck dedupe too
++    expect(plan.retired).toEqual(['g']);
++    expect(plan.message).toBe('Removed 1 duplicate copy');
++  });
++
++  test('changes nothing while the starters are not known', () => {
++    expect(planStarterSync(OWNER, [], STRENGTHS, null, {})).toMatchObject({ renames: [], removals: [], message: null });
++  });
++});
+diff --git a/Mage.Web.Client/src/core/decks/starterCopies.ts b/Mage.Web.Client/src/core/decks/starterCopies.ts
+new file mode 100644
+index 0000000000..5af4972a0d
+--- /dev/null
++++ b/Mage.Web.Client/src/core/decks/starterCopies.ts
+@@ -0,0 +1,138 @@
++import type { DeckStrength, StrengthEntry } from './deckStrength';
++
++/**
++ * mtg-ai: saved copies of our rated DSK starters. Playmat saves a starter into the player's library the first time it
++ * is played, under the starter's name of the day ("DSK TROPHY_00 (7-2, UB)", "★ GOOD_00 · 58.6% · …"). A copy is known
++ * by its cards (deckSig), never by its name: the starters of today (starter-decks/index.json), else every rated deck,
++ * the ones no longer listed too (starter-decks/strengths.json).
++ */
++
++/** What a saved deck's cards are: a starter listed today, or a rated deck no longer listed ("retired"). */
++export type CopyOf<T extends StrengthEntry = StrengthEntry> =
++  | { kind: 'starter'; starter: T }
++  | { kind: 'retired'; entry: StrengthEntry; reason: 'colour' | null };
++
++/**
++ * The starter (or retired deck) a saved deck's cards are; null for anything else (a deck the player built or edited).
++ * Nothing is called retired while the starters are not known (index.json failed to load).
++ */
++export function copyOf<T extends StrengthEntry>(sig: string | undefined, starters: readonly T[], strengths: readonly StrengthEntry[]): CopyOf<T> | null {
++  if (!sig) return null;
++  const starter = starters.find((candidate) => candidate.sig === sig);
++  if (starter) return { kind: 'starter', starter };
++  if (!starters.some((candidate) => candidate.sig)) return null;
++  const entry = strengths.find((candidate) => candidate.sig === sig);
++  if (!entry) return null;
++  // dsk_starters.py lists a rated deck when it keeps the colour rule (two main colours, at most a light splash): a
++  // deck with other than two main colours that is not listed broke it; any other reason is not known here
++  const colourRule = entry.listed === false && (entry.strength?.colors ?? '').length !== 2;
++  return { kind: 'retired', entry, reason: colourRule ? 'colour' : null };
++}
++
++/** Where a roster deck sorts on Home: group 3 ★★, 2 ★, 1 no star or not rated, 0 retired; then its review rating. */
++export interface Standing {
++  group: number;
++  rating: number | null;
++  retired?: boolean;
++}
++
++export function standingOf(strength: DeckStrength | null | undefined, retired = false): Standing {
++  if (retired) return { group: 0, rating: strength?.rating ?? null, retired: true };
++  const tier = strength?.tier ?? 0;
++  return { group: tier >= 2 ? 3 : tier === 1 ? 2 : 1, rating: strength?.rating ?? null };
++}
++
++/** ★★, then ★, then the rest, then retired decks; within each by review rating (unknown last), then the given order. */
++export function sortByStanding<D>(decks: readonly D[], standing: (deck: D) => Standing): D[] {
++  return decks
++    .map((deck, index) => ({ deck, index, key: standing(deck) }))
++    .sort((a, b) => b.key.group - a.key.group || (b.key.rating ?? -1) - (a.key.rating ?? -1) || a.index - b.index)
++    .map(({ deck }) => deck);
++}
++
++/** A saved deck's tile label when its cards are one of our decks (`cards`: its size, "40 cards"); null for the player's own
++ * (it keeps its format label). */
++export function copyLabel(copy: CopyOf | null, cards: string): string | null {
++  if (!copy) return null;
++  // the reason, not the count: a tile has room for one of them
++  if (copy.kind === 'retired') return copy.reason === 'colour' ? 'Retired: breaks the colour rule' : 'Retired';
++  const tier = copy.starter.strength?.tier ?? 0;
++  return `Your copy · ${tier >= 2 ? '★★ starter' : tier === 1 ? '★ starter' : 'starter'} · ${cards}`;
++}
++
++/** A name that looks like one of our starters' (old or new), so a changed copy says it is not rated any more. */
++export function looksLikeStarterName(name: string): boolean {
++  return /^(★|dsk[ _-]|good_|trophy_|typical_)/i.test(name.trim());
++}
++
++/** A saved deck as the sync sees it (its storage summary). */
++export interface SavedCopy {
++  id: string;
++  name: string;
++  sig?: string;
++  sideboardCount?: number;
++  updatedAt: number;
++  /** the player named or made this deck (Rename, Duplicate, import, the deck builder): its name is theirs */
++  playerNamed?: boolean;
++}
++
++export interface StarterSyncPlan {
++  /** unmodified copies of today's starters to rename to the starter's name of today */
++  renames: { id: string; name: string }[];
++  /** exact duplicate copies to delete, each with the copy that stays */
++  removals: { id: string; keptId: string }[];
++  /** copies of retired decks (they keep their name) */
++  retired: string[];
++  /** the selected deck afterwards */
++  selectedId: string | null;
++  /** the sleeves afterwards (deleted decks' entries dropped; a kept copy without a sleeve takes a deleted one's) */
++  sleeves: Record<string, string>;
++  /** a one-line note for the player when anything changed, else null */
++  message: string | null;
++}
++
++/**
++ * The sync of saved starter copies with today's starters (pure; useDecks.refresh applies it). Only unmodified copies
++ * take part: the cards of one of our decks (deckSig), no sideboard (our starters have none) and a name the player did
++ * not give it. Exact duplicates beyond the most recently saved one are deleted; a copy of a listed starter takes that
++ * starter's name of today; a copy of a retired deck keeps its name. A deck the player changed is never touched.
++ * Running it again on its own result changes nothing.
++ */
++export function planStarterSync<T extends StrengthEntry>(
++  saved: readonly SavedCopy[],
++  starters: readonly T[],
++  strengths: readonly StrengthEntry[],
++  selectedId: string | null,
++  sleeves: Record<string, string>,
++): StarterSyncPlan {
++  const groups = new Map<string, { copy: CopyOf<T>; decks: SavedCopy[] }>();
++  for (const deck of saved) {
++    if (deck.playerNamed || (deck.sideboardCount ?? 0) > 0) continue;
++    const copy = copyOf(deck.sig, starters, strengths);
++    if (!copy) continue;
++    const group = groups.get(deck.sig!) ?? { copy, decks: [] };
++    group.decks.push(deck);
++    groups.set(deck.sig!, group);
++  }
++  const plan: StarterSyncPlan = { renames: [], removals: [], retired: [], selectedId, sleeves: { ...sleeves }, message: null };
++  for (const { copy, decks } of groups.values()) {
++    const [kept, ...extra] = [...decks].sort((a, b) => b.updatedAt - a.updatedAt);
++    for (const deck of extra) plan.removals.push({ id: deck.id, keptId: kept.id });
++    if (extra.some((deck) => deck.id === selectedId)) plan.selectedId = kept.id;
++    if (!plan.sleeves[kept.id]) {
++      // the selected one's sleeve first, else the most recent one's
++      const donor = [...extra].sort((a, b) => Number(b.id === selectedId) - Number(a.id === selectedId)).find((deck) => sleeves[deck.id]);
++      if (donor) plan.sleeves[kept.id] = sleeves[donor.id];
++    }
++    for (const deck of extra) delete plan.sleeves[deck.id];
++    if (copy.kind === 'starter' && kept.name !== copy.starter.name) plan.renames.push({ id: kept.id, name: copy.starter.name });
++    if (copy.kind === 'retired') plan.retired.push(kept.id);
++  }
++  const parts: string[] = [];
++  const n = plan.renames.length;
++  const m = plan.removals.length;
++  if (n) parts.push(`Updated ${n} saved deck${n === 1 ? '' : 's'} to the current starter name${n === 1 ? '' : 's'}`);
++  if (m) parts.push(`${n ? 'removed' : 'Removed'} ${m} duplicate cop${m === 1 ? 'y' : 'ies'}`);
++  plan.message = parts.length ? parts.join('; ') : null;
++  return plan;
++}
+diff --git a/Mage.Web.Client/src/core/decks/types.ts b/Mage.Web.Client/src/core/decks/types.ts
+index 36cc39d4f4..b0ec5ba8c1 100644
+--- a/Mage.Web.Client/src/core/decks/types.ts
++++ b/Mage.Web.Client/src/core/decks/types.ts
+@@ -71,4 +71,7 @@ export interface DeckCardLists {
+   updatedAt?: number;
+   /** what to swap against each kind of deck between games */
+   sideboardPlans?: SideboardPlan[];
++  /** mtg-ai: the player named or made this deck (Rename, Duplicate, import, the deck builder), so the starter sync
++   * (core/decks/starterCopies.ts) never renames or removes it */
++  playerNamed?: boolean;
+ }

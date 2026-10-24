@@ -126,6 +126,10 @@ with the earlier recording's 40 cards (the short one kept as `deck-X.partial.dck
 - `patches/0013`: "Opponent can't win: end game (claim win)" in the game menu against the computer: every computer
   opponent concedes and the result says `"ended_by": "human_claim"`; the AI deck matcher also knows unlisted rated decks
   (`starter-decks/strengths.json`), so an old saved copy still gets a matched opponent.
+- `patches/0014`: saved copies of our starters stay in step: on each load an unmodified copy is renamed to the current
+  starter name, exact duplicates are merged, copies of retired decks are labelled "Retired" and sorted last (hidden by
+  Good only); one sort for saved and starter decks by real strength; tiles say "Your copy · ★★ starter". Decks the
+  player renamed, duplicated, imported or built are flagged and never touched.
 - `patches/0007`: blocks: attackers that must be blocked if able are marked, blocks that leave one unblocked are held
   back once with a message, and the server's messages to the player (why a block was refused) are shown.
 - Our two XMage rule fixes (`engine/xmage/BecomesFaceDownCreatureEffect.java`, `VeteranSurvivor.java`) are copied over
