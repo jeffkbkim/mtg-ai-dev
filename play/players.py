@@ -177,6 +177,7 @@ class ClaudePlayer:
         self.conv_pregame = False  # the current conversation has only seen pre-game (mulligan) decisions
         self.plan = None           # latest plan from the player's replies (plan mode)
         self.checked_combat = None  # (turn, ATTACK/BLOCK) of the last combat that got its self-check
+        self.restart_note = None   # why the next conversation starts (a take-back), instead of the usual line
         self.workdir = tempfile.mkdtemp(prefix="claude-seat-")
         system = system_prompt(deck_path, self.texts, self.lessons, self.plan_mode, self.facts, self.primer)
         self.prompt_sha = hashlib.sha256(system.encode()).hexdigest()[:12]  # recorded per decision: prompt versions must not be pooled
@@ -319,8 +320,9 @@ class ClaudePlayer:
             self.seen = set()  # a new conversation hasn't seen any card text yet
             self.conv_pregame = True
             head = ("A new game starts." if not self.asked_any else
-                    "The game continues (your conversation was restarted to keep it short). Game log so far:\n"
-                    + "\n".join(self.log[-self.LOG_LINES:]))
+                    (self.restart_note or "The game continues (your conversation was restarted to keep it short).")
+                    + " Game log so far:\n" + "\n".join(self.log[-self.LOG_LINES:]))
+            self.restart_note = None
         else:
             head = "Since your previous decision: " + ("; ".join(self.pending) if self.pending else "nothing visible changed.")
         self.pending = []
@@ -423,6 +425,51 @@ class ClaudePlayer:
             return choice, reason, until, plan
         info["self_check"]["changed"] = c2 != choice
         return c2, r2, u2, (p2 if p2 else plan)
+
+    UNDONE = "(undone by {how}) "
+    _LINE_TURN = re.compile(r"turn (\d+): ")
+
+    def _take_back(self, to_turn, how):
+        """After the log is marked: the game is back at the start of turn to_turn, so the next decision starts a
+        fresh conversation with the log (no diff against an observation from the undone part)."""
+        self.log.append(f"turn {to_turn}: the game went back to the start of turn {to_turn} ({how}); lines marked "
+                        f"\"(undone ...)\" did not happen in this game, though you saw them")
+        self.pending, self.prev_obs, self.pass_until = [], None, None
+        self.round_turn, self.checked_combat, self.conv_pregame = None, None, False
+        self.asked_any = self.asked_any or bool(self.log)
+        self.restart_note = (f"The game went back to the start of turn {to_turn} ({how}), so your conversation was "
+                             "restarted. What was undone is marked in the log: it did not happen in this game, but what "
+                             "you saw then you still know (and so does your opponent, of what they saw).")
+        if not self.fresh:  # a prewarmed process that has seen nothing can start the new conversation
+            self._close()
+
+    def rollback(self, to_turn, how="a rollback"):
+        """The game went back to the start of turn to_turn (a take-back the opponent asked for). Log lines of that
+        turn and later are kept (both players saw them) but marked as undone."""
+        if not hasattr(self, "log"):
+            return  # no game started yet
+        tag = self.UNDONE.format(how=how)
+        for i, line in enumerate(self.log):
+            m = self._LINE_TURN.match(line)
+            if m and int(m.group(1)) >= to_turn:
+                self.log[i] = tag + line
+        self._take_back(to_turn, how)
+
+    def resume(self, records, from_turn):
+        """A game carried on from the start of turn from_turn of an earlier recording (a new table): rebuild the
+        log this seat had there from its recorded decisions (each with "undone": how, or None, oldest first), as
+        choose() wrote it, then go on as after a rollback. Call after start_game."""
+        prev = None
+        for r in records:
+            if r.get("rule") or r.get("auto") == "own_stack" or r.get("leak_blocked"):
+                continue  # answered by the service without the player (choose() never saw it)
+            g = r["obs"]["entries"][0]
+            tag = self.UNDONE.format(how=r["undone"]) if r.get("undone") else ""
+            self.log += [f"{tag}turn {g['turn']}: {line}" for line in events(prev, r["obs"])]
+            prev = r["obs"]
+            if "reason" in r and 0 <= r.get("choice", -1) < len(r["options"]):
+                self.log.append(f"{tag}turn {g['turn']}: you chose \"{option_label(r['options'][r['choice']], r['obs']['entries'])}\" ({r['reason']})")
+        self._take_back(from_turn, "a take-back: this game carries on a saved turn of the earlier one")
 
     def end_game(self, result):
         self._close()

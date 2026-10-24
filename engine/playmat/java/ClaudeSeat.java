@@ -17,8 +17,11 @@ import java.net.Socket;
  * Messages on the socket are PySeat's, plus: {"type":"hello", model, effort} when the seat is created (the table is
  * set up); {"type":"prewarm", deck} when the game is dealt its deck, so the service can start the model before the first
  * decision; the first decision of each game carries "start" (game id, folder, seat letter, deck file);
- * {"type":"game_end", ...games.jsonl line} after each game; {"type":"end"} when the match ends. None of these is
- * answered.
+ * {"type":"game_end", ...games.jsonl line} after each game; {"type":"rollback", "to_turn": N} when the game goes back
+ * to the start of turn N (a take-back; the service restarts the conversation and marks the undone part of the log);
+ * {"type":"end"} when the match ends. None of these is answered. When the game carries on a saved turn of an earlier
+ * recording (GameRecorder.onResumed), "start" also has "resumed_from": {dir, seat (this player's seat letter there),
+ * turn}, so the service can give the model the log of the earlier game.
  *
  * The model and effort come from the seat's skill, which the web client sets (see 0006's claudeSkill): model index * 3
  * + effort index + 1, Opus 5.5 then Sonnet 5.5, low/medium/high. Any other skill is Opus 5.5 high.
@@ -132,6 +135,17 @@ public class ClaudeSeat extends PySeat {
         start.addProperty("dir", r.dir.toString());
         start.addProperty("seat", seat);
         start.addProperty("deck", r.deckFile(seat).toString());
+        synchronized (r) {
+            if (r.resumedFromTurn != null) {
+                JsonObject from = new JsonObject();
+                from.addProperty("turn", r.resumedFromTurn);
+                if (r.resumedFromDir != null && r.resumedSeats.containsKey(seat)) {
+                    from.addProperty("dir", r.resumedFromDir.toString());
+                    from.addProperty("seat", r.resumedSeats.get(seat));
+                }
+                start.add("resumed_from", from);
+            }
+        }
         msg.add("start", start);
     }
 
@@ -139,6 +153,13 @@ public class ClaudeSeat extends PySeat {
     protected void onReply(JsonObject reply, Game game) {
         GameRecorder r = GameRecorder.find(game);
         if (r != null && reply.has("player")) r.setPlayerName(r.seat(playerId), reply.get("player").getAsString());
+    }
+
+    void sendRollback(int toTurn) {
+        JsonObject rb = new JsonObject();
+        rb.addProperty("type", "rollback");
+        rb.addProperty("to_turn", toTurn);
+        send(rb);
     }
 
     void sendGameEnd(JsonObject result) {

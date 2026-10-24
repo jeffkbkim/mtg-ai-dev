@@ -14,8 +14,10 @@ One line per finished game, combining three signals that every recording already
   than a bug.
 
 Verdicts: "unusable" (a bug that corrupts every game on that seat version, or the game did not finish), "suspect"
-(something decided or changed the board that the player never chose, or the reviewer reported a bug), "clean"
-(none of the above). "cautions" lists weaker signals that may or may not have fired (a payer that could strand
+(something decided or changed the board that the player never chose, the reviewer reported a bug, or, for Playmat
+recordings, a later table carried the game on from one of its turns, so its result is not how the game ended), "clean"
+(none of the above). Decisions marked "superseded" (undone by a take-back, see engine/playmat/README.md) are not
+counted or scanned; a game with a turn rollback, or one that carries on an earlier recording, gets a caution. "cautions" lists weaker signals that may or may not have fired (a payer that could strand
 colours, a buggy card that appeared, moves refused after being offered). Nothing is deleted or moved; the
 manifest is a view, rebuilt from scratch on every run.
 """
@@ -95,7 +97,7 @@ def game_records(path):
 def one_game(part, cfg, end, counters, part_games, root):
     g = end["game"]
     gf = part / f"game{g}.jsonl"
-    recs = list(game_records(gf)) if gf.exists() else []
+    recs = [r for r in game_records(gf) if not r.get("superseded")] if gf.exists() else []
     cards = {e["name"] for r in recs for e in r.get("obs", {}).get("entries", []) if e.get("kind") == "card"}
     rooms = {c for c in cards if " // " in c}
     commit = cfg.get("code_commit", "")
@@ -106,6 +108,19 @@ def one_game(part, cfg, end, counters, part_games, root):
            "decisions": {s: sum(1 for r in recs if r.get("seat") == s and not r.get("auto")) for s in "AB"},
            "part_games": part_games, "reviewed": all((part / f"game{g}.review-{s}.json").exists() for s in "AB"),
            "reasons": [], "cautions": [], "flags": []}
+    # take-backs (Playmat)
+    sb = cfg.get("superseded_by") or ({"game_id": end["superseded_by"], "from_turn": end.get("superseded_from_turn")}
+                                      if end.get("superseded_by") else None)
+    if sb:
+        row["reasons"].append({"source": "take_back", "level": "suspect",
+                               "what": f"resumed in {sb['game_id']} from turn {sb.get('from_turn')}: the result here is not how the game ended"})
+    if cfg.get("rollbacks"):
+        row["cautions"].append({"source": "take_back", "level": "caution",
+                                "what": "rolled back to turn " + ", ".join(str(r["to_turn"]) for r in cfg["rollbacks"])
+                                        + ": the undone decisions are left out, and both players knew what the undone turns showed"})
+    if cfg.get("resumed_from_turn") is not None:
+        row["cautions"].append({"source": "take_back", "level": "caution",
+                                "what": f"carries on {cfg.get('resumed_from') or 'an unrecorded game'} from turn {cfg['resumed_from_turn']}"})
     # seat version
     for fix, level, when, what in FIXES:
         if fixed_in(commit, fix):
@@ -173,7 +188,9 @@ def build(paths, root):
     rows = []
     for part in parts_under(paths):
         cfg = json.loads((part / "config.json").read_text())
-        ends = [r for r in (game_records(part / "games.jsonl") if (part / "games.jsonl").exists() else []) if r.get("type") == "game_end"]
+        # match.py lines are its game_end messages; Playmat's (engine/playmat/java/GameRecorder.java) have no "type"
+        ends = [r for r in (game_records(part / "games.jsonl") if (part / "games.jsonl").exists() else [])
+                if r.get("type", "game_end") == "game_end" and "game" in r]
         counters = seat_counters(part / "jvm.log")
         finished = {e["game"] for e in ends}
         for e in ends:

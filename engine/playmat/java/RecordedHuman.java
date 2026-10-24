@@ -28,6 +28,10 @@ import java.util.*;
  * BLOCK line with choice -1, "mapping": "refused" and the declared blocks in "ui".declared; the legal one is written
  * as the usual sequence when the engine accepts it (the DECLARED_BLOCKERS event), from the blocks XMage holds then,
  * with "block_attempts" (declarations it took) and "engine_adjusted": true when those differ from what was declared.
+ *
+ * A turn rollback the player asks for ends the priority window it was asked in: that window is recorded as choice -1
+ * with "ui".rollback_request (not a PASS), and what the seat still holds (an unaccepted block declaration, hand-tapped
+ * mana) is written or dropped when the rollback happens (onRollback). GameRecorder marks the undone decisions.
  */
 public class RecordedHuman extends HumanPlayer {
 
@@ -127,6 +131,10 @@ public class RecordedHuman extends HumanPlayer {
                 if (hasLeft() || hasLost()) {
                     // the window ended with a concession, not a pass
                     ui.addProperty("conceded", true);
+                    shadow().record(game, p, -1, "unmapped", ui);
+                } else if (game.executingRollback()) {
+                    // the window ended with the player's take-back request (XMage aborts the human seats), not a pass
+                    ui.addProperty("rollback_request", true);
                     shadow().record(game, p, -1, "unmapped", ui);
                 } else {
                     if (waits == w) {
@@ -314,6 +322,10 @@ public class RecordedHuman extends HumanPlayer {
      * blocks XMage holds, flagged when they differ from what the player declared.
      */
     void flushBlocks(Game game, boolean accepted) {
+        flushBlocks(game, accepted, false);
+    }
+
+    private void flushBlocks(Game game, boolean accepted, boolean rolledBack) {
         Shadow.Pending p = blockPending;
         if (p == null) return;
         blockPending = null;
@@ -327,9 +339,27 @@ public class RecordedHuman extends HumanPlayer {
             extra.add("declared", declared);
         }
         if (!accepted) extra.addProperty("block_unconfirmed", true);  // the game ended before the engine accepted it
+        if (rolledBack) extra.addProperty("rolled_back", true);  // a rollback came before the engine accepted it
         p.msg.add("extra", extra);
         p.msg.addProperty("ts_at", blockTs);
         shadow().recordSequence(game, p, held);
+    }
+
+    /**
+     * The game is going back to the start of an earlier turn (GameRecorder, from the game log; the state isn't put
+     * back yet). A block declaration the engine never accepted is written as it stood (superseded at the merge, like
+     * everything else of the undone turns); mana tapped by hand in the undone part is dropped, not counted against the
+     * next decision.
+     */
+    void onRollback(Game game) {
+        if (blockPending != null) flushBlocks(game, false, true);
+        blockPending = null;
+        blockDeclared = null;
+        blockAttempts = 0;
+        blockTurn = 0;
+        pendingPriority = null;
+        manualMana = 0;
+        depth = 0;  // the rollback runs from the game loop, outside any of this seat's decisions
     }
 
     /** Tells the defending RecordedHuman when the engine has accepted its blocks. */

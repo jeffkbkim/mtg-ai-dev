@@ -131,7 +131,8 @@ def review_one(game_file, seat, args, texts):
     out_path = game_file.with_name(f"{game_file.stem}.review-{seat}.json")
     if out_path.exists():
         return out_path, "kept"
-    records = [json.loads(l) for l in open(game_file) if l.strip()]
+    # decisions undone by a take-back (engine/playmat/README.md) are left out
+    records = [r for r in (json.loads(l) for l in open(game_file) if l.strip()) if not r.get("superseded")]
     mine = [r for r in records if r.get("seat") == seat]
     if not mine:
         return out_path, "no decisions"
@@ -146,6 +147,9 @@ def review_one(game_file, seat, args, texts):
             if g.get("game") == game_no:
                 won = "won" if g.get("winner") == seat else ("lost" if g.get("winner") else "no winner")
                 result_line = f"this player {won}; the game ended on turn {g.get('turns')}"
+                if g.get("ended_by") == "resumed elsewhere":
+                    result_line = (f"not known: the game was carried on at another table from turn {g.get('superseded_from_turn')}, "
+                                   "and this transcript stops there")
     text, asked = seat_transcript(records, seat, deck, texts, result_line)
     reply = parsed = None
     cost = secs = 0.0

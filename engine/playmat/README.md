@@ -56,11 +56,45 @@ Each game gets `~/mtg-data/playmat-games/<date>/<game id>/` (`java/GameRecorder.
     the whole game, hidden cards included, so these lines are for reviewing what it did, not imitation labels.
 - `seat-A.jsonl`, `seat-B.jsonl`: the same decisions per seat, written as they happened.
 - `games.jsonl`: winner, turns, who started, lives, players, decks. `config.json`: seats, deck files, Playmat and
-  mtg-ai commits. `deck-A.dck`, `deck-B.dck`: each seat's 40 cards. `game_log.jsonl`: the game log every player sees.
+  mtg-ai commits. `deck-A.dck`, `deck-B.dck`: each seat's 40 cards (counted over every zone at the seat's first
+  decision, so a resumed game has all 40 too; a count other than 40, or a deck that differs from the resumed game's,
+  is listed in config.json's `warnings`). `game_log.jsonl`: the game log every player sees.
 - `errors.log` (Claude seats only, when it happens): a decision flagged as leaking (never shown to the model; option
   0 played, `"leak_blocked": true`) or a model failure after its retries (option 0, `"service_error": true`).
 
 Each game of a best-of-three gets its own folder. Playmat also keeps its own replays (`~/playmat-run/data/server/saved`).
+
+### Take-backs
+
+Playmat lets the player take a turn back in two ways, and both are recorded. Nothing is deleted: what was undone is
+marked.
+
+- **Rollback** (XMage's "Player request: Rolling back to start of turn N"): the same game and folder. config.json gets
+  `has_rollback: true` and `rollbacks` [{ts, to_turn, from_turn}], the games.jsonl line `rollbacks`. In game0.jsonl
+  each decision recorded before the rollback, from turn N on, gets `"superseded": true, "superseded_by": "rollback"`,
+  and every decision after the first rollback `"after_rollback": true` (the seat files stay as written). The priority
+  window the player asked from is a choice -1 line with `ui.rollback_request`, not a PASS. A Claude seat is told
+  (`{"type": "rollback"}`): its conversation restarts, with its log lines from turn N on kept but marked "(undone by
+  a rollback)".
+- **Resume** (Playmat's take-back / "try this turn again" / a saved game: "The game carries on from the start of
+  turn N"): a new game id and folder. Its config.json gets `resumed_from_turn`, `resumed_from` (the earlier game's id:
+  the latest recording of the same players that reached turn N and ended at most ten minutes before, or never
+  ended), `resumed_from_dir` and `resumed_from_seats` (seat letters can swap between the two). The earlier folder gets
+  `superseded_by.json` {game_id, from_turn, ts, dir} (also in its config.json), `"ended_by": "resumed elsewhere"` on its
+  games.jsonl line (the winner there is whoever was ahead when the player left, not a real result), and its decisions
+  from turn N on are superseded (`"superseded_by": "resume:<new id>"`). A Claude seat in the new game gets the log it
+  had in the earlier one(s), rebuilt from their seat files, the part from turn N on marked "(undone by a take-back)".
+
+XMage restores the whole state at the start of turn N, library order and the game's random generator included, so
+the same cards are drawn again in the same order. Both players remember what the undone turns showed (the human his
+own next draws, any card the opponent cast or revealed; Claude the same from its marked log). Games with a take-back
+are not clean evaluation games, and the decisions after one are made with that knowledge: `play/manifest.py` calls a
+superseded game "suspect" and gives rollback and resumed games a caution; it, `play/review.py` and
+`play/review_turns.py` leave superseded decisions out (summarize.py still counts their cost: it was spent).
+
+`engine/playmat/fix_resumed_recordings.py` applies the same marks to folders recorded before this (dry run by default,
+`--apply` to write; each rewritten file is kept once as `.orig`). It also replaces a resumed folder's short deck files
+with the earlier recording's 40 cards (the short one kept as `deck-X.partial.dck`).
 
 ## What is where
 
@@ -86,7 +120,8 @@ Each game of a best-of-three gets its own folder. Playmat also keeps its own rep
   ClaudePlayer per seat. A Claude seat can't be seated when the service is down (the table says so).
 - `java/RecordedHuman.java`, `java/RecordedMad.java`: Playmat's human seat and standard AI, unchanged in play, with
   their decisions recorded through `java/Shadow.java` (PySeat's options, built before the decision).
-- `java/GameRecorder.java`: the game folder, decks, game log, result and the merge into `game0.jsonl`.
+- `java/GameRecorder.java`: the game folder, decks, game log, result, the merge into `game0.jsonl` and the take-back
+  marks; `fix_resumed_recordings.py` does the same for older folders.
 - `dsk_starters.py`: our DSK decks as Playmat starter decks.
 - `run.sh`: Playmat's desktop launcher, headless (server, web client on 17170, its own data in `~/playmat-run/data`,
   accounts off), and the Claude service, both in the background.

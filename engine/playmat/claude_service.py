@@ -19,13 +19,21 @@ Settings default to the latest batches' (facts and self-check on, no plan, no le
 leaking hidden information never reaches the model: option 0 is played and the record says "leak_blocked" (match.py
 stops the run instead; here a person is waiting at the table). A model failure after ClaudePlayer's own retries is
 handled the same way ("service_error") and logged to <folder>/errors.log.
+
+Take-backs: a {"type": "rollback", "to_turn": N} (the game went back to the start of turn N, same folder) restarts
+the player's conversation, with its log lines from turn N on kept but marked as undone (both players saw them). A
+game that carries on a saved turn of an earlier recording (its "start" has "resumed_from": {dir, seat, turn}) gets
+the log this seat had there, rebuilt from that folder's seat file (and the ones it resumed in turn), the part from
+turn N on marked as undone, so the player knows what the human at the table remembers.
 """
 import argparse, json, socket, sys, tempfile, threading, time, traceback
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "play"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from players import ClaudePlayer, read_deck  # noqa: E402
+from fix_resumed_recordings import seat_history  # noqa: E402
 
 START_PROMPT = "Select a starting player"
 
@@ -67,6 +75,10 @@ def serve_seat(conn, args, log):
                 warmed = (read_deck(deck), {"spawn_seconds": round(time.time() - t0, 3)})
                 log(f"prewarmed {model} {effort}")
                 continue
+            if msg.get("type") == "rollback":
+                player.rollback(int(msg["to_turn"]))
+                log(f"seat {seat} rollback to the start of turn {msg['to_turn']}: conversation restarted")
+                continue
             if msg.get("type") == "game_end":
                 player.end_game(msg)
                 log(f"seat {seat} game over: {json.dumps({k: msg.get(k) for k in ('winner', 'turns', 'a', 'b')})}")
@@ -84,6 +96,17 @@ def serve_seat(conn, args, log):
                 warmed = None
                 started = True
                 log(f"seat {seat} started in {folder}" + (" (prewarmed)" if prewarm else ""))
+                rf = start.get("resumed_from")
+                if rf and rf.get("dir"):
+                    try:
+                        hist = seat_history(rf["dir"], rf["seat"], rf["turn"])
+                        player.resume(hist, rf["turn"])
+                        log(f"seat {seat} resumes {Path(rf['dir']).name} from turn {rf['turn']}: {len(hist)} earlier decisions "
+                            f"({sum(bool(r['undone']) for r in hist)} undone) rebuilt into the log")
+                    except Exception:
+                        (folder / "errors.log").open("a").write(f"seat {seat} resumed game: the earlier log could not be rebuilt\n{traceback.format_exc()}\n")
+                elif rf:
+                    log(f"seat {seat} resumes from turn {rf['turn']}, but no earlier recording was found: the log starts empty")
             if not started:
                 raise RuntimeError("decision before the game's start message")
             t0 = time.time()

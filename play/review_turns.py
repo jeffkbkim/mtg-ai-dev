@@ -261,9 +261,16 @@ def review_seat(gdir, seat, args, texts):
     out_path = gdir / f"game0.review-turns-{seat}.json"
     if out_path.exists() and not args.redo:
         return out_path, "kept", 0.0
-    records = [json.loads(l) for l in open(gdir / "game0.jsonl") if l.strip()]
-    log = [json.loads(l) for l in open(gdir / "game_log.jsonl") if l.strip()] if (gdir / "game_log.jsonl").exists() else []
     config = json.loads((gdir / "config.json").read_text())
+    # what a take-back undid (engine/playmat/README.md) is left out: decisions marked superseded, and the game log's
+    # lines from the same undone stretch (before a rollback to turn N, from turn N on; or from the turn a later game
+    # carried this one on from)
+    rbs, sb = config.get("rollbacks") or [], config.get("superseded_by")
+    undone = lambda o: (any(o.get("ts", 0) < rb["ts"] and o.get("turn", 0) >= rb["to_turn"] for rb in rbs)
+                        or bool(sb) and o.get("turn", 0) >= sb["from_turn"])
+    records = [r for r in (json.loads(l) for l in open(gdir / "game0.jsonl") if l.strip()) if not r.get("superseded")]
+    log = [o for o in (json.loads(l) for l in open(gdir / "game_log.jsonl") if l.strip())
+           if not undone(o)] if (gdir / "game_log.jsonl").exists() else []
     mine = [r for r in records if r.get("seat") == seat]
     if not mine:
         return out_path, "no decisions", 0.0
