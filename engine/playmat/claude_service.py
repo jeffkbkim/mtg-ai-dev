@@ -12,7 +12,8 @@ The seat's "hello" names the model and effort the player picked in the web clien
 are for a seat that doesn't say); every decision records both. Its "prewarm" (the game's deck, sent when the game is
 dealt) starts the model's process and writes the system prompt to the prompt cache before the first decision. With
 --play-draw rule (the default; $PLAY_DRAW in run.sh) Claude always chooses to play first without being asked, and the
-record says "source": "rule"; --play-draw claude asks the model.
+record says "source": "rule"; --play-draw claude asks the model. A priority window where only Claude's own spells and
+abilities are on the stack is passed without asking the model ("auto": "own_stack"); match.py games still ask.
 
 Settings default to the latest batches' (facts and self-check on, no plan, no lessons). A decision the engine flags as
 leaking hidden information never reaches the model: option 0 is played and the record says "leak_blocked" (match.py
@@ -27,6 +28,14 @@ sys.path.insert(0, str(ROOT / "play"))
 from players import ClaudePlayer, read_deck  # noqa: E402
 
 START_PROMPT = "Select a starting player"
+
+
+def own_stack(msg):
+    """A priority window where everything on the stack is this seat's own (no opponent spell or ability to answer)."""
+    entries = msg["obs"]["entries"]
+    stack = [e for e in entries[1:] if e.get("zone") == "STACK"]
+    return (msg["kind"] == "PRIORITY" and entries[0].get("stack_size", 0) > 0 and len(stack) == entries[0]["stack_size"]
+            and all(e.get("mine") for e in stack) and msg["options"][0]["label"] == "PASS")
 
 
 def serve_seat(conn, args, log):
@@ -84,6 +93,10 @@ def serve_seat(conn, args, log):
                 # a fixed rule: Claude plays first (Limited's usual choice), not a model decision
                 choice = next(i for i, o in enumerate(msg["options"]) if o["target"].get("player") == "me")
                 info = {"rule": "play_first", "source": "rule"}
+            elif own_stack(msg):
+                # Jeff 2026-10-24: only Claude's own spells and abilities are on the stack: pass without asking (in
+                # tonight's 23 such windows the model passed every time, ~5 s each)
+                choice, info = 0, {"auto": "own_stack"}
             elif msg.get("leaks"):
                 choice, info = 0, {"leak_blocked": True}
                 (folder / "errors.log").open("a").write(f"seat {seat} decision {idx}: leak flagged, model not asked: {msg['leaks']}\n")

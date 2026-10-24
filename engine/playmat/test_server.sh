@@ -18,7 +18,7 @@ cp -R $B/server/config $B/server/plugins $T/server/
 /opt/homebrew/bin/python3 - $T/server/config/config.xml <<'PY'
 import re,sys
 p=sys.argv[1]; s=open(p).read()
-s=re.sub(r'port="17171"','port="27171" websocketPort="27172" websocketAllowedOrigins="http://localhost:5180,http://127.0.0.1:5180,http://192.168.1.82:5180,http://localhost:4180,http://127.0.0.1:4180"',s,1)
+s=re.sub(r'port="17171"','port="27171" websocketPort="27172" websocketAllowedOrigins="http://localhost:4180,http://127.0.0.1:4180,http://localhost:4181,http://127.0.0.1:4181,http://localhost:4182,http://127.0.0.1:4182,http://localhost:4183,http://127.0.0.1:4183,http://localhost:5180,http://127.0.0.1:5180,http://192.168.1.82:5180"',s,1)
 s=s.replace('authenticationActivated="true"','authenticationActivated="false"')
 open(p,'w').write(s)
 PY
