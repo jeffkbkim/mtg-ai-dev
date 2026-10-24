@@ -1,8 +1,8 @@
 diff --git a/Mage.Web.Client/src/app/i18n/en/core.ts b/Mage.Web.Client/src/app/i18n/en/core.ts
-index 08d3213a6d..8e9bd25816 100644
+index 6f5abf1cda..ab04475b6b 100644
 --- a/Mage.Web.Client/src/app/i18n/en/core.ts
 +++ b/Mage.Web.Client/src/app/i18n/en/core.ts
-@@ -172,7 +172,11 @@ export default {
+@@ -175,7 +175,11 @@ export default {
    'ai.deck.commanderStarters': 'Commander starters',
    'ai.deck.yours': 'Your decks',
    'ai.type': 'AI',
@@ -16,10 +16,10 @@ index 08d3213a6d..8e9bd25816 100644
    'ai.type.monteCarlo': 'Monte Carlo',
    'ai.type.monteCarlo.detail': 'Experimental; plays by simulation and thinks longer.',
 diff --git a/Mage.Web.Client/src/app/i18n/es.ts b/Mage.Web.Client/src/app/i18n/es.ts
-index f0983acbd5..64656b768b 100644
+index e8fac2573a..ca89e0d06a 100644
 --- a/Mage.Web.Client/src/app/i18n/es.ts
 +++ b/Mage.Web.Client/src/app/i18n/es.ts
-@@ -177,7 +177,11 @@ const es: Catalog = {
+@@ -197,7 +197,11 @@ const es: Catalog = {
    'ai.deck.commanderStarters': 'Mazos iniciales de commander',
    'ai.deck.yours': 'Tus mazos',
    'ai.type': 'IA',
@@ -78,7 +78,7 @@ index 624dec02a9..7c8073e5bf 100644
      t(options.winsNeeded === 2 ? 'ai.summary.bestOf3' : 'ai.summary.bestOf1'),
    ];
 diff --git a/Mage.Web.Client/src/app/stores/play.ts b/Mage.Web.Client/src/app/stores/play.ts
-index cf7bf56e51..bfcd7dfc3e 100644
+index 3404f960ca..cc05438f88 100644
 --- a/Mage.Web.Client/src/app/stores/play.ts
 +++ b/Mage.Web.Client/src/app/stores/play.ts
 @@ -26,7 +26,8 @@ const FREEFORM_COMMANDER = 'Variant Magic - Freeform Commander';
@@ -105,7 +105,7 @@ index cf7bf56e51..bfcd7dfc3e 100644
    if (decks.length === 0 && chosen) decks.push(await starterDeck(chosen.file, chosen.name));
 @@ -197,11 +201,13 @@ export const usePlay = create<PlayState>((set, get) => ({
      // the guided first game: the easiest AI with a random starter deck, one game, nothing unusual
-     // a format deck for the player (Home's Meta deck mode): the format's rules, and the AI takes one of its decks too
+     // a format deck for the player (Home's Format deck mode): the format's rules, and the AI takes one of its decks too
      const metaGame = deckId.startsWith(META_PREFIX) || deckId.startsWith(RANDOM_META_PREFIX);
 -    const options: AiOptions = practice || guided
 +    const chosen: AiOptions = practice || guided

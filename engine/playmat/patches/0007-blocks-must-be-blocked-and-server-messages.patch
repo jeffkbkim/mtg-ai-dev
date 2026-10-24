@@ -13,7 +13,7 @@ index aea94db726..46bafdc3b1 100644
      const heard = blocked.size > 0 ? chat.entries.filter((entry) => entry.tone !== 'chat' || !entry.who || !blocked.has(entry.who.toLowerCase())) : chat.entries;
      const visible = muted ? heard.filter((entry) => entry.tone !== 'chat' || entry.who === myName) : heard;
 diff --git a/Mage.Web.Client/src/app/match/MatchStage.tsx b/Mage.Web.Client/src/app/match/MatchStage.tsx
-index a9a0bf5f28..3d769270f4 100644
+index 0ddabefa03..0b5f710323 100644
 --- a/Mage.Web.Client/src/app/match/MatchStage.tsx
 +++ b/Mage.Web.Client/src/app/match/MatchStage.tsx
 @@ -27,6 +27,7 @@ import { usePlay } from '../stores/play';
@@ -24,7 +24,7 @@ index a9a0bf5f28..3d769270f4 100644
  import { Button } from '../ui/Button';
  import { CardFace } from '../ui/CardFace';
  import { Dialog } from '../ui/Dialog';
-@@ -224,6 +225,16 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+@@ -223,6 +224,16 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
    );
    const stack = useMemo(() => Object.values(view?.stack ?? {}), [view?.stack]);
  
@@ -41,7 +41,7 @@ index a9a0bf5f28..3d769270f4 100644
    const onCommand = useCallback((command: Command) => {
      // Cancel on a payment is never dropped: auto-pay keeps a tap with the server most of the time
      if (command.type === 'boolean' && !command.value && session.getState().interaction.mode === 'payMana') {
-@@ -232,6 +243,17 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+@@ -231,6 +242,17 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
      }
      // one answer per question: while the server works on the last one, further answers are dropped
      if (command.type !== 'action' && session.getState().awaitingServer) return;
@@ -60,7 +60,7 @@ index a9a0bf5f28..3d769270f4 100644
        setHolding(command.action === 'HOLD_PRIORITY');
      }
 diff --git a/Mage.Web.Client/src/app/match/PermanentStack.tsx b/Mage.Web.Client/src/app/match/PermanentStack.tsx
-index f649815245..161893797a 100644
+index 93e4a5abc3..f2be2f9d65 100644
 --- a/Mage.Web.Client/src/app/match/PermanentStack.tsx
 +++ b/Mage.Web.Client/src/app/match/PermanentStack.tsx
 @@ -1,5 +1,5 @@
@@ -70,7 +70,7 @@ index f649815245..161893797a 100644
    ShieldHalf, Skull, Sword, Swords, Users, Zap, type LucideIcon,
  } from 'lucide-react';
  import { memo, useMemo, useRef, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
-@@ -67,6 +67,7 @@ const KEYWORD_ICONS: Record<MarkedKeyword, LucideIcon> = {
+@@ -68,6 +68,7 @@ const KEYWORD_ICONS: Record<MarkedKeyword, LucideIcon> = {
    Shroud: EyeOff,
    Ward: ShieldHalf,
    Protection: ShieldCheck,
@@ -79,10 +79,10 @@ index f649815245..161893797a 100644
  
  /** The layer each keyword effect draws (PermanentStack.module.css); float moves the card itself. */
 diff --git a/Mage.Web.Client/src/app/screens/aiSetupOffer.test.ts b/Mage.Web.Client/src/app/screens/aiSetupOffer.test.ts
-index da735fd9bd..952cf79eaf 100644
+index 6642b73377..0e98a80a79 100644
 --- a/Mage.Web.Client/src/app/screens/aiSetupOffer.test.ts
 +++ b/Mage.Web.Client/src/app/screens/aiSetupOffer.test.ts
-@@ -5,7 +5,7 @@ import { aiDeckLabel, offeredAiTypes, seatableAiType } from './aiSetup';
+@@ -8,7 +8,7 @@ import { aiDeckLabel, describeAi, offeredAiTypes, seatableAiType } from './aiSet
  
  describe('AI types a server offers', () => {
    it('lists every type until the server has said, then only the ones it has', () => {

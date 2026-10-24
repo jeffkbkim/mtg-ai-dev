@@ -176,7 +176,7 @@ index bf52388c2f..5f7de31d39 100644
    position: absolute;
    left: 0;
 diff --git a/Mage.Web.Client/src/app/match/MatchStage.tsx b/Mage.Web.Client/src/app/match/MatchStage.tsx
-index 5bcc389d58..a9a0bf5f28 100644
+index a8b6bc5f1d..0ddabefa03 100644
 --- a/Mage.Web.Client/src/app/match/MatchStage.tsx
 +++ b/Mage.Web.Client/src/app/match/MatchStage.tsx
 @@ -10,6 +10,7 @@ import { parsePayment } from '../../core/game/payment';
@@ -187,7 +187,7 @@ index 5bcc389d58..a9a0bf5f28 100644
  import { delayLabel, isBroadcastDelay } from '../../core/game/broadcastDelay';
  import { spectatorHand } from '../../core/game/spectatorHand';
  import { matchProgress } from '../../core/game/matchProgress';
-@@ -500,6 +501,7 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+@@ -518,6 +519,7 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
                  sleeve={theirSleeves.get(opponent.player.playerId!) ?? sleeves.theirs}
                  look={lookOf(opponent.player)}
                  handCount={opponent.player.handCount ?? 0}
@@ -195,7 +195,7 @@ index 5bcc389d58..a9a0bf5f28 100644
                  clickable={clickable}
                  selected={interaction.selected}
                  quiet={EMPTY}
-@@ -778,13 +780,15 @@ function Row({ groups, left, width, top, ideal, min, forward, label, flip, ...re
+@@ -796,13 +798,15 @@ function Row({ groups, left, width, top, ideal, min, forward, label, flip, ...re
  }
  
  /** An opponent's half: their rows mirrored above the seam, their seat, piles and hidden hand. */
@@ -212,7 +212,7 @@ index 5bcc389d58..a9a0bf5f28 100644
    deciding: boolean;
    commanders: readonly CommanderStatus[];
    commanderDamage: readonly { name: string; amount: number }[];
-@@ -825,23 +829,41 @@ function OpponentSide({ board, index, count, sleeve, handCount, deciding, layout
+@@ -843,23 +847,41 @@ function OpponentSide({ board, index, count, sleeve, handCount, deciding, layout
          </div>
        )}
        {count > 1 && !layout.tall && <span className={styles.seatName} style={{ left: place.left + 16 }} aria-hidden="true">{player.name}</span>}
@@ -325,7 +325,7 @@ index 28604ea69f..764af196df 100644
    position: absolute;
    right: 3%;
 diff --git a/Mage.Web.Client/src/app/match/PermanentStack.tsx b/Mage.Web.Client/src/app/match/PermanentStack.tsx
-index 3c49ce4af7..f649815245 100644
+index 6176ffc1b0..93e4a5abc3 100644
 --- a/Mage.Web.Client/src/app/match/PermanentStack.tsx
 +++ b/Mage.Web.Client/src/app/match/PermanentStack.tsx
 @@ -1,8 +1,9 @@
@@ -339,7 +339,7 @@ index 3c49ce4af7..f649815245 100644
  import { keywordEffects, keywordMarks, type KeywordEffect, type MarkedKeyword } from '../../core/game/keywords';
  import type { PermanentView } from '../../protocol/generated/views';
  import { useSettings } from '../stores/settings';
-@@ -184,6 +185,8 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+@@ -185,6 +186,8 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
    const counters = (permanent.counters ?? []).filter((counter) => (counter.count ?? 0) > 0);
    const isCreature = (permanent.cardTypes ?? []).includes('CREATURE');
    const loyalty = permanent.loyalty || permanent.defense;
@@ -348,7 +348,7 @@ index 3c49ce4af7..f649815245 100644
    // summoning sick: it can't attack or tap yet, so it dozes (the server's flag ignores haste; a hasty creature is awake)
    const asleep = isCreature && !!permanent.summoningSickness && !keywords.some((mark) => mark.name === 'Haste');
    const flying = effects.includes('float');
-@@ -282,6 +285,20 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+@@ -284,6 +287,20 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
          </ul>
        )}
  
@@ -369,7 +369,7 @@ index 3c49ce4af7..f649815245 100644
        {isCreature && permanent.power !== undefined && (
          <span className={[styles.pt, ptTone(permanent)].join(' ')}>
            {permanent.power}/{permanent.toughness}
-@@ -315,6 +332,8 @@ function describe(permanent: PermanentView, state: { tapped: boolean; asleep: bo
+@@ -317,6 +334,8 @@ function describe(permanent: PermanentView, state: { tapped: boolean; asleep: bo
    const parts = [permanent.name ?? 'Permanent'];
    if (permanent.power !== undefined && (permanent.cardTypes ?? []).includes('CREATURE')) parts.push(`${permanent.power}/${permanent.toughness}`);
    parts.push(...state.keywords);

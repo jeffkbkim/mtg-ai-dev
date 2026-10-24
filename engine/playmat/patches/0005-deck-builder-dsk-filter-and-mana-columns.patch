@@ -576,10 +576,10 @@ index 00f9b0c30b..b02e5fd377 100644
  
  /** Colors the deck plays, in WUBRG order. */
 diff --git a/Mage.Web.Client/src/app/i18n/en/core.ts b/Mage.Web.Client/src/app/i18n/en/core.ts
-index 8e9bd25816..2e3900cd49 100644
+index ab04475b6b..8700044cc2 100644
 --- a/Mage.Web.Client/src/app/i18n/en/core.ts
 +++ b/Mage.Web.Client/src/app/i18n/en/core.ts
-@@ -223,6 +223,11 @@ export default {
+@@ -226,6 +226,11 @@ export default {
    'decks.copyAndEdit': 'Copy and edit',
    'decks.edit': 'Edit deck',
    'decks.duplicate': 'Duplicate',
@@ -592,10 +592,10 @@ index 8e9bd25816..2e3900cd49 100644
    'decks.remove': 'Remove deck',
    'decks.pick': 'Pick a deck to see it here.',
 diff --git a/Mage.Web.Client/src/app/i18n/es.ts b/Mage.Web.Client/src/app/i18n/es.ts
-index 64656b768b..d2256021a3 100644
+index ca89e0d06a..a119841bba 100644
 --- a/Mage.Web.Client/src/app/i18n/es.ts
 +++ b/Mage.Web.Client/src/app/i18n/es.ts
-@@ -225,6 +225,11 @@ const es: Catalog = {
+@@ -245,6 +245,11 @@ const es: Catalog = {
    'decks.sleeve': 'Funda {color}',
    'decks.copyAndEdit': 'Copiar y editar',
    'decks.edit': 'Editar mazo',
@@ -674,7 +674,7 @@ index 06fb814c34..72bf901934 100644
  
        <RenameDialog deck={renaming} onClose={() => setRenaming(null)} />
 diff --git a/Mage.Web.Client/src/app/screens/HomeScreen.tsx b/Mage.Web.Client/src/app/screens/HomeScreen.tsx
-index 0b6655d78d..7fbe144b68 100644
+index cef383a66d..6344177fe2 100644
 --- a/Mage.Web.Client/src/app/screens/HomeScreen.tsx
 +++ b/Mage.Web.Client/src/app/screens/HomeScreen.tsx
 @@ -1,7 +1,8 @@

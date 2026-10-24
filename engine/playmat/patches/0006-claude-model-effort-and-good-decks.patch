@@ -1,8 +1,8 @@
 diff --git a/Mage.Web.Client/src/app/i18n/en/core.ts b/Mage.Web.Client/src/app/i18n/en/core.ts
-index 8e9bd25816..30c6ad2ff5 100644
+index 8700044cc2..a335a65f18 100644
 --- a/Mage.Web.Client/src/app/i18n/en/core.ts
 +++ b/Mage.Web.Client/src/app/i18n/en/core.ts
-@@ -177,6 +177,14 @@ export default {
+@@ -180,6 +180,14 @@ export default {
    'ai.type.claude.detail': 'Our Claude player (mtg-ai). It thinks for a while on each decision; every move is recorded.',
    'ai.type.watch': 'Claude vs Playmat AI',
    'ai.type.watch.detail': 'Claude AI plays your selected deck against the Playmat AI, and you watch. Every move is recorded.',
@@ -18,10 +18,10 @@ index 8e9bd25816..30c6ad2ff5 100644
    'ai.type.monteCarlo': 'Monte Carlo',
    'ai.type.monteCarlo.detail': 'Experimental; plays by simulation and thinks longer.',
 diff --git a/Mage.Web.Client/src/app/i18n/es.ts b/Mage.Web.Client/src/app/i18n/es.ts
-index 64656b768b..e13b48baf5 100644
+index a119841bba..1bd856c2da 100644
 --- a/Mage.Web.Client/src/app/i18n/es.ts
 +++ b/Mage.Web.Client/src/app/i18n/es.ts
-@@ -182,6 +182,14 @@ const es: Catalog = {
+@@ -202,6 +202,14 @@ const es: Catalog = {
    'ai.type.claude.detail': 'Nuestro jugador Claude (mtg-ai). Piensa un rato en cada decisión; se graba cada jugada.',
    'ai.type.watch': 'Claude contra la IA de Playmat',
    'ai.type.watch.detail': 'La IA Claude juega tu mazo contra la IA de Playmat, y tú miras. Se graba cada jugada.',
@@ -144,7 +144,7 @@ index 7c8073e5bf..157a4e82cb 100644
      who ?? (options.opponents > 1 ? t('ai.summary.many', { count: options.opponents, difficulty }) : t('ai.summary.one', { difficulty })),
      deckName ?? t(options.rules === 'deck' ? 'ai.summary.metaDeck' : 'ai.summary.randomDeck'),
 diff --git a/Mage.Web.Client/src/app/stores/play.ts b/Mage.Web.Client/src/app/stores/play.ts
-index bfcd7dfc3e..7c4e28b6a5 100644
+index cc05438f88..c6b0aeb1e2 100644
 --- a/Mage.Web.Client/src/app/stores/play.ts
 +++ b/Mage.Web.Client/src/app/stores/play.ts
 @@ -9,7 +9,7 @@ import { deckStorage } from '../../core/decks/DeckStorageService';
@@ -187,10 +187,10 @@ index bfcd7dfc3e..7c4e28b6a5 100644
 @@ -114,9 +121,10 @@ const metaDeck = (file: string, name: string) => deckFile(`/meta-decks/${encodeU
  /**
   * Decks for the AI seats: the one picked in the AI settings for the first seat, then, for a game played in a format,
-  * that format's decks (the most played ones more often); otherwise, or when they run out, random starter decks of the
-- * same kind (commander or not). Never the same deck twice while there are others.
-+ * same kind (commander or not). Never the same deck twice while there are others. `good` (mtg-ai, the Claude AI): random
-+ * decks come from the good DSK pool (dsk-good-*), whatever the rules.
+  * that format's pool (weighted by recorded share, with a minimum weight of one); otherwise, or when it runs out,
+- * random starter decks of the same kind (commander or not). Never the same deck twice while there are others.
++ * random starter decks of the same kind (commander or not). Never the same deck twice while there are others. `good`
++ * (mtg-ai, the Claude AI): random decks come from the good DSK pool (dsk-good-*), whatever the rules.
   */
 -export async function aiDecks(chosenId: string | null, count: number, commander: boolean, format: string | null = null, avoid: string | null = null): Promise<DeckCardLists[]> {
 +export async function aiDecks(chosenId: string | null, count: number, commander: boolean, format: string | null = null, avoid: string | null = null, good = false): Promise<DeckCardLists[]> {
