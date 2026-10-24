@@ -29,6 +29,17 @@ Seth Manfield (Ultimate Guard); 17lands public game data, used only to choose wh
 - Mulligan (40 cards): keep 2-5 lands with plays by turn 3-4 (a 2-lander with cheap spells, on the draw).
   Mulligan 0-1 and 6-7 landers and hands missing a color. Keep a working 6; don't chase a better hand.
 
+## Principles (from reviewed games)
+- Count the race first: turns until you kill them and until they kill you (evasion, drains, pumps). The one losing the
+  race keeps blockers and trades; the one winning attacks. Plan only with cards you have, never with a hoped-for draw.
+- Attack before casting creatures that don't change this combat; keep mana for the trick or flip you hold.
+- In a multi-block the attacker chooses which blocker dies: count it as losing your best blocker, so don't put an
+  engine creature (a counter or token maker) in a block you can afford to skip.
+- An Aura or protection belongs on the creature that uses it. A creature locked by an opposing Aura, or exposed to a
+  shuffle, sacrifice or exile that doesn't target, is a bad host; ward stops only targeted answers.
+- Fetch or play the land whose colour unlocks the most cards in your hand.
+- Don't tap out into a threat you must answer later; with removal in hand, spend it on what beats you.
+
 ## Archetypes: plan, synergies, key cards, rares, how to beat it
 - **WU eerie tempo.** Cheap enchantments and Rooms (Grand Entryway {1}{W} gives two eerie triggers, Fear of
   Surveillance {1}{W}, Meat Locker {2}{U}, Glimmerlight {2}) fuel Gremlin Tamer {W}{U} (1/1 per eerie), Optimistic
