@@ -1,0 +1,1233 @@
+diff --git a/Mage.Web.Client/src/app/i18n/en/settings.ts b/Mage.Web.Client/src/app/i18n/en/settings.ts
+index dcf596e562..c41345ee87 100644
+--- a/Mage.Web.Client/src/app/i18n/en/settings.ts
++++ b/Mage.Web.Client/src/app/i18n/en/settings.ts
+@@ -140,6 +140,8 @@ export default {
+   // mtg-ai
+   'settings.triggerSounds': 'Trigger sounds',
+   'settings.triggerSounds.detail': 'A short chime when a triggered ability (Eerie, Survival, "whenever"…) goes on the stack. Off, it sounds like a spell.',
++  'settings.yourMoveSounds': 'Your-move chime',
++  'settings.yourMoveSounds.detail': 'Three quick bells when a decision comes back to you after the opponent kept you waiting (an AI thinking). Off, it is the usual decision knock.',
+   'settings.careerMusic': 'Career music',
+   'settings.showProgress': 'Show progression',
+   'settings.showProgress.detail': 'Your level in the header, Today on Home and what each game paid. Games count either way. Kept with your account.',
+diff --git a/Mage.Web.Client/src/app/i18n/es.ts b/Mage.Web.Client/src/app/i18n/es.ts
+index cadc3274f7..20f996973f 100644
+--- a/Mage.Web.Client/src/app/i18n/es.ts
++++ b/Mage.Web.Client/src/app/i18n/es.ts
+@@ -439,6 +439,8 @@ const es: Catalog = {
+   // mtg-ai
+   'settings.triggerSounds': 'Sonidos de habilidades disparadas',
+   'settings.triggerSounds.detail': 'Un breve sonido cuando una habilidad disparada (Eerie, Survival, "siempre que"…) va a la pila. Si está desactivado, suena como un hechizo.',
++  'settings.yourMoveSounds': 'Aviso de tu jugada',
++  'settings.yourMoveSounds.detail': 'Tres campanas rápidas cuando una decisión vuelve a ti después de que el oponente te hiciera esperar (una IA pensando). Si está desactivado, suena el aviso de decisión habitual.',
+   'match.trigger.label': 'Disparada',
+   'settings.careerMusic': 'Música de Carrera',
+   'settings.showProgress': 'Mostrar la progresión',
+diff --git a/Mage.Web.Client/src/app/match/CardReveal.module.css b/Mage.Web.Client/src/app/match/CardReveal.module.css
+new file mode 100644
+index 0000000000..0ca49898b6
+--- /dev/null
++++ b/Mage.Web.Client/src/app/match/CardReveal.module.css
+@@ -0,0 +1,89 @@
++/* mtg-ai: a card shown large for a moment, then flown to where it went (CardReveal.tsx) */
++.layer {
++  position: absolute;
++  inset: 0;
++  z-index: var(--z-vfx);
++  display: flex;
++  flex-direction: column;
++  align-items: center;
++  justify-content: center;
++  gap: 14px;
++  background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.38), rgb(0 0 0 / 0) 62%);
++  cursor: pointer;
++  animation: fade 160ms ease-out;
++}
++
++.leaving {
++  background: transparent;
++  transition: background 200ms;
++}
++
++.leaving .title,
++.leaving .caption,
++.leaving .more {
++  opacity: 0;
++  transition: opacity 120ms;
++}
++
++.title {
++  padding: 4px 16px;
++  border-radius: 999px;
++  background: rgb(var(--mat-rgb) / 0.9);
++  box-shadow: inset 0 0 0 1.5px var(--ink-faint);
++  color: var(--ink-strong);
++  font-family: var(--font-print);
++  font-size: 24px;
++  letter-spacing: 0.04em;
++  text-transform: uppercase;
++}
++
++.cards {
++  display: flex;
++  align-items: flex-start;
++  gap: 18px;
++}
++
++.slot {
++  display: flex;
++  flex-direction: column;
++  align-items: center;
++  gap: 8px;
++}
++
++.card {
++  width: 230px;
++  border-radius: 12px;
++  box-shadow: 0 18px 50px rgb(0 0 0 / 0.55);
++  animation: rise 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
++  animation-delay: calc(var(--i) * 45ms);
++}
++
++.caption {
++  color: var(--ink-strong);
++  font-size: 18px;
++  text-shadow: 0 1px 4px rgb(0 0 0 / 0.8);
++}
++
++.more {
++  align-self: center;
++  color: var(--ink-strong);
++  font-family: var(--font-print);
++  font-size: 30px;
++}
++
++@keyframes rise {
++  from {
++    opacity: 0;
++    transform: translateY(26px) scale(0.86);
++  }
++  to {
++    opacity: 1;
++    transform: none;
++  }
++}
++
++@keyframes fade {
++  from {
++    opacity: 0;
++  }
++}
+diff --git a/Mage.Web.Client/src/app/match/CardReveal.tsx b/Mage.Web.Client/src/app/match/CardReveal.tsx
+new file mode 100644
+index 0000000000..6318e05bc8
+--- /dev/null
++++ b/Mage.Web.Client/src/app/match/CardReveal.tsx
+@@ -0,0 +1,199 @@
++import { useEffect, useRef, useState } from 'react';
++import { revealMoves, zoneMoves, zoneSnapshot, type ZoneMove, type ZoneSnapshot } from '../../core/game/zoneMoves';
++import type { GameView } from '../../protocol/generated/views';
++import { CardFace } from '../ui/CardFace';
++import { motionAllowed } from './flip';
++import { useStage } from './stageContext';
++import styles from './CardReveal.module.css';
++
++/**
++ * mtg-ai: a card that changes the board without passing through the stack shows large in the middle of the table
++ * for a moment, then flies to where it went: an opponent's land play, a token or card put onto the battlefield, a
++ * face-down card turned up, and any card put into a graveyard from play, a hand or a library (dies, sacrificed,
++ * discarded, milled). Spells were already shown on the stack. A click or any key skips it; with card motion off it
++ * doesn't play.
++ */
++
++/** How long a reveal holds before it flies; shorter while more are waiting. */
++const HOLD_MS = 650;
++const HOLD_BUSY_MS = 320;
++const FLY_MS = 380;
++/** At most this long for a card's picture to load before the hold starts anyway. */
++const IMAGE_WAIT_MS = 600;
++/** The most cards one reveal shows; the rest fly without being shown large. */
++const MAX_SHOWN = 6;
++
++interface Batch {
++  key: number;
++  moves: ZoneMove[];
++  names: Map<string, string>;
++  myPlayerId: string | null;
++}
++
++function caption(move: ZoneMove): string {
++  if (move.turnedUp) return 'turned face up';
++  if (move.to === 'battlefield') return (move.card.cardTypes ?? []).includes('LAND') ? 'land' : move.card.isToken ? 'token' : 'onto the battlefield';
++  if (move.from === 'battlefield') return (move.card.cardTypes ?? []).includes('CREATURE') ? 'dies' : 'to the graveyard';
++  if (move.from === 'hand') return 'discarded';
++  // a spell cast and resolved between two views never showed on the stack
++  if (move.from === 'unseen' && (move.card.cardTypes ?? []).some((type) => type === 'INSTANT' || type === 'SORCERY')) return 'cast';
++  if (move.from === 'exile') return 'from exile';
++  return 'to the graveyard';
++}
++
++function title(batch: Batch): string {
++  const owners = [...new Set(batch.moves.map((move) => move.playerId))];
++  const who = owners.length === 1 ? (owners[0] === batch.myPlayerId ? 'You' : batch.names.get(owners[0]) ?? 'Opponent') : 'Both players';
++  const entering = batch.moves.every((move) => move.to === 'battlefield');
++  if (entering) {
++    const lands = batch.moves.every((move) => (move.card.cardTypes ?? []).includes('LAND'));
++    return lands ? `${who} ${who === 'You' ? 'play' : 'plays'} a land` : `${who}: onto the battlefield`;
++  }
++  return batch.moves.every((move) => move.to === 'graveyard') ? `${who}: to the graveyard` : who;
++}
++
++/** Where a move's card ends up on the table: its permanent, or its owner's graveyard pile. */
++function targetOf(stage: HTMLElement | null, move: ZoneMove): Element | null {
++  if (!stage) return null;
++  if (move.to === 'battlefield') return stage.querySelector(`[data-object-id="${CSS.escape(move.id)}"]`);
++  return stage.querySelector(`[data-pile="graveyard:${CSS.escape(move.playerId)}"]`);
++}
++
++export function CardReveal({ view, myPlayerId }: { view: GameView | null; myPlayerId: string | null }) {
++  const stage = useStage();
++  const previous = useRef<ZoneSnapshot | null>(null);
++  const [queue, setQueue] = useState<Batch[]>([]);
++  const nextKey = useRef(0);
++
++  useEffect(() => {
++    if (!view) return;
++    const now = zoneSnapshot(view, myPlayerId);
++    const before = previous.current;
++    previous.current = now;
++    if (!before || before.places.size === 0 || !motionAllowed()) return;
++    const moves = revealMoves(zoneMoves(before, now), myPlayerId);
++    if (moves.length === 0) return;
++    const names = new Map((view.players ?? []).map((player) => [player.playerId ?? '', player.name ?? 'Opponent']));
++    const batch: Batch = { key: nextKey.current++, moves, names, myPlayerId };
++    // a long backlog (a board wipe and its triggers) keeps only the newest few
++    setQueue((current) => [...current, batch].slice(-4));
++  }, [view, myPlayerId]);
++
++  const current = queue[0];
++  const skip = () => setQueue([]);
++
++  useEffect(() => {
++    if (!current) return;
++    const onKey = () => skip();
++    window.addEventListener('keydown', onKey, true);
++    return () => window.removeEventListener('keydown', onKey, true);
++  }, [current]);
++
++  if (!current) return null;
++  return (
++    <RevealBatch
++      key={current.key}
++      batch={current}
++      busy={queue.length > 1}
++      stageElement={stage.element}
++      scale={stage.scale}
++      onDone={() => setQueue((list) => list.slice(1))}
++      onSkip={skip}
++    />
++  );
++}
++
++function RevealBatch({ batch, busy, stageElement, scale, onDone, onSkip }: {
++  batch: Batch;
++  busy: boolean;
++  stageElement: HTMLElement | null;
++  scale: number;
++  onDone(): void;
++  onSkip(): void;
++}) {
++  const shown = batch.moves.slice(0, MAX_SHOWN);
++  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
++  const layerRef = useRef<HTMLDivElement>(null);
++  const done = useRef(onDone);
++  done.current = onDone;
++
++  useEffect(() => {
++    // the permanents are already on the board: hidden until their card lands on them
++    const hidden: HTMLElement[] = [];
++    for (const move of shown) {
++      if (move.to !== 'battlefield') continue;
++      const element = targetOf(stageElement, move) as HTMLElement | null;
++      if (element) {
++        element.style.visibility = 'hidden';
++        hidden.push(element);
++      }
++    }
++    const restore = () => hidden.forEach((element) => (element.style.visibility = ''));
++    const holdMs = busy ? HOLD_BUSY_MS : HOLD_MS;
++    let hold: ReturnType<typeof setTimeout> | undefined;
++    let end: ReturnType<typeof setTimeout> | undefined;
++    // the hold counts from when the pictures are in (a card not seen before loads now), waiting at most a moment
++    const loaded = () => {
++      const images = [...(layerRef.current?.querySelectorAll('img') ?? [])];
++      return images.length > 0 && images.every((image) => image.complete && image.naturalWidth > 0);
++    };
++    const started = performance.now();
++    const run = () => {
++      hold = setTimeout(() => {
++        layerRef.current?.classList.add(styles.leaving);
++        shown.forEach((move, index) => {
++          const card = cardRefs.current[index];
++          const target = targetOf(stageElement, move);
++          if (!card) return;
++          const from = card.getBoundingClientRect();
++          const to = target?.getBoundingClientRect();
++          if (!to || to.width === 0) {
++            card.animate([{ opacity: 1 }, { opacity: 0 }], { duration: FLY_MS, fill: 'forwards' });
++            return;
++          }
++          const dx = (to.left + to.width / 2 - (from.left + from.width / 2)) / scale;
++          const dy = (to.top + to.height / 2 - (from.top + from.height / 2)) / scale;
++          const shrink = Math.max(0.2, Math.min(1, Math.max(to.width, to.height) / Math.max(from.width, from.height)));
++          card.animate(
++            [{ translate: '0 0', scale: '1', opacity: 1 }, { translate: `${dx}px ${dy}px`, scale: `${shrink}`, opacity: 0.9 }],
++            { duration: FLY_MS, easing: 'cubic-bezier(0.45, 0, 0.2, 1)', fill: 'forwards' },
++          );
++        });
++      }, holdMs);
++      end = setTimeout(() => {
++        restore();
++        done.current();
++      }, holdMs + FLY_MS);
++    };
++    const wait = setInterval(() => {
++      if (!loaded() && performance.now() - started < IMAGE_WAIT_MS) return;
++      clearInterval(wait);
++      run();
++    }, 40);
++    return () => {
++      clearInterval(wait);
++      clearTimeout(hold);
++      clearTimeout(end);
++      restore();
++    };
++    // one batch, one run: the board updating underneath doesn't restart it
++    // eslint-disable-next-line react-hooks/exhaustive-deps
++  }, []);
++
++  return (
++    <div ref={layerRef} className={styles.layer} onPointerDown={onSkip} role="status" aria-label={`${title(batch)}: ${batch.moves.map((move) => move.card.name).join(', ')}`}>
++      <div className={styles.title}>{title(batch)}</div>
++      <div className={styles.cards}>
++        {shown.map((move, index) => (
++          <div key={move.id} className={styles.slot}>
++            <div ref={(element) => { cardRefs.current[index] = element; }} className={styles.card} style={{ ['--i' as string]: index }}>
++              <CardFace card={move.card} size="normal" />
++            </div>
++            <span className={styles.caption}>{caption(move)}</span>
++          </div>
++        ))}
++        {batch.moves.length > MAX_SHOWN && <div className={styles.more}>+{batch.moves.length - MAX_SHOWN}</div>}
++      </div>
++    </div>
++  );
++}
+diff --git a/Mage.Web.Client/src/app/match/GameLog.module.css b/Mage.Web.Client/src/app/match/GameLog.module.css
+index 4136cf2579..e92185a93b 100644
+--- a/Mage.Web.Client/src/app/match/GameLog.module.css
++++ b/Mage.Web.Client/src/app/match/GameLog.module.css
+@@ -355,3 +355,22 @@
+ .rule small {
+   color: var(--ink-dim);
+ }
++
++/* mtg-ai: the compact log: tighter lines, a hairline between turns' events */
++.compact {
++  font-size: 16px;
++  line-height: 1.32;
++}
++
++.compact li + li {
++  margin-top: 3px;
++}
++
++.compact .line {
++  padding: 2px 6px;
++  border-radius: 6px;
++}
++
++.compact .line:hover {
++  background: rgb(255 255 255 / 0.05);
++}
+diff --git a/Mage.Web.Client/src/app/match/GameLog.tsx b/Mage.Web.Client/src/app/match/GameLog.tsx
+index 46bafdc3b1..025eb85d50 100644
+--- a/Mage.Web.Client/src/app/match/GameLog.tsx
++++ b/Mage.Web.Client/src/app/match/GameLog.tsx
+@@ -7,12 +7,14 @@ import { DelayedRelay } from '../../core/game/broadcastDelay';
+ import { explainLog } from '../../core/game/logRules';
+ import type { GameNotice } from '../../core/game/gameSession';
+ import {
+-  buildLogRows, cardInk, collectCards, EMOTES, findLogCard, isEmote, noticeEntry, parseChatMessage, presenceChange,
++  buildLogRows, cardInk, collectCards, EMOTES, findLogCard, isEmote, isLogNoise, noticeEntry, parseChatMessage, presenceChange,
+   type LogEntry, type LogIcon, type LogSegment,
+ } from '../../core/game/gameLog';
++import { drawnCards, zoneMoves, zoneSnapshot, type ZoneSnapshot } from '../../core/game/zoneMoves';
+ import type { CardView, ChatMessage, GameView } from '../../protocol/generated/views';
+ import { api, events } from '../connection';
+ import { useSession } from '../stores/session';
++import { useSettings } from '../stores/settings';
+ import { useSocial } from '../stores/social';
+ import { IconButton } from '../ui/Button';
+ import { PromptText } from '../ui/PromptText';
+@@ -117,6 +119,40 @@ function useGameChat(gameId: string, view: GameView | null, live: boolean, delay
+   return { entries, send, ready: !!chatId, unread, clearUnread: () => setUnread(0) };
+ }
+ 
++/**
++ * mtg-ai: log lines the server doesn't write, read off the board: which cards you drew (the server says "draws a
++ * card"; milled cards it does name). Cards are chips like the server's, so they can be pointed at.
++ */
++function useBoardLines(view: GameView | null, live: boolean): LogEntry[] {
++  const [lines, setLines] = useState<LogEntry[]>([]);
++  const previous = useRef<ZoneSnapshot | null>(null);
++  const seq = useRef(0);
++  useEffect(() => {
++    if (!live || !view) return;
++    const me = view.myPlayerId ?? null;
++    const now = zoneSnapshot(view, me);
++    const before = previous.current;
++    previous.current = now;
++    // the first view (or a reconnect's) is the baseline
++    if (!before || before.places.size === 0) return;
++    const moves = zoneMoves(before, now);
++    const added: LogEntry[] = [];
++    const line = (icon: LogIcon, who: LogSegment[], verb: string, cards: CardView[]) => {
++      const segments: LogSegment[] = [...who, { kind: 'text', text: verb }];
++      cards.forEach((card, index) => {
++        if (index > 0) segments.push({ kind: 'text', text: ', ' });
++        segments.push({ kind: 'card', name: card.displayName ?? card.name ?? 'a card', objectId: card.id ?? null, color: null, alternativeName: null });
++      });
++      const text = segments.map((segment) => (segment.kind === 'text' ? segment.text : segment.name)).join('');
++      added.push({ key: `b${seq.current++}`, at: Date.now(), tone: 'game', who: null, segments, text, icon, turn: view.turn ?? null, turnStart: null, turnOwner: view.activePlayerName ?? null });
++    };
++    const drawn = drawnCards(moves, me);
++    if (drawn.length > 0) line('draw', [], 'You drew ', drawn);
++    if (added.length > 0) setLines((current) => [...current, ...added].slice(-MAX_LINES));
++  }, [view, live]);
++  return lines;
++}
++
+ /** Recorded log lines, parsed once each however often the replay passes them. */
+ const parsedReplayLines = new WeakMap<ChatMessage, LogEntry | null>();
+ let replaySeq = 0;
+@@ -151,6 +187,9 @@ export function GameLog({ gameId, notices, canChat, view, replayLog, delayMs = 0
+   const myName = useSession((state) => state.userName);
+   const ignored = useSocial((state) => state.ignored);
+   const live = useGameChat(gameId, view, !replayLog, delayMs);
++  const boardLines = useBoardLines(view, !replayLog);
++  const compact = useSettings((state) => state.settings.logCompact);
++  const updateSettings = useSettings((state) => state.update);
+   const recorded = useMemo(() => (replayLog ? replayEntries(replayLog) : null), [replayLog]);
+   const chat = recorded ? { ...live, entries: recorded } : live;
+   const [draft, setDraft] = useState('');
+@@ -168,9 +207,11 @@ export function GameLog({ gameId, notices, canChat, view, replayLog, delayMs = 0
+     const heard = blocked.size > 0 ? chat.entries.filter((entry) => entry.tone !== 'chat' || !entry.who || !blocked.has(entry.who.toLowerCase())) : chat.entries;
+     const visible = muted ? heard.filter((entry) => entry.tone !== 'chat' || entry.who === myName) : heard;
+     // stable sort: lines from the same moment keep the order the server sent them in
+-    const entries = [...visible, ...errors].sort((a, b) => a.at - b.at);
++    // mtg-ai: plus the lines read off the board, and Compact leaves out the lines another line already says
++    const shown = compact ? visible.filter((entry) => !isLogNoise(entry, myName)) : visible;
++    const entries = [...shown, ...errors, ...boardLines].sort((a, b) => a.at - b.at);
+     return buildLogRows(entries, myName);
+-  }, [chat.entries, notices, muted, myName, ignored]);
++  }, [chat.entries, notices, muted, myName, ignored, boardLines, compact]);
+ 
+   useEffect(() => {
+     if (open) chat.clearUnread();
+@@ -192,6 +233,10 @@ export function GameLog({ gameId, notices, canChat, view, replayLog, delayMs = 0
+           <header className={styles.head}>
+             <h2>Log</h2>
+             <div className={styles.headActions}>
++              {/* mtg-ai: Compact, on by default */}
++              <button type="button" className={styles.mute} aria-pressed={compact} onClick={() => updateSettings({ logCompact: !compact })} title="Leave out lines another line already says">
++                {compact ? 'Compact' : 'Everything'}
++              </button>
+               {canChat && (
+                 <button type="button" className={styles.mute} aria-pressed={muted} onClick={() => toggleMute(gameId)}>
+                   {muted ? 'Unmute opponent' : 'Mute opponent'}
+@@ -200,7 +245,7 @@ export function GameLog({ gameId, notices, canChat, view, replayLog, delayMs = 0
+               <IconButton label="Close log" icon={<X size={20} />} onClick={() => toggle(false)} />
+             </div>
+           </header>
+-          <ol ref={list} className={styles.lines}>
++          <ol ref={list} className={[styles.lines, compact ? styles.compact : ''].join(' ')}>
+             {rows.length === 0 && <li className={styles.empty}>The game's events will show here.</li>}
+             {rows.map((row) => (row.kind === 'separator'
+               ? (
+diff --git a/Mage.Web.Client/src/app/match/Hand.module.css b/Mage.Web.Client/src/app/match/Hand.module.css
+index 0819af6af8..dc51eda83f 100644
+--- a/Mage.Web.Client/src/app/match/Hand.module.css
++++ b/Mage.Web.Client/src/app/match/Hand.module.css
+@@ -147,3 +147,25 @@
+ .card:focus-visible .keyHint {
+   opacity: 1;
+ }
++
++/* mtg-ai: a hand card's conditional ability that would be on */
++.conditions {
++  position: absolute;
++  left: 50%;
++  top: -12px;
++  display: flex;
++  gap: 4px;
++  translate: -50% 0;
++}
++
++.condition {
++  padding: 2px 8px;
++  border-radius: 999px;
++  background: rgb(255 200 90);
++  color: #2a1a00;
++  font-size: 14px;
++  font-weight: 700;
++  letter-spacing: 0.03em;
++  text-transform: uppercase;
++  box-shadow: 0 0 12px 2px rgb(255 190 80 / 0.6);
++}
+diff --git a/Mage.Web.Client/src/app/match/Hand.tsx b/Mage.Web.Client/src/app/match/Hand.tsx
+index e2d4814500..e4ef98b0f0 100644
+--- a/Mage.Web.Client/src/app/match/Hand.tsx
++++ b/Mage.Web.Client/src/app/match/Hand.tsx
+@@ -11,6 +11,7 @@ import { useMatchUi } from './matchUi';
+ import { useStage } from './stageContext';
+ import { ignoreMatchKey, isMatchObjectKey, matchKeysBlocked, numberKeyIndex, preventMatchObjectMouseFocus } from './keyboard';
+ import { useKeyboardHints } from './useKeyboardHints';
++import { useActiveConditions } from './conditionContext';
+ import styles from './Hand.module.css';
+ 
+ export interface HandProps {
+@@ -190,8 +191,20 @@ function HandCard({ card, choosing, index, hints, left, rotate, drop, clickable,
+       data-object-id={card.id}
+     >
+       <CardFace card={card} sleeve={sleeve} hidden={faceDown} />
++      {!faceDown && <HandConditions card={card} />}
+       {!faceDown && clickable && index < 10 && <kbd className={[styles.keyHint, hints ? styles.keyHintShown : ''].join(' ')} aria-hidden="true">{(index + 1) % 10}</kbd>}
+       {fromZone && <span className={styles.fromZone} aria-hidden="true">{ZONE_TAG[fromZone]}</span>}
+     </div>
+   );
+ }
++
++/** mtg-ai: a card in your hand whose conditional ability would be on (Delirium, Threshold) says so */
++function HandConditions({ card }: { card: CardView }) {
++  const conditions = useActiveConditions(card, card.ownerId ?? card.controllerId);
++  if (conditions.length === 0) return null;
++  return (
++    <span className={styles.conditions} aria-hidden="true">
++      {conditions.map((condition) => <span key={condition.name} className={styles.condition} title={condition.detail}>{condition.name}</span>)}
++    </span>
++  );
++}
+diff --git a/Mage.Web.Client/src/app/match/MatchStage.tsx b/Mage.Web.Client/src/app/match/MatchStage.tsx
+index 1ed3d7fc45..5ae9504b7e 100644
+--- a/Mage.Web.Client/src/app/match/MatchStage.tsx
++++ b/Mage.Web.Client/src/app/match/MatchStage.tsx
+@@ -68,12 +68,15 @@ import { useAutoPass } from './useAutoPass';
+ import { useBlockDrag } from './useBlockDrag';
+ import { useAutoOrder } from './useAutoOrder';
+ import { Vfx } from './Vfx';
++import { CardReveal } from './CardReveal';
+ import { CardPicker, ChoicePanel, GameOverOverlay, MulliganOverlay, StartingPlayerOverlay, ZoneViewer } from './Overlays';
+ import { PermanentStack } from './PermanentStack';
+ import { clothOf, clothStyle } from './playmats';
+ import { arrowTints, landStyleKey, lookCloth, pairsOf, sparkColorOf, stampOf, theirClothBox } from './touches';
+ import { CardStyleContext } from '../ui/cardStyles';
+ import { LandStyleContext } from '../ui/landStyles';
++import { ConditionContext } from './conditionContext';
++import { conditionBoard } from '../../core/game/conditions';
+ import { useCosmetics } from '../ui/cosmeticsCatalog';
+ import { usePlayerLooks } from '../support/supportData';
+ import { opponentSleeve, playerSleeve } from '../support/supportModel';
+@@ -495,12 +498,14 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+   }, [catalog, board.me, board.opponents, lookOf]);
+ 
+   const [plateRef, plateRight] = useRightEdge();
++  // mtg-ai: graveyards, turn and step for the condition highlight
++  const conditions = useMemo(() => conditionBoard(view), [view]);
+   // quick emotes (B298): players only, at their own seat
+   const emotes = mode === 'play' && !!board.me?.isMe;
+ 
+   return (
+     // basic lands show their players' land styles anywhere on the stage (B301, ui/landStyles.ts)
+-    <LandStyleContext.Provider value={landStyleOf}><CardStyleContext.Provider value={cardStylesOf}><Stage style={matStyle}>
++    <LandStyleContext.Provider value={landStyleOf}><CardStyleContext.Provider value={cardStylesOf}><ConditionContext.Provider value={conditions}><Stage style={matStyle}>
+       {(stage) => {
+         // the stage widens with the window and the field takes the extra width; a portrait window gets the tall layout
+         const layout = matchLayout(stage);
+@@ -667,6 +672,8 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+             {mode === 'play' && canAct && <CombatPreview view={view} mode={interaction.mode} />}
+             {defenders && !(automation.attackPlayerByDefault && defaultDefender(defenders)) && <DefenderPicker attacker={attackerName} options={defenders} onPick={onClick} />}
+             <Vfx view={view} myPlayerId={myId} sparks={sparks} />
++            {/* mtg-ai: cards that change the board without the stack show large for a moment */}
++            {mode !== 'replay' && <CardReveal view={view} myPlayerId={myId} />}
+             <Arrows sourceId={arrowSource} targetIds={arrowTargets} live={choosingTargets} links={links} attacks={attacks} leads={leads} tints={arrowTint} />
+             <EmoteBubbles view={view} gameId={state.gameId} />
+             {mode === 'play' && <Coach view={view ?? null} mode={choosingStarter ? 'panel' : interaction.mode} awaiting={awaitingServer} gameOver={!!state.gameOver} />}
+@@ -750,7 +757,7 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+           </div>
+         );
+       }}
+-    </Stage></CardStyleContext.Provider></LandStyleContext.Provider>
++    </Stage></ConditionContext.Provider></CardStyleContext.Provider></LandStyleContext.Provider>
+   );
+ }
+ 
+diff --git a/Mage.Web.Client/src/app/match/PermanentStack.module.css b/Mage.Web.Client/src/app/match/PermanentStack.module.css
+index 320189b13f..7227f42194 100644
+--- a/Mage.Web.Client/src/app/match/PermanentStack.module.css
++++ b/Mage.Web.Client/src/app/match/PermanentStack.module.css
+@@ -639,3 +639,33 @@
+     transform: translate(1.4em, -1.5em);
+   }
+ }
++
++/* mtg-ai: a conditional ability that is on now (Delirium, Survival, Threshold, a fully unlocked Room) */
++.conditionOn {
++  border-radius: 8px;
++  box-shadow: 0 0 0 2px rgb(255 214 120 / 0.9), 0 0 18px 4px rgb(255 190 80 / 0.55);
++}
++
++.conditions {
++  position: absolute;
++  left: 50%;
++  top: -10px;
++  z-index: 3;
++  display: flex;
++  gap: 4px;
++  translate: -50% 0;
++  pointer-events: auto;
++}
++
++.condition {
++  padding: 1px 7px;
++  border-radius: 999px;
++  background: rgb(255 200 90);
++  color: #2a1a00;
++  font-size: calc(13px * var(--badge, 1));
++  font-weight: 700;
++  letter-spacing: 0.03em;
++  text-transform: uppercase;
++  white-space: nowrap;
++  box-shadow: 0 2px 6px rgb(0 0 0 / 0.5);
++}
+diff --git a/Mage.Web.Client/src/app/match/PermanentStack.tsx b/Mage.Web.Client/src/app/match/PermanentStack.tsx
+index 3f99408fd1..81a9a8ea19 100644
+--- a/Mage.Web.Client/src/app/match/PermanentStack.tsx
++++ b/Mage.Web.Client/src/app/match/PermanentStack.tsx
+@@ -9,6 +9,7 @@ import type { PermanentView } from '../../protocol/generated/views';
+ import { useSettings } from '../stores/settings';
+ import { CardFace } from '../ui/CardFace';
+ import { CounterBadges } from './CounterBadges';
++import { useActiveConditions } from './conditionContext';
+ import { cardKey, stackBadge, stackOffsetRatio, type PermanentGroup } from './boardModel';
+ import { useFlip } from './flip';
+ import { useMatchUi } from './matchUi';
+@@ -189,6 +190,8 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+   const loyalty = permanent.loyalty || permanent.defense;
+   // mtg-ai: a Room's doors, the unlocked ones lit
+   const doors = roomDoors(permanent);
++  // mtg-ai: a conditional ability that is on now glows and says so
++  const conditions = useActiveConditions(permanent, permanent.controllerId);
+   // summoning sick: it can't attack or tap yet, so it dozes (the server's flag ignores haste; a hasty creature is awake)
+   const asleep = isCreature && !!permanent.summoningSickness && !keywords.some((mark) => mark.name === 'Haste');
+   const flying = effects.includes('float');
+@@ -247,7 +250,7 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+       data-object-id={id}
+     >
+       {flying && <span className={styles.flightShadow} data-still={motion ? undefined : ''} aria-hidden="true" />}
+-      <div className={[styles.body, flying ? styles.floating : '', asleep ? styles.asleep : '', tapped ? styles.tapped : ''].join(' ')} data-still={motion ? undefined : ''}>
++      <div className={[styles.body, flying ? styles.floating : '', asleep ? styles.asleep : '', tapped ? styles.tapped : '', conditions.length > 0 ? styles.conditionOn : ''].join(' ')} data-still={motion ? undefined : ''}>
+         {effects.map((effect) => <span key={effect} className={[styles.fx, styles[FX_CLASS[effect]]].join(' ')} aria-hidden="true" />)}
+         <CardFace card={permanent} sleeve={sleeve} size={width > 140 ? 'normal' : 'small'} />
+       </div>
+@@ -277,6 +280,12 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+         </div>
+       )}
+ 
++      {conditions.length > 0 && (
++        <div className={styles.conditions} style={{ transform: tapped ? 'rotate(-90deg)' : undefined }}>
++          {conditions.map((condition) => <span key={condition.name} className={styles.condition} title={condition.detail}>{condition.name}</span>)}
++        </div>
++      )}
++
+       {/* mtg-ai: counters as symbols, and how long an impending permanent has left */}
+       <CounterBadges permanent={permanent} className={styles.counters} />
+ 
+diff --git a/Mage.Web.Client/src/app/match/Piles.module.css b/Mage.Web.Client/src/app/match/Piles.module.css
+index 0cb386f257..3c9bca2efa 100644
+--- a/Mage.Web.Client/src/app/match/Piles.module.css
++++ b/Mage.Web.Client/src/app/match/Piles.module.css
+@@ -152,3 +152,46 @@ button.chip:disabled {
+   min-height: var(--touch-target, 0px);
+   min-width: var(--touch-target, 0px);
+ }
++
++/* mtg-ai: a peek at a graveyard or exile pile while pointed at */
++.peek {
++  position: absolute;
++  left: 0;
++  bottom: calc(100% + 10px);
++  z-index: var(--z-held);
++  width: max-content;
++  max-width: 860px;
++  padding: 10px 12px 12px;
++  border-radius: 12px;
++  background-color: rgb(var(--mat-rgb) / 0.96);
++  background-image: var(--mat-grain);
++  box-shadow: inset 0 0 0 1.5px var(--ink-faint), var(--shadow-held);
++  pointer-events: none;
++  text-align: left;
++}
++
++.peekBelow {
++  top: calc(100% + 10px);
++  bottom: auto;
++}
++
++.peekTitle {
++  margin-bottom: 8px;
++  color: var(--ink-soft, var(--ink));
++  font-size: 15px;
++  text-transform: uppercase;
++  letter-spacing: 0.04em;
++}
++
++.peekCards {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 6px;
++  max-width: 830px;
++}
++
++.peekCard {
++  display: block;
++  flex: none;
++  width: 98px;
++}
+diff --git a/Mage.Web.Client/src/app/match/Piles.tsx b/Mage.Web.Client/src/app/match/Piles.tsx
+index 8b4e8e9133..69701e92b9 100644
+--- a/Mage.Web.Client/src/app/match/Piles.tsx
++++ b/Mage.Web.Client/src/app/match/Piles.tsx
+@@ -1,5 +1,5 @@
+ import { BookOpen, Crown, Skull, Sparkles, Ban } from 'lucide-react';
+-import { useRef, type ReactNode } from 'react';
++import { useRef, useState, type ReactNode } from 'react';
+ import type { CommanderStatus } from '../../core/game/commander';
+ import type { CardView, PlayerView } from '../../protocol/generated/views';
+ import { useT } from '../i18n';
+@@ -54,9 +54,9 @@ export function Piles({ player, sleeve, isMe, commanders = [], clickable, onCast
+         <span className={styles.label}>Library</span>
+       </button>
+ 
+-      <PileOfCards title={`${name} graveyard`} label="Graveyard" cards={graveyard} sleeve={sleeve} onOpen={() => openViewer({ title: `${name} graveyard`, cards: [...graveyard].reverse() })} />
++      <PileOfCards title={`${name} graveyard`} label="Graveyard" cards={graveyard} below={!isMe} pile={`graveyard:${player.playerId}`} sleeve={sleeve} onOpen={() => openViewer({ title: `${name} graveyard`, cards: [...graveyard].reverse() })} />
+       {exile.length > 0 && (
+-        <PileOfCards title={`${name} exile`} label="Exile" cards={exile} sleeve={sleeve} onOpen={() => openViewer({ title: `${name} exile`, cards: exile })} />
++        <PileOfCards title={`${name} exile`} label="Exile" cards={exile} below={!isMe} sleeve={sleeve} onOpen={() => openViewer({ title: `${name} exile`, cards: exile })} />
+       )}
+       {waiting.map((commander) => (
+         <CommanderPile key={commander.id} commander={commander} sleeve={sleeve} castable={!!clickable?.has(commander.id)} onCast={onCast} owner={name} />
+@@ -106,19 +106,54 @@ function CommanderPile({ commander, sleeve, castable, onCast, owner }: {
+   );
+ }
+ 
+-function PileOfCards({ title, label, cards, sleeve, onOpen }: { title: string; label: string; cards: CardView[]; sleeve: string; onOpen(): void }) {
++function PileOfCards({ title, label, cards, sleeve, onOpen, below = false, pile }: { title: string; label: string; cards: CardView[]; sleeve: string; onOpen(): void; below?: boolean; pile?: string }) {
+   const t = useT();
+   const top = cards[cards.length - 1];
++  // mtg-ai: pointing at a pile peeks at it, newest first; a click still opens the full viewer
++  const [peeking, setPeeking] = useState(false);
+   return (
+-    <button type="button" className={styles.pile} aria-label={t('match.cards', { label: title, count: cards.length })} onClick={onOpen} disabled={cards.length === 0}>
++    <button
++      type="button"
++      className={styles.pile}
++      data-pile={pile}
++      aria-label={t('match.cards', { label: title, count: cards.length })}
++      onClick={() => {
++        setPeeking(false);
++        onOpen();
++      }}
++      onPointerEnter={(event) => event.pointerType === 'mouse' && setPeeking(true)}
++      onPointerLeave={() => setPeeking(false)}
++      disabled={cards.length === 0}
++    >
+       {/* a new top card is a new element: it lands on the pile from wherever that card was */}
+       <PileTop key={top ? cardKey(top) : 'empty'} top={top} count={cards.length} sleeve={sleeve} />
+       <span className={styles.count}>{cards.length}</span>
+       <span className={styles.label}>{label}</span>
++      {peeking && cards.length > 0 && <PilePeek title={title} cards={cards} below={below} />}
+     </button>
+   );
+ }
+ 
++/** mtg-ai: the most cards a peek shows; the rest are counted, and the viewer has them all */
++const PEEK_MAX = 16;
++
++function PilePeek({ title, cards, below }: { title: string; cards: CardView[]; below: boolean }) {
++  const newest = [...cards].reverse();
++  const shown = newest.slice(0, PEEK_MAX);
++  return (
++    <div className={[styles.peek, below ? styles.peekBelow : ''].join(' ')} aria-hidden="true">
++      <div className={styles.peekTitle}>{title} · {cards.length} · newest first{cards.length > PEEK_MAX ? ` · +${cards.length - PEEK_MAX} more, click to see all` : ''}</div>
++      <div className={styles.peekCards}>
++        {shown.map((card, index) => (
++          <span key={card.id ?? index} className={styles.peekCard}>
++            <CardFace card={card} size="small" />
++          </span>
++        ))}
++      </div>
++    </div>
++  );
++}
++
+ function PileTop({ top, count, sleeve }: { top: CardView | undefined; count: number; sleeve: string }) {
+   const ref = useRef<HTMLDivElement>(null);
+   useFlip(top ? cardKey(top) : undefined, ref);
+diff --git a/Mage.Web.Client/src/app/match/conditionContext.ts b/Mage.Web.Client/src/app/match/conditionContext.ts
+new file mode 100644
+index 0000000000..6730a87744
+--- /dev/null
++++ b/Mage.Web.Client/src/app/match/conditionContext.ts
+@@ -0,0 +1,10 @@
++import { createContext, useContext } from 'react';
++import { activeConditions, conditionBoard, type ActiveCondition, type ConditionBoard } from '../../core/game/conditions';
++import type { CardView } from '../../protocol/generated/views';
++
++/** mtg-ai: the board's graveyards, turn and step, for the condition highlight (conditions.ts) */
++export const ConditionContext = createContext<ConditionBoard>(conditionBoard(null));
++
++export function useActiveConditions(card: CardView, controllerId: string | null | undefined): ActiveCondition[] {
++  return activeConditions(card, controllerId, useContext(ConditionContext));
++}
+diff --git a/Mage.Web.Client/src/app/match/cueRules.ts b/Mage.Web.Client/src/app/match/cueRules.ts
+index 060550b759..1fd6081585 100644
+--- a/Mage.Web.Client/src/app/match/cueRules.ts
++++ b/Mage.Web.Client/src/app/match/cueRules.ts
+@@ -6,10 +6,15 @@ export type Cue =
+   | 'turn' | 'decide' | 'cast' | 'resolve' | 'land' | 'attack' | 'block' | 'damage' | 'lifeGain' | 'draw'
+   | 'victory' | 'defeat' | 'timer'
+   // mtg-ai: a triggered ability went on the stack (triggerSignal.ts)
+-  | 'trigger';
++  | 'trigger'
++  // mtg-ai: the game comes back to you after a long wait on the opponent (an AI thinking)
++  | 'yourMove';
+ 
+ /** The cues that still play with "Only important cues": your turn, a decision, combat against you, the clock, the result. */
+-export const IMPORTANT_CUES: ReadonlySet<Cue> = new Set<Cue>(['turn', 'decide', 'timer', 'victory', 'defeat']);
++export const IMPORTANT_CUES: ReadonlySet<Cue> = new Set<Cue>(['turn', 'decide', 'timer', 'victory', 'defeat', 'yourMove']);
++
++/** mtg-ai: how long the opponent must have kept you waiting for "your move" to chime when a decision comes back */
++export const LONG_WAIT_MS = 2500;
+ 
+ /** Seconds left on your clock when the warning plays. */
+ export const TIMER_WARNING_SECS = 10;
+@@ -92,7 +97,8 @@ export function cueAllowed(cue: Cue, settings: { sound: boolean; volume: number;
+  * mtg-ai: the cue that plays for a picked one under the player's settings, or null. With "Trigger sounds" off a
+  * trigger sounds like any other new stack object (the spell cue, as before the trigger chime).
+  */
+-export function cueToPlay(cue: Cue, settings: { sound: boolean; volume: number; importantCuesOnly?: boolean; triggerSounds?: boolean }): Cue | null {
+-  const played = cue === 'trigger' && settings.triggerSounds === false ? 'cast' : cue;
++export function cueToPlay(cue: Cue, settings: { sound: boolean; volume: number; importantCuesOnly?: boolean; triggerSounds?: boolean; yourMoveSounds?: boolean }): Cue | null {
++  const played = cue === 'trigger' && settings.triggerSounds === false ? 'cast'
++    : cue === 'yourMove' && settings.yourMoveSounds === false ? 'decide' : cue;
+   return cueAllowed(played, settings) ? played : null;
+ }
+diff --git a/Mage.Web.Client/src/app/match/sound.ts b/Mage.Web.Client/src/app/match/sound.ts
+index 24c2686d0c..6e90783239 100644
+--- a/Mage.Web.Client/src/app/match/sound.ts
++++ b/Mage.Web.Client/src/app/match/sound.ts
+@@ -137,6 +137,12 @@ function render(b: Bus, out: AudioNode, cue: Cue, t: number) {
+       bell(b, out, NOTE.C5, t, 1.1, 0.16);
+       bell(b, out, NOTE.G5, t + 0.13, 1.3, 0.13);
+       break;
++    case 'yourMove':
++      // mtg-ai: back to you after a wait: three quick bells climbing, brighter than a decision's knock
++      bell(b, out, NOTE.E5, t, 0.5, 0.11);
++      bell(b, out, NOTE.G5, t + 0.09, 0.5, 0.11);
++      bell(b, out, NOTE.C6, t + 0.18, 0.9, 0.1);
++      break;
+     case 'decide':
+       // a decision is yours: a light knock and a tiny bell
+       knock(b, out, 820, t, 0.12);
+diff --git a/Mage.Web.Client/src/app/match/useGameCues.ts b/Mage.Web.Client/src/app/match/useGameCues.ts
+index 16f07bf2c0..68fd457cdc 100644
+--- a/Mage.Web.Client/src/app/match/useGameCues.ts
++++ b/Mage.Web.Client/src/app/match/useGameCues.ts
+@@ -3,7 +3,7 @@ import type { GameSessionState } from '../../core/game/gameSession';
+ import { useSettings } from '../stores/settings';
+ import { notify } from '../stores/toasts';
+ import { ignoreMatchKey, matchKeysBlocked } from './keyboard';
+-import { cueSnapshot, pickCue, type CueSnapshot } from './cueRules';
++import { cueSnapshot, LONG_WAIT_MS, pickCue, type CueSnapshot } from './cueRules';
+ import { playCue } from './sound';
+ 
+ /**
+@@ -12,10 +12,21 @@ import { playCue } from './sound';
+  */
+ export function useGameCues(state: GameSessionState, myId: string | null, autoPassing = false) {
+   const previous = useRef<CueSnapshot | null>(null);
++  // mtg-ai: since when the game has been waiting on someone else (null while the decision is yours)
++  const waitingSince = useRef<number | null>(null);
+   useEffect(() => {
+     const now = cueSnapshot(state, myId);
+-    const cue = pickCue(previous.current, now, myId, autoPassing);
++    const before = previous.current;
++    let cue = pickCue(before, now, myId, autoPassing);
+     previous.current = now;
++    const waited = waitingSince.current === null ? 0 : Date.now() - waitingSince.current;
++    if (!now.deciding) waitingSince.current ??= Date.now();
++    else waitingSince.current = null;
++    // mtg-ai: a decision coming back after a long wait (an AI thinking) chimes "your move", alongside a louder cue
++    if (before && before.turn > 0 && now.deciding && !before.deciding && !autoPassing && !now.over && waited >= LONG_WAIT_MS) {
++      if (cue === 'decide' || cue === null) cue = 'yourMove';
++      else setTimeout(() => playCue('yourMove'), 350);
++    }
+     if (cue) playCue(cue);
+   }, [state, myId, autoPassing]);
+ 
+diff --git a/Mage.Web.Client/src/app/screens/SettingsDialog.tsx b/Mage.Web.Client/src/app/screens/SettingsDialog.tsx
+index 582dcca722..8b297331ea 100644
+--- a/Mage.Web.Client/src/app/screens/SettingsDialog.tsx
++++ b/Mage.Web.Client/src/app/screens/SettingsDialog.tsx
+@@ -240,6 +240,7 @@ export function SettingsDialog({ open, onOpenChange }: { open: boolean; onOpenCh
+           <Row label={t('settings.importantCues')} detail={t('settings.importantCues.detail')}>{toggle('importantCuesOnly')}</Row>
+           {/* mtg-ai: the trigger chime */}
+           <Row label={t('settings.triggerSounds')} detail={t('settings.triggerSounds.detail')}>{toggle('triggerSounds')}</Row>
++          <Row label={t('settings.yourMoveSounds')} detail={t('settings.yourMoveSounds.detail')}>{toggle('yourMoveSounds')}</Row>
+           {showProgress !== null && (
+             <Row label={t('settings.showProgress')} detail={t('settings.showProgress.detail')}>
+               <Switch checked={showProgress} onChange={(value) => void setShowProgress(value)} />
+diff --git a/Mage.Web.Client/src/app/stores/settings.ts b/Mage.Web.Client/src/app/stores/settings.ts
+index 45a223b1c4..b21d446e50 100644
+--- a/Mage.Web.Client/src/app/stores/settings.ts
++++ b/Mage.Web.Client/src/app/stores/settings.ts
+@@ -78,6 +78,10 @@ export interface PlaySettings {
+   importantCuesOnly: boolean;
+   /** mtg-ai: a short chime when a triggered ability goes on the stack (else the spell cue) */
+   triggerSounds: boolean;
++  /** mtg-ai: a chime when a decision comes back to you after the opponent kept you waiting (an AI thinking) */
++  yourMoveSounds: boolean;
++  /** mtg-ai: the game log leaves out lines another line already says (Compact in the log's header) */
++  logCompact: boolean;
+   /** browser notifications while the tab is in the background: your move, a draft pick, a game starting, a whisper */
+   notifications: boolean;
+   /** profile: the sigil shown for the player (server avatar ids 10 to 32; 10 shows the initial) */
+@@ -160,6 +164,8 @@ export const DEFAULT_SETTINGS: PlaySettings = {
+   volume: 0.6,
+   importantCuesOnly: false,
+   triggerSounds: true,
++  yourMoveSounds: true,
++  logCompact: true,
+   notifications: false,
+   avatarId: 10,
+   flag: 'world',
+diff --git a/Mage.Web.Client/src/core/game/conditions.test.ts b/Mage.Web.Client/src/core/game/conditions.test.ts
+new file mode 100644
+index 0000000000..0e39beec1a
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/conditions.test.ts
+@@ -0,0 +1,23 @@
++import { describe, expect, it } from 'vitest';
++import type { CardView, GameView } from '../../protocol/generated/views';
++import { activeConditions, conditionBoard } from './conditions';
++
++const grave = (...types: string[][]): Record<string, CardView> => Object.fromEntries(types.map((cardTypes, i) => [`g${i}`, { id: `g${i}`, cardTypes } as CardView]));
++const board = (graveyard: Record<string, CardView>, extra: Partial<GameView> = {}) => conditionBoard({ players: [{ playerId: 'me', graveyard }], activePlayerId: 'me', step: 'DECLARE_ATTACKERS', ...extra } as GameView);
++const delirious: CardView = { id: 'c', name: 'Fear of Exposure', rules: ['<i>Delirium</i> — As long as there are four or more card types among cards in your graveyard, it gets +2/+0.'] };
++
++describe('activeConditions', () => {
++  it('turns delirium on at four card types', () => {
++    expect(activeConditions(delirious, 'me', board(grave(['LAND'], ['CREATURE'], ['INSTANT'])))).toEqual([]);
++    const on = activeConditions(delirious, 'me', board(grave(['LAND'], ['CREATURE'], ['INSTANT'], ['ARTIFACT', 'CREATURE'])));
++    expect(on.map((c) => c.name)).toEqual(['Delirium']);
++    expect(on[0].detail).toContain('4 card types');
++  });
++
++  it('counts survival only while tapped on its controller\'s turn before the second main phase', () => {
++    const survivor = { id: 's', name: 'Survivor', rules: ['Survival — At the beginning of your second main phase, if this creature is tapped, draw a card.'], tapped: true } as CardView;
++    expect(activeConditions(survivor, 'me', board({})).map((c) => c.name)).toEqual(['Survival']);
++    expect(activeConditions(survivor, 'me', board({}, { step: 'POSTCOMBAT_MAIN' } as Partial<GameView>))).toEqual([]);
++    expect(activeConditions({ ...survivor, tapped: false } as CardView, 'me', board({}))).toEqual([]);
++  });
++});
+diff --git a/Mage.Web.Client/src/core/game/conditions.ts b/Mage.Web.Client/src/core/game/conditions.ts
+new file mode 100644
+index 0000000000..0f9c3b3f51
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/conditions.ts
+@@ -0,0 +1,67 @@
++import type { CardView, GameView, PermanentView } from '../../protocol/generated/views';
++import { roomDoors } from './cards';
++
++/**
++ * mtg-ai: a card's conditional ability that is on right now, Arena style: the card glows and names it. Read from the
++ * card's rules text and the public board (graveyards, tapped, whose turn and step), so it is a hint, not the rules
++ * engine's word: the engine still decides.
++ */
++export interface ActiveCondition {
++  name: string;
++  /** what makes it on, for the tooltip */
++  detail: string;
++}
++
++/** Card types that count for delirium. */
++const DELIRIUM_TYPES = ['ARTIFACT', 'BATTLE', 'CREATURE', 'ENCHANTMENT', 'INSTANT', 'KINDRED', 'TRIBAL', 'LAND', 'PLANESWALKER', 'SORCERY'];
++/** Survival checks at the beginning of your second main phase: until then, a tapped survivor is set to trigger. */
++const BEFORE_SECOND_MAIN = new Set(['PRECOMBAT_MAIN', 'BEGIN_COMBAT', 'DECLARE_ATTACKERS', 'DECLARE_BLOCKERS', 'FIRST_COMBAT_DAMAGE', 'COMBAT_DAMAGE', 'END_COMBAT']);
++
++export interface ConditionBoard {
++  /** per player: the card types in their graveyard (delirium), and how many cards it holds (threshold) */
++  graveyards: Map<string, { types: string[]; size: number }>;
++  activePlayerId: string | null;
++  step: string | null;
++  /** the viewer: the owner of the cards in their hand */
++  me: string | null;
++}
++
++export function conditionBoard(view: GameView | null | undefined): ConditionBoard {
++  const graveyards = new Map<string, { types: string[]; size: number }>();
++  for (const player of view?.players ?? []) {
++    const cards = Object.values(player.graveyard ?? {});
++    const types = new Set<string>();
++    for (const card of cards) for (const type of card.cardTypes ?? []) if (DELIRIUM_TYPES.includes(type)) types.add(String(type) === 'TRIBAL' ? 'KINDRED' : type);
++    graveyards.set(player.playerId ?? '', { types: [...types].sort(), size: cards.length });
++  }
++  return { graveyards, activePlayerId: view?.activePlayerId ?? null, step: view?.step ?? null, me: view?.myPlayerId ?? null };
++}
++
++function rulesText(card: CardView): string {
++  return (card.rules ?? []).join(' ').replace(/<[^>]*>/g, '');
++}
++
++const lower = (type: string) => type.toLowerCase();
++
++export function activeConditions(card: CardView | PermanentView, controllerId: string | null | undefined, board: ConditionBoard): ActiveCondition[] {
++  if (card.faceDown) return [];
++  const text = rulesText(card);
++  const found: ActiveCondition[] = [];
++  const owner = controllerId ?? board.me;
++  const graveyard = owner ? board.graveyards.get(owner) : undefined;
++  if (/\bDelirium\b/.test(text) && graveyard && graveyard.types.length >= 4) {
++    found.push({ name: 'Delirium', detail: `Delirium is on: ${graveyard.types.length} card types in the graveyard (${graveyard.types.map(lower).join(', ')})` });
++  }
++  if (/\bThreshold\b/.test(text) && graveyard && graveyard.size >= 7) {
++    found.push({ name: 'Threshold', detail: `Threshold is on: ${graveyard.size} cards in the graveyard` });
++  }
++  const permanent = card as PermanentView;
++  if (/\bSurvival\b/.test(text) && permanent.tapped && owner === board.activePlayerId && board.step && BEFORE_SECOND_MAIN.has(board.step)) {
++    found.push({ name: 'Survival', detail: 'Survival will trigger: tapped at the beginning of your second main phase' });
++  }
++  const doors = 'roomLeftDoor' in permanent || 'roomRightDoor' in permanent ? roomDoors(permanent) : null;
++  if (doors && doors.every((door) => door.unlocked)) {
++    found.push({ name: 'Unlocked', detail: 'Both doors are unlocked: this Room is fully unlocked' });
++  }
++  return found;
++}
+diff --git a/Mage.Web.Client/src/core/game/gameLog.ts b/Mage.Web.Client/src/core/game/gameLog.ts
+index 4af6eb3c2b..70b870d8b0 100644
+--- a/Mage.Web.Client/src/core/game/gameLog.ts
++++ b/Mage.Web.Client/src/core/game/gameLog.ts
+@@ -203,6 +203,8 @@ const ICON_RULES: [RegExp, LogIcon][] = [
+   [/\b(deals?|gets?|dealt) \d+ damage\b|\bdamage\b/i, 'damage'],
+   [/\bdraws?\b/i, 'draw'],
+   [/\bdiscards?\b/i, 'discard'],
++  // mtg-ai: milled (and other cards put from a library into a graveyard)
++  [/ from library into (their|its owner's) graveyard\b/i, 'discard'],
+   [/\b(destroyed|dies|sacrificed|sacrifices|put into (a |their |its owner's )?graveyard)\b/i, 'destroy'],
+   [/\bexiles?d?\b/i, 'exile'],
+   [/\btrigger(s|ed)?\b/i, 'trigger'],
+@@ -336,3 +338,17 @@ export function presenceChange(text: string): { name: string; online: boolean }
+   const online = /^(.+?) has joined$/.exec(text);
+   return online ? { name: online[1], online: true } : null;
+ }
++
++/**
++ * mtg-ai: lines the compact log leaves out because another line already says it: a land "put from hand onto the
++ * Battlefield" after "plays", a spell "put from stack onto the Battlefield" after "casts", skipped steps, and your
++ * own "draws a card", which the client's "You drew …" line names.
++ */
++export function isLogNoise(entry: LogEntry, myName: string | null): boolean {
++  if (entry.tone !== 'game') return false;
++  const text = entry.text;
++  if (/ puts .+ from (hand|stack) onto the Battlefield$/.test(text)) return true;
++  if (/ skips (Untap|Upkeep|Draw) step$/.test(text)) return true;
++  if (myName && text.startsWith(`${myName} draws `) && /draws (a card|\d+ cards|two cards|three cards)$/.test(text)) return true;
++  return false;
++}
+diff --git a/Mage.Web.Client/src/core/game/zoneMoves.test.ts b/Mage.Web.Client/src/core/game/zoneMoves.test.ts
+new file mode 100644
+index 0000000000..d9fd5423a9
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/zoneMoves.test.ts
+@@ -0,0 +1,64 @@
++import { describe, expect, it } from 'vitest';
++import type { CardView, GameView } from '../../protocol/generated/views';
++import { drawnCards, revealMoves, zoneMoves, zoneSnapshot } from './zoneMoves';
++
++const card = (id: string, name: string, extra: Partial<CardView> = {}): CardView => ({ id, name, ...extra });
++
++function view({ me = {}, opp = {}, hand = {}, stack = {} }: {
++  me?: { battlefield?: Record<string, CardView>; graveyard?: Record<string, CardView>; library?: number; hand?: number };
++  opp?: { battlefield?: Record<string, CardView>; graveyard?: Record<string, CardView>; library?: number; hand?: number };
++  hand?: Record<string, CardView>;
++  stack?: Record<string, CardView>;
++}): GameView {
++  return {
++    myHand: hand,
++    stack,
++    players: [
++      { playerId: 'me', battlefield: me.battlefield ?? {}, graveyard: me.graveyard ?? {}, libraryCount: me.library ?? 30, handCount: me.hand ?? 0 },
++      { playerId: 'opp', battlefield: opp.battlefield ?? {}, graveyard: opp.graveyard ?? {}, libraryCount: opp.library ?? 30, handCount: opp.hand ?? 5 },
++    ],
++  } as GameView;
++}
++
++const moves = (a: GameView, b: GameView) => {
++  const before = zoneSnapshot(a, 'me');
++  const now = zoneSnapshot(b, 'me');
++  return { before, now, moves: zoneMoves(before, now) };
++};
++
++describe('zoneMoves', () => {
++  it("reveals an opponent's land play but not their resolved spell", () => {
++    const forest = card('f1', 'Forest');
++    const bear = card('b1', 'Bear', { controllerId: 'opp' });
++    const { moves: land } = moves(view({}), view({ opp: { battlefield: { f1: forest }, hand: 4 } }));
++    expect(revealMoves(land, 'me').map((move) => move.card.name)).toEqual(['Forest']);
++    const { moves: spell } = moves(view({ stack: { s1: { ...bear, cardId: 'b1' } } }), view({ opp: { battlefield: { b1: bear } } }));
++    expect(revealMoves(spell, 'me')).toEqual([]);
++  });
++
++  it('reveals a face-down permanent turned face up, but not one entering face down', () => {
++    const down = card('m1', 'Manifest', { faceDown: true });
++    const up = card('m1', 'Hauntwoods Shrieker');
++    const { moves: enter } = moves(view({}), view({ opp: { battlefield: { m1: down } } }));
++    expect(revealMoves(enter, 'me')).toEqual([]);
++    const { moves: flip } = moves(view({ opp: { battlefield: { m1: down } } }), view({ opp: { battlefield: { m1: up } } }));
++    expect(revealMoves(flip, 'me').map((move) => [move.card.name, move.turnedUp])).toEqual([['Hauntwoods Shrieker', true]]);
++  });
++
++  it('reveals creatures dying on either side, not instants resolving or tokens', () => {
++    const bear = card('b1', 'Bear');
++    const shock = card('x1', 'Shock');
++    const token = card('t1', 'Glimmer', { isToken: true });
++    const { moves: died } = moves(
++      view({ me: { battlefield: { b1: bear } }, opp: { battlefield: { t1: token } }, stack: { s9: { ...shock, cardId: 'x1' } } }),
++      view({ me: { graveyard: { b1: bear, x1: shock } } }),
++    );
++    expect(revealMoves(died, 'me').map((move) => move.card.name)).toEqual(['Bear']);
++  });
++
++  it('names the cards I drew', () => {
++    const drawn = card('d1', 'Drawn');
++    const { moves: drew } = moves(view({}), view({ hand: { d1: drawn } }));
++    expect(drawnCards(drew, 'me').map((c) => c.name)).toEqual(['Drawn']);
++  });
++});
+diff --git a/Mage.Web.Client/src/core/game/zoneMoves.ts b/Mage.Web.Client/src/core/game/zoneMoves.ts
+new file mode 100644
+index 0000000000..c56529e9a4
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/zoneMoves.ts
+@@ -0,0 +1,99 @@
++import type { CardView, GameView } from '../../protocol/generated/views';
++
++/**
++ * mtg-ai: cards moving between zones, from the difference between two game views: for the log's "You drew" line (the
++ * server only says "draws a card") and for the reveal of cards that reach the battlefield or a graveyard without
++ * passing through the stack.
++ *
++ * Only what the viewer may see: their own hand, and public zones. A card that comes out of a zone the viewer can't
++ * see (a library, an opponent's hand) comes "from" `unseen`.
++ */
++
++export type Zone = 'hand' | 'stack' | 'battlefield' | 'graveyard' | 'exile' | 'unseen';
++
++export interface ZoneMove {
++  id: string;
++  card: CardView;
++  /** whose zone the card is in now (the controller on the battlefield, the owner elsewhere) */
++  playerId: string;
++  from: Zone;
++  to: Exclude<Zone, 'unseen' | 'stack'>;
++  /** a face-down permanent turned face up (from and to are both the battlefield) */
++  turnedUp?: boolean;
++}
++
++interface Place {
++  zone: Zone;
++  playerId: string;
++  card: CardView;
++}
++
++export interface ZoneSnapshot {
++  places: Map<string, Place>;
++}
++
++export function zoneSnapshot(view: GameView | null | undefined, myPlayerId: string | null): ZoneSnapshot {
++  const places = new Map<string, Place>();
++  if (!view) return { places };
++  const put = (id: string | undefined, zone: Zone, playerId: string, card: CardView) => {
++    if (id && !places.has(id)) places.set(id, { zone, playerId, card });
++  };
++  for (const [id, card] of Object.entries(view.stack ?? {})) {
++    const owner = card.controllerId ?? card.ownerId ?? '';
++    // a spell's stack id isn't its card's id: keep both, so the card is known to have come from the stack
++    put(id, 'stack', owner, card);
++    put(card.cardId, 'stack', owner, card);
++    put(card.id, 'stack', owner, card);
++  }
++  for (const player of view.players ?? []) {
++    const playerId = player.playerId ?? '';
++    for (const [id, card] of Object.entries(player.battlefield ?? {})) put(id, 'battlefield', playerId, card);
++    for (const [id, card] of Object.entries(player.graveyard ?? {})) put(id, 'graveyard', playerId, card);
++    for (const [id, card] of Object.entries(player.exile ?? {})) put(id, 'exile', playerId, card);
++  }
++  for (const zone of view.exiles ?? []) {
++    for (const [id, card] of Object.entries(zone ?? {})) put(id, 'exile', card.ownerId ?? '', card);
++  }
++  if (myPlayerId) {
++    for (const [id, card] of Object.entries(view.myHand ?? {})) put(id, 'hand', myPlayerId, card);
++  }
++  return { places };
++}
++
++/** The moves from one snapshot to the next. Tokens leaving play and cards going out of sight are not moves. */
++export function zoneMoves(before: ZoneSnapshot, now: ZoneSnapshot): ZoneMove[] {
++  const moves: ZoneMove[] = [];
++  for (const [id, place] of now.places) {
++    if (place.zone === 'stack' || place.zone === 'unseen') continue;
++    const was = before.places.get(id);
++    if (was?.zone === place.zone) {
++      if (place.zone === 'battlefield' && was.card.faceDown && !place.card.faceDown) {
++        moves.push({ id, card: place.card, playerId: place.playerId, from: 'battlefield', to: 'battlefield', turnedUp: true });
++      }
++      continue;
++    }
++    moves.push({ id, card: place.card, playerId: place.playerId, from: was?.zone ?? 'unseen', to: place.zone });
++  }
++  return moves;
++}
++
++/** Cards the viewer drew (or otherwise put into their hand from out of sight). */
++export function drawnCards(moves: readonly ZoneMove[], myPlayerId: string | null): CardView[] {
++  if (!myPlayerId) return [];
++  return moves.filter((move) => move.to === 'hand' && move.from === 'unseen' && move.playerId === myPlayerId).map((move) => move.card);
++}
++
++/**
++ * Cards worth showing large for a moment: an opponent's card reaching the battlefield without passing through the
++ * stack (a land, a token, a card put onto the battlefield, a face-down card turned up), and any card reaching a
++ * graveyard from the battlefield, a hand or a library (dies, sacrificed, discarded, milled). Spells resolving were
++ * already shown on the stack; face-down cards show nothing worth reading.
++ */
++export function revealMoves(moves: readonly ZoneMove[], myPlayerId: string | null): ZoneMove[] {
++  return moves.filter((move) => {
++    if (move.card.faceDown) return false;
++    if (move.to === 'battlefield') return move.playerId !== myPlayerId && (move.turnedUp || move.from !== 'stack');
++    if (move.to === 'graveyard') return move.from !== 'stack' && !move.card.isToken;
++    return false;
++  });
++}
