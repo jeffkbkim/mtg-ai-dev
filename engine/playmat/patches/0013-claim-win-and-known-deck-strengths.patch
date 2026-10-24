@@ -1,8 +1,8 @@
 diff --git a/Mage.Server/src/main/java/mage/server/game/GameController.java b/Mage.Server/src/main/java/mage/server/game/GameController.java
-index 9e8f6a220a..3003a6894f 100644
+index 9e8f6a220a..a2d654d4ba 100644
 --- a/Mage.Server/src/main/java/mage/server/game/GameController.java
 +++ b/Mage.Server/src/main/java/mage/server/game/GameController.java
-@@ -712,6 +712,21 @@ public class GameController implements GameCallback {
+@@ -712,6 +712,24 @@ public class GameController implements GameCallback {
              break;
              case CONCEDE: {
                  UUID playerId = getPlayerId(userId);
@@ -18,6 +18,9 @@ index 9e8f6a220a..3003a6894f 100644
 +                                game.setConcedingPlayer(opponentId);
 +                            }
 +                        }
++                        // the claim comes while this player is being asked something: stop that question so the
++                        // game checks the concession now instead of after the player's next answer
++                        player.signalPlayerConcede(true);
 +                    }
 +                    break;
 +                }
