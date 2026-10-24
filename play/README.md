@@ -40,8 +40,10 @@ using as extra training data or as an opponent.
 - `deck_pool.py`: builds real drafted decks from 17lands game data (`engine/xmage/decks/17lands/`, `17lands-r2/`).
 - `ab_report.py`: compares player variants (e.g. lessons on vs off) across runs: wins with a 95% interval, per
   deck, and behaviour numbers a lesson might move (decking losses, attacks per turn, lands left untapped, cost).
-- `launch_pairs.sh`: runs plan-vs-no-plan deck pairs (each pair twice, the plan on seat A then on seat B, 2 games each),
-  6 parts at a time, e.g. `play/launch_pairs.sh <out> engine/xmage/decks/17lands-r2 600 b03 trophy_10/trophy_11 ...`.
+- `launch_pairs.sh`: runs variant-vs-baseline deck pairs (each pair twice, the variant on seat A then on seat B, GAMES
+  games each), 6 parts at a time, e.g. `play/launch_pairs.sh <out> engine/xmage/decks/17lands-r2 600 b03 trophy_10/trophy_11 ...`.
+  VARIANT names the variant seat's flags (`VARIANT="facts check"`, or `VARIANT="effort=medium"` for `--effort-a medium`);
+  BOTH gives flags to both seats. `--effort-a` / `--effort-b` set one Claude seat's effort, overriding `--effort`.
 - `review.py`: a reviewer (`claude -p`, no tools) reads each seat's game as that seat saw it and flags clear errors
   ("blunder" or "mistake", judged only on what was visible then, with a category: rules, combat_math, crack_back,
   hidden_info or other) plus suspected engine or harness bugs. Flags go to

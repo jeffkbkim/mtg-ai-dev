@@ -19,11 +19,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from players import ClaudePlayer, RandomPlayer
 
 
-def make_player(kind, seed, args, lessons=None, plan=False, facts=False, check=False):
+def make_player(kind, seed, args, lessons=None, plan=False, facts=False, check=False, effort=None):
     if kind == "random":
         return RandomPlayer(seed)
     if kind == "claude":
-        return ClaudePlayer(model=args.model, effort=args.effort, lessons=lessons, plan=plan, facts=facts, check=check,
+        return ClaudePlayer(model=args.model, effort=effort or args.effort, lessons=lessons, plan=plan, facts=facts, check=check,
                             primer=args.primer)
     raise ValueError(kind)
 
@@ -81,6 +81,7 @@ def main():
     p.add_argument("--deck-a", required=True); p.add_argument("--deck-b", required=True)
     p.add_argument("--games", type=int, default=1); p.add_argument("--seed", type=int, default=0)
     p.add_argument("--model", default="claude-opus-5-5"); p.add_argument("--effort", default="high")
+    p.add_argument("--effort-a"); p.add_argument("--effort-b")  # one Claude seat's effort, overriding --effort
     p.add_argument("--lessons-a"); p.add_argument("--lessons-b")  # lessons file for a Claude seat (play/primer/lessons_v*.md)
     p.add_argument("--plan-a", action="store_true"); p.add_argument("--plan-b", action="store_true")  # plan updated in every reply
     p.add_argument("--facts-a", action="store_true"); p.add_argument("--facts-b", action="store_true")  # play/facts.py block
@@ -107,8 +108,8 @@ def main():
         c, _ = s.accept()
         c.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         conns.append(c)
-    players = [make_player(args.a, args.seed, args, args.lessons_a, args.plan_a, args.facts_a, args.check_a),
-               make_player(args.b, args.seed + 1, args, args.lessons_b, args.plan_b, args.facts_b, args.check_b)]
+    players = [make_player(args.a, args.seed, args, args.lessons_a, args.plan_a, args.facts_a, args.check_a, args.effort_a),
+               make_player(args.b, args.seed + 1, args, args.lessons_b, args.plan_b, args.facts_b, args.check_b, args.effort_b)]
     lock, results = threading.Lock(), {}
     local = Path(tempfile.mkdtemp(prefix="match-"))
 
