@@ -83,11 +83,16 @@ def main():
     texts = {c["name"]: c for c in json.loads((ROOT / "engine/vocab/dsk_card_text.json").read_text())}
     out = playmat / "Mage.Web.Client/public/starter-decks"
     index = [e for e in json.loads((out / "index.json").read_text()) if not e["file"].startswith("dsk-")]
-    ours, skipped = [], {}
+    ours, skipped, known = [], {}, []
     for pool, prefix, star in (("17lands-good", "dsk-good-", "★ "), ("17lands-r2", "dsk-", "")):
         manifest = {d["file"]: d for d in json.loads((decks / pool / "manifest.json").read_text())["decks"]}
         for deck in sorted((decks / pool).glob("*.dck")):
             m = manifest[deck.name]
+            review = m.get("review")
+            if review:  # every rated deck, listed or not, so a saved copy of a hidden one still gets a matched opponent
+                known.append({"sig": deck_sig(deck.read_text()), "name": deck.stem, "listed": two_colors(m, texts),
+                              "strength": {"tier": (m.get("tier") or 1) if star and playable(m, texts) else 0,
+                                           "rating": review["rating"], "colors": m["main_colors"]}})
             if not two_colors(m, texts):
                 skipped[pool] = skipped.get(pool, 0) + 1  # not listed at all; the .dck stays in the repo
                 continue
@@ -102,7 +107,6 @@ def main():
                 if cover is None and "Land" not in texts[c.group(4)]["types"]:
                     cover = {"name": c.group(4), "setCode": c.group(2), "cardNumber": c.group(3)}
             colors = m["main_colors"] + (f"+{m['splash_colors']}" if m.get("splash_colors") else "")
-            review = m.get("review")
             # Jeff 2026-10-24: no 7-X record or card-quality score in the name (misleading); they stay in the manifest
             if review:
                 mark = ("★★ " if m.get("tier") == 2 else star) if good else ""  # tier 2: passed the deck review (REVIEW.md)
@@ -125,6 +129,7 @@ def main():
             ours.append(({"file": file, "name": name, "cards": cards, "cover": cover, "strength": strength,
                           "sig": deck_sig(text)}, key))
     ours.sort(key=lambda e: e[1])
+    (out / "strengths.json").write_text(json.dumps(known, indent=1, ensure_ascii=False) + "\n")
     (out / "index.json").write_text(json.dumps([e for e, _ in ours] + index, indent=2, ensure_ascii=False) + "\n")
     print(f"{len(ours)} DSK decks added to {out}; left out by the colour rule: {skipped}")
 
