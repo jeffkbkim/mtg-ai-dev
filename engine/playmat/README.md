@@ -87,6 +87,11 @@ Each game of a best-of-three gets its own folder. Playmat also keeps its own rep
 - `run.sh`: Playmat's desktop launcher, headless (server, web client on 17170, its own data in `~/playmat-run/data`,
   accounts off), and the Claude service, both in the background.
 
+## Updating
+
+A daily task reviews Playmat's new commits and moves the pin when it is safe (`UPDATE.md`, `update_upstream.sh`,
+`deploy_next.sh`, `test_server.sh`, `smoke.js`; reviews in `upstream-log.md`).
+
 ## Known gaps
 
 - The watch mode needs the game to start before it can be watched; if Playmat can't open it, find it under Tables.
