@@ -112,6 +112,20 @@ with the earlier recording's 40 cards (the short one kept as `deck-X.partial.dck
   same ★ tier and review rating, then the same rating, then one away; another color pair when possible); a deck the
   player built counts as review 3/5. The AI's deck name says how it was matched and goes to config.json (`deck_name`).
   Watching (Claude vs Playmat AI) stays random.
+- `patches/0009`: Home lists decks by stars (★★, ★, then the rest; then review rating; saved copies of starters by their
+  cards); clicking your own library lists its cards in random order (the server sends name counts only to that player:
+  `PlayerView.libraryCards`); "Claude is thinking… Ns" on the AI's plate; "N mana available" on yours; the deck index is
+  always refetched.
+- `patches/0010`: keyword help: a Mechanics panel beside the hovered card, keywords marked and explained in the card
+  detail, DSK glossary entries (Impending, Manifest dread, face-down, Rooms, stun and finality counters), counters as
+  symbols and "Impending N" on the board.
+- `patches/0011`: combat preview while blocking (and the unblocked damage while attacking): who dies, the life after
+  combat, an estimate that ignores tricks and triggers.
+- `patches/0012`: a trigger signal: the source of a triggered ability (Eerie and others) glows and shakes for about a
+  second, with a label and a short sound (muted with the game sounds).
+- `patches/0013`: "Opponent can't win: end game (claim win)" in the game menu against the computer: every computer
+  opponent concedes and the result says `"ended_by": "human_claim"`; the AI deck matcher also knows unlisted rated decks
+  (`starter-decks/strengths.json`), so an old saved copy still gets a matched opponent.
 - `patches/0007`: blocks: attackers that must be blocked if able are marked, blocks that leave one unblocked are held
   back once with a message, and the server's messages to the player (why a block was refused) are shown.
 - Our two XMage rule fixes (`engine/xmage/BecomesFaceDownCreatureEffect.java`, `VeteranSurvivor.java`) are copied over

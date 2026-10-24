@@ -1,0 +1,688 @@
+diff --git a/Mage.Common/src/main/java/mage/view/PlayerView.java b/Mage.Common/src/main/java/mage/view/PlayerView.java
+index d10f5173ba..837f480f34 100644
+--- a/Mage.Common/src/main/java/mage/view/PlayerView.java
++++ b/Mage.Common/src/main/java/mage/view/PlayerView.java
+@@ -31,6 +31,9 @@ public class PlayerView implements Serializable {
+     private final int wins;
+     private final int winsNeeded;
+     private final int libraryCount;
++    // mtg-ai: the cards in this player's library by name (sorted by name, so their order is not in it), only in the
++    // view made for that same player; null for opponents, watchers and replays
++    private final Map<String, Integer> libraryCards;
+     private final int handCount;
+     private final boolean isActive;
+     private final boolean hasPriority;
+@@ -69,6 +72,15 @@ public class PlayerView implements Serializable {
+         this.wins = player.getMatchPlayer().getWins();
+         this.winsNeeded = player.getMatchPlayer().getWinsNeeded();
+         this.libraryCount = player.getLibrary().size();
++        if (this.controlled) {
++            Map<String, Integer> cards = new TreeMap<>();
++            for (Card card : player.getLibrary().getCards(game)) {
++                cards.merge(card.getName(), 1, Integer::sum);
++            }
++            this.libraryCards = cards;
++        } else {
++            this.libraryCards = null;
++        }
+         this.handCount = player.getHand().size();
+         this.manaPool = new ManaPoolView(player.getManaPool());
+         this.isActive = (player.getId().equals(state.getActivePlayerId()));
+@@ -200,6 +212,11 @@ public class PlayerView implements Serializable {
+         return this.libraryCount;
+     }
+ 
++    /** mtg-ai: this player's library by card name, in the player's own view only (else null) */
++    public Map<String, Integer> getLibraryCards() {
++        return this.libraryCards;
++    }
++
+     public int getWins() {
+         return wins;
+     }
+diff --git a/Mage.Web.Client/src/app/match/MatchStage.tsx b/Mage.Web.Client/src/app/match/MatchStage.tsx
+index 0b5f710323..0273d56ba3 100644
+--- a/Mage.Web.Client/src/app/match/MatchStage.tsx
++++ b/Mage.Web.Client/src/app/match/MatchStage.tsx
+@@ -712,7 +712,7 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+               />
+             )}
+             {interaction.mode === 'panel' && prompt && !awaitingServer && <ChoicePanel prompt={prompt} sourceId={choiceSource} onCommand={onCommand} xLimit={announceLimit} startAtLimit={automation.xDefaultsToMax} />}
+-            {viewer && <ZoneViewer title={viewer.title} cards={viewer.cards} onClose={() => openViewer(null)} />}
++            {viewer && <ZoneViewer {...viewer} onClose={() => openViewer(null)} />}
+             {state.gameOver && betweenGames && (
+               <BetweenGames
+                 progress={betweenGames}
+diff --git a/Mage.Web.Client/src/app/match/Overlays.module.css b/Mage.Web.Client/src/app/match/Overlays.module.css
+index a24724d1a1..3ec57001b5 100644
+--- a/Mage.Web.Client/src/app/match/Overlays.module.css
++++ b/Mage.Web.Client/src/app/match/Overlays.module.css
+@@ -429,3 +429,26 @@
+   letter-spacing: normal;
+   white-space: nowrap;
+ }
++
++/* mtg-ai: the zone viewer's note (the LIBRARY viewer's "random order") and a card's copies */
++.viewerNote {
++  margin: -8px 0 0;
++  font-size: 18px;
++  font-style: italic;
++  color: var(--ink-soft);
++}
++
++.viewerCount {
++  position: absolute;
++  right: 8px;
++  bottom: 8px;
++  min-width: 44px;
++  padding: 2px 10px;
++  border-radius: 999px;
++  background: rgb(var(--void-rgb) / 0.85);
++  box-shadow: inset 0 0 0 2px var(--ink-faint);
++  color: var(--ink);
++  font-size: 22px;
++  font-weight: 700;
++  text-align: center;
++}
+diff --git a/Mage.Web.Client/src/app/match/Overlays.tsx b/Mage.Web.Client/src/app/match/Overlays.tsx
+index a7e7be0a0a..1215ad770e 100644
+--- a/Mage.Web.Client/src/app/match/Overlays.tsx
++++ b/Mage.Web.Client/src/app/match/Overlays.tsx
+@@ -427,7 +427,7 @@ function VictoryStamp({ id }: { id: string }) {
+ }
+ 
+ /** A zone's cards laid out to read (graveyard, exile, revealed). */
+-export function ZoneViewer({ title, cards, onClose }: { title: string; cards: CardView[]; onClose(): void }) {
++export function ZoneViewer({ title, cards, note, counts, onClose }: { title: string; cards: CardView[]; note?: string; counts?: Record<string, number>; onClose(): void }) {
+   const keyboard = useChoiceKeyboard();
+   return (
+     <div ref={keyboard} tabIndex={-1} className={styles.scrim} role="dialog" aria-modal="true" aria-label={title} onClick={onClose}>
+@@ -436,9 +436,16 @@ export function ZoneViewer({ title, cards, onClose }: { title: string; cards: Ca
+           <h2 className={styles.panelTitle}>{title}</h2>
+           <Button data-cancel variant="quiet" size="sm" onClick={onClose}>Close</Button>
+         </header>
++        {note && <p className={styles.viewerNote} role="note">{note}</p>}
+         {cards.length === 0 ? <p className={styles.panelText}>Empty.</p> : (
+           <div className={styles.grid}>
+-            {cards.map((card) => <div key={card.id} className={styles.pick} data-card-id={card.id}><CardFace card={card} size="normal" /></div>)}
++            {cards.map((card) => (
++              <div key={card.id} className={styles.pick} data-card-id={card.id}>
++                <CardFace card={card} size="normal" />
++                {/* mtg-ai: copies of this card in the zone */}
++                {(counts?.[card.id!] ?? 1) > 1 && <span className={styles.viewerCount} aria-label={`${counts![card.id!]} copies`}>×{counts![card.id!]}</span>}
++              </div>
++            ))}
+           </div>
+         )}
+       </div>
+diff --git a/Mage.Web.Client/src/app/match/Piles.tsx b/Mage.Web.Client/src/app/match/Piles.tsx
+index 300202d780..8b4e8e9133 100644
+--- a/Mage.Web.Client/src/app/match/Piles.tsx
++++ b/Mage.Web.Client/src/app/match/Piles.tsx
+@@ -6,6 +6,7 @@ import { useT } from '../i18n';
+ import './matchMessages';
+ import { CardFace } from '../ui/CardFace';
+ import { cardKey } from './boardModel';
++import { LIBRARY_ORDER_NOTE, shuffledLibrary } from '../../core/game/libraryList';
+ import { useFlip, useFlipOrigin } from './flip';
+ import { useMatchUi } from './matchUi';
+ import styles from './Piles.module.css';
+@@ -28,6 +29,14 @@ export function Piles({ player, sleeve, isMe, commanders = [], clickable, onCast
+   const exile = Object.values(player.exile ?? {});
+   const { waiting, others } = splitCommand(player, commanders);
+   const name = isMe ? 'Your' : `${player.name}'s`;
++  // mtg-ai: your own library's cards (names and counts only, sent to you alone), shuffled on every opening
++  const openLibrary = () => {
++    const entries = shuffledLibrary(player.libraryCards);
++    const cards = entries.map((entry, i): CardView => ({ id: `library-list-${i}`, name: entry.name, displayName: entry.name }));
++    const counts = Object.fromEntries(entries.map((entry, i) => [`library-list-${i}`, entry.count]));
++    const top = player.topCard?.name ? ` · top card revealed: ${player.topCard.name}` : '';
++    openViewer({ title: `${name} library (${player.libraryCount ?? 0} cards)`, cards, counts, note: LIBRARY_ORDER_NOTE + top });
++  };
+ 
+   return (
+     <div className={[styles.piles, isMe ? styles.mine : styles.theirs].join(' ')}>
+@@ -36,7 +45,7 @@ export function Piles({ player, sleeve, isMe, commanders = [], clickable, onCast
+         type="button"
+         className={styles.pile}
+         aria-label={t('match.cards', { label: `${name} library`, count: player.libraryCount ?? 0 })}
+-        onClick={() => player.topCard && openViewer({ title: `${name} library (top card)`, cards: [player.topCard] })}
++        onClick={() => (isMe && player.libraryCards ? openLibrary() : player.topCard && openViewer({ title: `${name} library (top card)`, cards: [player.topCard] }))}
+       >
+         <div className={styles.stack} style={{ ['--depth' as string]: Math.min(6, Math.ceil((player.libraryCount ?? 0) / 10)) }}>
+           <CardFace card={player.topCard ?? {}} hidden={!player.topCard} sleeve={sleeve} size="small" />
+diff --git a/Mage.Web.Client/src/app/match/PlayerPlate.module.css b/Mage.Web.Client/src/app/match/PlayerPlate.module.css
+index 62efe989a2..bb5e63e6e1 100644
+--- a/Mage.Web.Client/src/app/match/PlayerPlate.module.css
++++ b/Mage.Web.Client/src/app/match/PlayerPlate.module.css
+@@ -383,3 +383,35 @@
+   min-width: 0;
+   margin-top: 0;
+ }
++
++/* mtg-ai: an AI opponent thinking (the game waits on it), pulsing gently in the decision color */
++.thinking {
++  align-self: flex-start;
++  padding: 1px 8px;
++  border-radius: 999px;
++  font-size: 15px;
++  white-space: nowrap;
++  color: var(--decision);
++  box-shadow: inset 0 0 0 1.5px rgb(var(--decision-rgb) / 0.6);
++  animation: thinking 1.8s ease-in-out infinite;
++  font-variant-numeric: tabular-nums;
++}
++
++@keyframes thinking {
++  0%, 100% { opacity: 1; }
++  50% { opacity: 0.55; }
++}
++
++@media (prefers-reduced-motion: reduce) {
++  .thinking {
++    animation: none;
++  }
++}
++
++/* mtg-ai: your mana available now, under your life */
++.manaAvailable {
++  font-size: 16px;
++  color: var(--ink-soft);
++  white-space: nowrap;
++  font-variant-numeric: tabular-nums;
++}
+diff --git a/Mage.Web.Client/src/app/match/PlayerPlate.test.tsx b/Mage.Web.Client/src/app/match/PlayerPlate.test.tsx
+index b130755e34..74f4c8228e 100644
+--- a/Mage.Web.Client/src/app/match/PlayerPlate.test.tsx
++++ b/Mage.Web.Client/src/app/match/PlayerPlate.test.tsx
+@@ -1,5 +1,5 @@
+-import { render } from '@testing-library/react';
+-import { describe, expect, it } from 'vitest';
++import { act, render, screen } from '@testing-library/react';
++import { describe, expect, it, vi } from 'vitest';
+ import { PlayerPlate } from './PlayerPlate';
+ import styles from './PlayerPlate.module.css';
+ 
+@@ -16,3 +16,32 @@ describe('player plate identity', () => {
+     expect(avatar().textContent).toBe('P');
+   });
+ });
++
++// mtg-ai: the thinking label on an AI opponent the game waits on, and your mana available
++describe('player plate hud', () => {
++  const props = { targetable: false, selected: false, onClick: () => undefined };
++
++  it('counts how long the Claude AI has been thinking', () => {
++    vi.useFakeTimers();
++    try {
++      const { rerender } = render(<PlayerPlate {...props} isMe={false} deciding player={{ name: 'Claude AI', life: 20, isHuman: false }} />);
++      act(() => void vi.advanceTimersByTime(3100));
++      expect(screen.getByRole('status').textContent).toBe('Claude is thinking… 3s');
++      rerender(<PlayerPlate {...props} isMe={false} deciding={false} player={{ name: 'Claude AI', life: 20, isHuman: false }} />);
++      expect(screen.queryByRole('status')).toBeNull();
++      act(() => void vi.advanceTimersByTime(1000)); // past the gap between two decisions: a new count
++      rerender(<PlayerPlate {...props} isMe={false} deciding player={{ name: 'AI Opponent', life: 20, isHuman: false }} />);
++      expect(screen.getByRole('status').textContent).toBe('Thinking… 0s');
++    } finally {
++      vi.useRealTimers();
++    }
++  });
++
++  it('never on a person, and the mana line only on your own plate', () => {
++    render(<PlayerPlate {...props} isMe={false} deciding player={{ name: 'Friend', life: 20, isHuman: true }} />);
++    expect(screen.queryByRole('status')).toBeNull();
++    expect(screen.queryByText(/mana available/)).toBeNull();
++    render(<PlayerPlate {...props} isMe deciding={false} player={{ name: 'Me', life: 20, manaPool: { green: 1 }, battlefield: { a: { id: 'a', name: 'Forest', cardTypes: ['LAND'], subTypes: ['FOREST'], controlled: true } } }} />);
++    expect(screen.getByText('2 mana available')).toBeTruthy();
++  });
++});
+diff --git a/Mage.Web.Client/src/app/match/PlayerPlate.tsx b/Mage.Web.Client/src/app/match/PlayerPlate.tsx
+index 0584841d06..a53aac211e 100644
+--- a/Mage.Web.Client/src/app/match/PlayerPlate.tsx
++++ b/Mage.Web.Client/src/app/match/PlayerPlate.tsx
+@@ -3,6 +3,7 @@ import { Heart, Swords } from 'lucide-react';
+ import { COMMANDER_DAMAGE_LETHAL } from '../../core/game/commander';
+ import { POOL_MANA, poolId } from '../../core/game/payment';
+ import { ROPE_SECONDS, ropeSecondsLeft, ropeVisible } from '../../core/game/rope';
++import { availableMana } from '../../core/game/availableMana';
+ import type { PlayerLook, PlayerView } from '../../protocol/generated/views';
+ import { Art } from '../career/Art';
+ import { ShowcaseBadges } from '../career/LookParts';
+@@ -66,6 +67,29 @@ function useDisconnected(name: string | undefined): { since: number; now: number
+   return since === undefined ? null : { since, now: Math.max(now, since) };
+ }
+ 
++/**
++ * mtg-ai: whole seconds since `active` turned on, counted locally for the thinking label (0 while off). A gap shorter
++ * than THINKING_GAP_MS (one decision answered, the next asked) keeps counting.
++ */
++const THINKING_GAP_MS = 800;
++function useSecondsWhile(active: boolean): number {
++  const [since, setSince] = useState<number | null>(null);
++  const [now, setNow] = useState(0);
++  useEffect(() => {
++    if (!active) {
++      const reset = setTimeout(() => setSince(null), THINKING_GAP_MS);
++      return () => clearTimeout(reset);
++    }
++    const start = setTimeout(() => setSince((at) => at ?? Date.now()), 0);
++    const timer = setInterval(() => setNow(Date.now()), 1000);
++    return () => {
++      clearTimeout(start);
++      clearInterval(timer);
++    };
++  }, [active]);
++  return active && since !== null ? Math.max(0, Math.floor((now - since) / 1000)) : 0;
++}
++
+ /** The player's priority time left, counted down locally between the server's reports. */
+ function useRopeSeconds(player: PlayerView): number {
+   const reported = player.priorityTimeLeftSecs ?? 0;
+@@ -104,6 +128,13 @@ export function PlayerPlate({ player, isMe, targetable, selected, deciding, slee
+     return () => clearTimeout(timer);
+   }, [delta]);
+ 
++  // mtg-ai: an AI opponent the game waits on says so, with how long it has been thinking (Claude takes tens of seconds)
++  const thinking = deciding && !isMe && player.isHuman === false && !out;
++  const thinkingFor = useSecondsWhile(thinking);
++  const thinker = (player.name ?? '').startsWith('Claude') ? 'Claude is thinking…' : 'Thinking…';
++  // mtg-ai: your untapped mana sources plus your pool, an estimate ("about") when a source can't be read for sure
++  const mana = isMe && !out ? availableMana(player) : null;
++
+   const counters = (player.counters ?? []).filter((counter) => (counter.count ?? 0) > 0);
+   const pool = POOL_MANA.filter(({ key }) => (player.manaPool?.[key] ?? 0) > 0);
+   const hasExtras = !!toPay || pool.length > 0 || commanderDamage.length > 0 || counters.length > 0 || !!player.monarch || !!player.initiative;
+@@ -200,6 +231,12 @@ export function PlayerPlate({ player, isMe, targetable, selected, deciding, slee
+             </span>
+           )}
+         </div>
++        {thinking && <div className={styles.thinking} role="status">{thinker} {thinkingFor}s</div>}
++        {mana && (
++          <div className={styles.manaAvailable} title="Untapped lands and mana sources you control, plus your mana pool">
++            {mana.exact ? '' : 'about '}{mana.count} mana available
++          </div>
++        )}
+       </div>
+       {hasExtras && (
+         // what's on the seat besides life, in short columns beside it: a crowded seat grows sideways, not off the stage
+diff --git a/Mage.Web.Client/src/app/match/matchUi.ts b/Mage.Web.Client/src/app/match/matchUi.ts
+index a607110147..f6b2b23520 100644
+--- a/Mage.Web.Client/src/app/match/matchUi.ts
++++ b/Mage.Web.Client/src/app/match/matchUi.ts
+@@ -15,7 +15,8 @@ interface MatchUiState {
+   /** a creature being dragged onto an attacker to block it, and the attacker under the pointer */
+   blockDrag: { blockerId: string; attackerId: string | null } | null;
+   /** zone viewer (graveyard, exile...) */
+-  viewer: { title: string; cards: CardView[] } | null;
++  /** mtg-ai: `note` a line under the title, `counts` copies per card id (the LIBRARY viewer shows each name once) */
++  viewer: { title: string; cards: CardView[]; note?: string; counts?: Record<string, number> } | null;
+   logOpen: boolean;
+   /** card opened in the detail view (right click); the id keeps it live as the game changes */
+   detail: { id: string; card: CardView } | null;
+diff --git a/Mage.Web.Client/src/app/screens/HomeScreen.tsx b/Mage.Web.Client/src/app/screens/HomeScreen.tsx
+index 6344177fe2..029088b55f 100644
+--- a/Mage.Web.Client/src/app/screens/HomeScreen.tsx
++++ b/Mage.Web.Client/src/app/screens/HomeScreen.tsx
+@@ -1,7 +1,7 @@
+ import { SlidersHorizontal } from 'lucide-react';
+ import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties } from 'react';
+ import { useNavigate } from 'react-router-dom';
+-import { META_PREFIX, RANDOM_META_PREFIX, pickableRoster, rosterOf, sleeveFor, useDecks, useGoodStartersOnly } from '../stores/decks';
++import { META_PREFIX, RANDOM_META_PREFIX, pickableRoster, rosterOf, sleeveFor, sortByStrength, useDecks, useGoodStartersOnly } from '../stores/decks';
+ import { GoodStartersToggle } from '../decks/GoodStartersToggle';
+ import { formatRules } from '../../core/decks/formats';
+ import { metaDecksFor } from '../../core/decks/metaDecks';
+@@ -62,9 +62,9 @@ export function HomeScreen() {
+   if (aiOpen && !aiLoaded) setAiLoaded(true);
+   const emailStatus = useEmailStatus().data;
+   const emailUnconfirmed = !!emailStatus?.email && !emailStatus.verified && !!emailStatus.mail;
+-  // mtg-ai: "Good only" leaves our other DSK starters out of the list
++  // mtg-ai: "Good only" leaves our other DSK starters out of the list; ★★ decks first, then ★, then the rest
+   const goodOnly = useGoodStartersOnly((state) => state.on);
+-  const roster = useMemo(() => pickableRoster(rosterOf(decks), decks.starters, goodOnly), [decks, goodOnly]);
++  const roster = useMemo(() => sortByStrength(pickableRoster(rosterOf(decks), decks.starters, goodOnly), decks.starters), [decks, goodOnly]);
+   // a meta, ghost or mirror opponent, or adaptive skill, is described with the solo messages
+   const soloReady = useCareerMessages(mode === 'meta' || play.aiOptions.adaptive || opponentSource(play.aiOptions.opponentDeckId).kind !== 'roster');
+   const selected = roster.find((deck) => deck.id === decks.selectedId) ?? roster[0] ?? null;
+diff --git a/Mage.Web.Client/src/app/stores/decks.test.ts b/Mage.Web.Client/src/app/stores/decks.test.ts
+index 30bf126c05..e80c8c8bc8 100644
+--- a/Mage.Web.Client/src/app/stores/decks.test.ts
++++ b/Mage.Web.Client/src/app/stores/decks.test.ts
+@@ -2,7 +2,7 @@
+ import { beforeEach, describe, expect, test, vi } from 'vitest';
+ import { deckStorage } from '../../core/decks/DeckStorageService';
+ import type { DeckCardLists } from '../../core/decks/types';
+-import { RANDOM_META_PREFIX, rosterOf, STARTER_PREFIX, useDecks } from './decks';
++import { RANDOM_META_PREFIX, rosterOf, sortByStrength, STARTER_PREFIX, useDecks } from './decks';
+ 
+ const BURN: DeckCardLists = {
+   name: 'Burn',
+@@ -103,3 +103,32 @@ describe('deck library', () => {
+     expect(await deckStorage.listDecks()).toHaveLength(1);
+   });
+ });
++
++// mtg-ai: the Home list by stars, then review rating, then the roster's own order
++describe('sortByStrength', () => {
++  const starter = (file: string, name: string, tier: number, rating: number, sig: string) =>
++    ({ file, name, cards: 40, cover: { name: 'Forest', setCode: 'DSK', cardNumber: '1' }, strength: { tier, rating, colors: 'WU' }, sig });
++  const starters = [
++    starter('dsk-a.dck', 'typical_01', 0, 4, 'aaaa'),
++    starter('dsk-good-b.dck', '★ good_02 · review 3/5', 1, 3, 'bbbb'),
++    starter('dsk-good-c.dck', '★★ good_03 · review 4/5', 2, 4, 'cccc'),
++    starter('dsk-good-d.dck', '★★ good_04 · review 5/5', 2, 5, 'dddd'),
++  ];
++  const saved = (id: string, name: string, sig?: string) => ({ id, name, note: '', cardCount: 40, cover: null, colors: [], starter: null, sig });
++
++  test('★★ then ★ then the rest, by rating; saved copies by their cards, then by their name', () => {
++    const roster = rosterOf({
++      saved: [saved('mine', 'My brew'), saved('copy', 'renamed copy', 'dddd'), saved('named', '★ old_09 · review 5/5')],
++      starters,
++    });
++    expect(sortByStrength(roster, starters).map((deck) => deck.name)).toEqual([
++      'renamed copy', // ★★ 5/5 by its cards (saved decks come first in the roster)
++      '★★ good_04 · review 5/5',
++      '★★ good_03 · review 4/5',
++      '★ old_09 · review 5/5', // ★ by its name
++      '★ good_02 · review 3/5',
++      'typical_01', // no star, rated
++      'My brew', // unknown strength
++    ]);
++  });
++});
+diff --git a/Mage.Web.Client/src/app/stores/decks.ts b/Mage.Web.Client/src/app/stores/decks.ts
+index e8e5f52b96..6fa6bed1c8 100644
+--- a/Mage.Web.Client/src/app/stores/decks.ts
++++ b/Mage.Web.Client/src/app/stores/decks.ts
+@@ -34,6 +34,8 @@ export interface RosterDeck {
+   fromStarter?: boolean;
+   /** the deck website it was imported from */
+   source?: DeckImportSource;
++  /** mtg-ai: deckSig of a saved deck's main cards (a starter carries its own in `starter.sig`) */
++  sig?: string;
+ }
+ 
+ const SELECTED_KEY = 'playmat.selectedDeck';
+@@ -62,6 +64,7 @@ function summaryToRoster(deck: DeckSummary): RosterDeck {
+     colors,
+     starter: null,
+     source: deck.source,
++    sig: deck.sig,
+   };
+ }
+ 
+@@ -104,7 +107,8 @@ export interface DeckLibraryState {
+ 
+ async function fetchStarters(): Promise<StarterDeck[]> {
+   try {
+-    const response = await fetch('/starter-decks/index.json');
++    // mtg-ai: always revalidate (the launcher serves it with max-age=3600, so a changed index was missed for an hour)
++    const response = await fetch('/starter-decks/index.json', { cache: 'no-cache' });
+     return response.ok ? ((await response.json()) as StarterDeck[]) : [];
+   } catch {
+     return [];
+@@ -122,7 +126,7 @@ async function fetchMetaDecks(): Promise<MetaDeck[]> {
+ 
+ /** A shipped deck's list: a starter (public/starter-decks) or a format deck (public/meta-decks). */
+ async function shippedDeck(folder: string, deck: StarterDeck | MetaDeck): Promise<DeckCardLists> {
+-  const response = await fetch(`/${folder}/${encodeURIComponent(deck.file)}`);
++  const response = await fetch(`/${folder}/${encodeURIComponent(deck.file)}`, { cache: 'no-cache' }); // mtg-ai: as fetchStarters
+   const text = response.ok ? await response.text() : '';
+   if (!text || /^\s*</.test(text)) throw new Error(`Couldn't load ${deck.name}.`);
+   return { ...DeckSerializer.importDeck(text), name: deck.name, coverCard: deck.cover, format: deck.format ?? 'Constructed - Freeform' };
+@@ -278,6 +282,35 @@ export function pickableRoster(roster: RosterDeck[], starters: StarterDeck[], go
+   return roster.filter((deck) => !deck.starter || !deck.starter.file.startsWith('dsk-') || deck.starter.file.startsWith('dsk-good-'));
+ }
+ 
++/**
++ * mtg-ai: a roster deck's review strength: a starter's own; a saved deck's when its cards are one of our rated
++ * starters (deckSig), else when its name carries a starter's stars ("★★ good_08 · … · review 4/5"); else none.
++ */
++export function rosterStrength(deck: RosterDeck, starters: StarterDeck[]): DeckStrength | null {
++  if (deck.starter) return deck.starter.strength ?? null;
++  const same = deck.sig ? starters.find((starter) => starter.sig === deck.sig && starter.strength) : undefined;
++  if (same?.strength) return same.strength;
++  const stars = /^(★{1,2})\s/.exec(deck.name);
++  if (!stars) return null;
++  const rating = /review (\d)\/5/.exec(deck.name);
++  return { tier: stars[1].length, rating: rating ? Number(rating[1]) : null, colors: '' };
++}
++
++/**
++ * mtg-ai: the Home deck list by stars: ★★, then ★, then the rest (no star, or no known strength); within each by
++ * review rating (unknown last), then in the roster's own order.
++ */
++export function sortByStrength(roster: RosterDeck[], starters: StarterDeck[]): RosterDeck[] {
++  const key = (deck: RosterDeck) => {
++    const strength = rosterStrength(deck, starters);
++    return [strength && strength.tier > 0 ? strength.tier : 0, strength?.rating ?? -1] as const;
++  };
++  return roster
++    .map((deck, index) => ({ deck, index, key: key(deck) }))
++    .sort((a, b) => b.key[0] - a.key[0] || b.key[1] - a.key[1] || a.index - b.index)
++    .map(({ deck }) => deck);
++}
++
+ export function sleeveFor(sleeves: Record<string, string>, deck: RosterDeck | null | undefined): string {
+   if (!deck) return SLEEVE_COLORS[0];
+   // "random": one of the player's Career sleeves, a different one each game (ui/sleeveArt.ts)
+diff --git a/Mage.Web.Client/src/app/stores/play.ts b/Mage.Web.Client/src/app/stores/play.ts
+index ef357a0b66..ac3eadd0cb 100644
+--- a/Mage.Web.Client/src/app/stores/play.ts
++++ b/Mage.Web.Client/src/app/stores/play.ts
+@@ -107,7 +107,7 @@ interface PlayState {
+ }
+ 
+ async function deckFile(path: string, name: string): Promise<DeckCardLists> {
+-  const response = await fetch(path);
++  const response = await fetch(path, { cache: 'no-cache' }); // mtg-ai: a changed starter is picked up at once
+   const text = response.ok ? await response.text() : '';
+   if (!text || /^\s*</.test(text)) throw new Error(`Couldn't load the AI's deck (${name}).`);
+   const { DeckSerializer } = await import('../../core/decks/DeckSerializer');
+diff --git a/Mage.Web.Client/src/core/decks/DeckStorageService.ts b/Mage.Web.Client/src/core/decks/DeckStorageService.ts
+index fd253a81e3..b2a3a89579 100644
+--- a/Mage.Web.Client/src/core/decks/DeckStorageService.ts
++++ b/Mage.Web.Client/src/core/decks/DeckStorageService.ts
+@@ -1,3 +1,4 @@
++import { deckSig } from "./deckStrength.js"; // mtg-ai
+ import type { DeckCardLists, DeckImportSource } from "./types.js";
+ import { DeckSerializer } from "./DeckSerializer.js";
+ import { newId } from "../util/uuid.js";
+@@ -24,6 +25,8 @@ export interface DeckSummary {
+     };
+     /** the deck website the deck was imported from */
+     source?: DeckImportSource;
++    /** mtg-ai: deckSig of the main cards, to recognise a saved copy of one of our rated starters */
++    sig?: string;
+ }
+ 
+ export interface IDeckStorage {
+@@ -67,6 +70,8 @@ interface DeckMeta {
+     };
+     /** the deck website the deck was imported from */
+     source?: DeckImportSource;
++    /** mtg-ai: deckSig of the main cards, to recognise a saved copy of one of our rated starters */
++    sig?: string;
+ }
+ 
+ export class LocalDeckStorage implements IDeckStorage {
+@@ -123,6 +128,7 @@ export class LocalDeckStorage implements IDeckStorage {
+             coverCard: deck.coverCard,
+             colors: deck.colors,
+             source: deck.source,
++            sig: deckSig(deck.cards), // mtg-ai
+         };
+         const newMeta = meta.filter(m => m.id !== deck.id);
+         newMeta.push(newMetaItem);
+@@ -221,9 +227,28 @@ export class LocalDeckStorage implements IDeckStorage {
+             coverCard: m.coverCard,
+             colors: m.colors,
+             source: m.source,
++            // mtg-ai: decks saved before the signature was kept are signed from their stored list
++            sig: m.sig ?? this.storedSig(m.id),
+         })).sort((a, b) => b.updatedAt - a.updatedAt);
+     }
+ 
++    /** mtg-ai: deckSig of a stored deck that has no signature in its summary yet (JSON or legacy .dck) */
++    private storedSig(id: string): string | undefined {
++        const content = localStorage.getItem(STORAGE_PREFIX + id);
++        if (!content) return undefined;
++        try {
++            const parsed = JSON.parse(content);
++            if (parsed && Array.isArray(parsed.cards)) return deckSig(parsed.cards);
++        } catch {
++            // legacy .dck text
++        }
++        try {
++            return deckSig(DeckSerializer.importDeck(content).cards);
++        } catch {
++            return undefined;
++        }
++    }
++
+     async deleteDeck(id: string): Promise<void> {
+         localStorage.removeItem(STORAGE_PREFIX + id);
+         const meta = this.getMeta();
+diff --git a/Mage.Web.Client/src/core/game/availableMana.test.ts b/Mage.Web.Client/src/core/game/availableMana.test.ts
+new file mode 100644
+index 0000000000..d5de129c28
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/availableMana.test.ts
+@@ -0,0 +1,27 @@
++import { describe, expect, it } from 'vitest';
++import type { PermanentView } from '../../protocol/generated/views';
++import { availableMana } from './availableMana';
++
++const forest = (id: string, extra: Partial<PermanentView> = {}): PermanentView => ({ id, name: 'Forest', cardTypes: ['LAND'], subTypes: ['FOREST'], controlled: true, ...extra });
++const board = (...permanents: PermanentView[]) => Object.fromEntries(permanents.map((permanent) => [permanent.id!, permanent]));
++
++describe('availableMana (mtg-ai)', () => {
++  it('counts untapped lands and the pool', () => {
++    expect(availableMana({ battlefield: board(forest('a'), forest('b'), forest('c', { tapped: true })), manaPool: { red: 1 } })).toEqual({ count: 3, exact: true });
++  });
++
++  it('leaves out non-mana permanents, sick mana creatures and others\' attachments', () => {
++    const bear: PermanentView = { id: 'bear', name: 'Grizzly Bears', cardTypes: ['CREATURE'], rules: [], controlled: true };
++    const elf: PermanentView = { id: 'elf', name: 'Llanowar Elves', cardTypes: ['CREATURE'], rules: ['{T}: Add {G}.'], summoningSickness: true, controlled: true };
++    const theirs = forest('aura', { controlled: false });
++    expect(availableMana({ battlefield: board(forest('a'), bear, elf, theirs) })).toEqual({ count: 1, exact: true });
++    expect(availableMana({ battlefield: board({ ...elf, summoningSickness: false }) })).toEqual({ count: 1, exact: true });
++  });
++
++  it('says it is an estimate for sources it cannot read for sure', () => {
++    const treasure: PermanentView = { id: 't', name: 'Treasure', cardTypes: ['ARTIFACT'], rules: ['{T}, Sacrifice this artifact: Add one mana of any color.'], controlled: true };
++    const solRing: PermanentView = { id: 's', name: 'Sol Ring', cardTypes: ['ARTIFACT'], rules: ['{T}: Add {C}{C}.'], controlled: true };
++    expect(availableMana({ battlefield: board(treasure) })).toEqual({ count: 1, exact: false });
++    expect(availableMana({ battlefield: board(solRing) }).exact).toBe(false);
++  });
++});
+diff --git a/Mage.Web.Client/src/core/game/availableMana.ts b/Mage.Web.Client/src/core/game/availableMana.ts
+new file mode 100644
+index 0000000000..126381e2a7
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/availableMana.ts
+@@ -0,0 +1,40 @@
++import type { PermanentView, PlayerView } from '../../protocol/generated/views';
++import { manaOf } from './autoPay';
++
++/**
++ * mtg-ai: an estimate of the mana a player could make now, for their plate: one per untapped mana source they control
++ * (a land, or a creature that has been under their control since their turn began) plus the mana in their pool.
++ * `exact` is false when a source can't be read for sure: a cost or rider besides tapping (a Treasure), more than one
++ * mana from one ability, or a summoning-sick creature source that may have haste.
++ */
++export interface AvailableMana {
++  count: number;
++  exact: boolean;
++}
++
++const POOL_KEYS = ['white', 'blue', 'black', 'red', 'green', 'colorless'] as const;
++
++const strip = (rule: string) => rule.replace(/<[^>]*>/g, '');
++
++export function availableMana(player: Pick<PlayerView, 'battlefield' | 'manaPool'>): AvailableMana {
++  let count = POOL_KEYS.reduce((sum, key) => sum + (player.manaPool?.[key] ?? 0), 0);
++  let exact = true;
++  for (const permanent of Object.values(player.battlefield ?? {}) as PermanentView[]) {
++    // attachments of other players' (an Aura on your creature) sit here too
++    if (permanent.controlled === false || permanent.tapped || permanent.phasedIn === false) continue;
++    const mana = manaOf(permanent, { painful: true, anyColor: true, commander: true });
++    if (mana === undefined) continue; // no mana ability
++    const rules = (permanent.rules ?? []).map(strip);
++    const creature = (permanent.cardTypes ?? []).includes('CREATURE');
++    const tapAbility = rules.some((rule) => /\{T\}[^:]*:\s*Add/i.test(rule)) || (permanent.cardTypes ?? []).includes('LAND');
++    if (creature && permanent.summoningSickness && tapAbility) {
++      if (!rules.some((rule) => /\bhaste\b/i.test(rule))) continue; // can't tap yet
++      exact = false;
++    }
++    if (mana === null) exact = false;
++    // "Add {C}{C}" (and not "{R} or {G}"): more than one mana per tap
++    if (rules.some((rule) => [...rule.matchAll(/Add ((?:\{[^}]+\})+)/gi)].some((match) => (match[1].match(/\{/g) ?? []).length > 1))) exact = false;
++    count += 1;
++  }
++  return { count, exact };
++}
+diff --git a/Mage.Web.Client/src/core/game/libraryList.test.ts b/Mage.Web.Client/src/core/game/libraryList.test.ts
+new file mode 100644
+index 0000000000..82bfc98b39
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/libraryList.test.ts
+@@ -0,0 +1,20 @@
++import { describe, expect, it } from 'vitest';
++import { shuffledLibrary } from './libraryList';
++
++describe('shuffledLibrary (mtg-ai)', () => {
++  it('keeps every name and count, drops empty ones', () => {
++    const list = shuffledLibrary({ Forest: 8, 'Grizzly Bears': 2, Gone: 0 });
++    expect(list).toHaveLength(2);
++    expect(Object.fromEntries(list.map((entry) => [entry.name, entry.count]))).toEqual({ Forest: 8, 'Grizzly Bears': 2 });
++  });
++
++  it('does not keep the order it was sent in', () => {
++    const cards = Object.fromEntries(Array.from({ length: 12 }, (_, i) => [`Card ${String(i).padStart(2, '0')}`, 1]));
++    const orders = new Set(Array.from({ length: 20 }, () => shuffledLibrary(cards).map((entry) => entry.name).join('|')));
++    expect(orders.size).toBeGreaterThan(1);
++  });
++
++  it('is empty without a list (an opponent, a watcher)', () => {
++    expect(shuffledLibrary(undefined)).toEqual([]);
++  });
++});
+diff --git a/Mage.Web.Client/src/core/game/libraryList.ts b/Mage.Web.Client/src/core/game/libraryList.ts
+new file mode 100644
+index 0000000000..dc7f5aabb2
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/libraryList.ts
+@@ -0,0 +1,20 @@
++/**
++ * mtg-ai: the player's own library for the LIBRARY viewer. The server sends only names and counts
++ * (PlayerView.libraryCards, in the player's own view, sorted by name), never the order; the list is shuffled here
++ * each time it is opened so the screen does not suggest an order either.
++ */
++export interface LibraryEntry {
++  name: string;
++  count: number;
++}
++
++export const LIBRARY_ORDER_NOTE = 'Shown in random order — not the real library order';
++
++export function shuffledLibrary(cards: Readonly<Record<string, number>> | null | undefined, random: () => number = Math.random): LibraryEntry[] {
++  const entries = Object.entries(cards ?? {}).filter(([, count]) => count > 0).map(([name, count]) => ({ name, count }));
++  for (let i = entries.length - 1; i > 0; i--) {
++    const j = Math.floor(random() * (i + 1));
++    [entries[i], entries[j]] = [entries[j], entries[i]];
++  }
++  return entries;
++}
+diff --git a/Mage.Web.Client/src/protocol/generated/views.ts b/Mage.Web.Client/src/protocol/generated/views.ts
+index 82be206a69..dc3f8a0831 100644
+--- a/Mage.Web.Client/src/protocol/generated/views.ts
++++ b/Mage.Web.Client/src/protocol/generated/views.ts
+@@ -1874,6 +1874,7 @@ export interface PlayerView extends Serializable {
+     initiative?: boolean;
+     isActive?: boolean;
+     isHuman?: boolean;
++    libraryCards?: { [index: string]: number };
+     libraryCount?: number;
+     life?: number;
+     manaPool?: ManaPoolView;

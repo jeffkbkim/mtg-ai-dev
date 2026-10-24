@@ -1,0 +1,158 @@
+diff --git a/Mage.Server/src/main/java/mage/server/game/GameController.java b/Mage.Server/src/main/java/mage/server/game/GameController.java
+index 9e8f6a220a..3003a6894f 100644
+--- a/Mage.Server/src/main/java/mage/server/game/GameController.java
++++ b/Mage.Server/src/main/java/mage/server/game/GameController.java
+@@ -712,6 +712,21 @@ public class GameController implements GameCallback {
+             break;
+             case CONCEDE: {
+                 UUID playerId = getPlayerId(userId);
++                if (playerId != null && "claim".equals(data)) {
++                    // mtg-ai: the player ends a decided game against the computer as a win: every computer opponent
++                    // concedes (the recorder marks the result "ended_by": "human_claim")
++                    Player player = game.getPlayer(playerId);
++                    if (player != null && player.isHuman()) {
++                        for (UUID opponentId : game.getOpponents(playerId)) {
++                            Player opponent = game.getPlayer(opponentId);
++                            if (opponent != null && opponent.isComputer() && opponent.isInGame()) {
++                                game.informPlayers(player.getLogName() + " claims the win: " + opponent.getLogName() + " can't win");
++                                game.setConcedingPlayer(opponentId);
++                            }
++                        }
++                    }
++                    break;
++                }
+                 if (playerId != null) {
+                     Player player = game.getPlayer(playerId);
+                     if (player != null) {
+diff --git a/Mage.Server/src/main/java/mage/server/websocket/api/GameApi.java b/Mage.Server/src/main/java/mage/server/websocket/api/GameApi.java
+index 45bfd880e1..17555a9057 100644
+--- a/Mage.Server/src/main/java/mage/server/websocket/api/GameApi.java
++++ b/Mage.Server/src/main/java/mage/server/websocket/api/GameApi.java
+@@ -174,7 +174,9 @@ final class GameApi {
+                         .doc("Send a player action: pass modes (F-keys), concede, undo, rollback, auto-answer and trigger-order settings.")
+                         .handler(call -> {
+                             PlayerAction action = playerAction(call, 0);
+-                            if (action == PlayerAction.UNDO || action == PlayerAction.CONCEDE || action.name().startsWith("PASS_PRIORITY_")) {
++                            // mtg-ai: a claimed win ("claim") makes the computer concede and leaves the player's question open
++                            boolean claim = action == PlayerAction.CONCEDE && call.has(3) && "claim".equals(String.valueOf(actionData(call.raw(3))));
++                            if (!claim && (action == PlayerAction.UNDO || action == PlayerAction.CONCEDE || action.name().startsWith("PASS_PRIORITY_"))) {
+                                 // these answer (or replace) the open question
+                                 answered(call, 1);
+                             }
+diff --git a/Mage.Web.Client/src/app/match/MatchStage.tsx b/Mage.Web.Client/src/app/match/MatchStage.tsx
+index e0c60a82d3..1ed3d7fc45 100644
+--- a/Mage.Web.Client/src/app/match/MatchStage.tsx
++++ b/Mage.Web.Client/src/app/match/MatchStage.tsx
+@@ -688,6 +688,7 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+               onSaved={() => exit(false)}
+               canConcede={canAct}
+               onConcede={() => onCommand({ type: 'action', action: 'CONCEDE' })}
++              onClaim={() => onCommand({ type: 'action', action: 'CONCEDE', data: 'claim' })}
+               onLeave={leave}
+               rollback={canAct && !!view?.rollbackTurnsAllowed && (view?.turn ?? 0) > 0
+                 ? { ready: interaction.mode === 'priority' && !awaitingServer, request: () => onCommand({ type: 'action', action: 'ROLLBACK_TURNS', data: 0 }) }
+@@ -919,6 +920,12 @@ interface RollbackOption {
+ }
+ 
+ const CONFIRM = {
++  // mtg-ai: end a decided game against the computer as a win
++  claim: {
++    title: 'End the game as your win?',
++    description: 'Use this when your opponent can\'t win any more. The computer concedes, and the game is recorded as claimed.',
++    action: 'Claim the win',
++  },
+   concede: {
+     title: 'Concede this game?',
+     description: 'Your opponent wins this game. You can\'t undo it.',
+@@ -956,7 +963,7 @@ const CONFIRM = {
+   },
+ } as const;
+ 
+-function GameMenu({ gameId, quests, practice, solo, careerAssists, vsAi, onSaved, canConcede, onConcede, onLeave, rollback }: {
++function GameMenu({ gameId, quests, practice, solo, careerAssists, vsAi, onSaved, canConcede, onConcede, onClaim, onLeave, rollback }: {
+   gameId: string;
+   /** playing (not watching or replaying) a game still running: the player's quests and what this game added */
+   quests: boolean;
+@@ -971,6 +978,8 @@ function GameMenu({ gameId, quests, practice, solo, careerAssists, vsAi, onSaved
+   onSaved(): void;
+   canConcede: boolean;
+   onConcede(): void;
++  /** mtg-ai: the computer concedes a game it can't win */
++  onClaim(): void;
+   onLeave(): void;
+   rollback: RollbackOption | null;
+ }) {
+@@ -1046,6 +1055,9 @@ function GameMenu({ gameId, quests, practice, solo, careerAssists, vsAi, onSaved
+                 {vsAi ? 'Take back this turn' : 'Request rollback to start of turn'}
+               </DropdownMenu.Item>
+             )}
++            {canConcede && vsAi && (
++              <DropdownMenu.Item className={styles.menuItem} onSelect={() => setConfirming('claim')}>Opponent can't win: end game (claim win)</DropdownMenu.Item>
++            )}
+             {canConcede && (
+               <DropdownMenu.Item className={styles.menuItem} onSelect={() => setConfirming('concede')}>Concede</DropdownMenu.Item>
+             )}
+@@ -1085,6 +1097,7 @@ function GameMenu({ gameId, quests, practice, solo, careerAssists, vsAi, onSaved
+                 setConfirming(null);
+                 if (choice === 'leave') onLeave();
+                 else if (choice === 'concede') onConcede();
++                else if (choice === 'claim') onClaim();
+                 else if (choice === 'rollback' || choice === 'rollbackAi') rollback?.request();
+                 else if (choice === 'fork' || choice === 'save' || choice === 'takeBack') void soloAction(choice);
+               }}
+diff --git a/Mage.Web.Client/src/app/stores/play.ts b/Mage.Web.Client/src/app/stores/play.ts
+index ac3eadd0cb..98bd286c85 100644
+--- a/Mage.Web.Client/src/app/stores/play.ts
++++ b/Mage.Web.Client/src/app/stores/play.ts
+@@ -13,7 +13,7 @@ import { claudeSkill, seatableAiType } from '../screens/aiSetup';
+ import type { DeckCardLists } from '../../core/decks/types';
+ import { formatRules, gameTypesFor, isCommanderFormat } from '../../core/decks/formats';
+ import { pickMetaDeck } from '../../core/decks/metaDecks';
+-import { matchingStarters, strengthOf, type DeckStrength } from '../../core/decks/deckStrength';
++import { knownStrengths, matchingStarters, strengthOf, type DeckStrength } from '../../core/decks/deckStrength';
+ import { notify } from './toasts';
+ import { useCoach } from './coach';
+ import { t } from '../i18n';
+@@ -258,7 +258,7 @@ export const usePlay = create<PlayState>((set, get) => ({
+       // mtg-ai: the Claude AI's random deck is always a good-pool DSK deck
+       const claudeRival = !watch && seatableAiType(options.aiType, queryClient.getQueryData<ServerState>(['serverState'])?.playerTypes) === 'COMPUTER_CLAUDE';
+       // mtg-ai: a person against any AI gets a DSK deck of about their own deck's strength (watching: any deck)
+-      const match = !practice && !guided && !watch && !commander ? strengthOf(deck.cards, useDecks.getState().starters) : null;
++      const match = !practice && !guided && !watch && !commander ? strengthOf(deck.cards, [...useDecks.getState().starters, ...await knownStrengths()]) : null;
+       const rivalDecks: WireDeck[] = practice
+         ? [toWire(goldfishDeck(commander))]
+         : [...(sourced ? [sourced] : []), ...(await aiDecks(source.kind === 'roster' ? source.id : null, opponents - (sourced ? 1 : 0), commander, format, meta?.file ?? null, claudeRival, match)).map(toWire)];
+diff --git a/Mage.Web.Client/src/core/decks/deckStrength.ts b/Mage.Web.Client/src/core/decks/deckStrength.ts
+index ef05623881..37ef308fdc 100644
+--- a/Mage.Web.Client/src/core/decks/deckStrength.ts
++++ b/Mage.Web.Client/src/core/decks/deckStrength.ts
+@@ -34,6 +34,16 @@ export function deckSig(cards: DeckCardInfo[]): string {
+   return hash.toString(16).padStart(8, '0');
+ }
+ 
++/** Every rated DSK deck, the unlisted ones too (starter-decks/strengths.json), so an old saved copy is still known. */
++export async function knownStrengths(): Promise<StrengthEntry[]> {
++  try {
++    const response = await fetch('/starter-decks/strengths.json', { cache: 'no-cache' });
++    return response.ok ? ((await response.json()) as StrengthEntry[]) : [];
++  } catch {
++    return [];
++  }
++}
++
+ /** The player's deck's strength: the starter it is (or a saved copy of), else UNRATED. */
+ export function strengthOf(cards: DeckCardInfo[], starters: readonly StrengthEntry[]): { strength: DeckStrength; how: 'starter' | 'unrated'; sig: string } {
+   const sig = deckSig(cards);
+diff --git a/Mage.Web.Client/src/core/game/gameSession.ts b/Mage.Web.Client/src/core/game/gameSession.ts
+index e325f39274..9127d70160 100644
+--- a/Mage.Web.Client/src/core/game/gameSession.ts
++++ b/Mage.Web.Client/src/core/game/gameSession.ts
+@@ -305,7 +305,7 @@ export class GameSession {
+           break;
+         case 'action':
+           await this.api.sendPlayerAction(command.action, gameId, command.data ?? null);
+-          if (command.action === 'CONCEDE' && !this.store.getState().gameOver) this.store.setState({ conceding: true });
++          if (command.action === 'CONCEDE' && command.data !== 'claim' && !this.store.getState().gameOver) this.store.setState({ conceding: true });
+           break;
+       }
+     } catch (error) {

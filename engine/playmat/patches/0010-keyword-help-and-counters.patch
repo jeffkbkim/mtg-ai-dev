@@ -1,0 +1,787 @@
+diff --git a/Mage.Web.Client/src/app/match/CardDetail.tsx b/Mage.Web.Client/src/app/match/CardDetail.tsx
+index a585d86db2..ae73e62e32 100644
+--- a/Mage.Web.Client/src/app/match/CardDetail.tsx
++++ b/Mage.Web.Client/src/app/match/CardDetail.tsx
+@@ -12,6 +12,7 @@ import { CardFace } from '../ui/CardFace';
+ import { useCardStyle } from '../ui/cardStyles';
+ import { ManaCost } from '../ui/ManaCost';
+ import { PromptText } from '../ui/PromptText';
++import { TermText } from '../ui/TermText';
+ import { useMatchUi } from './matchUi';
+ import { useStage } from './stageContext';
+ import { useLongPress } from './useLongPress';
+@@ -256,7 +257,8 @@ export function CardDetail({ view, extra, sleeveOf, attacking, blocking }: {
+                   {explanation.lines.map((line, index) => (
+                     <li key={index} className={styles.line}>
+                       <span className={styles.kind}>{LINE_KIND_LABEL[line.kind]}</span>
+-                      <span className={styles.lineText}><PromptText text={stripMarkup(line.text)} /></span>
++                      {/* mtg-ai: the keywords it names are marked and explained where they are printed */}
++                      <span className={styles.lineText}><TermText text={stripMarkup(line.text)} card={card} /></span>
+                     </li>
+                   ))}
+                 </ol>
+diff --git a/Mage.Web.Client/src/app/match/CardZoom.module.css b/Mage.Web.Client/src/app/match/CardZoom.module.css
+index 715d1f1d7a..aeb8afb147 100644
+--- a/Mage.Web.Client/src/app/match/CardZoom.module.css
++++ b/Mage.Web.Client/src/app/match/CardZoom.module.css
+@@ -65,3 +65,58 @@
+   max-width: 520px;
+   font-size: 24px;
+ }
++
++/* mtg-ai: Arena's Mechanics panel: each keyword and mechanic on the hovered card, explained, beside it */
++.mechanics {
++  position: absolute;
++  top: 0;
++  display: grid;
++  align-content: start;
++  gap: 10px;
++  overflow: hidden;
++  padding: 14px 16px;
++  border-radius: 12px;
++  background: rgb(var(--mat-rgb) / 0.94);
++  box-shadow: inset 0 0 0 1px var(--ink-faint), 0 18px 40px rgb(var(--shade-rgb) / 0.5);
++  color: var(--ink);
++}
++
++.mechanicsTitle {
++  margin: 0;
++  font-size: 14px;
++  font-weight: 700;
++  letter-spacing: 0.12em;
++  text-transform: uppercase;
++  color: var(--ink-dim);
++}
++
++.terms {
++  display: grid;
++  gap: 10px;
++  margin: 0;
++}
++
++.term dt {
++  font-size: 17px;
++  font-weight: 700;
++  color: var(--brass-ink);
++}
++
++.term dd {
++  margin: 2px 0 0;
++  font-size: 15px;
++  line-height: 1.38;
++  color: var(--ink-soft);
++}
++
++.large .mechanics .mechanicsTitle {
++  font-size: 18px;
++}
++
++.large .mechanics .term dt {
++  font-size: 24px;
++}
++
++.large .mechanics .term dd {
++  font-size: 21px;
++}
+diff --git a/Mage.Web.Client/src/app/match/CardZoom.tsx b/Mage.Web.Client/src/app/match/CardZoom.tsx
+index d1fa76bdf9..c34a8489c4 100644
+--- a/Mage.Web.Client/src/app/match/CardZoom.tsx
++++ b/Mage.Web.Client/src/app/match/CardZoom.tsx
+@@ -1,6 +1,7 @@
+-import { useEffect, useState } from 'react';
++import { useEffect, useMemo, useState } from 'react';
+ import type { CardView, PermanentView } from '../../protocol/generated/views';
+ import { isStackAbility, printedSideways } from '../../core/game/cards';
++import { explainCard } from '../../core/game/glossary';
+ import { AbilityCard } from '../ui/AbilityCard';
+ import { showsBackFace } from '../../core/images/imageLinks';
+ import { CardFace } from '../ui/CardFace';
+@@ -16,6 +17,10 @@ const ZOOM_WIDTH = 340;
+ const LARGE_WIDTH = 520;
+ const DELAY_MS = 260;
+ const EDGE = 24;
++/** mtg-ai: the Mechanics panel beside the card, and the gap between them */
++const PANEL_WIDTH = 300;
++const LARGE_PANEL_WIDTH = 420;
++const PANEL_GAP = 14;
+ 
+ /**
+  * The hovered card, large, beside the pointer (after a short delay so sweeping the board stays calm). `large`
+@@ -27,6 +32,9 @@ export function CardZoom({ large = false }: { large?: boolean }) {
+   const detailOpen = useMatchUi((state) => !!state.detail);
+   const stage = useStage();
+   const [settled, setSettled] = useState<typeof zoom>(null);
++  const hovered = zoom && !dragging && settled === zoom ? zoom.card : null;
++  // mtg-ai: what the card's keywords and mechanics mean, beside it (an ability on the stack has no card types)
++  const terms = useMemo(() => (hovered ? explainCard(isStackAbility(hovered) ? { ...hovered, cardTypes: [] } : hovered).terms : []), [hovered]);
+ 
+   useEffect(() => {
+     if (!zoom || dragging) return;
+@@ -64,6 +72,13 @@ export function CardZoom({ large = false }: { large?: boolean }) {
+     ? Math.max(EDGE, (stage.height - height) / 2 - 40)
+     : Math.max(EDGE, Math.min(stage.height - height - EDGE, point.y - height / 2));
+ 
++  // mtg-ai: the panel goes on the side of the card away from the pointer (toward the middle of the table when large)
++  const panelWidth = large ? LARGE_PANEL_WIDTH : PANEL_WIDTH;
++  const panelRight = large ? pointerRight : !pointerRight;
++  const panelLeft = panelRight
++    ? Math.min(left + span + PANEL_GAP, stage.width - panelWidth - 8)
++    : Math.max(8, left - panelWidth - PANEL_GAP);
++
+   return (
+     <div className={[styles.zoom, large ? styles.large : ''].join(' ')} style={{ left, top }} aria-hidden="true">
+       <div className={styles.faces}>
+@@ -90,6 +105,19 @@ export function CardZoom({ large = false }: { large?: boolean }) {
+           {extra.map((line) => <li key={line}>{line}</li>)}
+         </ul>
+       )}
++      {terms.length > 0 && (
++        <aside className={styles.mechanics} style={{ left: panelLeft - left, width: panelWidth, maxHeight: stage.height - top - EDGE }}>
++          <h3 className={styles.mechanicsTitle}>Mechanics</h3>
++          <dl className={styles.terms}>
++            {terms.map((term) => (
++              <div key={term.name} className={styles.term}>
++                <dt>{term.name}</dt>
++                <dd><PromptText text={term.text} /></dd>
++              </div>
++            ))}
++          </dl>
++        </aside>
++      )}
+     </div>
+   );
+ }
+diff --git a/Mage.Web.Client/src/app/match/CounterBadges.module.css b/Mage.Web.Client/src/app/match/CounterBadges.module.css
+new file mode 100644
+index 0000000000..457badbc50
+--- /dev/null
++++ b/Mage.Web.Client/src/app/match/CounterBadges.module.css
+@@ -0,0 +1,23 @@
++/* mtg-ai: counter badges (the pill itself is PermanentStack's .counters li); a tint per kind of counter */
++.symbol {
++  flex: none;
++}
++
++ul > li.stun {
++  color: #9fc6ef;
++}
++
++ul > li.finality {
++  color: var(--danger-text);
++}
++
++ul > li.time {
++  color: var(--brass-ink);
++}
++
++/* an impending permanent: not a creature yet, counting down in brass (beats the pill's own colour and ring) */
++ul > li.impending {
++  color: var(--brass-ink);
++  box-shadow: 0 0 0 1px rgb(var(--brass-rgb) / 0.75);
++  font-size: 17px;
++}
+diff --git a/Mage.Web.Client/src/app/match/CounterBadges.tsx b/Mage.Web.Client/src/app/match/CounterBadges.tsx
+new file mode 100644
+index 0000000000..77575ee909
+--- /dev/null
++++ b/Mage.Web.Client/src/app/match/CounterBadges.tsx
+@@ -0,0 +1,40 @@
++import { Ban, BatteryCharging, BookOpen, Clock, Droplet, Egg, Ghost, Hourglass, Shield, Snowflake, Sparkles, type LucideIcon } from 'lucide-react';
++import { useMemo } from 'react';
++import { counterBadges, type CounterKind } from '../../core/game/counters';
++import type { PermanentView } from '../../protocol/generated/views';
++import styles from './CounterBadges.module.css';
++
++/** mtg-ai: the symbol each kind of counter shows; +1/+1 counters and unknown ones print their name instead. */
++const SYMBOLS: Partial<Record<CounterKind, LucideIcon>> = {
++  time: Hourglass,
++  stun: Sparkles,
++  finality: Ban,
++  shield: Shield,
++  lore: BookOpen,
++  oil: Droplet,
++  age: Clock,
++  fade: Ghost,
++  ice: Snowflake,
++  charge: BatteryCharging,
++  nest: Egg,
++};
++
++/** mtg-ai: a permanent's counters on the board, as symbols with their count ("+1/+1", an hourglass and 4). */
++export function CounterBadges({ permanent, className }: { permanent: PermanentView; className?: string }) {
++  const badges = useMemo(() => counterBadges(permanent), [permanent]);
++  if (badges.length === 0) return null;
++  return (
++    <ul className={className} aria-label="Counters">
++      {badges.map((badge) => {
++        const Icon = SYMBOLS[badge.kind];
++        return (
++          <li key={badge.name} className={badge.impending ? styles.impending : styles[badge.kind]} title={badge.title}>
++            {Icon && <Icon className={styles.symbol} size={18} strokeWidth={2.4} aria-hidden="true" />}
++            {badge.label && <span>{badge.label}</span>}
++            {badge.showCount && <b>{badge.count}</b>}
++          </li>
++        );
++      })}
++    </ul>
++  );
++}
+diff --git a/Mage.Web.Client/src/app/match/PermanentStack.tsx b/Mage.Web.Client/src/app/match/PermanentStack.tsx
+index f2be2f9d65..af9aed7905 100644
+--- a/Mage.Web.Client/src/app/match/PermanentStack.tsx
++++ b/Mage.Web.Client/src/app/match/PermanentStack.tsx
+@@ -8,6 +8,7 @@ import { keywordEffects, keywordMarks, type KeywordEffect, type MarkedKeyword }
+ import type { PermanentView } from '../../protocol/generated/views';
+ import { useSettings } from '../stores/settings';
+ import { CardFace } from '../ui/CardFace';
++import { CounterBadges } from './CounterBadges';
+ import { cardKey, stackOffsetRatio, type PermanentGroup } from './boardModel';
+ import { useFlip } from './flip';
+ import { useMatchUi } from './matchUi';
+@@ -184,7 +185,6 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+   }
+ 
+   const damage = permanent.damage ?? 0;
+-  const counters = (permanent.counters ?? []).filter((counter) => (counter.count ?? 0) > 0);
+   const isCreature = (permanent.cardTypes ?? []).includes('CREATURE');
+   const loyalty = permanent.loyalty || permanent.defense;
+   // mtg-ai: a Room's doors, the unlocked ones lit
+@@ -277,16 +277,8 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+         </div>
+       )}
+ 
+-      {counters.length > 0 && (
+-        <ul className={styles.counters} aria-label="Counters">
+-          {counters.map((counter) => (
+-            <li key={counter.name} title={`${counter.count} ${counter.name}`}>
+-              <span>{counterLabel(counter.name ?? '')}</span>
+-              {(counter.count ?? 0) > 1 && <b>{counter.count}</b>}
+-            </li>
+-          ))}
+-        </ul>
+-      )}
++      {/* mtg-ai: counters as symbols, and how long an impending permanent has left */}
++      <CounterBadges permanent={permanent} className={styles.counters} />
+ 
+       {doors && (
+         <ul className={styles.doors} style={{ transform: tapped ? 'rotate(-90deg)' : undefined }} aria-label="Doors">
+@@ -314,11 +306,6 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+   );
+ }
+ 
+-function counterLabel(name: string): string {
+-  if (/^[+-]\d+\/[+-]\d+$/.test(name)) return name;
+-  return name.replace(/counter$/i, '').trim().slice(0, 10);
+-}
+-
+ function ptTone(permanent: PermanentView): string {
+   const base = permanent.original;
+   const power = Number(permanent.power);
+diff --git a/Mage.Web.Client/src/app/ui/TermText.module.css b/Mage.Web.Client/src/app/ui/TermText.module.css
+new file mode 100644
+index 0000000000..ad1c14bde3
+--- /dev/null
++++ b/Mage.Web.Client/src/app/ui/TermText.module.css
+@@ -0,0 +1,49 @@
++/* mtg-ai: a keyword in rules text: a quiet brass underline until pointed at */
++.term {
++  border-radius: 3px;
++  color: var(--brass-ink);
++  text-decoration: underline dotted rgb(var(--brass-rgb) / 0.75);
++  text-decoration-thickness: 2px;
++  text-underline-offset: 0.18em;
++  cursor: help;
++}
++
++.term:hover,
++.term:focus-visible {
++  outline: none;
++  background: rgb(var(--brass-rgb) / 0.16);
++  text-decoration-style: solid;
++}
++
++.tip {
++  z-index: var(--z-toast);
++  display: grid;
++  gap: 4px;
++  max-width: 340px;
++  padding: 10px 14px;
++  border-radius: 10px;
++  background: var(--mat-800);
++  box-shadow: inset 0 0 0 1px rgb(var(--brass-rgb) / 0.5), 0 12px 30px rgb(var(--shade-rgb) / 0.55);
++  font-size: 16px;
++  line-height: 1.4;
++  color: var(--ink);
++  animation: show var(--dur-quick) var(--ease-place);
++}
++
++.tipName {
++  color: var(--brass-ink);
++  font-size: 15px;
++  letter-spacing: 0.04em;
++  text-transform: uppercase;
++}
++
++.arrow {
++  fill: var(--mat-800);
++}
++
++@keyframes show {
++  from {
++    opacity: 0;
++    transform: translateY(4px);
++  }
++}
+diff --git a/Mage.Web.Client/src/app/ui/TermText.tsx b/Mage.Web.Client/src/app/ui/TermText.tsx
+new file mode 100644
+index 0000000000..10625faa68
+--- /dev/null
++++ b/Mage.Web.Client/src/app/ui/TermText.tsx
+@@ -0,0 +1,49 @@
++import * as Tooltip from '@radix-ui/react-tooltip';
++import { Fragment, useMemo } from 'react';
++import { termSpans } from '../../core/game/glossary';
++import type { CardView } from '../../protocol/generated/views';
++import { manaClass } from './mana';
++import { cleanText } from './text';
++import styles from './TermText.module.css';
++
++/** Mana symbols drawn, the rest as it is (PromptText's drawing, without trimming each piece). */
++function Symbols({ text }: { text: string }) {
++  return (
++    <>
++      {text.split(/(\{[^}]+\})/g).filter(Boolean).map((part, index) => {
++        const symbol = /^\{([^}]+)\}$/.exec(part)?.[1];
++        if (!symbol) return <Fragment key={index}>{part}</Fragment>;
++        return <i key={index} className={`ms ms-cost ms-${manaClass(symbol)}`} role="img" aria-label={symbol} style={{ fontSize: '0.85em', margin: '0 0.08em' }} />;
++      })}
++    </>
++  );
++}
++
++/**
++ * mtg-ai: rules text like PromptText, with each keyword, action and ability word it names marked; pointing at one
++ * (or focusing it) explains it, the way Arena does. Expects text already stripped of markup.
++ */
++export function TermText({ text, card }: { text: string; card?: Pick<CardView, 'name' | 'displayName'> }) {
++  const spans = useMemo(() => termSpans(cleanText(text), card), [text, card]);
++  return (
++    <>
++      {spans.map((span, index) => {
++        if (!span.term) return <Symbols key={index} text={span.text} />;
++        return (
++          <Tooltip.Root key={index} delayDuration={150}>
++            <Tooltip.Trigger asChild>
++              <span className={styles.term} tabIndex={0} data-term={span.term.name}><Symbols text={span.text} /></span>
++            </Tooltip.Trigger>
++            <Tooltip.Portal>
++              <Tooltip.Content className={styles.tip} side="top" sideOffset={6} collisionPadding={12}>
++                <b className={styles.tipName}>{span.term.name}</b>
++                <span><Symbols text={span.term.text} /></span>
++                <Tooltip.Arrow className={styles.arrow} />
++              </Tooltip.Content>
++            </Tooltip.Portal>
++          </Tooltip.Root>
++        );
++      })}
++    </>
++  );
++}
+diff --git a/Mage.Web.Client/src/core/game/counters.test.ts b/Mage.Web.Client/src/core/game/counters.test.ts
+new file mode 100644
+index 0000000000..f3bf828d4f
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/counters.test.ts
+@@ -0,0 +1,37 @@
++import { describe, expect, it } from 'vitest';
++import type { PermanentView } from '../../protocol/generated/views';
++import { counterBadges, isImpending } from './counters';
++
++// mtg-ai: counters as board badges
++describe('counterBadges', () => {
++  const permanent = (counters: { name: string; count: number }[], extra: Partial<PermanentView> = {}) => ({ counters, cardTypes: ['CREATURE'], rules: [], ...extra }) as PermanentView;
++
++  it('prints +1/+1 counters as they are and gives the others a symbol', () => {
++    const badges = counterBadges(permanent([{ name: '+1/+1', count: 2 }, { name: '-1/-1', count: 1 }, { name: 'stun', count: 1 }, { name: 'finality', count: 1 }, { name: 'empty', count: 0 }]));
++    expect(badges.map((badge) => [badge.kind, badge.label, badge.showCount])).toEqual([
++      ['pt', '+1/+1', true],
++      ['pt', '−1/−1', false],
++      ['stun', '', false],
++      ['finality', '', false],
++    ]);
++    expect(badges[2].title).toMatch(/stun counter: instead of untapping/);
++  });
++
++  it('always shows how many time counters, and keeps unknown names whole when short', () => {
++    expect(counterBadges(permanent([{ name: 'time', count: 1 }]))[0]).toMatchObject({ kind: 'time', label: '', showCount: true });
++    expect(counterBadges(permanent([{ name: 'bounty', count: 1 }]))[0]).toMatchObject({ kind: 'other', label: 'bounty' });
++    expect(counterBadges(permanent([{ name: 'incarnation', count: 3 }]))[0]).toMatchObject({ label: 'incarnati…', showCount: true });
++  });
++
++  it('says how long an impending Overlord has left before it is a creature', () => {
++    const overlord = permanent([{ name: 'time', count: 4 }], {
++      cardTypes: ['ENCHANTMENT'],
++      rules: ['Impending 4&mdash;{2}{W}{W} <i>(If you cast this spell for its impending cost...)</i>'],
++    });
++    expect(isImpending(overlord)).toBe(true);
++    expect(counterBadges(overlord)[0]).toMatchObject({ kind: 'time', label: 'Impending 4', impending: true });
++    // once it is a creature (the counters gone, or cast for its full cost) it is not impending
++    expect(isImpending({ ...overlord, cardTypes: ['ENCHANTMENT', 'CREATURE'] })).toBe(false);
++    expect(isImpending({ ...overlord, counters: [] })).toBe(false);
++  });
++});
+diff --git a/Mage.Web.Client/src/core/game/counters.ts b/Mage.Web.Client/src/core/game/counters.ts
+new file mode 100644
+index 0000000000..cd0238daeb
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/counters.ts
+@@ -0,0 +1,69 @@
++import type { PermanentView } from '../../protocol/generated/views';
++
++/**
++ * mtg-ai: the counters on a permanent as badges for the board: a +1/+1 counter reads "+1/+1", the counters with a
++ * symbol (stun, time, finality...) show that symbol and how many, and an impending permanent (an Overlord cast for
++ * its impending cost) says how many time counters are left before it becomes a creature.
++ */
++export type CounterKind = 'pt' | 'time' | 'stun' | 'finality' | 'shield' | 'lore' | 'oil' | 'age' | 'fade' | 'ice' | 'charge' | 'nest' | 'other';
++
++export interface CounterBadge {
++  /** the counter's name as the server sends it */
++  name: string;
++  count: number;
++  kind: CounterKind;
++  /** text printed on the badge beside its symbol ("+1/+1", "Impending 4"); empty when the symbol says it */
++  label: string;
++  /** the count is printed too (always for time counters: the number is the point) */
++  showCount: boolean;
++  title: string;
++  impending?: boolean;
++}
++
++const SYMBOLS: Record<string, { kind: CounterKind; help: string }> = {
++  time: { kind: 'time', help: 'time counter' },
++  stun: { kind: 'stun', help: "stun counter: instead of untapping, it loses one" },
++  finality: { kind: 'finality', help: 'finality counter: if it would die, it is exiled instead' },
++  shield: { kind: 'shield', help: 'shield counter: damage or destruction removes the counter instead' },
++  lore: { kind: 'lore', help: 'lore counter' },
++  oil: { kind: 'oil', help: 'oil counter' },
++  age: { kind: 'age', help: 'age counter' },
++  fade: { kind: 'fade', help: 'fade counter' },
++  ice: { kind: 'ice', help: 'ice counter' },
++  charge: { kind: 'charge', help: 'charge counter' },
++  nest: { kind: 'nest', help: 'nest counter' },
++};
++
++/** Cast for its impending cost: it has time counters, isn't a creature yet, and has impending. */
++export function isImpending(permanent: Pick<PermanentView, 'counters' | 'cardTypes' | 'rules'>): boolean {
++  const time = (permanent.counters ?? []).find((counter) => counter.name?.toLowerCase() === 'time');
++  return !!time && (time.count ?? 0) > 0
++    && !(permanent.cardTypes ?? []).includes('CREATURE')
++    && (permanent.rules ?? []).some((line) => /\bimpending\b/i.test(line));
++}
++
++export function counterBadges(permanent: Pick<PermanentView, 'counters' | 'cardTypes' | 'rules'>): CounterBadge[] {
++  const impending = isImpending(permanent);
++  return (permanent.counters ?? []).filter((counter) => (counter.count ?? 0) > 0).map((counter) => {
++    const name = counter.name ?? '';
++    const count = counter.count ?? 0;
++    const plural = count === 1 ? '' : 's';
++    if (/^[+-]\d+\/[+-]\d+$/.test(name)) {
++      return { name, count, kind: 'pt' as const, label: name.replace(/-/g, '−'), showCount: count > 1, title: `${count} ${name} counter${plural}` };
++    }
++    const key = name.replace(/\s*counters?$/i, '').trim().toLowerCase();
++    const symbol = SYMBOLS[key];
++    if (symbol?.kind === 'time' && impending) {
++      return {
++        name, count, kind: 'time' as const, label: `Impending ${count}`, showCount: false, impending: true,
++        title: `Impending: ${count} time counter${plural} left. It isn't a creature until the last is removed; one comes off at each of its controller's end steps.`,
++      };
++    }
++    if (symbol) {
++      return { name, count, kind: symbol.kind, label: '', showCount: symbol.kind === 'time' || count > 1, title: `${count} ${symbol.help.replace('counter', `counter${plural}`)}` };
++    }
++    // a counter without a symbol keeps its name, whole when it is short
++    const label = key.length <= 10 ? key : `${key.slice(0, 9)}…`;
++    return { name, count, kind: 'other' as const, label, showCount: count > 1, title: `${count} ${key} counter${plural}` };
++  });
++}
+diff --git a/Mage.Web.Client/src/core/game/glossary.test.ts b/Mage.Web.Client/src/core/game/glossary.test.ts
+index 332126e3f3..b7d1352828 100644
+--- a/Mage.Web.Client/src/core/game/glossary.test.ts
++++ b/Mage.Web.Client/src/core/game/glossary.test.ts
+@@ -1,6 +1,6 @@
+ import { describe, expect, it } from 'vitest';
+ import type { CardView } from '../../protocol/generated/views';
+-import { explainCard } from './glossary';
++import { explainCard, termSpans } from './glossary';
+ 
+ const creature = (rules: string[]): CardView => ({ name: 'Test', cardTypes: ['CREATURE'], rules });
+ 
+@@ -60,3 +60,97 @@ describe('hints', () => {
+     expect(terms.map((term) => term.name)).toEqual(['Deathtouch', 'Revolt']);
+   });
+ });
++
++// mtg-ai: Duskmourn's mechanics, and keywords marked where they are printed
++describe('Duskmourn', () => {
++  const names = (card: CardView) => explainCard(card).terms.map((term) => term.name);
++
++  it('explains impending on an Overlord as a keyword line', () => {
++    const overlord: CardView = {
++      name: 'Overlord of the Mistmoors',
++      cardTypes: ['ENCHANTMENT', 'CREATURE'],
++      rules: [
++        'Impending 4&mdash;{2}{W}{W} <i>(If you cast this spell for its impending cost, it enters with four time counters and isn\'t a creature until the last is removed. At the beginning of your end step, remove a time counter from it.)</i>',
++        'Whenever {this} enters or attacks, create two 2/1 white Insect creature tokens with flying.',
++      ],
++    };
++    const { lines, terms } = explainCard(overlord);
++    expect(lines[0].kind).toBe('keyword');
++    expect(terms.map((term) => term.name)).toEqual(['Impending', 'Flying']);
++    expect(terms[0].text).toMatch(/time counters/);
++  });
++
++  it('tells manifest dread from manifest', () => {
++    expect(names(creature(['When {this} dies, manifest dread.']))).toEqual(['Manifest dread']);
++    expect(names(creature(['Whenever you manifest dread, put a card you put into your graveyard this way into your hand.']))).toEqual(['Manifest dread']);
++    expect(names(creature(['Its controller manifests dread.']))).toEqual(['Manifest dread']);
++    expect(names(creature(['Manifest the top card of your library.']))).toEqual(['Manifest']);
++  });
++
++  it('explains Rooms by their type, and doors and unlocking where they are mentioned', () => {
++    const room = { name: 'Bottomless Pool // Locker Room', cardTypes: ['ENCHANTMENT'], subTypes: ['ROOM'], rules: ['(You may cast either half. That door unlocks on the battlefield.)'] } as unknown as CardView;
++    expect(names(room)).toEqual(['Room']);
++    expect(names(creature(['Whenever {this} deals combat damage to a player, unlock a locked door of up to one target Room you control.']))).toEqual(['Room']);
++    const room2 = explainCard(room).terms[0].text;
++    expect(room2).toMatch(/sorcery/);
++    expect(room2).toMatch(/eerie/);
++  });
++
++  it('reads the ability words, landcycling and counters with rules of their own', () => {
++    expect(names(creature(['<i>Eerie</i> &mdash; Whenever an enchantment you control enters and whenever you fully unlock a Room, draw a card.'])))
++      .toEqual(['Eerie', 'Room']);
++    expect(names(creature(['<i>Survival</i> &mdash; At the beginning of your second main phase, if {this} is tapped, manifest dread.'])))
++      .toEqual(['Survival', 'Manifest dread']);
++    expect(names(creature(['Mountaincycling {2}']))).toEqual(['Cycling']);
++    expect(names(creature(['When {this} enters, tap target creature an opponent controls and put a stun counter on it.']))).toEqual(['Stun counter']);
++    expect(names(creature(['Return target creature card from your graveyard to the battlefield with a finality counter on it.']))).toEqual(['Finality counter']);
++    expect(names(creature(["<i>Council's dilemma</i> &mdash; Starting with you, each player votes for time or money."]))).toEqual(["Council's dilemma"]);
++  });
++
++  it("doesn't read keywords out of the card's own name, and finds an ability word after a sentence", () => {
++    const bargain: CardView = { name: "Betrayer's Bargain", cardTypes: ['INSTANT'], rules: ['{this} deals 5 damage to target creature.'] };
++    expect(names(bargain)).toEqual([]);
++    expect(termSpans("Betrayer's Bargain deals 5 damage.", bargain).some((span) => span.term)).toBe(false);
++    expect(names({ name: 'Unholy Heat', cardTypes: ['INSTANT'], rules: ['{this} deals 2 damage to target creature.<i>Delirium</i> &mdash; It deals 6 damage instead.'] }))
++      .toEqual(['Delirium']);
++  });
++
++  it('explains a face-down permanent, whatever it is', () => {
++    expect(names({ name: 'Manifest', faceDown: true, cardTypes: ['CREATURE'], rules: [] })).toEqual(['Face-down']);
++  });
++
++  it('explains a counter the permanent has even when its text never mentions it', () => {
++    const stunned = { ...creature(['Flying']), counters: [{ name: 'stun', count: 1 }] } as unknown as CardView;
++    expect(names(stunned)).toEqual(['Flying', 'Stun counter']);
++  });
++
++  it('has an explanation for every keyword and ability word printed on a DSK card', () => {
++    const printed = ['Flash', 'Ward {2}', 'Convoke', 'Flashback {3}{W}{W}{B}', 'Ninjutsu {1}{U}{B}', 'Crew 1', 'Equip {2}', 'Enchant creature', 'Delirium — Draw a card.', 'Surveil 2.'];
++    for (const line of printed) expect(names(creature([line])).length, line).toBeGreaterThan(0);
++  });
++});
++
++describe('termSpans', () => {
++  const marked = (text: string) => termSpans(text).filter((span) => span.term).map((span) => [span.text, span.term!.name]);
++
++  it('cuts text into terms and the text between, losing nothing', () => {
++    const text = 'Flying, lifelink. Whenever this attacks, scry 1 and manifest dread.';
++    const spans = termSpans(text);
++    expect(spans.map((span) => span.text).join('')).toBe(text);
++    expect(marked(text)).toEqual([['Flying', 'Flying'], ['lifelink', 'Lifelink'], ['scry', 'Scry'], ['manifest dread', 'Manifest dread']]);
++  });
++
++  it("doesn't mark reminder text, card names or strict keywords inside sentences", () => {
++    expect(marked('Trample (This creature can deal excess combat damage to the player or planeswalker it\'s attacking.)')).toEqual([['Trample', 'Trample']]);
++    expect(marked('Shadow of Doubt deals 2 damage.')).toEqual([]);
++    expect(marked('Shadow')).toEqual([['Shadow', 'Shadow']]);
++    expect(marked('Put a +1/+1 counter on it.')).toEqual([]);
++  });
++
++  it('marks ability words only before their dash, and the DSK mechanics', () => {
++    expect(marked('Eerie — Whenever you fully unlock a Room, draw a card.')).toEqual([['Eerie', 'Eerie'], ['unlock', 'Room'], ['Room', 'Room']]);
++    expect(marked('The eerie silence.')).toEqual([]);
++    expect(marked('Impending 4—{1}{U}{U}')).toEqual([['Impending', 'Impending']]);
++    expect(marked('Put a stun counter on it.')).toEqual([['stun counter', 'Stun counter']]);
++  });
++});
+diff --git a/Mage.Web.Client/src/core/game/glossary.ts b/Mage.Web.Client/src/core/game/glossary.ts
+index 6eaf37909a..5fa4c88564 100644
+--- a/Mage.Web.Client/src/core/game/glossary.ts
++++ b/Mage.Web.Client/src/core/game/glossary.ts
+@@ -21,6 +21,8 @@ interface Entry extends Term {
+   strict?: boolean;
+   /** overrides the name-and-forms match */
+   match?: RegExp;
++  /** mtg-ai: the counter this explains ("stun"): also listed for a permanent that has one, whatever its text says */
++  counter?: string;
+ }
+ 
+ const KEYWORDS: Entry[] = [
+@@ -111,8 +113,10 @@ const KEYWORDS: Entry[] = [
+   { name: 'Miracle', text: 'If it is the first card you drew this turn, you may reveal it and cast it for its miracle cost.' },
+   { name: 'Foretell', text: 'During your turn, pay {2} to exile it face down; cast it on a later turn for its foretell cost.' },
+   { name: 'Plot', text: 'Pay the plot cost to exile it; on a later turn you may cast it for free as a sorcery.' },
++  // mtg-ai: Duskmourn (DSK)
++  { name: 'Impending', text: "You may cast it for its impending cost instead. Then it enters with that many time counters and isn't a creature while it has any. At the beginning of your end step, remove one of them." },
+   { name: 'Suspend', text: 'Pay the suspend cost to exile it with time counters. At your upkeep remove one; when the last is removed, cast it for free.' },
+-  { name: 'Cycling', text: 'Pay the cycling cost and discard it: draw a card.', forms: ['cycle', 'cycles', 'cycled', 'landcycling', 'basic landcycling'] },
++  { name: 'Cycling', text: 'Pay the cycling cost and discard it: draw a card.', forms: ['cycle', 'cycles', 'cycled', 'landcycling', 'basic landcycling', 'plainscycling', 'islandcycling', 'swampcycling', 'mountaincycling', 'forestcycling'] },
+   { name: 'Channel', text: 'Pay the cost and discard it from your hand for the stated effect.', strict: true },
+   { name: 'Convoke', text: 'Each creature you tap while casting it pays for {1} or one mana of that creature\'s color.' },
+   { name: 'Delve', text: 'Each card you exile from your graveyard while casting it pays for {1}.' },
+@@ -162,7 +166,14 @@ const ACTIONS: Entry[] = [
+   { name: 'Monstrosity', text: 'If it isn\'t monstrous, put that many +1/+1 counters on it and it becomes monstrous.', forms: ['monstrous'] },
+   { name: 'Transform', text: 'Turn a double-faced card over to its other face.', forms: ['transforms', 'transformed'] },
+   { name: 'Discover', text: 'Exile cards from the top of your library until you hit a nonland card with that mana value or less; cast it for free or put it in your hand.', forms: ['discovers'] },
+-  { name: 'Manifest', text: 'Put the card onto the battlefield face down as a 2/2 creature; if it is a creature card you may turn it face up for its mana cost.', forms: ['manifests'] },
++  // mtg-ai: before Manifest, which must not claim "manifest dread"
++  { name: 'Manifest dread', text: 'Look at the top two cards of your library. Put one onto the battlefield face down as a 2/2 creature and the other into your graveyard. If the face-down card is a creature card, you may turn it face up any time for its mana cost.', forms: ['manifests dread'] },
++  { name: 'Manifest', text: 'Put the card onto the battlefield face down as a 2/2 creature; if it is a creature card you may turn it face up for its mana cost.', match: /\bmanifests?\b(?!\s+dread)/i },
++  // mtg-ai: Duskmourn (DSK)
++  { name: 'Face-down', text: "A face-down permanent is a 2/2 creature with no name, text, color or mana cost. Its controller may look at it; other players can't. A face-down creature card can be turned face up for its mana cost.", match: /\bface[- ](down|up)\b/i },
++  { name: 'Room', text: 'An enchantment with two doors, each with its own name, cost and abilities. Cast either door: it enters unlocked. Later, as a sorcery, you may pay a locked door\'s cost to unlock it. Unlocking the second door fully unlocks the Room, which triggers eerie.', match: /\b(rooms?|unlock(s|ed)?|(locked )?doors?)\b/i },
++  { name: 'Stun counter', text: 'If a permanent with a stun counter would untap, remove a stun counter from it instead.', match: /\bstun counters?\b/i, counter: 'stun' },
++  { name: 'Finality counter', text: 'If a permanent with a finality counter would go to a graveyard from the battlefield, exile it instead.', match: /\bfinality counters?\b/i, counter: 'finality' },
+   { name: 'Populate', text: 'Create a copy of a creature token you control.', forms: ['populates'] },
+   { name: 'Goad', text: 'Until your next turn, the goaded creature attacks each combat if able, and attacks a player other than you if able.', forms: ['goads', 'goaded'] },
+   { name: 'Venture into the dungeon', text: 'Move to the next room of a dungeon (or start one) and get that room\'s effect.', forms: ['ventures into the dungeon'] },
+@@ -176,6 +187,9 @@ const ACTIONS: Entry[] = [
+   { name: 'Exile', text: 'Remove from the game into the exile zone. Cards there usually stay there.', forms: ['exiles', 'exiled'] },
+ ];
+ 
++const ROOM = ACTIONS.find((entry) => entry.name === 'Room')!;
++const FACE_DOWN = ACTIONS.find((entry) => entry.name === 'Face-down')!;
++
+ /** Ability words name a group of abilities but have no rules meaning of their own; the text after the dash says it. */
+ const ABILITY_WORDS: Entry[] = [
+   { name: 'Landfall', text: 'Happens whenever a land enters the battlefield under your control.' },
+@@ -200,6 +214,8 @@ const ABILITY_WORDS: Entry[] = [
+   { name: 'Inspired', text: 'Happens whenever it becomes untapped.' },
+   { name: 'Eerie', text: 'Happens whenever an enchantment enters under your control or you fully unlock a Room.' },
+   { name: 'Survival', text: 'Happens at the beginning of your second main phase if it is tapped.' },
++  // mtg-ai: Duskmourn (Expropriate)
++  { name: "Council's dilemma", text: 'Each player votes, starting with you; each vote adds to the effect of what it voted for.' },
+ ];
+ 
+ export type LineKind = 'keyword' | 'triggered' | 'activated' | 'loyalty' | 'chapter' | 'spell' | 'static';
+@@ -325,6 +341,17 @@ export function rulesOf(card: CardView): string[] {
+   return splitRules(card).rules;
+ }
+ 
++/** mtg-ai: the names the card goes by in its own text: its name, and each half of a split card or Room */
++function ownNames(card: Pick<CardView, 'name' | 'displayName'>): string[] {
++  const names = new Set<string>();
++  for (const name of [card.displayName, card.name]) {
++    if (!name) continue;
++    names.add(name);
++    for (const half of name.split(/\s*\/\/\s*/)) if (half) names.add(half);
++  }
++  return [...names].sort((a, b) => b.length - a.length);
++}
++
+ /** Each line's kind, and every keyword, action and ability word the card mentions (in order of appearance). */
+ export function explainCard(card: CardView): CardExplanation {
+   const { rules, hints } = splitRules(card);
+@@ -336,16 +363,90 @@ export function explainCard(card: CardView): CardExplanation {
+     seen.add(entry.name);
+     terms.push({ name: entry.name, text: entry.text });
+   };
++  // mtg-ai: a Room's own rules are reminder text, which doesn't count: its type says it
++  if ((card.subTypes ?? []).some((type) => String(type).toUpperCase() === 'ROOM')) add(ROOM);
++  // mtg-ai: a face-down permanent has no text of its own to say what it is
++  if (card.faceDown) add(FACE_DOWN);
++  const names = ownNames(card);
+   for (const line of lines) {
+-    const text = plain(line.text);
++    // mtg-ai: the card's own name says nothing ("Betrayer's Bargain deals 5 damage" isn't bargain)
++    const text = names.reduce((rest, name) => rest.split(name).join('This'), plain(line.text));
+     if (line.abilityWord) add(ABILITY_WORDS.find((entry) => entry.name === line.abilityWord)!);
+     for (const part of text.split(DASH)) leadingKeywords(part).forEach(add);
+     KEYWORDS.filter((entry) => !entry.strict && mentions(text, entry)).forEach(add);
+     ACTIONS.filter((entry) => mentions(text, entry)).forEach(add);
++    // mtg-ai: an ability word after a sentence of the same line ("Draw a card. Delirium — ...")
++    ABILITY_WORDS.filter((entry) => new RegExp(`\\b${escape(entry.name)}\\s*[—–]`, 'i').test(text)).forEach(add);
++  }
++  // mtg-ai: counters with a rule of their own, on a permanent whose text doesn't mention them (a stunned creature)
++  for (const counter of (card as { counters?: { name?: string; count?: number }[] }).counters ?? []) {
++    const entry = ACTIONS.find((candidate) => candidate.counter && candidate.counter === counter.name?.toLowerCase());
++    if (entry && (counter.count ?? 0) > 0) add(entry);
+   }
+   return { lines, terms, hints };
+ }
+ 
++/** mtg-ai: a piece of rules text, and the keyword, action or ability word it names (if it names one). */
++export interface TermSpan {
++  text: string;
++  term?: Term;
++}
++
++function formsPattern(entry: Entry): RegExp {
++  if (entry.match) return new RegExp(entry.match.source, entry.match.flags.includes('g') ? entry.match.flags : `${entry.match.flags}g`);
++  const forms = [entry.name, ...(entry.forms ?? [])].sort((a, b) => b.length - a.length).map(escape);
++  return new RegExp(`\\b(${forms.join('|')})\\b`, 'gi');
++}
++
++/**
++ * mtg-ai: rules text cut into the stretches that name a keyword, action or ability word, and the plain text between,
++ * so each named term can be explained where it is printed. The same rules as explainCard: reminder text (in
++ * parentheses) names nothing, a strict keyword counts only where it leads a keyword list, and an ability word only
++ * before its dash; given the card, its own name names nothing either. Joined back together the spans are the text
++ * unchanged.
++ */
++export function termSpans(text: string, card?: Pick<CardView, 'name' | 'displayName'>): TermSpan[] {
++  // reminder text, and the card's own name where it is printed (passing the card), name nothing
++  const reminders: [number, number][] = [];
++  for (const found of text.matchAll(/\([^)]*\)/g)) reminders.push([found.index, found.index + found[0].length]);
++  for (const name of card ? ownNames(card) : []) {
++    for (let at = text.indexOf(name); at >= 0; at = text.indexOf(name, at + name.length)) reminders.push([at, at + name.length]);
++  }
++  const inReminder = (start: number) => reminders.some(([from, to]) => start >= from && start < to);
++  const hits: { start: number; end: number; entry: Entry }[] = [];
++  const scan = (entry: Entry, accept: (start: number, end: number) => boolean) => {
++    for (const found of text.matchAll(formsPattern(entry))) {
++      const start = found.index;
++      const end = start + found[0].length;
++      if (found[0].length > 0 && !inReminder(start) && accept(start, end)) hits.push({ start, end, entry });
++    }
++  };
++  for (const entry of KEYWORDS) {
++    scan(entry, (start) => {
++      if (!entry.strict) return true;
++      // the comma- or dash-separated part it starts must read as a keyword ("Shadow", not "Shadow of Doubt deals")
++      const before = text.slice(0, start);
++      if (!/(^|[,;—–.]\s*)$/.test(before)) return false;
++      const part = text.slice(start).split(/[,;—–(.]/)[0];
++      return leadingKeywords(part).includes(entry);
++    });
++  }
++  for (const entry of ACTIONS) scan(entry, () => true);
++  for (const entry of ABILITY_WORDS) scan(entry, (_, end) => /^\s*[—–-]/.test(text.slice(end)));
++  // the earliest wins, then the longest ("Manifest dread" over "Manifest")
++  hits.sort((a, b) => a.start - b.start || b.end - a.end);
++  const spans: TermSpan[] = [];
++  let at = 0;
++  for (const hit of hits) {
++    if (hit.start < at) continue;
++    if (hit.start > at) spans.push({ text: text.slice(at, hit.start) });
++    spans.push({ text: text.slice(hit.start, hit.end), term: { name: hit.entry.name, text: hit.entry.text } });
++    at = hit.end;
++  }
++  if (at < text.length) spans.push({ text: text.slice(at) });
++  return spans;
++}
++
+ /** Keywords the card has as abilities of its own (from its keyword lines), not ones it merely mentions. */
+ export function keywordsOf(card: CardView): string[] {
+   const names = new Set<string>();

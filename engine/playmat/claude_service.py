@@ -13,7 +13,9 @@ are for a seat that doesn't say); every decision records both. Its "prewarm" (th
 dealt) starts the model's process and writes the system prompt to the prompt cache before the first decision. With
 --play-draw rule (the default; $PLAY_DRAW in run.sh) Claude always chooses to play first without being asked, and the
 record says "source": "rule"; --play-draw claude asks the model. A priority window where only Claude's own spells and
-abilities are on the stack is passed without asking the model ("auto": "own_stack"); match.py games still ask.
+abilities are on the stack is passed without asking the model ("auto": "own_stack"); match.py games still ask. Claude
+may concede a game it has no realistic way to win, after a second look ("concede": true on that decision; the seat then
+concedes and the result says "ended_by": "concede"); --no-concede turns that off.
 
 Settings default to the latest batches' (facts and self-check on, no plan, no lessons). A decision the engine flags as
 leaking hidden information never reaches the model: option 0 is played and the record says "leak_blocked" (match.py
@@ -49,7 +51,7 @@ def own_stack(msg):
 def serve_seat(conn, args, log):
     f = conn.makefile("rw")
     model, effort = args.model, args.effort
-    make = lambda: ClaudePlayer(model=model, effort=effort, lessons=args.lessons, plan=args.plan,
+    make = lambda: ClaudePlayer(model=model, effort=effort, lessons=args.lessons, plan=args.plan, concede=not args.no_concede,
                                 facts=not args.no_facts, check=not args.no_check)
     player = make()
     folder, seat, idx, started = None, None, 0, False
@@ -142,7 +144,7 @@ def serve_seat(conn, args, log):
             idx += 1
             with (folder / f"seat-{seat}.jsonl").open("a") as g:
                 g.write(json.dumps(rec) + "\n")
-            f.write(json.dumps({"choice": choice, "player": player.name}) + "\n")
+            f.write(json.dumps({"choice": choice, "player": player.name, **({"concede": True} if info.get("concede") else {})}) + "\n")
             f.flush()
     except Exception:
         log(f"seat {seat} stopped:\n{traceback.format_exc()}")
@@ -158,6 +160,7 @@ def main():
     p.add_argument("--lessons"); p.add_argument("--plan", action="store_true")
     p.add_argument("--no-facts", action="store_true"); p.add_argument("--no-check", action="store_true")
     p.add_argument("--play-draw", choices=("rule", "claude"), default="rule")
+    p.add_argument("--no-concede", action="store_true")  # Claude may concede a lost game (after a self-check)
     args = p.parse_args()
     lock = threading.Lock()
 

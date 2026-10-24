@@ -100,6 +100,10 @@ public final class GameRecorder {
         return GAMES.computeIfAbsent(game.getId(), id -> new GameRecorder(game, 0));
     }
 
+    /** The log line our server patch writes when a player ends a decided game as a win (patch 0013). */
+    static final String CLAIM_TEXT = "claims the win";
+    volatile String endedBy;  // "human_claim" or "concede", for a game ended early
+
     static GameRecorder find(Game game) {
         return game == null ? null : GAMES.get(game.getId());
     }
@@ -232,6 +236,7 @@ public final class GameRecorder {
         }
         c.add("seats", seats);
         c.addProperty("started_ms", started);
+        if (endedBy != null) c.addProperty("ended_by", endedBy);
         if (rollbacks.size() > 0) {
             c.addProperty("has_rollback", true);
             c.add("rollbacks", rollbacks.deepCopy());
@@ -306,6 +311,7 @@ public final class GameRecorder {
             g.addProperty("deck_" + seat.toLowerCase(), deckFile(seat).getFileName().toString());
         }
         g.addProperty("winner_text", game.getWinner());
+        if (endedBy != null) g.addProperty("ended_by", endedBy);
         if (rollbacks.size() > 0) g.add("rollbacks", rollbacks.deepCopy());
         if (resumedFromTurn != null) {
             g.addProperty("resumed_from", resumedFrom);
@@ -634,6 +640,9 @@ public final class GameRecorder {
                     if (rb.find()) r.onRollback(Integer.parseInt(rb.group(1)), ts);
                     Matcher rs = RESUMED.matcher(text);
                     if (event.getEventType() == TableEvent.EventType.INFO && rs.find()) r.onResumed(Integer.parseInt(rs.group(1)), ts);
+                    // how a decided game was ended early (Jeff 2026-10-24): the player claimed it, or Claude conceded
+                    if (text.contains(CLAIM_TEXT)) r.endedBy = "human_claim";
+                    else if (text.contains(ClaudeSeat.CONCEDE_TEXT) && r.endedBy == null) r.endedBy = "concede";
                     break;
                 }
                 case END_GAME_INFO:

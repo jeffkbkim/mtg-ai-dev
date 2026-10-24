@@ -130,6 +130,12 @@ def system_prompt(deck_path, texts, lessons=None, plan=False, facts=False, prime
                         "Your deck (the opponent's deck is unknown to you):\n" + "\n".join(deck_lines)])
 
 
+CONCEDE_RULES = """## Conceding
+You may concede instead of choosing an option: reply {"concede": true, "reason": "..."}. Concede only when you have no
+realistic way to win: you are dead on the opponent's next turn from the board as it is, nothing in your hand or on your
+board can stop it, and no likely draw changes that. If you are unsure, keep playing. You will be asked to confirm."""
+
+
 class ClaudeError(RuntimeError):
     """A failed model turn (API error, crash or timeout); cost is what the failed turn still cost."""
     def __init__(self, msg, cost=0.0):
@@ -151,8 +157,9 @@ class ClaudePlayer:
     MAX_ERRORS = 2
 
     def __init__(self, model="claude-opus-5-5", effort="high", lessons=None, plan=False, facts=False, check=False,
-                 timeout_s=600, primer=None):
+                 timeout_s=600, primer=None, concede=False):
         self.model, self.effort, self.timeout_s = model, effort, timeout_s
+        self.concede = concede  # may reply {"concede": true} (Playmat's Claude seat; match.py games play to the end)
         self.primer = primer or os.environ.get("PRIMER") or "v1"  # an explicit argument wins over $PRIMER
         if self.primer not in PRIMERS:
             raise ValueError(f"primer must be one of {PRIMERS}, not {self.primer!r}")
@@ -180,6 +187,8 @@ class ClaudePlayer:
         self.restart_note = None   # why the next conversation starts (a take-back), instead of the usual line
         self.workdir = tempfile.mkdtemp(prefix="claude-seat-")
         system = system_prompt(deck_path, self.texts, self.lessons, self.plan_mode, self.facts, self.primer)
+        if self.concede:
+            system += "\n\n" + CONCEDE_RULES
         self.prompt_sha = hashlib.sha256(system.encode()).hexdigest()[:12]  # recorded per decision: prompt versions must not be pooled
         Path(self.workdir, "system.txt").write_text(system)
 
@@ -367,6 +376,15 @@ class ClaudePlayer:
                 ask = info["prompt_text"] = self._prompt(msg, g)
                 continue
             info["turns"].append({"reply": out, "usage": usage, "cost_usd": cost, "seconds": round(secs, 2)})
+            if self.concede and self._wants_concede(out) and not info.get("concede_declined"):
+                confirm, ccost = self._confirm_concede(info)
+                if confirm:
+                    info["reason"] = confirm
+                    info["concede"] = True
+                    self.log.append(f"turn {g['turn']}: you conceded ({confirm})")
+                    return 0, info
+                ask = "You chose to keep playing. Reply with the one line of JSON for this decision."
+                continue
             choice, reason, until, plan = self._parse(out, n)
             if choice is not None and self.check and self._check_gate(msg, g, choice):
                 choice, reason, until, plan = self._self_check(msg, info, choice, reason, until, plan)
@@ -388,6 +406,39 @@ class ClaudePlayer:
             ask = f"That was not a valid reply. Answer with one line of JSON, choice between 0 and {n - 1}."
         info["invalid"] = True  # recorded, never hidden: fall back to option 0 (PASS / DONE / first option)
         return 0, info
+
+    @staticmethod
+    def _wants_concede(text):
+        for cand in [text.strip()] + [l.strip() for l in reversed(text.splitlines())]:
+            start, end = cand.find("{"), cand.rfind("}")
+            if 0 <= start < end:
+                try:
+                    j = json.loads(cand[start:end + 1])
+                except json.JSONDecodeError:
+                    continue
+                return isinstance(j, dict) and j.get("concede") is True
+        return False
+
+    CONCEDE_CHECK = ("Before conceding, check once: is there any line, including your next draws and every card in your "
+                     "hand, any block or chump, and any mistake the opponent could make, that keeps you alive and gives "
+                     "you a realistic way to win? If there is, keep playing. Reply with one line of JSON: "
+                     "{\"concede\": true, \"reason\": \"...\"} to concede, or {\"concede\": false, \"reason\": \"...\"} to play on.")
+
+    def _confirm_concede(self, info):
+        """The self-check a concession needs: the confirming reason, or None to play on."""
+        t0 = time.time()
+        out, usage, cost, secs = self._ask(self.CONCEDE_CHECK)
+        info["turns"].append({"reply": out, "usage": usage, "cost_usd": cost, "seconds": round(secs, 2), "concede_check": True})
+        if self._wants_concede(out):
+            for cand in [out.strip()] + [l.strip() for l in reversed(out.splitlines())]:
+                start, end = cand.find("{"), cand.rfind("}")
+                try:
+                    return str(json.loads(cand[start:end + 1]).get("reason", "")) or "no realistic out", cost
+                except (json.JSONDecodeError, ValueError, AttributeError):
+                    continue
+            return "no realistic out", cost
+        info["concede_declined"] = True
+        return None, cost
 
     CHECK_LIFE = 8
     CHECK_TEXT = ("Before this is played, check it once. What is the opponent's best answer: their blocks or attacks, "

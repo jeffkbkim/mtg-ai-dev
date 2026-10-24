@@ -153,7 +153,15 @@ public class ClaudeSeat extends PySeat {
     protected void onReply(JsonObject reply, Game game) {
         GameRecorder r = GameRecorder.find(game);
         if (r != null && reply.has("player")) r.setPlayerName(r.seat(playerId), reply.get("player").getAsString());
+        if (reply.has("concede") && reply.get("concede").getAsBoolean() && !game.isSimulation()) {
+            // the model conceded after its own second look: the game ends at the next check, as a click on Concede does
+            game.informPlayers(getLogName() + CONCEDE_TEXT);
+            game.setConcedingPlayer(playerId);
+        }
     }
+
+    /** The log text of a Claude concession (GameRecorder marks the result "ended_by": "concede"). */
+    static final String CONCEDE_TEXT = " concedes: no realistic way to win";
 
     void sendRollback(int toTurn) {
         JsonObject rb = new JsonObject();
