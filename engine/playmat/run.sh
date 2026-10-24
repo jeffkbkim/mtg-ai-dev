@@ -7,6 +7,7 @@
 #   engine/playmat/run.sh stop
 #
 # PLAY_DRAW=rule (default: Claude always plays first) or claude (the model chooses).
+# PRIMER=v2 (default since 2026-10-24, after the puzzle test in notes/puzzles-v1-vs-v2-2026-10-24.md) or v1.
 # Data: $PLAYMAT_DATA (default ~/playmat-run/data): accounts off (sign in with a name), server and service logs.
 # Recordings: $MTGAI_RECORD_DIR (default ~/mtg-data/playmat-games)/<date>/<game id>/ (see java/GameRecorder.java).
 set -euo pipefail
@@ -47,7 +48,7 @@ mkdir -p "$DATA" "$REC"
 grep -q '^accounts=' "$DATA/settings.properties" 2>/dev/null || echo 'accounts=false' >> "$DATA/settings.properties"
 grep -q '^memory=' "$DATA/settings.properties" 2>/dev/null || echo 'memory=4g' >> "$DATA/settings.properties"
 
-nohup "$PY" "$HERE/claude_service.py" --port "$PORT" --play-draw "${PLAY_DRAW:-rule}" >> "$DATA/claude_service.log" 2>&1 &
+PRIMER=${PRIMER:-v2} nohup "$PY" "$HERE/claude_service.py" --port "$PORT" --play-draw "${PLAY_DRAW:-rule}" >> "$DATA/claude_service.log" 2>&1 &
 echo $! > "$DATA/claude_service.pid"
 
 export PLAYMAT_DATA=$DATA

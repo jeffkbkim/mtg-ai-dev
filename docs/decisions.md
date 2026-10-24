@@ -88,3 +88,10 @@ exactly a browser answer maps to our options, and XMage AI decisions are flagged
   decision, and games with different settings must not be pooled as one player.
 - Blocks XMage refused are recorded as `mapping: "refused"` (choice -1), not as decisions; the accepted blocks are
   recorded from what the engine holds.
+
+## Playmat's Claude uses primer v2 (2026-10-24)
+
+Primer v2 (no win rates; archetype plans, cards to respect, mandatory checks, principles from reviewed games) replaced
+v1 for Playmat's Claude seat after a puzzle test on 19 frozen decisions (notes/puzzles-v1-vs-v2-2026-10-24.md): it fixed
+3 of 9 known mistakes and broke none of 10 controls, Opus high, 3 samples each. Small sample; batch match.py runs stay
+on v1 unless --primer v2. The prompt hash on every decision keeps the two apart.
