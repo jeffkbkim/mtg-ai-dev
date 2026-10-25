@@ -1,0 +1,171 @@
+diff --git a/Mage.Web.Client/src/app/match/ActionCluster.module.css b/Mage.Web.Client/src/app/match/ActionCluster.module.css
+index 29846df50b..2b55f5f56d 100644
+--- a/Mage.Web.Client/src/app/match/ActionCluster.module.css
++++ b/Mage.Web.Client/src/app/match/ActionCluster.module.css
+@@ -217,6 +217,20 @@
+   color: var(--ink-strong);
+ }
+ 
++/* mtg-ai: an answer the server may refuse, or the server's word to this player, in the corner (toasts don't show in a game) */
++.warning {
++  margin: 0;
++  max-width: 420px;
++  padding: 8px 14px;
++  border-radius: 10px;
++  background: rgb(var(--mat-rgb) / 0.85);
++  box-shadow: inset 0 0 0 1.5px var(--oxblood-lit);
++  font-size: 20px;
++  line-height: 1.3;
++  text-align: right;
++  color: var(--danger-text);
++}
++
+ /* the cards a question is about, fanned beside it; click to read them */
+ .cards {
+   display: flex;
+diff --git a/Mage.Web.Client/src/app/match/ActionCluster.tsx b/Mage.Web.Client/src/app/match/ActionCluster.tsx
+index 31e5dd230b..707aa0892c 100644
+--- a/Mage.Web.Client/src/app/match/ActionCluster.tsx
++++ b/Mage.Web.Client/src/app/match/ActionCluster.tsx
+@@ -37,6 +37,8 @@ export interface ActionClusterProps {
+   onResync?(): void;
+   /** the player conceded and the server hasn't ended the game yet; waitingOn: who holds priority meanwhile */
+   conceding?: { waitingOn: string | null } | null;
++  /** mtg-ai: why the answer about to be sent may be refused, or what the server just told this player */
++  warning?: string | null;
+   /** the cards the question is about (an effect looked at them just before asking), shown with it */
+   cards?: CardView[] | null;
+   onCommand(command: Command): void;
+@@ -54,7 +56,7 @@ const UNDO: PromptButton = { label: 'Undo tap', command: { type: 'action', actio
+ /** The decision corner: what the game is asking, and the one big button that answers it. */
+ export function ActionCluster({
+   interaction, awaiting, status, canAct, special, holdingPriority, undoable = false, autoPassing = false, fullControl = false, onFullControl, extra,
+-  stalled = false, onResend, onResync, conceding = null, cards = null, onCommand,
++  stalled = false, onResend, onResync, conceding = null, warning = null, cards = null, onCommand,
+ }: ActionClusterProps) {
+   const t = useT();
+   const openViewer = useMatchUi((state) => state.openViewer);
+@@ -146,6 +148,7 @@ export function ActionCluster({
+           {conceding.waitingOn ? t('match.conceding.waiting', { name: conceding.waitingOn }) : t('match.conceding')}
+         </p>
+       )}
++      {warning && deciding && <p className={styles.warning} role="alert">{warning}</p>}
+       {cards && cards.length > 0 && deciding && (
+         <button
+           type="button"
+diff --git a/Mage.Web.Client/src/app/match/CombatPreview.module.css b/Mage.Web.Client/src/app/match/CombatPreview.module.css
+index 6c530b9c7e..bc4cf4c41b 100644
+--- a/Mage.Web.Client/src/app/match/CombatPreview.module.css
++++ b/Mage.Web.Client/src/app/match/CombatPreview.module.css
+@@ -108,3 +108,8 @@
+   color: var(--ink-dim);
+   font-style: italic;
+ }
++
++/* above a warning in the decision corner */
++.lifted {
++  bottom: 340px;
++}
+diff --git a/Mage.Web.Client/src/app/match/CombatPreview.tsx b/Mage.Web.Client/src/app/match/CombatPreview.tsx
+index 4fb511b411..d627e12e3c 100644
+--- a/Mage.Web.Client/src/app/match/CombatPreview.tsx
++++ b/Mage.Web.Client/src/app/match/CombatPreview.tsx
+@@ -49,7 +49,7 @@ function lifeLine(preview: Preview, attacking: boolean): string[] {
+   });
+ }
+ 
+-export function CombatPreview({ view, mode }: { view: GameView | null | undefined; mode: Interaction['mode'] }) {
++export function CombatPreview({ view, mode, lifted = false }: { view: GameView | null | undefined; mode: Interaction['mode']; /** a warning sits in the decision corner: the panel moves above it */ lifted?: boolean }) {
+   const active = mode === 'declareBlockers' || mode === 'declareAttackers';
+   const preview = useMemo(() => (active ? combatPreview(view) : null), [active, view]);
+   const blocking = mode === 'declareBlockers';
+@@ -87,7 +87,7 @@ export function CombatPreview({ view, mode }: { view: GameView | null | undefine
+           </div>
+         );
+       })}
+-      <section className={styles.panel} aria-live="polite" aria-label="Combat estimate">
++      <section className={[styles.panel, lifted ? styles.lifted : ''].join(' ')} aria-live="polite" aria-label="Combat estimate">
+         <h3 className={styles.title}>{blocking ? 'Combat estimate' : 'Attack estimate'}</h3>
+         {rows.length > 0 && (
+           <ul className={styles.rows}>
+diff --git a/Mage.Web.Client/src/app/match/MatchStage.tsx b/Mage.Web.Client/src/app/match/MatchStage.tsx
+index 5ae9504b7e..e8e201cc36 100644
+--- a/Mage.Web.Client/src/app/match/MatchStage.tsx
++++ b/Mage.Web.Client/src/app/match/MatchStage.tsx
+@@ -153,6 +153,9 @@ export interface MatchStageProps {
+   onLeave?: () => void;
+ }
+ 
++/** mtg-ai: how long the server's message to the player stays in the decision corner */
++const SERVER_NOTE_MS = 9000;
++
+ export function MatchStage({ session, state, replayLog, onLeave }: MatchStageProps) {
+   const { view, interaction, playerId, mode, awaitingServer, prediction } = state;
+   const t = useT();
+@@ -228,16 +231,22 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+   );
+   const stack = useMemo(() => Object.values(view?.stack ?? {}), [view?.stack]);
+ 
+-  // mtg-ai: the declare-blockers prompt whose blocks were already warned about (a second press sends them anyway)
+-  const blockWarned = useRef<unknown>(null);
+-  // mtg-ai: the server's messages to this player only (XMage's informPlayer: a refused block says why) pop up, once
++  // mtg-ai: the declare-blockers prompt whose blocks were already warned about (a second press sends them anyway), and
++  // the warning, shown in the decision corner: toasts don't show during a game
++  const [blockWarned, setBlockWarned] = useState<{ prompt: unknown; text: string } | null>(null);
++  // mtg-ai: the server's latest message to this player only (XMage's informPlayer: a refused block says why), shown in
++  // the decision corner for a while
++  const [serverNote, setServerNote] = useState<string | null>(null);
+   const shownNotice = useRef(Math.max(-1, ...state.notices.map((notice) => notice.id)));
+   useEffect(() => {
+     const fresh = state.notices.filter((notice) => notice.kind === 'personal' && notice.id > shownNotice.current);
+     if (fresh.length === 0) return;
+-    for (const notice of fresh.slice(-2)) notify('Game', notice.text, 'error');
+     shownNotice.current = Math.max(...fresh.map((notice) => notice.id));
++    setServerNote(fresh[fresh.length - 1].text);
++    const timer = setTimeout(() => setServerNote(null), SERVER_NOTE_MS);
++    return () => clearTimeout(timer);
+   }, [state.notices]);
++  const cornerWarning = (blockWarned && blockWarned.prompt === state.interaction.prompt ? blockWarned.text : null) ?? serverNote;
+   const onCommand = useCallback((command: Command) => {
+     // Cancel on a payment is never dropped: auto-pay keeps a tap with the server most of the time
+     if (command.type === 'boolean' && !command.value && session.getState().interaction.mode === 'payMana') {
+@@ -249,11 +258,10 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+     // mtg-ai: blocks that leave a "must be blocked if able" attacker unblocked are not sent on the first press
+     const current = session.getState();
+     if (command.type === 'boolean' && command.value && current.interaction.mode === 'declareBlockers'
+-      && current.interaction.prompt?.kind === 'declareBlockers' && blockWarned.current !== current.interaction.prompt) {
++      && current.interaction.prompt?.kind === 'declareBlockers' && blockWarned?.prompt !== current.interaction.prompt) {
+       const warning = blockWarning(current.view, current.interaction.prompt);
+       if (warning) {
+-        blockWarned.current = current.interaction.prompt;
+-        notify('Not a legal block', warning, 'error');
++        setBlockWarned({ prompt: current.interaction.prompt, text: warning });
+         return;
+       }
+     }
+@@ -261,7 +269,7 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+       setHolding(command.action === 'HOLD_PRIORITY');
+     }
+     void session.respond(command).catch(() => undefined);
+-  }, [session]);
++  }, [session, blockWarned]);
+   const onResend = useCallback(() => void session.resend().catch(() => undefined), [session]);
+   const onResync = useCallback(() => {
+     void session.resync().then((resent) => {
+@@ -658,6 +666,7 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+                 onFullControl={setFullControl}
+                 stalled={state.stalled}
+                 conceding={state.conceding ? { waitingOn: priorityName } : null}
++                warning={cornerWarning}
+                 cards={askCards}
+                 onResend={onResend}
+                 onResync={onResync}
+@@ -669,7 +678,7 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+ 
+             {damageSplit && canAct && !awaitingServer && <DamageAssigner split={damageSplit} />}
+             {/* mtg-ai: the combat estimate while declaring attackers or blockers */}
+-            {mode === 'play' && canAct && <CombatPreview view={view} mode={interaction.mode} />}
++            {mode === 'play' && canAct && <CombatPreview view={view} mode={interaction.mode} lifted={!!cornerWarning} />}
+             {defenders && !(automation.attackPlayerByDefault && defaultDefender(defenders)) && <DefenderPicker attacker={attackerName} options={defenders} onPick={onClick} />}
+             <Vfx view={view} myPlayerId={myId} sparks={sparks} />
+             {/* mtg-ai: cards that change the board without the stack show large for a moment */}
