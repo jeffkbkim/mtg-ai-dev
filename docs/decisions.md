@@ -84,6 +84,9 @@ exactly a browser answer maps to our options, and XMage AI decisions are flagged
 - `engine/xmage/decks/17lands-good`: 70 decks from 7-win drafts (at most 2 losses) whose drafter's win-rate bucket is
   at least 0.60, kept by deck score (mean GIH WR of nonland cards over all games). The Claude AI's random Playmat deck
   comes from this pool. The score measures card quality only, not curve or synergy.
+- 2026-10-25: `engine/xmage/decks/17lands-good-v2` replaces it as the starred pool (Jeff's yes): 100 decks, 10 per
+  colour pair, chosen by build checks and drafter skill instead of a win requirement, every deck review-rated 3 or 4
+  (★★ = 4). The first pool is no longer listed (its files and ratings stay, so saved copies still get matched).
 - The web client's AI settings choose the Claude model (Opus 5.5, Sonnet 5.5) and effort; both are recorded with each
   decision, and games with different settings must not be pooled as one player.
 - Blocks XMage refused are recorded as `mapping: "refused"` (choice -1), not as decisions; the accepted blocks are

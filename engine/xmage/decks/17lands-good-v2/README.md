@@ -1,7 +1,8 @@
-# Proposal: good DSK decks chosen by build quality (v2)
+# Good DSK decks chosen by build quality (v2): the starred pool since 2026-10-25
 
-A proposal to replace `../17lands-good`. Nothing here is listed by Playmat; `../17lands-good` and
-`engine/playmat/` are unchanged. Built by
+Replaced `../17lands-good` as Playmat's starred (★/★★) pool on 2026-10-25 (Jeff's yes): engine/playmat/dsk_starters.py
+lists these as dsk-good-v2-NN.dck, named "v2_NN"; the first pool's decks are no longer listed but stay rated in
+strengths.json. Built by
 
     python3 play/good_deck_pool_v2.py --parse-cache <scratch>/parsed.json.gz
 

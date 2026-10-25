@@ -1,6 +1,6 @@
 """Proposal: a strong DSK deck pool chosen by build quality and the drafter's long-run win rate, not by record or GIH score.
 
-  python3 play/good_deck_pool_v2.py [--data <game_data csv.gz>] [--out engine/xmage/decks/17lands-good-v2-proposal]
+  python3 play/good_deck_pool_v2.py [--data <game_data csv.gz>] [--out engine/xmage/decks/17lands-good-v2]
       [--thresholds 0.64 0.62 0.60 0.58] [--min-build-games 3] [--shortlist-per-pair 15] [--per-pair 10]
       [--no-review] [--model claude-opus-5-5] [--effort medium] [--parallel 5]
 
@@ -151,7 +151,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--data", default=str(Path.home() / "mtg-data/17lands/DSK/game_data_public.DSK.PremierDraft.csv.gz"))
     p.add_argument("--numbers", default=str(ROOT / "engine/vocab/dsk_numbers.tsv"))
-    p.add_argument("--out", default=str(ROOT / "engine/xmage/decks/17lands-good-v2-proposal"))
+    p.add_argument("--out", default=str(ROOT / "engine/xmage/decks/17lands-good-v2"))
     p.add_argument("--current", default=str(ROOT / "engine/xmage/decks/17lands-good"))
     p.add_argument("--parse-cache", help="json.gz of parsed eligible drafts (made if missing; keep it outside Git)")
     p.add_argument("--thresholds", type=float, nargs="+", default=[0.66, 0.64, 0.62, 0.60])

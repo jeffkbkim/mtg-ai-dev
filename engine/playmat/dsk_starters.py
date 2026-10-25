@@ -3,9 +3,11 @@ one (the patched client deals the Claude AI a dsk-good-* starter, other AIs any 
 
   python3 engine/playmat/dsk_starters.py <playmat checkout>
 
-Two pools: engine/xmage/decks/17lands-good (70 reviewed decks, files dsk-good-NN.dck) and engine/xmage/decks/17lands-r2
-(160 decks, dsk-typical_NN / dsk-trophy_NN). A good-pool name gives its tier, the review's archetype and rating, e.g.
-"★★ good_08 · WU eerie enchantments/tempo · review 4/5" (★★: tier 2, see 17lands-good/REVIEW.md); an older deck's name
+Listed pools: engine/xmage/decks/17lands-good-v2 (100 reviewed decks, 10 per colour pair, files dsk-good-v2-NN.dck) and
+engine/xmage/decks/17lands-r2 (160 decks, dsk-typical_NN / dsk-trophy_NN). The first good pool (17lands-good, 70 decks)
+is retired since 2026-10-25: not listed, but rated in strengths.json so saved copies of its decks still get a matched
+opponent. A good-pool name gives its tier, the review's archetype and rating, e.g.
+"★★ v2_08 · WU eerie enchantments/tempo · review 4/5" (★★: tier 2, the review's rating 4+); an older deck's name
 gives its colors, e.g. "trophy_00 · UB". Records and deck scores stay in the manifests (Jeff 2026-10-24: misleading in
 the menu). Decks of either pool that break the colour rule (two_colors(): two main colors, at most a light splash) are
 not listed at all. A good-pool deck the review rated 2 or lower has no star and the file dsk-goodx-NN.dck: "Good only"
@@ -86,15 +88,22 @@ def main():
     # (their files stay)
     index = []
     ours, skipped, known = [], {}, []
-    for pool, prefix, star in (("17lands-good", "dsk-good-", "★ "), ("17lands-r2", "dsk-", "")):
+    # Jeff 2026-10-25: the v2 pool (10 per colour pair) is the starred pool; the first good pool is no longer listed
+    # (retired: its files stay, and strengths.json still rates saved copies of its decks)
+    for pool, prefix, star, listed, label in (("17lands-good-v2", "dsk-good-v2-", "★ ", True, "v2_"),
+                                              ("17lands-good", "dsk-good-", "★ ", False, None),
+                                              ("17lands-r2", "dsk-", "", True, None)):
         manifest = {d["file"]: d for d in json.loads((decks / pool / "manifest.json").read_text())["decks"]}
         for deck in sorted((decks / pool).glob("*.dck")):
             m = manifest[deck.name]
             review = m.get("review")
+            stem = f"{label}{deck.stem.removeprefix('good_')}" if label else deck.stem
             if review:  # every rated deck, listed or not, so a saved copy of a hidden one still gets a matched opponent
-                known.append({"sig": deck_sig(deck.read_text()), "name": deck.stem, "listed": two_colors(m, texts),
+                known.append({"sig": deck_sig(deck.read_text()), "name": stem, "listed": listed and two_colors(m, texts),
                               "strength": {"tier": (m.get("tier") or 1) if star and playable(m, texts) else 0,
                                            "rating": review["rating"], "colors": m["main_colors"]}})
+            if not listed:
+                continue
             if not two_colors(m, texts):
                 skipped[pool] = skipped.get(pool, 0) + 1  # not listed at all; the .dck stays in the repo
                 continue
@@ -114,10 +123,10 @@ def main():
                 mark = ("★★ " if m.get("tier") == 2 else star) if good else ""  # tier 2: passed the deck review (REVIEW.md)
                 arch = re.sub(r"\s*\([^)]*\)?", "", review["archetype"]).split(",")[0].strip()
                 arch = arch if len(arch) <= 34 else arch[:34].rsplit(" ", 1)[0]
-                name = f"{mark}{deck.stem} · {arch} · review {review['rating']}/5"
+                name = f"{mark}{stem} · {arch} · review {review['rating']}/5"
             else:
-                name = f"{deck.stem} · {colors}"
-            file = (f"{prefix}{deck.stem.removeprefix('good_')}.dck" if good else f"dsk-goodx-{deck.stem.removeprefix('good_')}.dck") if star \
+                name = f"{stem} · {colors}"
+            file = (f"{prefix}{deck.stem.removeprefix('good_')}.dck" if good else f"{prefix.replace('good', 'goodx')}{deck.stem.removeprefix('good_')}.dck") if star \
                 else f"{prefix}{deck.stem}.dck"
             (out / file).write_text(f"NAME:{name}\n" + "\n".join(text.splitlines()[1:]) + "\n")
             # order: starred good decks by tier and review, then unstarred ones, then the older pool; within each, the
