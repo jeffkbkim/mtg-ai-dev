@@ -84,8 +84,20 @@ def is_fixer(c, colors):
     return ("any color" in t or "search your library for a basic land" in t.lower() or len(made & set(colors)) >= 2)
 
 
+BODY = [r"create[\w ,'-]*?\d+/\d+[\w ,'-]*?creature token", r"create[\w ,'-]*?creature tokens?", r"\bmanifest(?: dread)?\b",
+        r"return[\w ,'-]*?creature cards?[\w ,'-]*? from (?:your|a) graveyard to the battlefield",
+        r"return (?:this card|it|[\w ,'-]*?) from your graveyard to the battlefield"]
+
+
+def makes_bodies(c):
+    """A noncreature card that puts creatures on the battlefield: token makers, manifest dread (Rooms too) and creature
+    recursion. Jeff 2026-10-25: these count as bodies for the deck checks, beside creature cards."""
+    t = rules(c).lower()
+    return any(re.search(p, t) for p in BODY)
+
+
 def deck_stats(d, texts, color_wr):
-    curve, crea, spells, lands, fix, hard, soft = Counter(), 0, 0, 0, 0, [], []
+    curve, crea, spells, lands, fix, hard, soft, makers = Counter(), 0, 0, 0, 0, [], [], 0
     colors = d["main_colors"] + d["splash_colors"]
     for name, n in d["deck"].items():
         c = texts[name]
@@ -97,9 +109,10 @@ def deck_stats(d, texts, color_wr):
             crea += n
         else:
             spells += n
+            makers += n * makes_bodies(c)
         tag = removal_tag(c)
         (hard if tag == "hard" else soft if tag == "soft" else []).extend([name] * n)
-    s = {"curve": [curve[i] for i in range(1, 7)], "zero_drops": curve[0], "creatures": crea, "noncreature_spells": spells,
+    s = {"curve": [curve[i] for i in range(1, 7)], "zero_drops": curve[0], "creatures": crea, "body_makers": makers, "bodies": crea + makers, "noncreature_spells": spells,
          "lands": lands, "fixing_lands": fix, "removal": len(hard), "soft_removal": len(soft),
          "removal_cards": sorted(set(hard)), "soft_removal_cards": sorted(set(soft)),
          "archetype_wr": color_wr.get(d["main_colors"])}
@@ -124,7 +137,9 @@ def red_flags(d, s, weak):
 def prompt(d, s, texts):
     colors = d["main_colors"] + (f" splashing {d['splash_colors']}" if d["splash_colors"] else "")
     out = [f"Main colors {colors}. Curve of nonland cards by mana value 1/2/3/4/5/6+: {'/'.join(map(str, s['curve']))}"
-           + (f" (plus {s['zero_drops']} at 0)" if s["zero_drops"] else "") + f". {s['creatures']} creatures, "
+           + (f" (plus {s['zero_drops']} at 0)" if s["zero_drops"] else "") + f". {s['creatures']} creatures"
+           + (f" ({s['bodies']} bodies counting {s['body_makers']} token makers, manifest dread and creature recursion)" if s.get('body_makers') else "")
+           + ", "
            f"{s['noncreature_spells']} other spells, {s['lands']} lands ({s['fixing_lands']} fixing). Removal by a "
            f"rough text tag: {s['removal']} hard, {s['soft_removal']} soft.", "", "Nonland cards:"]
     lands = []

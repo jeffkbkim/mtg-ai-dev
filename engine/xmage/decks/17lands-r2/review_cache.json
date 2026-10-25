@@ -2923,5 +2923,724 @@
   "model": "claude-opus-5-5",
   "effort": "medium",
   "system_sha": "53639186c19e"
+ },
+ "b7dd698c827adb61": {
+  "review": {
+   "archetype": "RW aggro (low-power go-wide)",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "card quality",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A real RW aggro shell. Arabella, Wandering Rescuer, Lionheart Glimmer and three Grand Entryways give it a go-wide plan. Glassworks is the only true removal and several tricks are filler, so it wins on curve and pressure but struggles once boards stall."
+  },
+  "reply": "{\"archetype\": \"RW aggro (low-power go-wide)\", \"coherent\": true, \"concerns\": [\"removal\", \"card quality\", \"top end\"], \"rating\": 3, \"verdict\": \"A real RW aggro shell. Arabella, Wandering Rescuer, Lionheart Glimmer and three Grand Entryways give it a go-wide plan. Glassworks is the only true removal and several tricks are filler, so it wins on curve and pressure but struggles once boards stall.\"}",
+  "cost_usd": 0.01604,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "cbc753f86b62ab84": {
+  "review": {
+   "archetype": "RG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "top end",
+    "card quality"
+   ],
+   "rating": 3,
+   "verdict": "A coherent manifest dread deck where three Cryptid Inspectors, Valgavoth's Onslaught and the Ticket Booths fit together and the curve is low and smooth. It has almost no removal beyond Beastie Beatdown and few strong finishers, so it relies on outgrinding boards with face-down bodies."
+  },
+  "reply": "{\"archetype\": \"RG manifest dread\", \"coherent\": true, \"concerns\": [\"removal\", \"top end\", \"card quality\"], \"rating\": 3, \"verdict\": \"A coherent manifest dread deck where three Cryptid Inspectors, Valgavoth's Onslaught and the Ticket Booths fit together and the curve is low and smooth. It has almost no removal beyond Beastie Beatdown and few strong finishers, so it relies on outgrinding boards with face-down bodies.\"}",
+  "cost_usd": 0.01532,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "4282721ded536cfb": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "filler",
+    "threat quality",
+    "interaction"
+   ],
+   "rating": 3,
+   "verdict": "A playable UG manifest deck with good tempo pieces (Drowner, Unable to Scream, Vanish, Onslaught), but it is light on real creatures and padded with weak filler like 2x Say Its Name, 2x Fungus and Glimmerlight, so its ceiling is modest."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"few creatures\", \"filler\", \"threat quality\", \"interaction\"], \"rating\": 3, \"verdict\": \"A playable UG manifest deck with good tempo pieces (Drowner, Unable to Scream, Vanish, Onslaught), but it is light on real creatures and padded with weak filler like 2x Say Its Name, 2x Fungus and Glimmerlight, so its ceiling is modest.\"}",
+  "cost_usd": 0.02096,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "a3c24c697f330710": {
+  "review": {
+   "archetype": "UB eerie enchantments",
+   "coherent": true,
+   "concerns": [
+    "small creatures",
+    "Paranormal Analyst",
+    "top end"
+   ],
+   "rating": 4,
+   "verdict": "A focused UB eerie deck with strong payoffs in Entity Tracker, Skullsnap Nuisance, Balemurk Leech and the two Fear of Infinity, plenty of enchantment triggers and solid interaction. It is held back by small bodies and two weak Paranormal Analysts with only a few manifest dread enablers, but the Rooms give it good late-game mana sinks."
+  },
+  "reply": "{\"archetype\": \"UB eerie enchantments\", \"coherent\": true, \"concerns\": [\"small creatures\", \"Paranormal Analyst\", \"top end\"], \"rating\": 4, \"verdict\": \"A focused UB eerie deck with strong payoffs in Entity Tracker, Skullsnap Nuisance, Balemurk Leech and the two Fear of Infinity, plenty of enchantment triggers and solid interaction. It is held back by small bodies and two weak Paranormal Analysts with only a few manifest dread enablers, but the Rooms give it good late-game mana sinks.\"}",
+  "cost_usd": 0.02372,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "d0daee6b298c495b": {
+  "review": {
+   "archetype": "UG manifest dread, red splash",
+   "coherent": false,
+   "concerns": [
+    "few creatures",
+    "colors",
+    "splash",
+    "card quality"
+   ],
+   "rating": 2,
+   "verdict": "The UG face-down shell is thin. With only 9 real creatures and three copies of the low-impact Underwater Tunnel, it lacks a real threat base. The red removal is good, but 4 red cards on 1 Mountain plus a few fixers is a greedy splash. It plays like a durdly pile with weak pressure."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread, red splash\", \"coherent\": false, \"concerns\": [\"few creatures\", \"colors\", \"splash\", \"card quality\"], \"rating\": 2, \"verdict\": \"The UG face-down shell is thin. With only 9 real creatures and three copies of the low-impact Underwater Tunnel, it lacks a real threat base. The red removal is good, but 4 red cards on 1 Mountain plus a few fixers is a greedy splash. It plays like a durdly pile with weak pressure.\"}",
+  "cost_usd": 0.02172,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "c80063c98227b8eb": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "filler",
+    "removal"
+   ],
+   "rating": 3,
+   "verdict": "Solid UG manifest shell with good tools (Growing Dread, Bookworm, Tyvar, two cyclers, Meat Locker, Unnerving Grasps), but it has only 10 real creatures and some weak filler like Cathartic Parting, Horrid Vigor and Glimmerlight, so it plays like an average deck."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"few creatures\", \"filler\", \"removal\"], \"rating\": 3, \"verdict\": \"Solid UG manifest shell with good tools (Growing Dread, Bookworm, Tyvar, two cyclers, Meat Locker, Unnerving Grasps), but it has only 10 real creatures and some weak filler like Cathartic Parting, Horrid Vigor and Glimmerlight, so it plays like an average deck.\"}",
+  "cost_usd": 0.01568,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "50fffeb65c03c13d": {
+  "review": {
+   "archetype": "WG survivors/manifest aggro",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "filler",
+    "removal"
+   ],
+   "rating": 3,
+   "verdict": "A solid, low-curve WG survivors deck with Rip, Storyteller, Flesh Burrowers and three exile effects; it has little top end beyond Valgavoth's Onslaught and some filler (Zealot, Cartographer, Phone), so it is good but not exceptional."
+  },
+  "reply": "{\"archetype\": \"WG survivors/manifest aggro\", \"coherent\": true, \"concerns\": [\"top end\", \"filler\", \"removal\"], \"rating\": 3, \"verdict\": \"A solid, low-curve WG survivors deck with Rip, Storyteller, Flesh Burrowers and three exile effects; it has little top end beyond Valgavoth's Onslaught and some filler (Zealot, Cartographer, Phone), so it is good but not exceptional.\"}",
+  "cost_usd": 0.01932,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "d21c24b0ef8d4266": {
+  "review": {
+   "archetype": "RG delirium midrange",
+   "coherent": true,
+   "concerns": [
+    "creature quality",
+    "delirium consistency"
+   ],
+   "rating": 4,
+   "verdict": "Excellent removal suite (3 Glassworks, 2 Dragonfire, 2 Inferno, Beatdown) on a smooth curve with decent bodies; the threats are modest and Hand That Feeds needs delirium, but this deck grinds well."
+  },
+  "reply": "{\"archetype\": \"RG delirium midrange\", \"coherent\": true, \"concerns\": [\"creature quality\", \"delirium consistency\"], \"rating\": 4, \"verdict\": \"Excellent removal suite (3 Glassworks, 2 Dragonfire, 2 Inferno, Beatdown) on a smooth curve with decent bodies; the threats are modest and Hand That Feeds needs delirium, but this deck grinds well.\"}",
+  "cost_usd": 0.01754,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "78336663d3c57496": {
+  "review": {
+   "archetype": "BG removal-heavy midrange",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "threats",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Excellent removal suite (3 Murder, Drag to the Roots, Sporogenic Infection, Nowhere to Run) and strong cards like Enduring Vitality and Unholy Annex, but a thin, low-power creature base of mostly 1-2 drop chaff means it may struggle to close games beyond Ritual Chamber and Vile Mutilator."
+  },
+  "reply": "{\"archetype\": \"BG removal-heavy midrange\", \"coherent\": true, \"concerns\": [\"few creatures\", \"threats\", \"top end\"], \"rating\": 3, \"verdict\": \"Excellent removal suite (3 Murder, Drag to the Roots, Sporogenic Infection, Nowhere to Run) and strong cards like Enduring Vitality and Unholy Annex, but a thin, low-power creature base of mostly 1-2 drop chaff means it may struggle to close games beyond Ritual Chamber and Vile Mutilator.\"}",
+  "cost_usd": 0.01516,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "d5a807d00055282e": {
+  "review": {
+   "archetype": "RG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "filler",
+    "light red"
+   ],
+   "rating": 3,
+   "verdict": "A coherent green manifest-dread shell: five Cryptid Inspectors are fed by Manifest Dread, Threats, Onslaught and Beastie. Chainsaw, Dragonfire and Glassworks give real removal. The curve is very low and thin at 4+, and Cathartic Parting and Turn Inside Out are weak maindeck cards, so this is a fine deck rather than a great one."
+  },
+  "reply": "{\"archetype\": \"RG manifest dread\", \"coherent\": true, \"concerns\": [\"top end\", \"filler\", \"light red\"], \"rating\": 3, \"verdict\": \"A coherent green manifest-dread shell: five Cryptid Inspectors are fed by Manifest Dread, Threats, Onslaught and Beastie. Chainsaw, Dragonfire and Glassworks give real removal. The curve is very low and thin at 4+, and Cathartic Parting and Turn Inside Out are weak maindeck cards, so this is a fine deck rather than a great one.\"}",
+  "cost_usd": 0.01908,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "06a928f0f1573337": {
+  "review": {
+   "archetype": "RG delirium midrange, double splash",
+   "coherent": false,
+   "concerns": [
+    "colors",
+    "few creatures",
+    "splash",
+    "curve top"
+   ],
+   "rating": 3,
+   "verdict": "Strong red-green core with three Glassworks, Nemesis, Beatdown, Emergence and Wurm, but splashing both blue (Oculus, Zimone) and black (Drag) on 1 Island, 1 Swamp and 2 Expanses is greedy. Cut Zimone and the off-color cards for more bodies."
+  },
+  "reply": "{\"archetype\": \"RG delirium midrange, double splash\", \"coherent\": false, \"concerns\": [\"colors\", \"few creatures\", \"splash\", \"curve top\"], \"rating\": 3, \"verdict\": \"Strong red-green core with three Glassworks, Nemesis, Beatdown, Emergence and Wurm, but splashing both blue (Oculus, Zimone) and black (Drag) on 1 Island, 1 Swamp and 2 Expanses is greedy. Cut Zimone and the off-color cards for more bodies.\"}",
+  "cost_usd": 0.02018,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "bc413dbe1b732d88": {
+  "review": {
+   "archetype": "RG manifest midrange splash U",
+   "coherent": false,
+   "concerns": [
+    "few creatures",
+    "splash",
+    "filler",
+    "threat quality"
+   ],
+   "rating": 2,
+   "verdict": "Only 10 real creatures for an RG deck with two Monstrous Emergence. The blue splash buys a Pacifism-style Aura and two clunky draw spells rather than bombs, and Say Its Name x2 plus Insidious Fungus are weak slots, so this is an underpowered midrange pile with a few good cards (Dragonfire, Glassworks, Enduring Courage)."
+  },
+  "reply": "{\"archetype\": \"RG manifest midrange splash U\", \"coherent\": false, \"concerns\": [\"few creatures\", \"splash\", \"filler\", \"threat quality\"], \"rating\": 2, \"verdict\": \"Only 10 real creatures for an RG deck with two Monstrous Emergence. The blue splash buys a Pacifism-style Aura and two clunky draw spells rather than bombs, and Say Its Name x2 plus Insidious Fungus are weak slots, so this is an underpowered midrange pile with a few good cards (Dragonfire, Glassworks, Enduring Courage).\"}",
+  "cost_usd": 0.02096,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "58fb1bd466d4c4dd": {
+  "review": {
+   "archetype": "RG aggro/delirium",
+   "coherent": true,
+   "concerns": [
+    "thin top end",
+    "few creatures",
+    "filler tricks"
+   ],
+   "rating": 3,
+   "verdict": "A solid RG beatdown deck with good removal (Dragonfire, two Glassworks, Beatdown, Clobbering) and a low curve. Only 13 true creatures and weak filler (Norin, Turn Inside Out, Horrid Vigor) keep it from being better than fine."
+  },
+  "reply": "{\"archetype\": \"RG aggro/delirium\", \"coherent\": true, \"concerns\": [\"thin top end\", \"few creatures\", \"filler tricks\"], \"rating\": 3, \"verdict\": \"A solid RG beatdown deck with good removal (Dragonfire, two Glassworks, Beatdown, Clobbering) and a low curve. Only 13 true creatures and weak filler (Norin, Turn Inside Out, Horrid Vigor) keep it from being better than fine.\"}",
+  "cost_usd": 0.01919,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "4c8b5d3d27380f56": {
+  "review": {
+   "archetype": "RG manifest dread midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "few creatures",
+    "filler tricks",
+    "Pyroclasm"
+   ],
+   "rating": 3,
+   "verdict": "Solid green bodies and a manifest dread plan with good top-end threats like Shrieker, Thresher and Fear of Exposure, but removal is thin (Trial x2, Rollercrusher) and slots go to pump spells and slow Threats Around Every Corner instead of real creatures; Pyroclasm sits awkwardly with its own 2/2s."
+  },
+  "reply": "{\"archetype\": \"RG manifest dread midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"few creatures\", \"filler tricks\", \"Pyroclasm\"], \"rating\": 3, \"verdict\": \"Solid green bodies and a manifest dread plan with good top-end threats like Shrieker, Thresher and Fear of Exposure, but removal is thin (Trial x2, Rollercrusher) and slots go to pump spells and slow Threats Around Every Corner instead of real creatures; Pyroclasm sits awkwardly with its own 2/2s.\"}",
+  "cost_usd": 0.0224,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "0b0036cd47fdd7f6": {
+  "review": {
+   "archetype": "BG delirium/manifest midrange with pointless W splash",
+   "coherent": false,
+   "concerns": [
+    "splash",
+    "threat density",
+    "top end",
+    "filler",
+    "removal"
+   ],
+   "rating": 2,
+   "verdict": "Many low-impact 2-drops and filler like Cathartic Parting and Cracked Skull, too few real threats, and a 3-land white splash for a mediocre Rite of the Moth make this a below-average BG deck."
+  },
+  "reply": "{\"archetype\": \"BG delirium/manifest midrange with pointless W splash\", \"coherent\": false, \"concerns\": [\"splash\", \"threat density\", \"top end\", \"filler\", \"removal\"], \"rating\": 2, \"verdict\": \"Many low-impact 2-drops and filler like Cathartic Parting and Cracked Skull, too few real threats, and a 3-land white splash for a mediocre Rite of the Moth make this a below-average BG deck.\"}",
+  "cost_usd": 0.0194,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "63c3aa0cf61e9694": {
+  "review": {
+   "archetype": "WU enchantments/eerie",
+   "coherent": true,
+   "concerns": [
+    "creature count",
+    "two-drops",
+    "Get Out UU"
+   ],
+   "rating": 4,
+   "verdict": "Strong WU enchantments shell: Enduring Curiosity, Wandering Rescuer, Fear of Abduction/Falling, plenty of removal and Grand Entryway synergy. The creature base is a bit thin, but Rooms and tokens make up for it."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/eerie\", \"coherent\": true, \"concerns\": [\"creature count\", \"two-drops\", \"Get Out UU\"], \"rating\": 4, \"verdict\": \"Strong WU enchantments shell: Enduring Curiosity, Wandering Rescuer, Fear of Abduction/Falling, plenty of removal and Grand Entryway synergy. The creature base is a bit thin, but Rooms and tokens make up for it.\"}",
+  "cost_usd": 0.0157,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "5a702741f1d2723b": {
+  "review": {
+   "archetype": "RG delirium midrange",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "filler spells",
+    "top-end"
+   ],
+   "rating": 3,
+   "verdict": "Strong removal (2 Dragonfire, Trial, Beatdown, Emergence, Waltz) and an Overlord carry a thin, low-impact creature base padded with weak cards like Cathartic Parting and Say Its Name; a fine deck, but not a great one."
+  },
+  "reply": "{\"archetype\": \"RG delirium midrange\", \"coherent\": true, \"concerns\": [\"few creatures\", \"filler spells\", \"top-end\"], \"rating\": 3, \"verdict\": \"Strong removal (2 Dragonfire, Trial, Beatdown, Emergence, Waltz) and an Overlord carry a thin, low-impact creature base padded with weak cards like Cathartic Parting and Say Its Name; a fine deck, but not a great one.\"}",
+  "cost_usd": 0.01929,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "1aca9e5c5bafb448": {
+  "review": {
+   "archetype": "UG manifest dread control",
+   "coherent": false,
+   "concerns": [
+    "few creatures",
+    "removal",
+    "sideboard cards",
+    "splash",
+    "threat density"
+   ],
+   "rating": 2,
+   "verdict": "Only 6 real creatures, propped up by modal manifest-dread spells. Too many narrow artifact/enchantment answers (Cathartic Parting, 2x Break Down the Door, Fungus). Removal is weak, and the white splash for Gremlin Tamer and Seized from Slumber is a stretch, so this is a reactive pile that will struggle to pressure or stabilize."
+  },
+  "reply": "```json\n{\"archetype\": \"UG manifest dread control\", \"coherent\": false, \"concerns\": [\"few creatures\", \"removal\", \"sideboard cards\", \"splash\", \"threat density\"], \"rating\": 2, \"verdict\": \"Only 6 real creatures, propped up by modal manifest-dread spells. Too many narrow artifact/enchantment answers (Cathartic Parting, 2x Break Down the Door, Fungus). Removal is weak, and the white splash for Gremlin Tamer and Seized from Slumber is a stretch, so this is a reactive pile that will struggle to pressure or stabilize.\"}\n```",
+  "cost_usd": 0.01904,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "2d28bc1036434abb": {
+  "review": {
+   "archetype": "UB enchantments/rooms control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "card quality",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Solid UB enchantment-control shell with good removal (2 Murder, Live or Die, Meat Locker, Unable to Scream) and card advantage from rooms, but the body count is thin. Vile Mutilator and Mirror Room are clunky, so the deck may struggle to pressure or stabilize early."
+  },
+  "reply": "{\"archetype\": \"UB enchantments/rooms control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"card quality\", \"top end\"], \"rating\": 3, \"verdict\": \"Solid UB enchantment-control shell with good removal (2 Murder, Live or Die, Meat Locker, Unable to Scream) and card advantage from rooms, but the body count is thin. Vile Mutilator and Mirror Room are clunky, so the deck may struggle to pressure or stabilize early.\"}",
+  "cost_usd": 0.01611,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "2f4f15644e122938": {
+  "review": {
+   "archetype": "BG delirium/graveyard with W splash",
+   "coherent": false,
+   "concerns": [
+    "splash",
+    "top end",
+    "few creatures",
+    "filler"
+   ],
+   "rating": 2,
+   "verdict": "The BG core is solid: two Drag to the Roots, Miasma Demon, Tyvar, Commune, and Winter's Intervention support a reasonable delirium shell. But splashing Shroudstomper (WW) and Rite of the Moth off two Plains is greedy and unreliable. Nine-mana Valgavoth, Walk-In Closet and Killer's Mask are clunky filler, and 12 real creatures is too few, which leaves the deck slow and inconsistent."
+  },
+  "reply": "{\"archetype\": \"BG delirium/graveyard with W splash\", \"coherent\": false, \"concerns\": [\"splash\", \"top end\", \"few creatures\", \"filler\"], \"rating\": 2, \"verdict\": \"The BG core is solid: two Drag to the Roots, Miasma Demon, Tyvar, Commune, and Winter's Intervention support a reasonable delirium shell. But splashing Shroudstomper (WW) and Rite of the Moth off two Plains is greedy and unreliable. Nine-mana Valgavoth, Walk-In Closet and Killer's Mask are clunky filler, and 12 real creatures is too few, which leaves the deck slow and inconsistent.\"}",
+  "cost_usd": 0.02443,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "0e633428e9a6ac36": {
+  "review": {
+   "archetype": "UR rooms/eerie",
+   "coherent": true,
+   "concerns": [
+    "creature quality",
+    "removal",
+    "mana split",
+    "red splash-level"
+   ],
+   "rating": 2,
+   "verdict": "This is a real eerie plan with good payoffs in Enduring Curiosity, Entity Tracker, Meat Locker, Chainsaw and Inferno. But the bodies are weak (Percussionists, Skullcrab, Peepers, Researcher), removal is thin, and a 7/7 land split for a blue-heavy deck with UU costs and light red makes it a below-average build."
+  },
+  "reply": "{\"archetype\": \"UR rooms/eerie\", \"coherent\": true, \"concerns\": [\"creature quality\", \"removal\", \"mana split\", \"red splash-level\"], \"rating\": 2, \"verdict\": \"This is a real eerie plan with good payoffs in Enduring Curiosity, Entity Tracker, Meat Locker, Chainsaw and Inferno. But the bodies are weak (Percussionists, Skullcrab, Peepers, Researcher), removal is thin, and a 7/7 land split for a blue-heavy deck with UU costs and light red makes it a below-average build.\"}",
+  "cost_usd": 0.02344,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "4ab7a89fd88e3648": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "BB splash",
+    "threat density",
+    "removal",
+    "few creatures"
+   ],
+   "rating": 3,
+   "verdict": "A coherent UG manifest shell with good glue in Growing Dread, Unable to Scream and Threats. But the bodies are small and real removal is thin, and the BB splash for Snatcher and Ritual Chamber is greedy on about five black sources."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"BB splash\", \"threat density\", \"removal\", \"few creatures\"], \"rating\": 3, \"verdict\": \"A coherent UG manifest shell with good glue in Growing Dread, Unable to Scream and Threats. But the bodies are small and real removal is thin, and the BB splash for Snatcher and Ritual Chamber is greedy on about five black sources.\"}",
+  "cost_usd": 0.02073,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "50abba099ee0d063": {
+  "review": {
+   "archetype": "RW aggro",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "body quality"
+   ],
+   "rating": 3,
+   "verdict": "Removal is excellent: three Trapped in the Screen, two Glassworks, Betrayer's Bargain and Fear of Burning Alive. The low curve and enchantment synergies with Scavenger and the Glimmers fit RW. But the deck is thin and weak on real attackers for an aggro shell, and many slots go to rooms and small tokens, so it can run out of pressure."
+  },
+  "reply": "{\"archetype\": \"RW aggro\", \"coherent\": true, \"concerns\": [\"few creatures\", \"body quality\"], \"rating\": 3, \"verdict\": \"Removal is excellent: three Trapped in the Screen, two Glassworks, Betrayer's Bargain and Fear of Burning Alive. The low curve and enchantment synergies with Scavenger and the Glimmers fit RW. But the deck is thin and weak on real attackers for an aggro shell, and many slots go to rooms and small tokens, so it can run out of pressure.\"}",
+  "cost_usd": 0.0201,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "5c70557717a4da86": {
+  "review": {
+   "archetype": "RG manifest dread, light blue splash",
+   "coherent": false,
+   "concerns": [
+    "colors",
+    "few creatures",
+    "threat quality",
+    "blue splash"
+   ],
+   "rating": 2,
+   "verdict": "The red removal is strong (2 Betrayer's Bargain, Scorching Dragonfire, 2 Glassworks), but there are only 9 real creatures and too many weak manifest bodies (3 Manifest Dread, 2 Threats Around Every Corner); four blue cards, including two-drops, run on thin blue sources, so the deck lacks pressure and its mana is shaky."
+  },
+  "reply": "{\"archetype\": \"RG manifest dread, light blue splash\", \"coherent\": false, \"concerns\": [\"colors\", \"few creatures\", \"threat quality\", \"blue splash\"], \"rating\": 2, \"verdict\": \"The red removal is strong (2 Betrayer's Bargain, Scorching Dragonfire, 2 Glassworks), but there are only 9 real creatures and too many weak manifest bodies (3 Manifest Dread, 2 Threats Around Every Corner); four blue cards, including two-drops, run on thin blue sources, so the deck lacks pressure and its mana is shaky.\"}",
+  "cost_usd": 0.02178,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "6ef800b2a19242ef": {
+  "review": {
+   "archetype": "WG survivors aggro",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "Patchwork Beastie",
+    "card quality",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A low-curve WG attacking deck with good payoffs in Rip, Lionheart Glimmer and Fear of Exposure, and solid filler in the Escorts and manifest dread. It is held back by thin removal beyond 2 Monstrous Emergence and by a Patchwork Beastie that rarely turns on, so it is playable but unspectacular."
+  },
+  "reply": "{\"archetype\": \"WG survivors aggro\", \"coherent\": true, \"concerns\": [\"removal\", \"Patchwork Beastie\", \"card quality\", \"top end\"], \"rating\": 3, \"verdict\": \"A low-curve WG attacking deck with good payoffs in Rip, Lionheart Glimmer and Fear of Exposure, and solid filler in the Escorts and manifest dread. It is held back by thin removal beyond 2 Monstrous Emergence and by a Patchwork Beastie that rarely turns on, so it is playable but unspectacular.\"}",
+  "cost_usd": 0.0173,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "cbb5a8572bc3b85b": {
+  "review": {
+   "archetype": "UG manifest dread tempo",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "removal",
+    "filler",
+    "threat density"
+   ],
+   "rating": 3,
+   "verdict": "A coherent UG manifest deck: Drowners, the auras, Meat Locker and Bookworm give it real tempo, but there is no hard removal, few strong bodies, and filler like Enter the Enigma, Say Its Name, double Horrid Vigor and Machete."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread tempo\", \"coherent\": true, \"concerns\": [\"few creatures\", \"removal\", \"filler\", \"threat density\"], \"rating\": 3, \"verdict\": \"A coherent UG manifest deck: Drowners, the auras, Meat Locker and Bookworm give it real tempo, but there is no hard removal, few strong bodies, and filler like Enter the Enigma, Say Its Name, double Horrid Vigor and Machete.\"}",
+  "cost_usd": 0.02302,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "7ff923a2728c9811": {
+  "review": {
+   "archetype": "RG manifest dread midrange",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "filler",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A functional RG midrange deck with real removal (Impossible Inferno, Waltz, Clobbering, Bear Trap) and good manifest dread support, but only 13 true creatures and weak filler (Percussionist, Turn Inside Out, an often-stuck Patchwork Beastie) keep it at average."
+  },
+  "reply": "{\"archetype\": \"RG manifest dread midrange\", \"coherent\": true, \"concerns\": [\"few creatures\", \"filler\", \"top end\"], \"rating\": 3, \"verdict\": \"A functional RG midrange deck with real removal (Impossible Inferno, Waltz, Clobbering, Bear Trap) and good manifest dread support, but only 13 true creatures and weak filler (Percussionist, Turn Inside Out, an often-stuck Patchwork Beastie) keep it at average.\"}",
+  "cost_usd": 0.01896,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "10fe4d6864b2f67e": {
+  "review": {
+   "archetype": "RG delirium aggro",
+   "coherent": true,
+   "concerns": [
+    "creature quality",
+    "top end",
+    "filler",
+    "delirium"
+   ],
+   "rating": 2,
+   "verdict": "Has a low curve and decent removal (Dragonfire, Inferno, Beatdown, Emergence), but the threats are thin and weak, with too many 1-drops and tricks like Clockwork Percussionist, Patchwork Beastie and Turn Inside Out x2, so it runs out of gas fast against real boards."
+  },
+  "reply": "{\"archetype\": \"RG delirium aggro\", \"coherent\": true, \"concerns\": [\"creature quality\", \"top end\", \"filler\", \"delirium\"], \"rating\": 2, \"verdict\": \"Has a low curve and decent removal (Dragonfire, Inferno, Beatdown, Emergence), but the threats are thin and weak, with too many 1-drops and tricks like Clockwork Percussionist, Patchwork Beastie and Turn Inside Out x2, so it runs out of gas fast against real boards.\"}",
+  "cost_usd": 0.0189,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "bf0be7daa57982e6": {
+  "review": {
+   "archetype": "UG manifest/delirium",
+   "coherent": true,
+   "concerns": [
+    "greedy splash",
+    "mana",
+    "Patchwork Beastie",
+    "threat density"
+   ],
+   "rating": 3,
+   "verdict": "A reasonable UG manifest dread and delirium shell with decent tempo removal (Drowner, Vanish, Domination, Monstrous Emergence) and Megalodon top end. Running a Mountain and Swamp to splash one mediocre Winter cuts both main colors to about 8 sources, which hurts UU and GG costs. Cut the splash for a cleaner Island/Forest base."
+  },
+  "reply": "{\"archetype\": \"UG manifest/delirium\", \"coherent\": true, \"concerns\": [\"greedy splash\", \"mana\", \"Patchwork Beastie\", \"threat density\"], \"rating\": 3, \"verdict\": \"A reasonable UG manifest dread and delirium shell with decent tempo removal (Drowner, Vanish, Domination, Monstrous Emergence) and Megalodon top end. Running a Mountain and Swamp to splash one mediocre Winter cuts both main colors to about 8 sources, which hurts UU and GG costs. Cut the splash for a cleaner Island/Forest base.\"}",
+  "cost_usd": 0.02524,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "8a154eca22c03a87": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "splash",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "A real UG face-down synergy shell built on Growing Dread, Cryptid Inspector, Bookworms, Analyst and Windbreakers, held back by thin removal (Clobbering, Vanish from Sight), filler like Ghost Vacuum, and a pointless one-card red splash for Hordecaller that should be another blue or green playable."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"removal\", \"splash\", \"filler\"], \"rating\": 3, \"verdict\": \"A real UG face-down synergy shell built on Growing Dread, Cryptid Inspector, Bookworms, Analyst and Windbreakers, held back by thin removal (Clobbering, Vanish from Sight), filler like Ghost Vacuum, and a pointless one-card red splash for Hordecaller that should be another blue or green playable.\"}",
+  "cost_usd": 0.02287,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "27c085e3e1fac1b9": {
+  "review": {
+   "archetype": "UR Rooms control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "win conditions",
+    "Bottomless Pool filler"
+   ],
+   "rating": 3,
+   "verdict": "Strong red removal and a real Rooms theme (Rampaging Soulrager, Intruding Soulrager, Unwilling Vessel, Misty Salon), but only 7 real creatures and three mediocre Bottomless Pools leave it short on threats to close games."
+  },
+  "reply": "{\"archetype\": \"UR Rooms control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"win conditions\", \"Bottomless Pool filler\"], \"rating\": 3, \"verdict\": \"Strong red removal and a real Rooms theme (Rampaging Soulrager, Intruding Soulrager, Unwilling Vessel, Misty Salon), but only 7 real creatures and three mediocre Bottomless Pools leave it short on threats to close games.\"}",
+  "cost_usd": 0.02166,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "84942ff4f7e509a9": {
+  "review": {
+   "archetype": "UG manifest dread ramp",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "red splash",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "A real UG manifest-dread and ramp plan: Windbreakers, Threats, Analyst and the big green bodies fit together. It has only two real removal spells, and Norin and Ghost Vacuum are weak slots; Norin as a splashed one-drop that can't block is a clear misbuild."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread ramp\", \"coherent\": true, \"concerns\": [\"removal\", \"red splash\", \"filler\"], \"rating\": 3, \"verdict\": \"A real UG manifest-dread and ramp plan: Windbreakers, Threats, Analyst and the big green bodies fit together. It has only two real removal spells, and Norin and Ghost Vacuum are weak slots; Norin as a splashed one-drop that can't block is a clear misbuild.\"}",
+  "cost_usd": 0.02364,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "3a4a835b4d2f2f27": {
+  "review": {
+   "archetype": "BG delirium control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "bite spells"
+   ],
+   "rating": 4,
+   "verdict": "A removal-dense BG deck with strong top end and real card advantage (Murder x2, Live or Die, Drag to the Roots, Miasma Demon, Unholy Annex, Valgavoth's Onslaught), but its thin creature count makes Coordinated Clobbering and Monstrous Emergence unreliable and leaves it open to fast starts."
+  },
+  "reply": "{\"archetype\": \"BG delirium control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"bite spells\"], \"rating\": 4, \"verdict\": \"A removal-dense BG deck with strong top end and real card advantage (Murder x2, Live or Die, Drag to the Roots, Miasma Demon, Unholy Annex, Valgavoth's Onslaught), but its thin creature count makes Coordinated Clobbering and Monstrous Emergence unreliable and leaves it open to fast starts.\"}",
+  "cost_usd": 0.02314,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "67990c43728a2931": {
+  "review": {
+   "archetype": "UW enchantments control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "threat density",
+    "blue-heavy",
+    "small bodies"
+   ],
+   "rating": 3,
+   "verdict": "Solid interaction (3 Unable to Scream, Stay Hidden, Vanish x2, Drowner) and an Overlord bomb, but there are few real threats and the small bodies struggle to close games. It leans on Slimy Aquarium manifests and Glimmer tokens to win."
+  },
+  "reply": "{\"archetype\": \"UW enchantments control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"threat density\", \"blue-heavy\", \"small bodies\"], \"rating\": 3, \"verdict\": \"Solid interaction (3 Unable to Scream, Stay Hidden, Vanish x2, Drowner) and an Overlord bomb, but there are few real threats and the small bodies struggle to close games. It leans on Slimy Aquarium manifests and Glimmer tokens to win.\"}",
+  "cost_usd": 0.02124,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "414d981e3dd4d1cc": {
+  "review": {
+   "archetype": "BG delirium splashing U",
+   "coherent": true,
+   "concerns": [
+    "splash",
+    "removal",
+    "threat density",
+    "Say Its Name"
+   ],
+   "rating": 3,
+   "verdict": "A functional BG delirium deck built on Broodspinner, Swarmweaver, Drag to the Roots and a lot of manifest dread and land-fetching. The blue splash for Bookworm, Unable to Scream and Glimmerburst on two Islands adds little. With modest removal and filler like Say Its Name and four Centipedes, it plays fine but lacks top-end power."
+  },
+  "reply": "{\"archetype\": \"BG delirium splashing U\", \"coherent\": true, \"concerns\": [\"splash\", \"removal\", \"threat density\", \"Say Its Name\"], \"rating\": 3, \"verdict\": \"A functional BG delirium deck built on Broodspinner, Swarmweaver, Drag to the Roots and a lot of manifest dread and land-fetching. The blue splash for Bookworm, Unable to Scream and Glimmerburst on two Islands adds little. With modest removal and filler like Say Its Name and four Centipedes, it plays fine but lacks top-end power.\"}",
+  "cost_usd": 0.02281,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "b072650b22104bcd": {
+  "review": {
+   "archetype": "UG manifest dread value, B splash",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "threat density",
+    "splash",
+    "durdly"
+   ],
+   "rating": 3,
+   "verdict": "A playable UG control/value deck with good interaction (Drowner, 2x Vanish, Drag) and card flow (2x Glimmerburst, Bookworm), but it is light on real bodies, has filler like a lone Say Its Name and Fungus, and splashes black for two cards."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread value, B splash\", \"coherent\": true, \"concerns\": [\"few creatures\", \"threat density\", \"splash\", \"durdly\"], \"rating\": 3, \"verdict\": \"A playable UG control/value deck with good interaction (Drowner, 2x Vanish, Drag) and card flow (2x Glimmerburst, Bookworm), but it is light on real bodies, has filler like a lone Say Its Name and Fungus, and splashes black for two cards.\"}",
+  "cost_usd": 0.02218,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "f40646ac336b8abf": {
+  "review": {
+   "archetype": "RG manifest dread aggro",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "top end"
+   ],
+   "rating": 4,
+   "verdict": "A solid RG deck with a good two- and three-drop curve, double Enduring Vitality, Tyvar and plenty of manifest dread value. Removal is light at Scorching Dragonfire x2, Glassworks and Trial, but the threat density and mana are good."
+  },
+  "reply": "{\"archetype\": \"RG manifest dread aggro\",\n \"coherent\": true,\n \"concerns\": [\"removal\", \"top end\"],\n \"rating\": 4,\n \"verdict\": \"A solid RG deck with a good two- and three-drop curve, double Enduring Vitality, Tyvar and plenty of manifest dread value. Removal is light at Scorching Dragonfire x2, Glassworks and Trial, but the threat density and mana are good.\"}",
+  "cost_usd": 0.01422,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "44d045a211486e4f": {
+  "review": {
+   "archetype": "Temur delirium/manifest",
+   "coherent": false,
+   "concerns": [
+    "colors",
+    "few creatures",
+    "mana",
+    "fight spells"
+   ],
+   "rating": 2,
+   "verdict": "The removal and individual cards are good, but this is a stretched three-color pile: only 6 Forests behind GG cards, splashy blue and red cards competing for mana, and just 9 real creatures to power fight-based removal."
+  },
+  "reply": "{\"archetype\": \"Temur delirium/manifest\", \"coherent\": false, \"concerns\": [\"colors\", \"few creatures\", \"mana\", \"fight spells\"], \"rating\": 2, \"verdict\": \"The removal and individual cards are good, but this is a stretched three-color pile: only 6 Forests behind GG cards, splashy blue and red cards competing for mana, and just 9 real creatures to power fight-based removal.\"}",
+  "cost_usd": 0.02599,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "811a9b1383536137": {
+  "review": {
+   "archetype": "RG manifest aggro, U splash",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "splash",
+    "top-end"
+   ],
+   "rating": 3,
+   "verdict": "Solid RG aggro shell with good cards like Fear of Being Hunted, Most Valuable Slayer and the cycler fatties, but removal is thin (Dragonfire, Glassworks) and splashing three cheap blue cards (Growing Dread, Bookworm, Hallcreeper) on four blue sources undercuts the low curve."
+  },
+  "reply": "{\"archetype\": \"RG manifest aggro, U splash\", \"coherent\": true, \"concerns\": [\"removal\", \"splash\", \"top-end\"], \"rating\": 3, \"verdict\": \"Solid RG aggro shell with good cards like Fear of Being Hunted, Most Valuable Slayer and the cycler fatties, but removal is thin (Dragonfire, Glassworks) and splashing three cheap blue cards (Growing Dread, Bookworm, Hallcreeper) on four blue sources undercuts the low curve.\"}",
+  "cost_usd": 0.02315,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
  }
 }

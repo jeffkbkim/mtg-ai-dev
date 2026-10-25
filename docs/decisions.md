@@ -87,6 +87,10 @@ exactly a browser answer maps to our options, and XMage AI decisions are flagged
 - 2026-10-25: `engine/xmage/decks/17lands-good-v2` replaces it as the starred pool (Jeff's yes): 100 decks, 10 per
   colour pair, chosen by build checks and drafter skill instead of a win requirement, every deck review-rated 3 or 4
   (★★ = 4). The first pool is no longer listed (its files and ratings stay, so saved copies still get matched).
+- 2026-10-25: decks count bodies, not just creature cards: creature cards plus token makers, manifest dread (Rooms too)
+  and creature recursion (`review_decks.makes_bodies`), in the >= 13 build check and in what the reviewer is shown. No
+  win/loss filter (Jeff: a 7-x record is noise). A WB top-up under this count added 8 decks rated 4/5 to v2
+  (`17lands-good-v2-wb`, v2_100..107); the manifest-dread decks of v2 and r2 were re-reviewed (`play/rereview_bodies.py`).
 - The web client's AI settings choose the Claude model (Opus 5.5, Sonnet 5.5) and effort; both are recorded with each
   decision, and games with different settings must not be pooled as one player.
 - Blocks XMage refused are recorded as `mapping: "refused"` (choice -1), not as decisions; the accepted blocks are

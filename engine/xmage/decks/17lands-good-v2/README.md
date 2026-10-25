@@ -100,3 +100,14 @@ stats and red flags, archetype flag, GIH deck score (info), `in_current_pool`, a
   deck, and the 17lands rank of these drafts ranges from bronze to mythic.
 
 17lands data is CC BY 4.0 (17lands.com).
+
+## 2026-10-25 top-up and re-review
+
+- Body count: `play/review_decks.py` now counts token makers, manifest dread (Rooms too) and creature recursion as
+  bodies beside creature cards; `good_deck_pool_v2.py`'s creature check uses it, and the reviewer is told the count.
+- WB top-up: `good_deck_pool_v2.py --pairs WB --thresholds 0.66 --shortlist-per-pair 40 --per-pair 40 --keep-rating 4
+  --exclude 17lands-good-v2/manifest.json --out ../17lands-good-v2-wb` reviewed 40 WB decks (2 rated 2, 30 rated 3,
+  8 rated 4; $0.78). The 8 rated 4 are added here as good_100..good_107 (7 ★★; good_107 stays ★ for its 15 lands).
+- Re-review of the decks whose review mentioned manifest (`play/rereview_bodies.py`): 18 here, 39 in ../17lands-r2.
+  Here only good_96 (UG eerie/manifest) changed, 3 -> 2, so it loses its star (file dsk-goodx-v2-96). The old review is
+  kept as `review_before`.

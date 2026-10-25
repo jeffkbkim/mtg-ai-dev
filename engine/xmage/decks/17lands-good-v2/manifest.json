@@ -459,13 +459,14 @@
    "drafter_bucket": 0.7,
    "rank_17lands": "gold",
    "review": {
-    "archetype": "BG delirium/manifest dread midrange",
+    "archetype": "BG delirium midrange",
     "coherent": true,
     "concerns": [
-     "filler two-drops"
+     "top-end",
+     "small creatures"
     ],
     "rating": 4,
-    "verdict": "Solid BG midrange with strong rares (Slasher, Onslaught), double Swarmweaver, good removal and plenty of manifest bodies; only the Rats and Say Its Name are weak."
+    "verdict": "Strong BG delirium midrange with two Swarmweavers, Unstoppable Slasher, Valgavoth's Onslaught and five real removal spells; a few filler bodies and Say Its Name keep it short of exceptional."
    },
    "mana_score": 10.0,
    "mana": {
@@ -505,7 +506,9 @@
     ],
     "soft_removal_cards": [],
     "archetype_wr": 0.5454671677434881,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 17,
+    "body_makers": 3
    },
    "archetype_flag": null,
    "deck_score_gih": 0.56628,
@@ -535,6 +538,15 @@
     "Wickerfolk Thresher": 1,
     "Winter's Intervention": 1,
     "Withering Torment": 1
+   },
+   "review_before": {
+    "archetype": "BG delirium/manifest dread midrange",
+    "coherent": true,
+    "concerns": [
+     "filler two-drops"
+    ],
+    "rating": 4,
+    "verdict": "Solid BG midrange with strong rares (Slasher, Onslaught), double Swarmweaver, good removal and plenty of manifest bodies; only the Rats and Say Its Name are weak."
    }
   },
   {
@@ -1039,10 +1051,10 @@
     "coherent": true,
     "concerns": [
      "few creatures",
-     "early drops"
+     "filler"
     ],
     "rating": 4,
-    "verdict": "A solid BG delirium deck with real removal (Murder, Withering Torment, Sporogenic Infection, Monstrous Emergence) and strong top end in Overlord of the Balemurk, Swarmweaver and Miasma Demon. It is a bit light on creatures, though the manifest dread cards make up some of the gap, and Valgavoth's Faithful and Horrid Vigor are filler."
+    "verdict": "Solid BG delirium deck: Overlord of the Balemurk, The Swarmweaver, Murder and Withering Torment lead a strong top end, though the creature count is light and Faithful, Teddy and Vigor are filler."
    },
    "mana_score": 10.0,
    "mana": {
@@ -1081,7 +1093,9 @@
     ],
     "soft_removal_cards": [],
     "archetype_wr": 0.5454671677434881,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 16,
+    "body_makers": 3
    },
    "archetype_flag": null,
    "deck_score_gih": 0.554,
@@ -1113,6 +1127,16 @@
     "The Swarmweaver": 1,
     "Valgavoth's Faithful": 1,
     "Withering Torment": 1
+   },
+   "review_before": {
+    "archetype": "BG delirium midrange",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "early drops"
+    ],
+    "rating": 4,
+    "verdict": "A solid BG delirium deck with real removal (Murder, Withering Torment, Sporogenic Infection, Monstrous Emergence) and strong top end in Overlord of the Balemurk, Swarmweaver and Miasma Demon. It is a bit light on creatures, though the manifest dread cards make up some of the gap, and Valgavoth's Faithful and Horrid Vigor are filler."
    }
   },
   {
@@ -2886,15 +2910,15 @@
    "drafter_bucket": 0.74,
    "rank_17lands": "bronze",
    "review": {
-    "archetype": "RG aggro/delirium midrange",
+    "archetype": "RG delirium/manifest aggro",
     "coherent": true,
     "concerns": [
-     "filler",
-     "split plan",
-     "delirium support"
+     "delirium enablers",
+     "Say Its Name",
+     "RR costs"
     ],
     "rating": 3,
-    "verdict": "A solid RG beatdown core of three Fear of Being Hunted, Hordecaller, Kona, Onslaught, Dragonfire and Beatdown, with enough manifest-dread bodies to cover 13 creatures; it's diluted by half-built delirium pieces like Patchwork Beastie, 2x Say Its Name and Peer Past the Veil, so it lands as a fine but unremarkable deck."
+    "verdict": "Solid RG deck with good removal (Dragonfire, Beatdown, Emergence), a strong top end (Valgavoth's Onslaught, Hordecaller, Bedhead) and plenty of manifest bodies. Two Say Its Name with no Altanak, plus a delirium package that's only partly supported, make it a bit loose, and triple Fear of Being Hunted on 9 Mountains strains the mana."
    },
    "mana_score": 10.0,
    "mana": {
@@ -2934,7 +2958,9 @@
      "Fear of Missing Out"
     ],
     "archetype_wr": 0.5543647320332227,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 17,
+    "body_makers": 4
    },
    "archetype_flag": null,
    "deck_score_gih": 0.56351,
@@ -2962,6 +2988,17 @@
     "Under the Skin": 1,
     "Valgavoth's Onslaught": 1,
     "Wary Watchdog": 1
+   },
+   "review_before": {
+    "archetype": "RG aggro/delirium midrange",
+    "coherent": true,
+    "concerns": [
+     "filler",
+     "split plan",
+     "delirium support"
+    ],
+    "rating": 3,
+    "verdict": "A solid RG beatdown core of three Fear of Being Hunted, Hordecaller, Kona, Onslaught, Dragonfire and Beatdown, with enough manifest-dread bodies to cover 13 creatures; it's diluted by half-built delirium pieces like Patchwork Beastie, 2x Say Its Name and Peer Past the Veil, so it lands as a fine but unremarkable deck."
    }
   },
   {
@@ -4527,11 +4564,11 @@
     "coherent": true,
     "concerns": [
      "filler",
-     "low impact top end",
-     "creature quality"
+     "few creatures",
+     "removal count"
     ],
     "rating": 3,
-    "verdict": "A playable BG delirium deck with solid removal (2 Murder, 2 Monstrous Emergence, Vile Mutilator) and plenty of manifest dread to fill in for the low creature count, but Walk-In Closet, double Break Down the Door and Threats Around Every Corner dilute its power."
+    "verdict": "A solid BG manifest-dread midrange deck with good removal (2 Murder, 2 Monstrous Emergence, Vile Mutilator) and strong commons like Bashful Beastie and Broodspinner. It runs a bit thin on real creatures and has some soft filler (Walk-In Closet, a second Break Down the Door), so it's fine rather than strong."
    },
    "mana_score": 10.0,
    "mana": {
@@ -4569,7 +4606,9 @@
     ],
     "soft_removal_cards": [],
     "archetype_wr": 0.5454671677434881,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 18,
+    "body_makers": 5
    },
    "archetype_flag": null,
    "deck_score_gih": 0.5516,
@@ -4594,6 +4633,17 @@
     "Vile Mutilator": 1,
     "Walk-In Closet // Forgotten Cellar": 1,
     "Wickerfolk Thresher": 1
+   },
+   "review_before": {
+    "archetype": "BG delirium/manifest dread",
+    "coherent": true,
+    "concerns": [
+     "filler",
+     "low impact top end",
+     "creature quality"
+    ],
+    "rating": 3,
+    "verdict": "A playable BG delirium deck with solid removal (2 Murder, 2 Monstrous Emergence, Vile Mutilator) and plenty of manifest dread to fill in for the low creature count, but Walk-In Closet, double Break Down the Door and Threats Around Every Corner dilute its power."
    }
   },
   {
@@ -5001,15 +5051,15 @@
    "drafter_bucket": 0.7,
    "rank_17lands": "gold",
    "review": {
-    "archetype": "UG manifest dread",
+    "archetype": "UG manifest dread value",
     "coherent": true,
     "concerns": [
      "removal",
-     "card quality",
+     "creature quality",
      "top end"
     ],
     "rating": 3,
-    "verdict": "A coherent UG manifest deck with good blue tempo cards (Drowner, Vanish from Sight, Meat Locker, Fear of Isolation) and plenty of face-down bodies, but filler like 3 Spineseeker, Don't Make a Sound and Threats, plus little real removal, makes it solid but unspectacular."
+    "verdict": "A coherent UG manifest deck with good glue (Drowner, Growing Dread, Meat Locker, Vanish) and plenty of bodies, but it relies on bounce, stun and tuck effects instead of real removal and lacks bombs, so it plays fine but rarely dominates."
    },
    "mana_score": 10.0,
    "mana": {
@@ -5049,7 +5099,9 @@
      "Unnerving Grasp"
     ],
     "archetype_wr": 0.556363391358675,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 19,
+    "body_makers": 6
    },
    "archetype_flag": null,
    "deck_score_gih": 0.56775,
@@ -5075,6 +5127,17 @@
     "Vanish from Sight": 2,
     "Wickerfolk Thresher": 2,
     "Zimone, All-Questioning": 2
+   },
+   "review_before": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "card quality",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG manifest deck with good blue tempo cards (Drowner, Vanish from Sight, Meat Locker, Fear of Isolation) and plenty of face-down bodies, but filler like 3 Spineseeker, Don't Make a Sound and Threats, plus little real removal, makes it solid but unspectacular."
    }
   },
   {
@@ -5096,15 +5159,15 @@
    "drafter_bucket": 0.7,
    "rank_17lands": "bronze",
    "review": {
-    "archetype": "BG delirium/manifest midrange",
+    "archetype": "BG delirium midrange",
     "coherent": true,
     "concerns": [
      "removal",
-     "filler",
-     "delirium enablers"
+     "delirium reliance",
+     "top end"
     ],
     "rating": 3,
-    "verdict": "A playable, cohesive BG deck with good pieces in The Swarmweaver, Unstoppable Slasher, Fear of Exposure, and the cycling top end. Removal is thin and mostly creature-dependent (Clobbering, Monstrous Emergence), and filler like Valgavoth's Faithful, Give In to Violence and Patchwork Beastie holds it to an average build."
+    "verdict": "Solid low-curve BG shell with strong pieces in Swarmweaver, Slasher, Fear of Exposure and the two cyclers. Removal is thin and creature-dependent (Clobbering, Emergence), and Beastie and Sticktwister need delirium the deck only sometimes reaches, so it's fine but not special."
    },
    "mana_score": 10.0,
    "mana": {
@@ -5141,7 +5204,9 @@
     ],
     "soft_removal_cards": [],
     "archetype_wr": 0.5454671677434881,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 17,
+    "body_makers": 3
    },
    "archetype_flag": null,
    "deck_score_gih": 0.55043,
@@ -5172,6 +5237,17 @@
     "Unstoppable Slasher": 1,
     "Valgavoth's Faithful": 1,
     "Wary Watchdog": 1
+   },
+   "review_before": {
+    "archetype": "BG delirium/manifest midrange",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "filler",
+     "delirium enablers"
+    ],
+    "rating": 3,
+    "verdict": "A playable, cohesive BG deck with good pieces in The Swarmweaver, Unstoppable Slasher, Fear of Exposure, and the cycling top end. Removal is thin and mostly creature-dependent (Clobbering, Monstrous Emergence), and filler like Valgavoth's Faithful, Give In to Violence and Patchwork Beastie holds it to an average build."
    }
   },
   {
@@ -5391,12 +5467,11 @@
     "coherent": true,
     "concerns": [
      "few creatures",
-     "blue depth",
      "filler",
-     "top end"
+     "thin 3-4 drop"
     ],
     "rating": 3,
-    "verdict": "A real UG manifest shell built on 3x Growing Dread, Cryptid Inspectors, and Bookworm. But the creature count is light and the blue is thin, so it plays more like mono-green with some filler (Say Its Name, Cathartic Parting) and an awkward Altanak."
+    "verdict": "Three Growing Dread with Cryptid Inspector and Zealot give a real face-down plan and solid green bodies, but the deck is light on creatures in the middle of the curve, its removal is mostly fight-style, and a lone Say Its Name and a main-deck Cathartic Parting are filler, so it is a fine deck rather than a strong one."
    },
    "mana_score": 10.0,
    "mana": {
@@ -5433,7 +5508,9 @@
     ],
     "soft_removal_cards": [],
     "archetype_wr": 0.556363391358675,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 17,
+    "body_makers": 4
    },
    "archetype_flag": null,
    "deck_score_gih": 0.55497,
@@ -5459,6 +5536,18 @@
     "Spineseeker Centipede": 1,
     "Under the Skin": 1,
     "Vanish from Sight": 1
+   },
+   "review_before": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "blue depth",
+     "filler",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A real UG manifest shell built on 3x Growing Dread, Cryptid Inspectors, and Bookworm. But the creature count is light and the blue is thin, so it plays more like mono-green with some filler (Say Its Name, Cathartic Parting) and an awkward Altanak."
    }
   },
   {
@@ -5954,11 +6043,12 @@
     "archetype": "RG manifest dread midrange",
     "coherent": true,
     "concerns": [
-     "delirium consistency",
-     "top end"
+     "delirium",
+     "removal depth",
+     "card quality"
     ],
     "rating": 3,
-    "verdict": "Solid RG manifest deck: the 2-drops are dense, there are good bite and burn effects, and Altanak, Hordecaller and the Beasties close games, but delirium payoffs are unreliable and card quality is good rather than great."
+    "verdict": "Solid RG manifest-dread midrange with a good 2-drop base, Cryptid Inspector/Threats synergy, and decent fight-style removal, but delirium enablers are thin and the top end and removal are only average."
    },
    "mana_score": 10.0,
    "mana": {
@@ -5996,7 +6086,9 @@
     ],
     "soft_removal_cards": [],
     "archetype_wr": 0.5543647320332227,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 19,
+    "body_makers": 5
    },
    "archetype_flag": null,
    "deck_score_gih": 0.55853,
@@ -6023,6 +6115,16 @@
     "Ticket Booth // Tunnel of Hate": 1,
     "Twitching Doll": 1,
     "Wary Watchdog": 1
+   },
+   "review_before": {
+    "archetype": "RG manifest dread midrange",
+    "coherent": true,
+    "concerns": [
+     "delirium consistency",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "Solid RG manifest deck: the 2-drops are dense, there are good bite and burn effects, and Altanak, Hordecaller and the Beasties close games, but delirium payoffs are unreliable and card quality is good rather than great."
    }
   },
   {
@@ -6338,15 +6440,15 @@
    "drafter_bucket": 0.7,
    "rank_17lands": "platinum",
    "review": {
-    "archetype": "UG manifest dread",
+    "archetype": "UG manifest dread value",
     "coherent": true,
     "concerns": [
      "removal",
-     "filler",
+     "weak equipment",
      "delirium"
     ],
     "rating": 3,
-    "verdict": "A coherent UG manifest shell: Shrieker, Inspector, Bookworm, Analyst and Fear of Falling give it a real plan, and the cyclers smooth the mana. Removal is thin, and filler like two Machetes, two Say Its Name and an unreliable Patchwork Beastie keeps it at a fine but unexceptional level."
+    "verdict": "A playable UG manifest/value deck with solid cyclers, Fear of Falling and Shrieker, but thin real removal and clunky Machetes and Say Its Name keep it at average."
    },
    "mana_score": 10.0,
    "mana": {
@@ -6386,7 +6488,9 @@
      "Stay Hidden, Stay Silent"
     ],
     "archetype_wr": 0.556363391358675,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 20,
+    "body_makers": 5
    },
    "archetype_flag": null,
    "deck_score_gih": 0.55775,
@@ -6416,6 +6520,17 @@
     "Underwater Tunnel // Slimy Aquarium": 1,
     "Vanish from Sight": 1,
     "Wary Watchdog": 1
+   },
+   "review_before": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "filler",
+     "delirium"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG manifest shell: Shrieker, Inspector, Bookworm, Analyst and Fear of Falling give it a real plan, and the cyclers smooth the mana. Removal is thin, and filler like two Machetes, two Say Its Name and an unreliable Patchwork Beastie keeps it at a fine but unexceptional level."
    }
   },
   {
@@ -6831,15 +6946,15 @@
    "drafter_bucket": 0.7,
    "rank_17lands": "silver",
    "review": {
-    "archetype": "RG manifest dread midrange",
+    "archetype": "RG delirium/manifest midrange",
     "coherent": true,
     "concerns": [
      "removal",
-     "filler",
+     "creature quality",
      "few creatures"
     ],
     "rating": 3,
-    "verdict": "A solid RG manifest-dread midrange deck with a real top end (Altanak, Branchsnapper, Hordecaller, Beastie) and two Glassworks, but it is light on removal and padded with weak cards like Say Its Name, Turn Inside Out, Percussionist and Fungus; the many manifest effects help make up for only 13 true creatures."
+    "verdict": "Solid RG manifest-dread midrange with good top end (Altanak, Branchsnapper, Hordecaller) and two Glassworks plus Dragonfire for removal, but light on interaction and quality early creatures; a fine, functional deck."
    },
    "mana_score": 10.0,
    "mana": {
@@ -6876,7 +6991,9 @@
     ],
     "soft_removal_cards": [],
     "archetype_wr": 0.5543647320332227,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 18,
+    "body_makers": 5
    },
    "archetype_flag": null,
    "deck_score_gih": 0.55987,
@@ -6906,6 +7023,17 @@
     "Under the Skin": 1,
     "Wary Watchdog": 2,
     "Wildfire Wickerfolk": 1
+   },
+   "review_before": {
+    "archetype": "RG manifest dread midrange",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "filler",
+     "few creatures"
+    ],
+    "rating": 3,
+    "verdict": "A solid RG manifest-dread midrange deck with a real top end (Altanak, Branchsnapper, Hordecaller, Beastie) and two Glassworks, but it is light on removal and padded with weak cards like Say Its Name, Turn Inside Out, Percussionist and Fungus; the many manifest effects help make up for only 13 true creatures."
    }
   },
   {
@@ -7125,11 +7253,11 @@
     "coherent": true,
     "concerns": [
      "removal",
-     "card quality",
-     "Beastie reliability"
+     "delirium enablers",
+     "light blue"
     ],
     "rating": 3,
-    "verdict": "A solid green-heavy midrange deck with good bodies, Altanak and Enduring Curiosity at the top end and decent manifest synergy, but almost no real removal, so it has to win by out-sizing opponents and can lose to fliers or bombs."
+    "verdict": "A solid green midrange shell with good bodies (Bashful Beastie, Altanak, Cryptid Inspector) and a strong Enduring Curiosity, but it has little interaction and some clunky delirium pieces like Patchwork Beastie, so it's fine rather than strong."
    },
    "mana_score": 10.0,
    "mana": {
@@ -7168,7 +7296,9 @@
      "Unable to Scream"
     ],
     "archetype_wr": 0.556363391358675,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 18,
+    "body_makers": 3
    },
    "archetype_flag": null,
    "deck_score_gih": 0.55615,
@@ -7196,6 +7326,17 @@
     "Unable to Scream": 1,
     "Wary Watchdog": 1,
     "Wickerfolk Thresher": 1
+   },
+   "review_before": {
+    "archetype": "UG manifest/delirium midrange",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "card quality",
+     "Beastie reliability"
+    ],
+    "rating": 3,
+    "verdict": "A solid green-heavy midrange deck with good bodies, Altanak and Enduring Curiosity at the top end and decent manifest synergy, but almost no real removal, so it has to win by out-sizing opponents and can lose to fliers or bombs."
    }
   },
   {
@@ -7417,11 +7558,11 @@
     "coherent": true,
     "concerns": [
      "few creatures",
-     "Patchwork Beastie",
-     "counterspells"
+     "delirium",
+     "small threats"
     ],
     "rating": 3,
-    "verdict": "A coherent UG manifest dread deck. Growing Dread, Paranormal Analyst, Bookworm and the many dread effects work together, and there is solid fight-style removal, but it is light on real creatures and leans on reactive counters and a delirium card it can't reliably turn on."
+    "verdict": "A coherent UG manifest shell: Growing Dread, Paranormal Analyst, Twist Reality and Bookworm reward each other, and the fight spells give solid removal. It is held back by a thin real creature count, small early bodies, and Patchwork Beastie and Spineseeker relying on delirium the deck barely supports."
    },
    "mana_score": 10.0,
    "mana": {
@@ -7460,7 +7601,9 @@
      "Get Out"
     ],
     "archetype_wr": 0.556363391358675,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 20,
+    "body_makers": 7
    },
    "archetype_flag": null,
    "deck_score_gih": 0.55866,
@@ -7487,6 +7630,17 @@
     "Spineseeker Centipede": 1,
     "Twist Reality": 2,
     "Zimone, All-Questioning": 1
+   },
+   "review_before": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "Patchwork Beastie",
+     "counterspells"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG manifest dread deck. Growing Dread, Paranormal Analyst, Bookworm and the many dread effects work together, and there is solid fight-style removal, but it is light on real creatures and leans on reactive counters and a delirium card it can't reliably turn on."
    }
   },
   {
@@ -7608,11 +7762,11 @@
     "coherent": true,
     "concerns": [
      "top end",
-     "card quality",
-     "delirium"
+     "power level",
+     "card advantage"
     ],
     "rating": 3,
-    "verdict": "A solid, low-curve UG deck with good removal (Unable to Scream, Clobbering, Emergence, Drowner) and Valgavoth's Onslaught as a mana sink, but it is thin on power past four mana and the delirium payoffs are unreliable."
+    "verdict": "Low-curve UG deck with solid commons and decent interaction (Drowner, Clobbering, Emergence, Unable to Scream), but no bombs and little reach; Valgavoth's Onslaught is its best late-game card, and the flat 4-drop top end can get outclassed."
    },
    "mana_score": 10.0,
    "mana": {
@@ -7652,7 +7806,9 @@
      "Unable to Scream"
     ],
     "archetype_wr": 0.556363391358675,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 18,
+    "body_makers": 4
    },
    "archetype_flag": null,
    "deck_score_gih": 0.56671,
@@ -7681,6 +7837,17 @@
     "Wary Watchdog": 1,
     "Wickerfolk Thresher": 1,
     "Zimone, All-Questioning": 1
+   },
+   "review_before": {
+    "archetype": "UG manifest/tempo midrange",
+    "coherent": true,
+    "concerns": [
+     "top end",
+     "card quality",
+     "delirium"
+    ],
+    "rating": 3,
+    "verdict": "A solid, low-curve UG deck with good removal (Unable to Scream, Clobbering, Emergence, Drowner) and Valgavoth's Onslaught as a mana sink, but it is thin on power past four mana and the delirium payoffs are unreliable."
    }
   },
   {
@@ -7999,15 +8166,16 @@
    "drafter_bucket": 0.68,
    "rank_17lands": "gold",
    "review": {
-    "archetype": "UG self-mill/manifest midrange",
-    "coherent": true,
+    "archetype": "UG manifest/value midrange",
+    "coherent": false,
     "concerns": [
      "few creatures",
-     "Patchwork Beastie",
-     "graveyard enablers"
+     "graveyard enablers",
+     "filler",
+     "top end"
     ],
     "rating": 3,
-    "verdict": "Solid UG shell with Oculus, Altanak, Megalodon, and good removal like Clobbering, Emergence, and Vanish, but only 13 creatures, a lone Say Its Name, and a delirium-dependent Beastie keep it a fine deck rather than a strong one."
+    "verdict": "Playable UG with real pieces (Fear of Exposure, Vanish from Sight, Unnerving Grasp, Daggermaw), but too few creatures; Oculus and Patchwork Beastie lack enough self-mill; a single Say Its Name can't fetch Altanak, leaving it as a clunky 7-drop; and filler like Glimmerlight and Machete keeps it average."
    },
    "mana_score": 10.0,
    "mana": {
@@ -8047,7 +8215,9 @@
      "Unnerving Grasp"
     ],
     "archetype_wr": 0.556363391358675,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 18,
+    "body_makers": 5
    },
    "archetype_flag": null,
    "deck_score_gih": 0.55919,
@@ -8076,6 +8246,17 @@
     "Unnerving Grasp": 1,
     "Vanish from Sight": 1,
     "Wary Watchdog": 2
+   },
+   "review_before": {
+    "archetype": "UG self-mill/manifest midrange",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "Patchwork Beastie",
+     "graveyard enablers"
+    ],
+    "rating": 3,
+    "verdict": "Solid UG shell with Oculus, Altanak, Megalodon, and good removal like Clobbering, Emergence, and Vanish, but only 13 creatures, a lone Say Its Name, and a delirium-dependent Beastie keep it a fine deck rather than a strong one."
    }
   },
   {
@@ -8097,14 +8278,14 @@
    "drafter_bucket": 0.68,
    "rank_17lands": "gold",
    "review": {
-    "archetype": "UG rooms/manifest dread",
+    "archetype": "UG rooms/manifest dread midrange",
     "coherent": true,
     "concerns": [
      "removal",
-     "top-heavy threes"
+     "two-drops"
     ],
     "rating": 3,
-    "verdict": "Solid UG tempo-value deck. Fear of Falling, the Meat Lockers, Unable to Scream and Valgavoth's Onslaught give it real power, and Keybearer/Peeper reward the rooms, but the removal is soft and the creature quality is middling."
+    "verdict": "Solid UG value deck with good fliers (2x Fear of Falling, 2x Keybearer), double Meat Locker, and manifest dread/ramp synergy, but it leans on tempo removal and Unable to Scream rather than hard answers, so it's a fine but not exceptional build."
    },
    "mana_score": 10.0,
    "mana": {
@@ -8146,7 +8327,9 @@
     "archetype_wr": 0.556363391358675,
     "red_flags": [
      "4 two-drops"
-    ]
+    ],
+    "bodies": 18,
+    "body_makers": 4
    },
    "archetype_flag": null,
    "deck_score_gih": 0.55923,
@@ -8172,6 +8355,16 @@
     "Unable to Scream": 2,
     "Under the Skin": 1,
     "Valgavoth's Onslaught": 1
+   },
+   "review_before": {
+    "archetype": "UG rooms/manifest dread",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "top-heavy threes"
+    ],
+    "rating": 3,
+    "verdict": "Solid UG tempo-value deck. Fear of Falling, the Meat Lockers, Unable to Scream and Valgavoth's Onslaught give it real power, and Keybearer/Peeper reward the rooms, but the removal is soft and the creature quality is middling."
    }
   },
   {
@@ -8382,15 +8575,14 @@
    "drafter_bucket": 0.68,
    "rank_17lands": "platinum",
    "review": {
-    "archetype": "G(w) manifest dread midrange",
+    "archetype": "G/w manifest dread midrange",
     "coherent": true,
     "concerns": [
      "removal",
-     "evasion",
-     "light white"
+     "white depth"
     ],
     "rating": 3,
-    "verdict": "A solid, cohesive green manifest-dread deck: good 2-drops, three Bashful Beasties, Rip and plenty of extra bodies from manifests. It has only one real removal spell and almost no evasion, so it can stall against fliers or bombs."
+    "verdict": "Solid green manifest-dread deck with sticky bodies in Beasties, Twins and Survivors and good synergy with Inspector and Threats, but almost no real removal and only a thin white splash, so it wins on board size rather than interaction."
    },
    "mana_score": 10.0,
    "mana": {
@@ -8428,7 +8620,9 @@
      "Baseball Bat"
     ],
     "archetype_wr": 0.5269779659031972,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 19,
+    "body_makers": 4
    },
    "archetype_flag": "weak archetype WG 52.7%",
    "deck_score_gih": 0.55149,
@@ -8453,6 +8647,17 @@
     "Under the Skin": 1,
     "Unsettling Twins": 2,
     "Wary Watchdog": 2
+   },
+   "review_before": {
+    "archetype": "G(w) manifest dread midrange",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "evasion",
+     "light white"
+    ],
+    "rating": 3,
+    "verdict": "A solid, cohesive green manifest-dread deck: good 2-drops, three Bashful Beasties, Rip and plenty of extra bodies from manifests. It has only one real removal spell and almost no evasion, so it can stall against fliers or bombs."
    }
   },
   {
@@ -9353,11 +9558,11 @@
     "coherent": true,
     "concerns": [
      "creature count",
-     "filler",
-     "splash"
+     "splash",
+     "filler"
     ],
     "rating": 3,
-    "verdict": "Solid red removal suite (Dragonfire, 2x Glassworks, Inferno, Beatdown) on a reasonable RG midrange body. Light on creatures, with the manifest dread cards counted. 2x Say Its Name without Altanak and the one-card Swarmweaver splash are mediocre choices, so this is a fine deck rather than a strong one."
+    "verdict": "Solid RG beatdown with good red removal (Dragonfire, 2 Glassworks, Inferno, Beatdown) and real top end, but it runs only 13 true creatures, wastes slots on 2 Say Its Name and Turn Inside Out, and the black splash for a single Swarmweaver costs a Swamp in a deck with RR costs."
    },
    "mana_score": 9.5,
    "mana": {
@@ -9401,7 +9606,9 @@
     ],
     "soft_removal_cards": [],
     "archetype_wr": 0.5543647320332227,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 16,
+    "body_makers": 3
    },
    "archetype_flag": null,
    "deck_score_gih": 0.56144,
@@ -9435,6 +9642,17 @@
     "Ticket Booth // Tunnel of Hate": 1,
     "Turn Inside Out": 1,
     "Wary Watchdog": 1
+   },
+   "review_before": {
+    "archetype": "RG midrange splash B",
+    "coherent": true,
+    "concerns": [
+     "creature count",
+     "filler",
+     "splash"
+    ],
+    "rating": 3,
+    "verdict": "Solid red removal suite (Dragonfire, 2x Glassworks, Inferno, Beatdown) on a reasonable RG midrange body. Light on creatures, with the manifest dread cards counted. 2x Say Its Name without Altanak and the one-card Swarmweaver splash are mediocre choices, so this is a fine deck rather than a strong one."
    }
   },
   {
@@ -9456,16 +9674,16 @@
    "drafter_bucket": 0.68,
    "rank_17lands": "platinum",
    "review": {
-    "archetype": "UG manifest/eerie with W splash",
-    "coherent": true,
+    "archetype": "UG eerie/manifest",
+    "coherent": false,
     "concerns": [
+     "splash",
      "removal",
-     "few creatures",
-     "pointless splash",
-     "Oculus/Mindskinner anti-synergy"
+     "creature quality",
+     "Oculus enabling"
     ],
-    "rating": 3,
-    "verdict": "Solid UG core in Growing Dread, Entity Tracker, Meat Locker x2, Onslaught and Beasties, but removal is thin, it has only 13 creatures, and the splash for one mediocre Toby is wasted. Oculus is hard to enable without self-mill, and Mindskinner works against the rest of the deck's damage."
+    "rating": 2,
+    "verdict": "Entity Tracker, Mindskinner, Growing Dread and the Rooms give a real UG enchantment shell, but three 2/1 Centipedes with little delirium support, an Oculus with almost no self-mill, a pointless one-card white splash for Toby, and thin removal make it a below-average pile."
    },
    "mana_score": 9.5,
    "mana": {
@@ -9510,7 +9728,9 @@
      "Unable to Scream"
     ],
     "archetype_wr": 0.556363391358675,
-    "red_flags": []
+    "red_flags": [],
+    "bodies": 16,
+    "body_makers": 3
    },
    "archetype_flag": null,
    "deck_score_gih": 0.56494,
@@ -9540,6 +9760,18 @@
     "Unable to Scream": 1,
     "Valgavoth's Onslaught": 1,
     "Vanish from Sight": 1
+   },
+   "review_before": {
+    "archetype": "UG manifest/eerie with W splash",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "few creatures",
+     "pointless splash",
+     "Oculus/Mindskinner anti-synergy"
+    ],
+    "rating": 3,
+    "verdict": "Solid UG core in Growing Dread, Entity Tracker, Meat Locker x2, Onslaught and Beasties, but removal is thin, it has only 13 creatures, and the splash for one mediocre Toby is wasted. Oculus is hard to enable without self-mill, and Mindskinner works against the rest of the deck's damage."
    }
   },
   {
@@ -9833,6 +10065,845 @@
     "Swamp": 9,
     "Twist Reality": 1
    }
+  },
+  {
+   "file": "good_100.dck",
+   "rank": 100,
+   "playmat_name": "★★ good_100 · WB removal midrange · review 4/5",
+   "tier": 2,
+   "draft_id": "a5baad491f254788b1f126075a126709",
+   "build_index": "0",
+   "build_games": 5,
+   "build_wins": 2,
+   "games": 5,
+   "wins": 2,
+   "losses": 3,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "diamond",
+   "review": {
+    "archetype": "WB removal midrange",
+    "coherent": true,
+    "concerns": [
+     "creature quality",
+     "few creatures"
+    ],
+    "rating": 4,
+    "verdict": "Deep removal suite (2 Murder, Withering Torment, Trapped in the Screen, Exorcise, Final Vengeance) plus strong top end in Shroudstomper, Miasma Demon, Snatcher and Fear of the Dark makes a solid control-midrange deck, held back only by filler-level early bodies like Glimmerlight and Rat."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "W": {
+     "sources": 9,
+     "need": 8,
+     "cards": 11
+    },
+    "B": {
+     "sources": 9,
+     "need": 9,
+     "cards": 11
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     8,
+     6,
+     3,
+     2,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 5,
+    "bodies": 17,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Exorcise",
+     "Final Vengeance",
+     "Murder",
+     "Trapped in the Screen",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.54959,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 1,
+    "Appendage Amalgam": 1,
+    "Emerge from the Cocoon": 1,
+    "Exorcise": 1,
+    "Fanatic of the Harrowing": 1,
+    "Fear of the Dark": 1,
+    "Final Vengeance": 1,
+    "Glimmerlight": 2,
+    "Grand Entryway // Elegant Rotunda": 1,
+    "Hardened Escort": 1,
+    "Innocuous Rat": 1,
+    "Miasma Demon": 1,
+    "Murder": 2,
+    "Plains": 8,
+    "Reluctant Role Model": 1,
+    "Shroudstomper": 1,
+    "Spectral Snatcher": 1,
+    "Surgical Suite // Hospital Room": 1,
+    "Swamp": 8,
+    "Trapped in the Screen": 1,
+    "Unsettling Twins": 2,
+    "Valgavoth's Lair": 1,
+    "Withering Torment": 1
+   },
+   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)"
+  },
+  {
+   "file": "good_101.dck",
+   "rank": 101,
+   "playmat_name": "★★ good_101 · WB midrange control · review 4/5",
+   "tier": 2,
+   "draft_id": "f1a804e9563b46ba8974f9375cb8e60e",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.68",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.68,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "WB midrange control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "early board"
+    ],
+    "rating": 4,
+    "verdict": "Removal-heavy WB deck with bombs like Enduring Tenacity, two Shroudstompers, and Unholy Annex, plus recursion for card advantage; the low creature count can leave it slow to press damage, but card quality is high."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "W": {
+     "sources": 9,
+     "need": 8,
+     "cards": 13
+    },
+    "B": {
+     "sources": 9,
+     "need": 9,
+     "cards": 13
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     7,
+     6,
+     4,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 4,
+    "bodies": 15,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Exorcise",
+     "Live or Die",
+     "Murder",
+     "Seized from Slumber",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.54867,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 2,
+    "Balemurk Leech": 1,
+    "Commune with Evil": 1,
+    "Cult Healer": 1,
+    "Derelict Attic // Widow's Walk": 1,
+    "Enduring Tenacity": 1,
+    "Exorcise": 1,
+    "Friendly Ghost": 1,
+    "Grand Entryway // Elegant Rotunda": 1,
+    "Innocuous Rat": 1,
+    "Live or Die": 1,
+    "Murder": 2,
+    "Neglected Manor": 1,
+    "Plains": 8,
+    "Rite of the Moth": 1,
+    "Savior of the Small": 1,
+    "Seized from Slumber": 2,
+    "Shroudstomper": 2,
+    "Swamp": 8,
+    "Unholy Annex // Ritual Chamber": 1,
+    "Veteran Survivor": 1,
+    "Winter's Intervention": 1
+   },
+   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)"
+  },
+  {
+   "file": "good_102.dck",
+   "rank": 102,
+   "playmat_name": "★★ good_102 · WB+r enchantments control, light R splash · review 4/5",
+   "tier": 2,
+   "draft_id": "001c67018ed041bb923a24a1831f1b48",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "WB",
+   "splash_colors": "R",
+   "user_win_rate_bucket": "0.66",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.66,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "WB enchantments control, light R splash",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "lands",
+     "splash"
+    ],
+    "rating": 4,
+    "verdict": "Very high removal density plus strong payoffs in Victor, Ghostly Dancers, Vile Mutilator and Trapped in the Screen make this a strong WB eerie control deck. Only 12 small-bodied creatures strain Fear of Abduction and Mutilator's extra costs, and 16 lands is light for this top end. Splashing just for Rollercrusher is greedy but cheap with four fixers."
+   },
+   "mana_score": 9.5,
+   "mana": {
+    "W": {
+     "sources": 9,
+     "need": 8,
+     "cards": 8
+    },
+    "B": {
+     "sources": 9,
+     "need": 8,
+     "cards": 14
+    },
+    "R": {
+     "sources": 4,
+     "cards": 1,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     7,
+     6,
+     3,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 1,
+    "bodies": 13,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 4,
+    "removal": 10,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Fear of Abduction",
+     "Fear of Lost Teeth",
+     "Nowhere to Run",
+     "Seized from Slumber",
+     "Sporogenic Infection",
+     "The Rollercrusher Ride",
+     "Trapped in the Screen",
+     "Vile Mutilator",
+     "Winter's Intervention",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.54818,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 1,
+    "Appendage Amalgam": 1,
+    "Cracked Skull": 1,
+    "Dashing Bloodsucker": 1,
+    "Defiled Crypt // Cadaver Lab": 1,
+    "Derelict Attic // Widow's Walk": 1,
+    "Fear of Abduction": 1,
+    "Fear of Immobility": 1,
+    "Fear of Lost Teeth": 1,
+    "Fear of Surveillance": 1,
+    "Friendly Teddy": 1,
+    "Ghostly Dancers": 1,
+    "Innocuous Rat": 1,
+    "Keys to the House": 1,
+    "Let's Play a Game": 1,
+    "Mountain": 1,
+    "Neglected Manor": 1,
+    "Nowhere to Run": 1,
+    "Plains": 6,
+    "Razortrap Gorge": 1,
+    "Seized from Slumber": 1,
+    "Sporogenic Infection": 1,
+    "Swamp": 5,
+    "Terramorphic Expanse": 2,
+    "The Rollercrusher Ride": 1,
+    "Trapped in the Screen": 1,
+    "Victor, Valgavoth's Seneschal": 1,
+    "Vile Mutilator": 1,
+    "Winter's Intervention": 1,
+    "Withering Torment": 1
+   },
+   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)"
+  },
+  {
+   "file": "good_103.dck",
+   "rank": 103,
+   "playmat_name": "★★ good_103 · WB midrange removal · review 4/5",
+   "tier": 2,
+   "draft_id": "c3c28342aa7b40d1af9629a2ff23ce58",
+   "build_index": "0",
+   "build_games": 7,
+   "build_wins": 4,
+   "games": 7,
+   "wins": 4,
+   "losses": 3,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.66",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.66,
+   "rank_17lands": "gold",
+   "review": {
+    "archetype": "WB midrange removal",
+    "coherent": true,
+    "concerns": [
+     "filler creatures",
+     "Haunted Screen"
+    ],
+    "rating": 4,
+    "verdict": "Six premium removal spells, including three Murders, plus Shroudstomper, Fear of the Dark and Savior value give a strong WB midrange deck; the clean two-color mana makes up for a few soft bodies like Living Phone and the filler Haunted Screen."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "W": {
+     "sources": 7,
+     "need": 8,
+     "cards": 11
+    },
+    "B": {
+     "sources": 9,
+     "need": 9,
+     "cards": 13
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     5,
+     9,
+     6,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "body_makers": 1,
+    "bodies": 17,
+    "noncreature_spells": 8,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Final Vengeance",
+     "Murder",
+     "Nowhere to Run",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.54643,
+   "in_current_pool": null,
+   "deck": {
+    "Cynical Loner": 1,
+    "Fanatic of the Harrowing": 1,
+    "Fear of the Dark": 1,
+    "Final Vengeance": 1,
+    "Friendly Ghost": 2,
+    "Haunted Screen": 1,
+    "Innocuous Rat": 2,
+    "Living Phone": 2,
+    "Malevolent Chandelier": 1,
+    "Murder": 3,
+    "Nowhere to Run": 1,
+    "Patched Plaything": 1,
+    "Plains": 7,
+    "Rite of the Moth": 1,
+    "Savior of the Small": 1,
+    "Shroudstomper": 1,
+    "Splitskin Doll": 1,
+    "Swamp": 9,
+    "Toby, Beastie Befriender": 1,
+    "Unsettling Twins": 1,
+    "Withering Torment": 1
+   },
+   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)"
+  },
+  {
+   "file": "good_104.dck",
+   "rank": 104,
+   "playmat_name": "★★ good_104 · WB enchantments/sacrifice · review 4/5",
+   "tier": 2,
+   "draft_id": "00bb2be5edcc4816a0262ff04a1cbb69",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.66",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.66,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "WB enchantments/sacrifice",
+    "coherent": true,
+    "concerns": [
+     "small creatures",
+     "white-heavy"
+    ],
+    "rating": 4,
+    "verdict": "Strong WB build. Removal is solid: Murder, Trapped in the Screen, Nowhere to Run, and 2 Final Vengeance fed by Innocuous Rat, Enduring Innocence and the Rooms. Enduring Innocence, Lionheart Glimmer, Ghostly Dancers and Fear of Immobility give it real power, and the curve is low with plenty of value. The bodies are a bit small and the mana leans on white, so the 8/7 land split is slightly off."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "W": {
+     "sources": 9,
+     "need": 9,
+     "cards": 15
+    },
+    "B": {
+     "sources": 8,
+     "need": 9,
+     "cards": 9
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     9,
+     7,
+     2,
+     3,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "body_makers": 3,
+    "bodies": 17,
+    "noncreature_spells": 10,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 5,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Final Vengeance",
+     "Murder",
+     "Nowhere to Run",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.55782,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 1,
+    "Derelict Attic // Widow's Walk": 1,
+    "Enduring Innocence": 1,
+    "Fear of Immobility": 1,
+    "Fear of Surveillance": 1,
+    "Final Vengeance": 2,
+    "Ghostly Dancers": 1,
+    "Glimmer Seeker": 1,
+    "Grand Entryway // Elegant Rotunda": 1,
+    "Innocuous Rat": 3,
+    "Jump Scare": 1,
+    "Killer's Mask": 1,
+    "Lionheart Glimmer": 1,
+    "Living Phone": 1,
+    "Murder": 1,
+    "Nowhere to Run": 1,
+    "Plains": 8,
+    "Savior of the Small": 1,
+    "Splitskin Doll": 1,
+    "Surgical Suite // Hospital Room": 1,
+    "Swamp": 7,
+    "Terramorphic Expanse": 1,
+    "Trapped in the Screen": 1,
+    "Unsettling Twins": 1
+   },
+   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)"
+  },
+  {
+   "file": "good_105.dck",
+   "rank": 105,
+   "playmat_name": "★★ good_105 · WB midrange removal · review 4/5",
+   "tier": 2,
+   "draft_id": "ebea28e97e024f0fb475655de990d036",
+   "build_index": "1",
+   "build_games": 3,
+   "build_wins": 0,
+   "games": 4,
+   "wins": 1,
+   "losses": 3,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.66",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.66,
+   "rank_17lands": "gold",
+   "review": {
+    "archetype": "WB midrange removal",
+    "coherent": true,
+    "concerns": [
+     "mana split",
+     "weak filler",
+     "thin 4s"
+    ],
+    "rating": 4,
+    "verdict": "Deep removal (2 Murder, Live or Die, Sporogenic Infection, Winter's Intervention, Exorcise, Split Up) plus strong top end (Wandering Rescuer, Ghostly Dancers, Toby, 2 Shepherding Spirits). Some weak filler like Valgavoth's Faithful and Emerge from the Cocoon. The 7 Plains / 8 Swamp split is slightly off for a white-heavier, WW-heavy deck, though the Plainscyclers help."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "W": {
+     "sources": 8,
+     "need": 9,
+     "cards": 16
+    },
+    "B": {
+     "sources": 9,
+     "need": 9,
+     "cards": 8
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     7,
+     7,
+     1,
+     5,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "body_makers": 3,
+    "bodies": 18,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Exorcise",
+     "Live or Die",
+     "Murder",
+     "Split Up",
+     "Sporogenic Infection",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.55048,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 2,
+    "Emerge from the Cocoon": 1,
+    "Exorcise": 1,
+    "Fanatic of the Harrowing": 1,
+    "Fear of Immobility": 1,
+    "Ghostly Dancers": 1,
+    "Grand Entryway // Elegant Rotunda": 1,
+    "Hardened Escort": 1,
+    "Innocuous Rat": 1,
+    "Live or Die": 1,
+    "Living Phone": 2,
+    "Murder": 2,
+    "Neglected Manor": 1,
+    "Plains": 7,
+    "Possessed Goat": 1,
+    "Shepherding Spirits": 2,
+    "Split Up": 1,
+    "Sporogenic Infection": 1,
+    "Swamp": 8,
+    "The Wandering Rescuer": 1,
+    "Toby, Beastie Befriender": 1,
+    "Valgavoth's Faithful": 1,
+    "Winter's Intervention": 1
+   },
+   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)"
+  },
+  {
+   "file": "good_106.dck",
+   "rank": 106,
+   "playmat_name": "★★ good_106 · WB enchantments/survivors midrange · review 4/5",
+   "tier": 2,
+   "draft_id": "5908634e9cdf474da2c1c7dde5854602",
+   "build_index": "1",
+   "build_games": 8,
+   "build_wins": 6,
+   "games": 9,
+   "wins": 6,
+   "losses": 3,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "WB enchantments/survivors midrange",
+    "coherent": true,
+    "concerns": [
+     "Shroudstomper mana",
+     "filler auras"
+    ],
+    "rating": 4,
+    "verdict": "Solid WB deck with a clean low curve, good removal (Murder, Trapped in the Screen, Nowhere to Run, Winter's Intervention, Sporogenic Infection) and strong top end (Fear of the Dark x2, Fear of Immobility, Shroudstomper). Its weak spots are the two cheap auras and Shroudstomper's WWBB cost on a 9/6 split."
+   },
+   "mana_score": 8.0,
+   "mana": {
+    "W": {
+     "sources": 10,
+     "need": 8,
+     "cards": 16
+    },
+    "B": {
+     "sources": 7,
+     "need": 9,
+     "cards": 9
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     10,
+     5,
+     2,
+     4,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "body_makers": 1,
+    "bodies": 17,
+    "noncreature_spells": 8,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 5,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Murder",
+     "Nowhere to Run",
+     "Sporogenic Infection",
+     "Trapped in the Screen",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.54783,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 1,
+    "Balemurk Leech": 1,
+    "Ethereal Armor": 1,
+    "Fear of Immobility": 1,
+    "Fear of Surveillance": 2,
+    "Fear of the Dark": 2,
+    "Glimmer Seeker": 2,
+    "Grand Entryway // Elegant Rotunda": 1,
+    "Innocuous Rat": 1,
+    "Lionheart Glimmer": 1,
+    "Murder": 1,
+    "Neglected Manor": 1,
+    "Nowhere to Run": 1,
+    "Orphans of the Wheat": 1,
+    "Patched Plaything": 1,
+    "Plains": 9,
+    "Savior of the Small": 1,
+    "Shardmage's Rescue": 1,
+    "Shroudstomper": 1,
+    "Sporogenic Infection": 1,
+    "Swamp": 6,
+    "Trapped in the Screen": 1,
+    "Unsettling Twins": 1,
+    "Winter's Intervention": 1
+   },
+   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)"
+  },
+  {
+   "file": "good_107.dck",
+   "rank": 107,
+   "playmat_name": "★ good_107 · WB survivors midrange · review 4/5",
+   "tier": 1,
+   "draft_id": "5fea09b3dba54542a7368b47aa94fa1d",
+   "build_index": "1",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.66",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.66,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "WB survivors midrange",
+    "coherent": true,
+    "concerns": [
+     "black depth",
+     "BB costs"
+    ],
+    "rating": 4,
+    "verdict": "A strong white core of survivors with removal-heavy black: 2 Murder, Withering Torment, 2 Seized from Slumber and Trapped in the Screen, plus good tops like Lionheart and Shepherding Spirits. The light Swamp count is slightly strained by the BB cards, but this is a well-built, above-average deck."
+   },
+   "mana_score": 8.0,
+   "mana": {
+    "W": {
+     "sources": 10,
+     "need": 8,
+     "cards": 18
+    },
+    "B": {
+     "sources": 7,
+     "need": 9,
+     "cards": 7
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     6,
+     7,
+     4,
+     4,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "body_makers": 2,
+    "bodies": 18,
+    "noncreature_spells": 9,
+    "lands": 15,
+    "fixing_lands": 2,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Murder",
+     "Seized from Slumber",
+     "Trapped in the Screen",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": [
+     "15 lands"
+    ]
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.55184,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 1,
+    "Appendage Amalgam": 1,
+    "Dashing Bloodsucker": 1,
+    "Fear of the Dark": 1,
+    "Glimmer Seeker": 1,
+    "Grand Entryway // Elegant Rotunda": 1,
+    "Lionheart Glimmer": 1,
+    "Murder": 2,
+    "Neglected Manor": 1,
+    "Orphans of the Wheat": 1,
+    "Plains": 8,
+    "Savior of the Small": 1,
+    "Seized from Slumber": 2,
+    "Shardmage's Rescue": 1,
+    "Shepherding Spirits": 1,
+    "Spectral Snatcher": 1,
+    "Splitskin Doll": 2,
+    "Surgical Suite // Hospital Room": 1,
+    "Swamp": 5,
+    "Terramorphic Expanse": 1,
+    "Toby, Beastie Befriender": 1,
+    "Trapped in the Screen": 1,
+    "Unsettling Twins": 2,
+    "Veteran Survivor": 1,
+    "Withering Torment": 1
+   },
+   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)"
+  }
+ ],
+ "topups": [
+  {
+   "date": "2026-10-25",
+   "from": "17lands-good-v2-wb",
+   "pairs": [
+    "WB"
+   ],
+   "added": 8,
+   "reviewer_cost_usd": 0.782
   }
  ]
 }

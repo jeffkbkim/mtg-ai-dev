@@ -1,0 +1,911 @@
+{
+ "source": "game_data_public.DSK.PremierDraft.csv.gz",
+ "drafts": 173545,
+ "skipped": {
+  "card not in XMage DSK": 3283,
+  "not 40 cards": 14279
+ },
+ "funnel": {
+  "eligible": 155983,
+  "pair, not in an excluded pool": 8589,
+  "wins >= 0": 8589,
+  "build games ok": 7818,
+  "drafter games bucket >= 100": 5248,
+  "colour rule ok": 4894,
+  "build checks ok": 2564,
+  "fails top end": 1962,
+  "fails creatures": 92,
+  "fails two-drops": 399,
+  "off-colour card (dropped)": 165,
+  "fails lands": 11,
+  "drafter bucket >= 0.66": 45
+ },
+ "candidates_by_threshold": {
+  "0.66": {
+   "WU": 0,
+   "UB": 0,
+   "BR": 0,
+   "RG": 0,
+   "WG": 0,
+   "WB": 45,
+   "UR": 0,
+   "BG": 0,
+   "WR": 0,
+   "UG": 0
+  }
+ },
+ "threshold": 0.66,
+ "min_user_games": 100,
+ "min_build_games": 3,
+ "min_creatures": 13,
+ "shortlist_per_pair": 40,
+ "per_pair": 40,
+ "keep_rating": 4,
+ "tier2": "rating >= 4 and no build red flag (weak-archetype flag excluded, see archetype_flag)",
+ "reviewer": {
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e",
+  "reviewed": 40,
+  "cost_usd": 0.782
+ },
+ "shortlist_ratings": {
+  "WU": {},
+  "UB": {},
+  "BR": {},
+  "RG": {},
+  "WG": {},
+  "WB": {
+   "2": 2,
+   "3": 30,
+   "4": 8
+  },
+  "UR": {},
+  "BG": {},
+  "WR": {},
+  "UG": {}
+ },
+ "kept": 8,
+ "kept_by_pair": {
+  "WU": 0,
+  "UB": 0,
+  "BR": 0,
+  "RG": 0,
+  "WG": 0,
+  "WB": 8,
+  "UR": 0,
+  "BG": 0,
+  "WR": 0,
+  "UG": 0
+ },
+ "tiers": {
+  "2": 7,
+  "1": 1
+ },
+ "overlap_with_current": {
+  "draft_ids": [],
+  "shortlisted": 0
+ },
+ "decks": [
+  {
+   "file": "good_00.dck",
+   "rank": 0,
+   "playmat_name": "★★ good_00 · WB removal midrange · review 4/5",
+   "tier": 2,
+   "draft_id": "a5baad491f254788b1f126075a126709",
+   "build_index": "0",
+   "build_games": 5,
+   "build_wins": 2,
+   "games": 5,
+   "wins": 2,
+   "losses": 3,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "diamond",
+   "review": {
+    "archetype": "WB removal midrange",
+    "coherent": true,
+    "concerns": [
+     "creature quality",
+     "few creatures"
+    ],
+    "rating": 4,
+    "verdict": "Deep removal suite (2 Murder, Withering Torment, Trapped in the Screen, Exorcise, Final Vengeance) plus strong top end in Shroudstomper, Miasma Demon, Snatcher and Fear of the Dark makes a solid control-midrange deck, held back only by filler-level early bodies like Glimmerlight and Rat."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "W": {
+     "sources": 9,
+     "need": 8,
+     "cards": 11
+    },
+    "B": {
+     "sources": 9,
+     "need": 9,
+     "cards": 11
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     8,
+     6,
+     3,
+     2,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 5,
+    "bodies": 17,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Exorcise",
+     "Final Vengeance",
+     "Murder",
+     "Trapped in the Screen",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.54959,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 1,
+    "Appendage Amalgam": 1,
+    "Emerge from the Cocoon": 1,
+    "Exorcise": 1,
+    "Fanatic of the Harrowing": 1,
+    "Fear of the Dark": 1,
+    "Final Vengeance": 1,
+    "Glimmerlight": 2,
+    "Grand Entryway // Elegant Rotunda": 1,
+    "Hardened Escort": 1,
+    "Innocuous Rat": 1,
+    "Miasma Demon": 1,
+    "Murder": 2,
+    "Plains": 8,
+    "Reluctant Role Model": 1,
+    "Shroudstomper": 1,
+    "Spectral Snatcher": 1,
+    "Surgical Suite // Hospital Room": 1,
+    "Swamp": 8,
+    "Trapped in the Screen": 1,
+    "Unsettling Twins": 2,
+    "Valgavoth's Lair": 1,
+    "Withering Torment": 1
+   }
+  },
+  {
+   "file": "good_01.dck",
+   "rank": 1,
+   "playmat_name": "★★ good_01 · WB midrange control · review 4/5",
+   "tier": 2,
+   "draft_id": "f1a804e9563b46ba8974f9375cb8e60e",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.68",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.68,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "WB midrange control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "early board"
+    ],
+    "rating": 4,
+    "verdict": "Removal-heavy WB deck with bombs like Enduring Tenacity, two Shroudstompers, and Unholy Annex, plus recursion for card advantage; the low creature count can leave it slow to press damage, but card quality is high."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "W": {
+     "sources": 9,
+     "need": 8,
+     "cards": 13
+    },
+    "B": {
+     "sources": 9,
+     "need": 9,
+     "cards": 13
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     7,
+     6,
+     4,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 4,
+    "bodies": 15,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Exorcise",
+     "Live or Die",
+     "Murder",
+     "Seized from Slumber",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.54867,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 2,
+    "Balemurk Leech": 1,
+    "Commune with Evil": 1,
+    "Cult Healer": 1,
+    "Derelict Attic // Widow's Walk": 1,
+    "Enduring Tenacity": 1,
+    "Exorcise": 1,
+    "Friendly Ghost": 1,
+    "Grand Entryway // Elegant Rotunda": 1,
+    "Innocuous Rat": 1,
+    "Live or Die": 1,
+    "Murder": 2,
+    "Neglected Manor": 1,
+    "Plains": 8,
+    "Rite of the Moth": 1,
+    "Savior of the Small": 1,
+    "Seized from Slumber": 2,
+    "Shroudstomper": 2,
+    "Swamp": 8,
+    "Unholy Annex // Ritual Chamber": 1,
+    "Veteran Survivor": 1,
+    "Winter's Intervention": 1
+   }
+  },
+  {
+   "file": "good_02.dck",
+   "rank": 2,
+   "playmat_name": "★★ good_02 · WB+r enchantments control, light R splash · review 4/5",
+   "tier": 2,
+   "draft_id": "001c67018ed041bb923a24a1831f1b48",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "WB",
+   "splash_colors": "R",
+   "user_win_rate_bucket": "0.66",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.66,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "WB enchantments control, light R splash",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "lands",
+     "splash"
+    ],
+    "rating": 4,
+    "verdict": "Very high removal density plus strong payoffs in Victor, Ghostly Dancers, Vile Mutilator and Trapped in the Screen make this a strong WB eerie control deck. Only 12 small-bodied creatures strain Fear of Abduction and Mutilator's extra costs, and 16 lands is light for this top end. Splashing just for Rollercrusher is greedy but cheap with four fixers."
+   },
+   "mana_score": 9.5,
+   "mana": {
+    "W": {
+     "sources": 9,
+     "need": 8,
+     "cards": 8
+    },
+    "B": {
+     "sources": 9,
+     "need": 8,
+     "cards": 14
+    },
+    "R": {
+     "sources": 4,
+     "cards": 1,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     7,
+     6,
+     3,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 1,
+    "bodies": 13,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 4,
+    "removal": 10,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Fear of Abduction",
+     "Fear of Lost Teeth",
+     "Nowhere to Run",
+     "Seized from Slumber",
+     "Sporogenic Infection",
+     "The Rollercrusher Ride",
+     "Trapped in the Screen",
+     "Vile Mutilator",
+     "Winter's Intervention",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.54818,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 1,
+    "Appendage Amalgam": 1,
+    "Cracked Skull": 1,
+    "Dashing Bloodsucker": 1,
+    "Defiled Crypt // Cadaver Lab": 1,
+    "Derelict Attic // Widow's Walk": 1,
+    "Fear of Abduction": 1,
+    "Fear of Immobility": 1,
+    "Fear of Lost Teeth": 1,
+    "Fear of Surveillance": 1,
+    "Friendly Teddy": 1,
+    "Ghostly Dancers": 1,
+    "Innocuous Rat": 1,
+    "Keys to the House": 1,
+    "Let's Play a Game": 1,
+    "Mountain": 1,
+    "Neglected Manor": 1,
+    "Nowhere to Run": 1,
+    "Plains": 6,
+    "Razortrap Gorge": 1,
+    "Seized from Slumber": 1,
+    "Sporogenic Infection": 1,
+    "Swamp": 5,
+    "Terramorphic Expanse": 2,
+    "The Rollercrusher Ride": 1,
+    "Trapped in the Screen": 1,
+    "Victor, Valgavoth's Seneschal": 1,
+    "Vile Mutilator": 1,
+    "Winter's Intervention": 1,
+    "Withering Torment": 1
+   }
+  },
+  {
+   "file": "good_03.dck",
+   "rank": 3,
+   "playmat_name": "★★ good_03 · WB midrange removal · review 4/5",
+   "tier": 2,
+   "draft_id": "c3c28342aa7b40d1af9629a2ff23ce58",
+   "build_index": "0",
+   "build_games": 7,
+   "build_wins": 4,
+   "games": 7,
+   "wins": 4,
+   "losses": 3,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.66",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.66,
+   "rank_17lands": "gold",
+   "review": {
+    "archetype": "WB midrange removal",
+    "coherent": true,
+    "concerns": [
+     "filler creatures",
+     "Haunted Screen"
+    ],
+    "rating": 4,
+    "verdict": "Six premium removal spells, including three Murders, plus Shroudstomper, Fear of the Dark and Savior value give a strong WB midrange deck; the clean two-color mana makes up for a few soft bodies like Living Phone and the filler Haunted Screen."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "W": {
+     "sources": 7,
+     "need": 8,
+     "cards": 11
+    },
+    "B": {
+     "sources": 9,
+     "need": 9,
+     "cards": 13
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     5,
+     9,
+     6,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "body_makers": 1,
+    "bodies": 17,
+    "noncreature_spells": 8,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Final Vengeance",
+     "Murder",
+     "Nowhere to Run",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.54643,
+   "in_current_pool": null,
+   "deck": {
+    "Cynical Loner": 1,
+    "Fanatic of the Harrowing": 1,
+    "Fear of the Dark": 1,
+    "Final Vengeance": 1,
+    "Friendly Ghost": 2,
+    "Haunted Screen": 1,
+    "Innocuous Rat": 2,
+    "Living Phone": 2,
+    "Malevolent Chandelier": 1,
+    "Murder": 3,
+    "Nowhere to Run": 1,
+    "Patched Plaything": 1,
+    "Plains": 7,
+    "Rite of the Moth": 1,
+    "Savior of the Small": 1,
+    "Shroudstomper": 1,
+    "Splitskin Doll": 1,
+    "Swamp": 9,
+    "Toby, Beastie Befriender": 1,
+    "Unsettling Twins": 1,
+    "Withering Torment": 1
+   }
+  },
+  {
+   "file": "good_04.dck",
+   "rank": 4,
+   "playmat_name": "★★ good_04 · WB enchantments/sacrifice · review 4/5",
+   "tier": 2,
+   "draft_id": "00bb2be5edcc4816a0262ff04a1cbb69",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.66",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.66,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "WB enchantments/sacrifice",
+    "coherent": true,
+    "concerns": [
+     "small creatures",
+     "white-heavy"
+    ],
+    "rating": 4,
+    "verdict": "Strong WB build. Removal is solid: Murder, Trapped in the Screen, Nowhere to Run, and 2 Final Vengeance fed by Innocuous Rat, Enduring Innocence and the Rooms. Enduring Innocence, Lionheart Glimmer, Ghostly Dancers and Fear of Immobility give it real power, and the curve is low with plenty of value. The bodies are a bit small and the mana leans on white, so the 8/7 land split is slightly off."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "W": {
+     "sources": 9,
+     "need": 9,
+     "cards": 15
+    },
+    "B": {
+     "sources": 8,
+     "need": 9,
+     "cards": 9
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     9,
+     7,
+     2,
+     3,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "body_makers": 3,
+    "bodies": 17,
+    "noncreature_spells": 10,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 5,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Final Vengeance",
+     "Murder",
+     "Nowhere to Run",
+     "Trapped in the Screen"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.55782,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 1,
+    "Derelict Attic // Widow's Walk": 1,
+    "Enduring Innocence": 1,
+    "Fear of Immobility": 1,
+    "Fear of Surveillance": 1,
+    "Final Vengeance": 2,
+    "Ghostly Dancers": 1,
+    "Glimmer Seeker": 1,
+    "Grand Entryway // Elegant Rotunda": 1,
+    "Innocuous Rat": 3,
+    "Jump Scare": 1,
+    "Killer's Mask": 1,
+    "Lionheart Glimmer": 1,
+    "Living Phone": 1,
+    "Murder": 1,
+    "Nowhere to Run": 1,
+    "Plains": 8,
+    "Savior of the Small": 1,
+    "Splitskin Doll": 1,
+    "Surgical Suite // Hospital Room": 1,
+    "Swamp": 7,
+    "Terramorphic Expanse": 1,
+    "Trapped in the Screen": 1,
+    "Unsettling Twins": 1
+   }
+  },
+  {
+   "file": "good_05.dck",
+   "rank": 5,
+   "playmat_name": "★★ good_05 · WB midrange removal · review 4/5",
+   "tier": 2,
+   "draft_id": "ebea28e97e024f0fb475655de990d036",
+   "build_index": "1",
+   "build_games": 3,
+   "build_wins": 0,
+   "games": 4,
+   "wins": 1,
+   "losses": 3,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.66",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.66,
+   "rank_17lands": "gold",
+   "review": {
+    "archetype": "WB midrange removal",
+    "coherent": true,
+    "concerns": [
+     "mana split",
+     "weak filler",
+     "thin 4s"
+    ],
+    "rating": 4,
+    "verdict": "Deep removal (2 Murder, Live or Die, Sporogenic Infection, Winter's Intervention, Exorcise, Split Up) plus strong top end (Wandering Rescuer, Ghostly Dancers, Toby, 2 Shepherding Spirits). Some weak filler like Valgavoth's Faithful and Emerge from the Cocoon. The 7 Plains / 8 Swamp split is slightly off for a white-heavier, WW-heavy deck, though the Plainscyclers help."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "W": {
+     "sources": 8,
+     "need": 9,
+     "cards": 16
+    },
+    "B": {
+     "sources": 9,
+     "need": 9,
+     "cards": 8
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     7,
+     7,
+     1,
+     5,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "body_makers": 3,
+    "bodies": 18,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Exorcise",
+     "Live or Die",
+     "Murder",
+     "Split Up",
+     "Sporogenic Infection",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.55048,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 2,
+    "Emerge from the Cocoon": 1,
+    "Exorcise": 1,
+    "Fanatic of the Harrowing": 1,
+    "Fear of Immobility": 1,
+    "Ghostly Dancers": 1,
+    "Grand Entryway // Elegant Rotunda": 1,
+    "Hardened Escort": 1,
+    "Innocuous Rat": 1,
+    "Live or Die": 1,
+    "Living Phone": 2,
+    "Murder": 2,
+    "Neglected Manor": 1,
+    "Plains": 7,
+    "Possessed Goat": 1,
+    "Shepherding Spirits": 2,
+    "Split Up": 1,
+    "Sporogenic Infection": 1,
+    "Swamp": 8,
+    "The Wandering Rescuer": 1,
+    "Toby, Beastie Befriender": 1,
+    "Valgavoth's Faithful": 1,
+    "Winter's Intervention": 1
+   }
+  },
+  {
+   "file": "good_06.dck",
+   "rank": 6,
+   "playmat_name": "★★ good_06 · WB enchantments/survivors midrange · review 4/5",
+   "tier": 2,
+   "draft_id": "5908634e9cdf474da2c1c7dde5854602",
+   "build_index": "1",
+   "build_games": 8,
+   "build_wins": 6,
+   "games": 9,
+   "wins": 6,
+   "losses": 3,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "WB enchantments/survivors midrange",
+    "coherent": true,
+    "concerns": [
+     "Shroudstomper mana",
+     "filler auras"
+    ],
+    "rating": 4,
+    "verdict": "Solid WB deck with a clean low curve, good removal (Murder, Trapped in the Screen, Nowhere to Run, Winter's Intervention, Sporogenic Infection) and strong top end (Fear of the Dark x2, Fear of Immobility, Shroudstomper). Its weak spots are the two cheap auras and Shroudstomper's WWBB cost on a 9/6 split."
+   },
+   "mana_score": 8.0,
+   "mana": {
+    "W": {
+     "sources": 10,
+     "need": 8,
+     "cards": 16
+    },
+    "B": {
+     "sources": 7,
+     "need": 9,
+     "cards": 9
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     10,
+     5,
+     2,
+     4,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "body_makers": 1,
+    "bodies": 17,
+    "noncreature_spells": 8,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 5,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Murder",
+     "Nowhere to Run",
+     "Sporogenic Infection",
+     "Trapped in the Screen",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [
+     "Fear of Immobility"
+    ],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.54783,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 1,
+    "Balemurk Leech": 1,
+    "Ethereal Armor": 1,
+    "Fear of Immobility": 1,
+    "Fear of Surveillance": 2,
+    "Fear of the Dark": 2,
+    "Glimmer Seeker": 2,
+    "Grand Entryway // Elegant Rotunda": 1,
+    "Innocuous Rat": 1,
+    "Lionheart Glimmer": 1,
+    "Murder": 1,
+    "Neglected Manor": 1,
+    "Nowhere to Run": 1,
+    "Orphans of the Wheat": 1,
+    "Patched Plaything": 1,
+    "Plains": 9,
+    "Savior of the Small": 1,
+    "Shardmage's Rescue": 1,
+    "Shroudstomper": 1,
+    "Sporogenic Infection": 1,
+    "Swamp": 6,
+    "Trapped in the Screen": 1,
+    "Unsettling Twins": 1,
+    "Winter's Intervention": 1
+   }
+  },
+  {
+   "file": "good_07.dck",
+   "rank": 7,
+   "playmat_name": "★ good_07 · WB survivors midrange · review 4/5",
+   "tier": 1,
+   "draft_id": "5fea09b3dba54542a7368b47aa94fa1d",
+   "build_index": "1",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "WB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.66",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.66,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "WB survivors midrange",
+    "coherent": true,
+    "concerns": [
+     "black depth",
+     "BB costs"
+    ],
+    "rating": 4,
+    "verdict": "A strong white core of survivors with removal-heavy black: 2 Murder, Withering Torment, 2 Seized from Slumber and Trapped in the Screen, plus good tops like Lionheart and Shepherding Spirits. The light Swamp count is slightly strained by the BB cards, but this is a well-built, above-average deck."
+   },
+   "mana_score": 8.0,
+   "mana": {
+    "W": {
+     "sources": 10,
+     "need": 8,
+     "cards": 18
+    },
+    "B": {
+     "sources": 7,
+     "need": 9,
+     "cards": 7
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     6,
+     7,
+     4,
+     4,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "body_makers": 2,
+    "bodies": 18,
+    "noncreature_spells": 9,
+    "lands": 15,
+    "fixing_lands": 2,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Murder",
+     "Seized from Slumber",
+     "Trapped in the Screen",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5232467844183716,
+    "red_flags": [
+     "15 lands"
+    ]
+   },
+   "archetype_flag": "weak archetype WB 52.3%",
+   "deck_score_gih": 0.55184,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 1,
+    "Appendage Amalgam": 1,
+    "Dashing Bloodsucker": 1,
+    "Fear of the Dark": 1,
+    "Glimmer Seeker": 1,
+    "Grand Entryway // Elegant Rotunda": 1,
+    "Lionheart Glimmer": 1,
+    "Murder": 2,
+    "Neglected Manor": 1,
+    "Orphans of the Wheat": 1,
+    "Plains": 8,
+    "Savior of the Small": 1,
+    "Seized from Slumber": 2,
+    "Shardmage's Rescue": 1,
+    "Shepherding Spirits": 1,
+    "Spectral Snatcher": 1,
+    "Splitskin Doll": 2,
+    "Surgical Suite // Hospital Room": 1,
+    "Swamp": 5,
+    "Terramorphic Expanse": 1,
+    "Toby, Beastie Befriender": 1,
+    "Trapped in the Screen": 1,
+    "Unsettling Twins": 2,
+    "Veteran Survivor": 1,
+    "Withering Torment": 1
+   }
+  }
+ ]
+}

@@ -2684,5 +2684,327 @@
   "model": "claude-opus-5-5",
   "effort": "medium",
   "system_sha": "53639186c19e"
+ },
+ "6edd1cc64117d7da": {
+  "review": {
+   "archetype": "BG delirium midrange",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "filler"
+   ],
+   "rating": 4,
+   "verdict": "Solid BG delirium deck: Overlord of the Balemurk, The Swarmweaver, Murder and Withering Torment lead a strong top end, though the creature count is light and Faithful, Teddy and Vigor are filler."
+  },
+  "reply": "{\"archetype\": \"BG delirium midrange\", \"coherent\": true, \"concerns\": [\"few creatures\", \"filler\"], \"rating\": 4, \"verdict\": \"Solid BG delirium deck: Overlord of the Balemurk, The Swarmweaver, Murder and Withering Torment lead a strong top end, though the creature count is light and Faithful, Teddy and Vigor are filler.\"}",
+  "cost_usd": 0.02188,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "02be1aec6680e861": {
+  "review": {
+   "archetype": "UG manifest dread value",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "creature quality",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A coherent UG manifest deck with good glue (Drowner, Growing Dread, Meat Locker, Vanish) and plenty of bodies, but it relies on bounce, stun and tuck effects instead of real removal and lacks bombs, so it plays fine but rarely dominates."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread value\", \"coherent\": true, \"concerns\": [\"removal\", \"creature quality\", \"top end\"], \"rating\": 3, \"verdict\": \"A coherent UG manifest deck with good glue (Drowner, Growing Dread, Meat Locker, Vanish) and plenty of bodies, but it relies on bounce, stun and tuck effects instead of real removal and lacks bombs, so it plays fine but rarely dominates.\"}",
+  "cost_usd": 0.01816,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "ea4abfcbf4752fb0": {
+  "review": {
+   "archetype": "RG delirium/manifest aggro",
+   "coherent": true,
+   "concerns": [
+    "delirium enablers",
+    "Say Its Name",
+    "RR costs"
+   ],
+   "rating": 3,
+   "verdict": "Solid RG deck with good removal (Dragonfire, Beatdown, Emergence), a strong top end (Valgavoth's Onslaught, Hordecaller, Bedhead) and plenty of manifest bodies. Two Say Its Name with no Altanak, plus a delirium package that's only partly supported, make it a bit loose, and triple Fear of Being Hunted on 9 Mountains strains the mana."
+  },
+  "reply": "{\"archetype\": \"RG delirium/manifest aggro\", \"coherent\": true, \"concerns\": [\"delirium enablers\", \"Say Its Name\", \"RR costs\"], \"rating\": 3, \"verdict\": \"Solid RG deck with good removal (Dragonfire, Beatdown, Emergence), a strong top end (Valgavoth's Onslaught, Hordecaller, Bedhead) and plenty of manifest bodies. Two Say Its Name with no Altanak, plus a delirium package that's only partly supported, make it a bit loose, and triple Fear of Being Hunted on 9 Mountains strains the mana.\"}",
+  "cost_usd": 0.01597,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "bf3c20b61811bf13": {
+  "review": {
+   "archetype": "BG delirium midrange",
+   "coherent": true,
+   "concerns": [
+    "top-end",
+    "small creatures"
+   ],
+   "rating": 4,
+   "verdict": "Strong BG delirium midrange with two Swarmweavers, Unstoppable Slasher, Valgavoth's Onslaught and five real removal spells; a few filler bodies and Say Its Name keep it short of exceptional."
+  },
+  "reply": "{\"archetype\": \"BG delirium midrange\", \"coherent\": true, \"concerns\": [\"top-end\", \"small creatures\"], \"rating\": 4, \"verdict\": \"Strong BG delirium midrange with two Swarmweavers, Unstoppable Slasher, Valgavoth's Onslaught and five real removal spells; a few filler bodies and Say Its Name keep it short of exceptional.\"}",
+  "cost_usd": 0.01945,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "15bdace2ce07a512": {
+  "review": {
+   "archetype": "BG delirium/manifest dread",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "few creatures",
+    "removal count"
+   ],
+   "rating": 3,
+   "verdict": "A solid BG manifest-dread midrange deck with good removal (2 Murder, 2 Monstrous Emergence, Vile Mutilator) and strong commons like Bashful Beastie and Broodspinner. It runs a bit thin on real creatures and has some soft filler (Walk-In Closet, a second Break Down the Door), so it's fine rather than strong."
+  },
+  "reply": "{\"archetype\": \"BG delirium/manifest dread\", \"coherent\": true, \"concerns\": [\"filler\", \"few creatures\", \"removal count\"], \"rating\": 3, \"verdict\": \"A solid BG manifest-dread midrange deck with good removal (2 Murder, 2 Monstrous Emergence, Vile Mutilator) and strong commons like Bashful Beastie and Broodspinner. It runs a bit thin on real creatures and has some soft filler (Walk-In Closet, a second Break Down the Door), so it's fine rather than strong.\"}",
+  "cost_usd": 0.02028,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "cf7e5782d5b79151": {
+  "review": {
+   "archetype": "RG manifest dread midrange",
+   "coherent": true,
+   "concerns": [
+    "delirium",
+    "removal depth",
+    "card quality"
+   ],
+   "rating": 3,
+   "verdict": "Solid RG manifest-dread midrange with a good 2-drop base, Cryptid Inspector/Threats synergy, and decent fight-style removal, but delirium enablers are thin and the top end and removal are only average."
+  },
+  "reply": "{\"archetype\": \"RG manifest dread midrange\", \"coherent\": true, \"concerns\": [\"delirium\", \"removal depth\", \"card quality\"], \"rating\": 3, \"verdict\": \"Solid RG manifest-dread midrange with a good 2-drop base, Cryptid Inspector/Threats synergy, and decent fight-style removal, but delirium enablers are thin and the top end and removal are only average.\"}",
+  "cost_usd": 0.01409,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "d4e82a1a2f36a847": {
+  "review": {
+   "archetype": "RG delirium/manifest midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "creature quality",
+    "few creatures"
+   ],
+   "rating": 3,
+   "verdict": "Solid RG manifest-dread midrange with good top end (Altanak, Branchsnapper, Hordecaller) and two Glassworks plus Dragonfire for removal, but light on interaction and quality early creatures; a fine, functional deck."
+  },
+  "reply": "{\"archetype\": \"RG delirium/manifest midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"creature quality\", \"few creatures\"], \"rating\": 3, \"verdict\": \"Solid RG manifest-dread midrange with good top end (Altanak, Branchsnapper, Hordecaller) and two Glassworks plus Dragonfire for removal, but light on interaction and quality early creatures; a fine, functional deck.\"}",
+  "cost_usd": 0.01535,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "1edc0d4902c048a0": {
+  "review": {
+   "archetype": "BG delirium midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "delirium reliance",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Solid low-curve BG shell with strong pieces in Swarmweaver, Slasher, Fear of Exposure and the two cyclers. Removal is thin and creature-dependent (Clobbering, Emergence), and Beastie and Sticktwister need delirium the deck only sometimes reaches, so it's fine but not special."
+  },
+  "reply": "{\"archetype\": \"BG delirium midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"delirium reliance\", \"top end\"], \"rating\": 3, \"verdict\": \"Solid low-curve BG shell with strong pieces in Swarmweaver, Slasher, Fear of Exposure and the two cyclers. Removal is thin and creature-dependent (Clobbering, Emergence), and Beastie and Sticktwister need delirium the deck only sometimes reaches, so it's fine but not special.\"}",
+  "cost_usd": 0.01905,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "21e1ad04724b0cbc": {
+  "review": {
+   "archetype": "UG manifest dread value",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "weak equipment",
+    "delirium"
+   ],
+   "rating": 3,
+   "verdict": "A playable UG manifest/value deck with solid cyclers, Fear of Falling and Shrieker, but thin real removal and clunky Machetes and Say Its Name keep it at average."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread value\", \"coherent\": true, \"concerns\": [\"removal\", \"weak equipment\", \"delirium\"], \"rating\": 3, \"verdict\": \"A playable UG manifest/value deck with solid cyclers, Fear of Falling and Shrieker, but thin real removal and clunky Machetes and Say Its Name keep it at average.\"}",
+  "cost_usd": 0.01562,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "16c317496d1aea26": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "filler",
+    "thin 3-4 drop"
+   ],
+   "rating": 3,
+   "verdict": "Three Growing Dread with Cryptid Inspector and Zealot give a real face-down plan and solid green bodies, but the deck is light on creatures in the middle of the curve, its removal is mostly fight-style, and a lone Say Its Name and a main-deck Cathartic Parting are filler, so it is a fine deck rather than a strong one."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"few creatures\", \"filler\", \"thin 3-4 drop\"], \"rating\": 3, \"verdict\": \"Three Growing Dread with Cryptid Inspector and Zealot give a real face-down plan and solid green bodies, but the deck is light on creatures in the middle of the curve, its removal is mostly fight-style, and a lone Say Its Name and a main-deck Cathartic Parting are filler, so it is a fine deck rather than a strong one.\"}",
+  "cost_usd": 0.019,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "6d03ef3f193cc574": {
+  "review": {
+   "archetype": "UG manifest/delirium midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "delirium enablers",
+    "light blue"
+   ],
+   "rating": 3,
+   "verdict": "A solid green midrange shell with good bodies (Bashful Beastie, Altanak, Cryptid Inspector) and a strong Enduring Curiosity, but it has little interaction and some clunky delirium pieces like Patchwork Beastie, so it's fine rather than strong."
+  },
+  "reply": "{\"archetype\": \"UG manifest/delirium midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"delirium enablers\", \"light blue\"], \"rating\": 3, \"verdict\": \"A solid green midrange shell with good bodies (Bashful Beastie, Altanak, Cryptid Inspector) and a strong Enduring Curiosity, but it has little interaction and some clunky delirium pieces like Patchwork Beastie, so it's fine rather than strong.\"}",
+  "cost_usd": 0.01838,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "243b9b1476eb2aea": {
+  "review": {
+   "archetype": "UG rooms/manifest dread midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "two-drops"
+   ],
+   "rating": 3,
+   "verdict": "Solid UG value deck with good fliers (2x Fear of Falling, 2x Keybearer), double Meat Locker, and manifest dread/ramp synergy, but it leans on tempo removal and Unable to Scream rather than hard answers, so it's a fine but not exceptional build."
+  },
+  "reply": "{\"archetype\": \"UG rooms/manifest dread midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"two-drops\"], \"rating\": 3, \"verdict\": \"Solid UG value deck with good fliers (2x Fear of Falling, 2x Keybearer), double Meat Locker, and manifest dread/ramp synergy, but it leans on tempo removal and Unable to Scream rather than hard answers, so it's a fine but not exceptional build.\"}",
+  "cost_usd": 0.01448,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "449d4ec716a314cb": {
+  "review": {
+   "archetype": "UG manifest/tempo midrange",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "power level",
+    "card advantage"
+   ],
+   "rating": 3,
+   "verdict": "Low-curve UG deck with solid commons and decent interaction (Drowner, Clobbering, Emergence, Unable to Scream), but no bombs and little reach; Valgavoth's Onslaught is its best late-game card, and the flat 4-drop top end can get outclassed."
+  },
+  "reply": "{\"archetype\": \"UG manifest/tempo midrange\", \"coherent\": true, \"concerns\": [\"top end\", \"power level\", \"card advantage\"], \"rating\": 3, \"verdict\": \"Low-curve UG deck with solid commons and decent interaction (Drowner, Clobbering, Emergence, Unable to Scream), but no bombs and little reach; Valgavoth's Onslaught is its best late-game card, and the flat 4-drop top end can get outclassed.\"}",
+  "cost_usd": 0.01545,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "c1ec6ca66290896b": {
+  "review": {
+   "archetype": "UG manifest/value midrange",
+   "coherent": false,
+   "concerns": [
+    "few creatures",
+    "graveyard enablers",
+    "filler",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Playable UG with real pieces (Fear of Exposure, Vanish from Sight, Unnerving Grasp, Daggermaw), but too few creatures; Oculus and Patchwork Beastie lack enough self-mill; a single Say Its Name can't fetch Altanak, leaving it as a clunky 7-drop; and filler like Glimmerlight and Machete keeps it average."
+  },
+  "reply": "{\"archetype\": \"UG manifest/value midrange\", \"coherent\": false, \"concerns\": [\"few creatures\", \"graveyard enablers\", \"filler\", \"top end\"], \"rating\": 3, \"verdict\": \"Playable UG with real pieces (Fear of Exposure, Vanish from Sight, Unnerving Grasp, Daggermaw), but too few creatures; Oculus and Patchwork Beastie lack enough self-mill; a single Say Its Name can't fetch Altanak, leaving it as a clunky 7-drop; and filler like Glimmerlight and Machete keeps it average.\"}",
+  "cost_usd": 0.02108,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "7144af838d96f544": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "delirium",
+    "small threats"
+   ],
+   "rating": 3,
+   "verdict": "A coherent UG manifest shell: Growing Dread, Paranormal Analyst, Twist Reality and Bookworm reward each other, and the fight spells give solid removal. It is held back by a thin real creature count, small early bodies, and Patchwork Beastie and Spineseeker relying on delirium the deck barely supports."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"few creatures\", \"delirium\", \"small threats\"], \"rating\": 3, \"verdict\": \"A coherent UG manifest shell: Growing Dread, Paranormal Analyst, Twist Reality and Bookworm reward each other, and the fight spells give solid removal. It is held back by a thin real creature count, small early bodies, and Patchwork Beastie and Spineseeker relying on delirium the deck barely supports.\"}",
+  "cost_usd": 0.01911,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "ee814728e06d3c0d": {
+  "review": {
+   "archetype": "G/w manifest dread midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "white depth"
+   ],
+   "rating": 3,
+   "verdict": "Solid green manifest-dread deck with sticky bodies in Beasties, Twins and Survivors and good synergy with Inspector and Threats, but almost no real removal and only a thin white splash, so it wins on board size rather than interaction."
+  },
+  "reply": "{\"archetype\": \"G/w manifest dread midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"white depth\"], \"rating\": 3, \"verdict\": \"Solid green manifest-dread deck with sticky bodies in Beasties, Twins and Survivors and good synergy with Inspector and Threats, but almost no real removal and only a thin white splash, so it wins on board size rather than interaction.\"}",
+  "cost_usd": 0.01694,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "bdfb163e8e96a4b9": {
+  "review": {
+   "archetype": "RG midrange splash B",
+   "coherent": true,
+   "concerns": [
+    "creature count",
+    "splash",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "Solid RG beatdown with good red removal (Dragonfire, 2 Glassworks, Inferno, Beatdown) and real top end, but it runs only 13 true creatures, wastes slots on 2 Say Its Name and Turn Inside Out, and the black splash for a single Swarmweaver costs a Swamp in a deck with RR costs."
+  },
+  "reply": "{\"archetype\": \"RG midrange splash B\", \"coherent\": true, \"concerns\": [\"creature count\", \"splash\", \"filler\"], \"rating\": 3, \"verdict\": \"Solid RG beatdown with good red removal (Dragonfire, 2 Glassworks, Inferno, Beatdown) and real top end, but it runs only 13 true creatures, wastes slots on 2 Say Its Name and Turn Inside Out, and the black splash for a single Swarmweaver costs a Swamp in a deck with RR costs.\"}",
+  "cost_usd": 0.02507,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
+ },
+ "1b72f259f19a937d": {
+  "review": {
+   "archetype": "UG eerie/manifest",
+   "coherent": false,
+   "concerns": [
+    "splash",
+    "removal",
+    "creature quality",
+    "Oculus enabling"
+   ],
+   "rating": 2,
+   "verdict": "Entity Tracker, Mindskinner, Growing Dread and the Rooms give a real UG enchantment shell, but three 2/1 Centipedes with little delirium support, an Oculus with almost no self-mill, a pointless one-card white splash for Toby, and thin removal make it a below-average pile."
+  },
+  "reply": "{\"archetype\": \"UG eerie/manifest\", \"coherent\": false, \"concerns\": [\"splash\", \"removal\", \"creature quality\", \"Oculus enabling\"], \"rating\": 2, \"verdict\": \"Entity Tracker, Mindskinner, Growing Dread and the Rooms give a real UG enchantment shell, but three 2/1 Centipedes with little delirium support, an Oculus with almost no self-mill, a pointless one-card white splash for Toby, and thin removal make it a below-average pile.\"}",
+  "cost_usd": 0.0231,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e"
  }
 }

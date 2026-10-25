@@ -134,7 +134,7 @@ def build_fails(s, min_creatures):
     f = []
     if not 15 <= s["lands"] <= 18:
         f.append("lands")
-    if s["creatures"] < min_creatures:
+    if s.get("bodies", s["creatures"]) < min_creatures:  # Jeff 2026-10-25: token makers, manifest dread, recursion count
         f.append("creatures")
     if s["curve"][1] < 4:
         f.append("two-drops")
@@ -159,6 +159,9 @@ def main():
     p.add_argument("--min-build-games", type=int, default=3); p.add_argument("--min-creatures", type=int, default=13)
     p.add_argument("--shortlist-per-pair", type=int, default=15); p.add_argument("--per-pair", type=int, default=10)
     p.add_argument("--keep-rating", type=int, default=3); p.add_argument("--min-rating", type=int, default=4)
+    p.add_argument("--pairs", nargs="+", default=PAIRS, help="only these colour pairs (e.g. a top-up for one pair)")
+    p.add_argument("--min-wins", type=int, default=0, help="draft record floor (7 = trophy decks only)")
+    p.add_argument("--exclude", nargs="*", default=[], help="manifest.json files whose draft ids are left out")
     p.add_argument("--no-review", action="store_true")
     p.add_argument("--model", default="claude-opus-5-5"); p.add_argument("--effort", default="medium")
     p.add_argument("--parallel", type=int, default=5); p.add_argument("--timeout", type=int, default=600)
@@ -181,9 +184,19 @@ def main():
     gih = json.loads((Path(args.current) / "gih_wr.json").read_text())
     bucket = lambda d: float(d["user_win_rate_bucket"] or 0)
 
+    pairs = args.pairs
+    excluded = set()
+    for m in args.exclude:
+        excluded |= {x["draft_id"] for x in json.loads(Path(m).read_text())["decks"]}
     funnel = Counter(eligible=len(ok))
     cands = []
     for d in ok:
+        if d["main_colors"] not in pairs or d["draft_id"] in excluded:
+            continue
+        funnel["pair, not in an excluded pool"] += 1
+        if int(d["wins"] or 0) < args.min_wins:
+            continue
+        funnel[f"wins >= {args.min_wins}"] += 1
         if d["build_games"] < args.min_build_games:
             continue
         funnel["build games ok"] += 1
@@ -205,16 +218,16 @@ def main():
         funnel["build checks ok"] += 1
         cands.append(d)
     by_t = {t: Counter(d["main_colors"] for d in cands if bucket(d) >= t - 1e-9) for t in args.thresholds}
-    threshold = next((t for t in args.thresholds if all(by_t[t][x] >= args.shortlist_per_pair for x in PAIRS)),
+    threshold = next((t for t in args.thresholds if all(by_t[t][x] >= args.shortlist_per_pair for x in pairs)),
                      args.thresholds[-1])
     cands = [d for d in cands if bucket(d) >= threshold - 1e-9]
     funnel[f"drafter bucket >= {threshold:.2f}"] = len(cands)
     print(f"{n_drafts} drafts; {dict(funnel)}")
     for t in args.thresholds:
-        print(f"bucket >= {t:.2f}: " + " ".join(f"{x} {by_t[t][x]}" for x in PAIRS))
+        print(f"bucket >= {t:.2f}: " + " ".join(f"{x} {by_t[t][x]}" for x in pairs))
 
     shortlist = []
-    for x in PAIRS:
+    for x in pairs:
         pair = sorted((d for d in cands if d["main_colors"] == x), key=lambda d: (-bucket(d), -d["mana_score"], tie(d)))
         shortlist += pair[:args.shortlist_per_pair]
 
@@ -253,7 +266,7 @@ def main():
                                     / sum(n for c, n in d["deck"].items() if not gih[c]["land"]), 5)
     order = lambda d: (-d["tier"], -d["review"]["rating"], -d["mana_score"], -bucket(d), tie(d))
     kept = []
-    for x in PAIRS:
+    for x in pairs:
         kept += sorted((d for d in shortlist if d["main_colors"] == x and d["review"]["rating"] >= args.keep_rating),
                        key=order)[:args.per_pair]
     kept.sort(key=order)
