@@ -1,0 +1,175 @@
+diff --git a/Mage.Web.Client/src/app/match/Piles.module.css b/Mage.Web.Client/src/app/match/Piles.module.css
+index 3c9bca2efa..a23d6cb764 100644
+--- a/Mage.Web.Client/src/app/match/Piles.module.css
++++ b/Mage.Web.Client/src/app/match/Piles.module.css
+@@ -195,3 +195,23 @@ button.chip:disabled {
+   flex: none;
+   width: 98px;
+ }
++
++/* mtg-ai: delirium progress under a graveyard; lit like a condition that is on */
++.delirium {
++  padding: 1px 8px;
++  border-radius: 999px;
++  background: rgb(var(--mat-rgb) / 0.85);
++  box-shadow: inset 0 0 0 1px var(--ink-faint);
++  color: var(--ink-soft);
++  font-size: 14px;
++  font-weight: 700;
++  letter-spacing: 0.03em;
++  text-transform: uppercase;
++  white-space: nowrap;
++}
++
++.deliriumOn {
++  background: rgb(255 200 90);
++  color: #2a1a00;
++  box-shadow: 0 0 12px 2px rgb(255 190 80 / 0.6);
++}
+diff --git a/Mage.Web.Client/src/app/match/Piles.tsx b/Mage.Web.Client/src/app/match/Piles.tsx
+index 69701e92b9..6f39ec168d 100644
+--- a/Mage.Web.Client/src/app/match/Piles.tsx
++++ b/Mage.Web.Client/src/app/match/Piles.tsx
+@@ -1,5 +1,6 @@
+ import { BookOpen, Crown, Skull, Sparkles, Ban } from 'lucide-react';
+-import { useRef, useState, type ReactNode } from 'react';
++import { useContext, useRef, useState, type ReactNode } from 'react';
++import { ConditionContext } from './conditionContext';
+ import type { CommanderStatus } from '../../core/game/commander';
+ import type { CardView, PlayerView } from '../../protocol/generated/views';
+ import { useT } from '../i18n';
+@@ -54,7 +55,7 @@ export function Piles({ player, sleeve, isMe, commanders = [], clickable, onCast
+         <span className={styles.label}>Library</span>
+       </button>
+ 
+-      <PileOfCards title={`${name} graveyard`} label="Graveyard" cards={graveyard} below={!isMe} pile={`graveyard:${player.playerId}`} sleeve={sleeve} onOpen={() => openViewer({ title: `${name} graveyard`, cards: [...graveyard].reverse() })} />
++      <PileOfCards title={`${name} graveyard`} label="Graveyard" cards={graveyard} below={!isMe} pile={`graveyard:${player.playerId}`} badge={<DeliriumCount playerId={player.playerId ?? ''} />} sleeve={sleeve} onOpen={() => openViewer({ title: `${name} graveyard`, cards: [...graveyard].reverse() })} />
+       {exile.length > 0 && (
+         <PileOfCards title={`${name} exile`} label="Exile" cards={exile} below={!isMe} sleeve={sleeve} onOpen={() => openViewer({ title: `${name} exile`, cards: exile })} />
+       )}
+@@ -106,7 +107,7 @@ function CommanderPile({ commander, sleeve, castable, onCast, owner }: {
+   );
+ }
+ 
+-function PileOfCards({ title, label, cards, sleeve, onOpen, below = false, pile }: { title: string; label: string; cards: CardView[]; sleeve: string; onOpen(): void; below?: boolean; pile?: string }) {
++function PileOfCards({ title, label, cards, sleeve, onOpen, below = false, pile, badge }: { title: string; label: string; cards: CardView[]; sleeve: string; onOpen(): void; below?: boolean; pile?: string; badge?: ReactNode }) {
+   const t = useT();
+   const top = cards[cards.length - 1];
+   // mtg-ai: pointing at a pile peeks at it, newest first; a click still opens the full viewer
+@@ -129,6 +130,7 @@ function PileOfCards({ title, label, cards, sleeve, onOpen, below = false, pile
+       <PileTop key={top ? cardKey(top) : 'empty'} top={top} count={cards.length} sleeve={sleeve} />
+       <span className={styles.count}>{cards.length}</span>
+       <span className={styles.label}>{label}</span>
++      {badge}
+       {peeking && cards.length > 0 && <PilePeek title={title} cards={cards} below={below} />}
+     </button>
+   );
+@@ -214,3 +216,24 @@ function MiniButton({ icon, count, label, onOpen }: { icon: ReactNode; count: nu
+     </button>
+   );
+ }
++
++/**
++ * mtg-ai: how far a player's graveyard is toward delirium ("Delirium 2/4"), for players with a delirium card in sight;
++ * lit at four card types. Hover lists the types counted.
++ */
++function DeliriumCount({ playerId }: { playerId: string }) {
++  const board = useContext(ConditionContext);
++  if (!board.deliriumPlayers.has(playerId)) return null;
++  const types = board.graveyards.get(playerId)?.types ?? [];
++  const on = types.length >= 4;
++  const listed = types.length > 0 ? types.map((type) => type.toLowerCase()).join(', ') : 'no card types yet';
++  return (
++    <span
++      className={[styles.delirium, on ? styles.deliriumOn : ''].join(' ')}
++      title={`Delirium ${on ? 'is on' : 'needs four card types'}: ${listed}`}
++      aria-label={`Delirium ${Math.min(types.length, 4)} of 4: ${listed}`}
++    >
++      Delirium {Math.min(types.length, 4)}/4
++    </span>
++  );
++}
+diff --git a/Mage.Web.Client/src/core/game/conditions.test.ts b/Mage.Web.Client/src/core/game/conditions.test.ts
+index 0e39beec1a..35978cf53c 100644
+--- a/Mage.Web.Client/src/core/game/conditions.test.ts
++++ b/Mage.Web.Client/src/core/game/conditions.test.ts
+@@ -1,6 +1,6 @@
+ import { describe, expect, it } from 'vitest';
+ import type { CardView, GameView } from '../../protocol/generated/views';
+-import { activeConditions, conditionBoard } from './conditions';
++import { activeConditions, conditionBoard, deliriumTypes } from './conditions';
+ 
+ const grave = (...types: string[][]): Record<string, CardView> => Object.fromEntries(types.map((cardTypes, i) => [`g${i}`, { id: `g${i}`, cardTypes } as CardView]));
+ const board = (graveyard: Record<string, CardView>, extra: Partial<GameView> = {}) => conditionBoard({ players: [{ playerId: 'me', graveyard }], activePlayerId: 'me', step: 'DECLARE_ATTACKERS', ...extra } as GameView);
+@@ -21,3 +21,21 @@ describe('activeConditions', () => {
+     expect(activeConditions({ ...survivor, tapped: false } as CardView, 'me', board({}))).toEqual([]);
+   });
+ });
++
++describe('deliriumTypes', () => {
++  it('counts each card type once, both types of a dual-type card, and lands', () => {
++    const cards = [
++      { cardTypes: ['ARTIFACT', 'CREATURE'] },
++      { cardTypes: ['CREATURE'] },
++      { cardTypes: ['LAND'] },
++      { cardTypes: ['LAND'] },
++    ] as CardView[];
++    expect(deliriumTypes(cards)).toEqual(['ARTIFACT', 'CREATURE', 'LAND']);
++    expect(deliriumTypes([...cards, { cardTypes: ['ENCHANTMENT', 'CREATURE'] } as CardView])).toHaveLength(4);
++  });
++
++  it('shows the count only for players with a delirium card in sight', () => {
++    const b = conditionBoard({ myPlayerId: 'me', myHand: { h: delirious }, players: [{ playerId: 'me', graveyard: {} }, { playerId: 'opp', graveyard: {} }] } as unknown as GameView);
++    expect([...b.deliriumPlayers]).toEqual(['me']);
++  });
++});
+diff --git a/Mage.Web.Client/src/core/game/conditions.ts b/Mage.Web.Client/src/core/game/conditions.ts
+index 0f9c3b3f51..7efca8b35c 100644
+--- a/Mage.Web.Client/src/core/game/conditions.ts
++++ b/Mage.Web.Client/src/core/game/conditions.ts
+@@ -17,9 +17,25 @@ const DELIRIUM_TYPES = ['ARTIFACT', 'BATTLE', 'CREATURE', 'ENCHANTMENT', 'INSTAN
+ /** Survival checks at the beginning of your second main phase: until then, a tapped survivor is set to trigger. */
+ const BEFORE_SECOND_MAIN = new Set(['PRECOMBAT_MAIN', 'BEGIN_COMBAT', 'DECLARE_ATTACKERS', 'DECLARE_BLOCKERS', 'FIRST_COMBAT_DAMAGE', 'COMBAT_DAMAGE', 'END_COMBAT']);
+ 
++/** The card types among these cards that count for delirium, sorted (supertypes and subtypes don't count). */
++export function deliriumTypes(cards: readonly CardView[]): string[] {
++  const types = new Set<string>();
++  for (const card of cards) {
++    for (const type of card.cardTypes ?? []) {
++      const name = String(type) === 'TRIBAL' ? 'KINDRED' : String(type);
++      if (DELIRIUM_TYPES.includes(name)) types.add(name);
++    }
++  }
++  return [...types].sort();
++}
++
++const hasDelirium = (card: CardView) => /\bDelirium\b/.test((card.rules ?? []).join(' '));
++
+ export interface ConditionBoard {
+   /** per player: the card types in their graveyard (delirium), and how many cards it holds (threshold) */
+   graveyards: Map<string, { types: string[]; size: number }>;
++  /** players with a delirium card where the viewer can see it (their battlefield or graveyard, or the viewer's hand) */
++  deliriumPlayers: Set<string>;
+   activePlayerId: string | null;
+   step: string | null;
+   /** the viewer: the owner of the cards in their hand */
+@@ -28,13 +44,15 @@ export interface ConditionBoard {
+ 
+ export function conditionBoard(view: GameView | null | undefined): ConditionBoard {
+   const graveyards = new Map<string, { types: string[]; size: number }>();
++  const deliriumPlayers = new Set<string>();
+   for (const player of view?.players ?? []) {
++    const id = player.playerId ?? '';
+     const cards = Object.values(player.graveyard ?? {});
+-    const types = new Set<string>();
+-    for (const card of cards) for (const type of card.cardTypes ?? []) if (DELIRIUM_TYPES.includes(type)) types.add(String(type) === 'TRIBAL' ? 'KINDRED' : type);
+-    graveyards.set(player.playerId ?? '', { types: [...types].sort(), size: cards.length });
++    graveyards.set(id, { types: deliriumTypes(cards), size: cards.length });
++    if ([...cards, ...Object.values(player.battlefield ?? {})].some(hasDelirium)) deliriumPlayers.add(id);
+   }
+-  return { graveyards, activePlayerId: view?.activePlayerId ?? null, step: view?.step ?? null, me: view?.myPlayerId ?? null };
++  if (view?.myPlayerId && Object.values(view.myHand ?? {}).some(hasDelirium)) deliriumPlayers.add(view.myPlayerId);
++  return { graveyards, deliriumPlayers, activePlayerId: view?.activePlayerId ?? null, step: view?.step ?? null, me: view?.myPlayerId ?? null };
+ }
+ 
+ function rulesText(card: CardView): string {
