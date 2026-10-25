@@ -30,7 +30,8 @@ EMPTY_IDX = -1
 ZONES = ["HAND", "BATTLEFIELD", "GRAVEYARD", "EXILE", "STACK", "REVEALED", "OFFERED", "CASTING"]
 CURRENT_TYPES = ["Creature", "Land", "Artifact", "Enchantment", "Instant", "Sorcery"]
 STEPS = ["Untap", "Upkeep", "Draw", "Precombat Main", "Begin Combat", "Declare Attackers", "Declare Blockers",
-         "First Combat Damage", "Combat Damage", "End Combat", "Postcombat Main", "End Turn", "Cleanup"]
+         "First Combat Damage", "Combat Damage", "End Combat", "Postcombat Main", "End Turn", "Cleanup", "Pregame"]
+PREGAME_STEPS = {None, "null"}  # XMage has no step before turn 1 (mulligans); the seat sends "null"
 DECISION_KINDS = ["PRIORITY", "TARGET", "CHOOSE", "CHOOSE_CARDS", "TARGET_CARDS", "USE", "CHOICE", "MODE",
                   "TRIGGER_ORDER", "ATTACK", "BLOCK"]
 # action type vocabulary; id = position, 0 = PAD
@@ -45,7 +46,7 @@ NAMED_CHOICE_ACTIONS = {"CHOICE", "MODE"}  # options whose meaning is a named ch
 CARD_FEATURES = (
     [f"zone_{z.lower()}" for z in ZONES]
     + ["mine", "face_down", "token", "tapped", "summoning_sick", "attacking", "blocking", "being_cast",
-       "room_left_unlocked", "room_right_unlocked"]
+       "room_left_unlocked", "room_right_unlocked"]  # on the stack: which door is being cast
     + [f"is_{t.lower()}" for t in CURRENT_TYPES]
     + ["power/10", "toughness/10", "damage/10", "mana_value/10", "plus1_counters/5", "other_counters/5"]
 )
@@ -130,6 +131,10 @@ def _card_identity(e: dict, vocab: Vocab) -> tuple[int, bool, bool]:
             return vocab.card(shown.split(": ", 1)[1]), False, False
         return FACE_DOWN, False, False
     full = e.get("card_name") or shown
+    if full not in vocab.card_ids and shown in vocab.door_to_room:
+        # one door of a Room cast as a spell shows only that door's name (no card_name);
+        # the door flag then says which door is being cast
+        full = vocab.door_to_room[shown]
     if full in vocab.rooms:
         left, right = vocab.rooms[full]
         if shown == left:
@@ -163,11 +168,12 @@ def _ability_features(e: dict) -> list[float]:
 
 
 def _global_features(g: dict, kind: str) -> list[float]:
-    if g["step"] not in STEPS:
-        raise Unmapped(f"step not in list: {g['step']!r}")
+    step = "Pregame" if g.get("step") in PREGAME_STEPS else g["step"]
+    if step not in STEPS:
+        raise Unmapped(f"step not in list: {step!r}")
     if kind not in DECISION_KINDS:
         raise Unmapped(f"decision kind not in list: {kind!r}")
-    return ([float(g["my_turn"])] + [1.0 if g["step"] == s else 0.0 for s in STEPS]
+    return ([float(g["my_turn"])] + [1.0 if step == s else 0.0 for s in STEPS]
             + [1.0 if kind == k else 0.0 for k in DECISION_KINDS]
             + [g["my_life"] / 20, g["opp_life"] / 20, g["my_hand"] / 7, g["opp_hand"] / 7,
                g["my_library"] / 40, g["opp_library"] / 40, g["my_graveyard"] / 20, g["opp_graveyard"] / 20,

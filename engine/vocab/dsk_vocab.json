@@ -1697,9 +1697,19 @@
     "alt_cost:none"
   ],
   "tokens": [
+    "Beast Token",
+    "Demon Token",
     "Everywhere",
     "Glimmer Token",
-    "Gremlin Token"
+    "Gremlin Token",
+    "Horror Token",
+    "Insect Token",
+    "Primo, the Indivisible",
+    "Shard Token",
+    "Spider Token",
+    "Spirit Token",
+    "Toy Token",
+    "Treasure Token"
   ],
   "tokens_note": "Token names seen so far in recorded games. Not complete: an unseen token name is reported by the encoder, never replaced."
 }
