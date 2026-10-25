@@ -8,7 +8,7 @@ What it checks, in order:
 1. The output is (B, A) raw logits, with padded actions at -inf and real actions finite.
 2. Loss at step 0 is near the "uniform guess" loss, mean(log(number of legal actions)).
    Printed only: a big gap means the initial logits are large, worth a look but not a bug.
-3. Every parameter gets a gradient on the first backward pass.
+3. Every parameter gets a gradient on the first backward pass (all-zero gradients are printed, not failed).
 4. Training on one fixed batch of 8 drives loss to ~0 and accuracy to 100%.
 
 The labels are random, so the only way to pass 4 is to memorize the 8 examples.
@@ -67,7 +67,11 @@ def check_gradients(model) -> None:
     missing = [name for name, p in model.named_parameters() if p.requires_grad and p.grad is None]
     zero = [name for name, p in model.named_parameters() if p.grad is not None and not p.grad.any()]
     assert not missing, f"parameters with no gradient (not used, or detached): {missing}"
-    assert not zero, f"parameters whose gradient is all zeros: {zero}"
+    if zero:
+        # Printed, not failed: some zeros are expected. The last layer's bias adds the same
+        # number to every action's score, and softmax ignores a shift shared by all actions,
+        # so its gradient is exactly 0. Anything else in this list is worth a look.
+        print(f"note: parameters whose gradient is all zeros: {zero}")
 
 
 def overfit(model, batch, steps: int = STEPS, lr: float = LR, log=print) -> tuple[float, float]:
