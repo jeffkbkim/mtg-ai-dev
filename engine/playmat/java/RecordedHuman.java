@@ -10,6 +10,7 @@ import mage.constants.Outcome;
 import mage.constants.RangeOfInfluence;
 import mage.game.Game;
 import mage.game.combat.CombatGroup;
+import mage.game.permanent.Permanent;
 import mage.player.human.HumanPlayer;
 import mage.target.Target;
 import mage.target.TargetCard;
@@ -290,6 +291,13 @@ public class RecordedHuman extends HumanPlayer {
 
     @Override
     public void selectBlockers(Ability source, Game game, UUID defendingPlayerId) {
+        // Jeff 2026-10-25: not asked when none of the player's creatures can legally block any attacker (XMage lists
+        // every untapped creature and checks evasion only on declaring). A one-option question isn't a recorded
+        // decision; the game log says why it was skipped.
+        if (blockPending == null && noLegalBlock(game)) {
+            game.informPlayers(getLogName() + " has no legal blockers: no blocks (skipped)");
+            return;
+        }
         if (!recording(game)) { super.selectBlockers(source, game, defendingPlayerId); return; }
         if (blockPending != null && blockTurn != game.getTurnNum()) flushBlocks(game, false);  // never accepted (shouldn't happen)
         if (blockPending != null) {
@@ -319,6 +327,24 @@ public class RecordedHuman extends HumanPlayer {
         blockAttempts++;
         blockTs = System.currentTimeMillis();
         blockTurn = game.getTurnNum();
+    }
+
+    /**
+     * None of this player's creatures can legally block any attacker, by XMage's own check for each blocker and
+     * attacker (evasion such as flying, fear and intimidate, "can block only creatures with flying", can't-block
+     * effects, protection), and an attacker that must be blocked by two or more (menace) needs that many.
+     */
+    boolean noLegalBlock(Game game) {
+        List<Permanent> blockers = getAvailableBlockers(game);
+        for (CombatGroup group : game.getCombat().getGroups()) {
+            if (group.getAttackers().isEmpty() || !playerId.equals(group.getDefendingPlayerId())) continue;
+            Permanent attacker = game.getPermanent(group.getAttackers().get(0));
+            int needed = attacker == null ? 1 : Math.max(1, attacker.getMinBlockedBy());
+            int able = 0;
+            for (Permanent blocker : blockers) if (group.canBlock(blocker, game)) able++;
+            if (able >= needed) return false;
+        }
+        return true;
     }
 
     /**
