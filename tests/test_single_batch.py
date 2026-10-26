@@ -4,6 +4,10 @@ Run:
     uv run pytest tests/test_single_batch.py -s    # -s shows the loss curve
     uv run python -m tests.test_single_batch       # same thing as a script
 
+Two tests, same checks:
+- test_overfit_one_batch: a fake batch (small vocab, random labels).
+- test_overfit_one_batch_real: 8 real XMage decisions from tests/fixtures, sizes from the vocab.
+
 What it checks, in order:
 1. The output is (B, A) raw logits, with padded actions at -inf and real actions finite.
 2. Loss at step 0 is near the "uniform guess" loss, mean(log(number of legal actions)).
@@ -11,18 +15,23 @@ What it checks, in order:
 3. Every parameter gets a gradient on the first backward pass (all-zero gradients are printed, not failed).
 4. Training on one fixed batch of 8 drives loss to ~0 and accuracy to 100%.
 
-The labels are random, so the only way to pass 4 is to memorize the 8 examples.
+With 8 examples and enough steps, the only way to pass 4 is to memorize them.
 If the model can't do that, something is wired wrong (a mask, a gather, a detached
 tensor, the learning rate), and more data won't fix it.
 
 Edit build_model() when your Model's constructor changes.
 """
 
+from pathlib import Path
+
 import pytest
 import torch
 import torch.nn.functional as F
 
+from engine.batch_config import BatchConfig
 from synthetic.fake_batch import FakeBatchConfig, fake_batch, validate_batch
+
+REAL_DECISIONS = Path(__file__).parent / "fixtures" / "xmage_decisions_sample.jsonl"
 
 BATCH_SIZE = 8
 STEPS = 500
@@ -36,7 +45,7 @@ PASS_LOSS = 0.01
 CFG = FakeBatchConfig(card_feature_dim=5, ability_feature_dim=5)
 
 
-def build_model(cfg: FakeBatchConfig):
+def build_model(cfg: BatchConfig):
     from model.model import Model
 
     return Model(
@@ -103,20 +112,38 @@ def overfit(model, batch, steps: int = STEPS, lr: float = LR, log=print) -> tupl
     return loss.item(), acc
 
 
-def test_overfit_one_batch():
-    pytest.importorskip("model.model")  # skipped where model/ isn't checked in
-    torch.manual_seed(SEED)
-    batch = fake_batch(CFG, BATCH_SIZE, seed=SEED)
-    validate_batch(batch, CFG)
-    model = build_model(CFG)
+def overfit_one_batch(batch, cfg: BatchConfig) -> None:
+    validate_batch(batch, cfg)
+    model = build_model(cfg)
+    B, A = batch.action_mask.shape
     print(f"\n{sum(p.numel() for p in model.parameters()):,} parameters, "
-          f"{BATCH_SIZE} examples, A = {batch.action_mask.shape[1]}, "
+          f"{B} examples, A = {A}, "
           f"legal actions per example {batch.action_mask.sum(dim=1).tolist()}")
     loss, acc = overfit(model, batch)
     assert acc == 1.0 and loss < PASS_LOSS, (
         f"did not memorize one batch: loss {loss:.4f}, accuracy {acc:.2f} after {STEPS} steps")
 
 
+def test_overfit_one_batch():
+    pytest.importorskip("model.model")  # skipped where model/ isn't checked in
+    torch.manual_seed(SEED)
+    overfit_one_batch(fake_batch(CFG, BATCH_SIZE, seed=SEED), CFG)
+
+
+def test_overfit_one_batch_real():
+    pytest.importorskip("model.model")
+    from engine.encode import Vocab, collate, encode_file
+    from model.batch import Batch
+
+    torch.manual_seed(SEED)
+    vocab = Vocab.load()
+    examples, problems = encode_file(REAL_DECISIONS, vocab)
+    assert not problems, f"decisions the encoder couldn't map: {problems}"
+    batch = Batch(**collate(examples[:BATCH_SIZE]))
+    overfit_one_batch(batch, BatchConfig.from_vocab(vocab))
+
+
 if __name__ == "__main__":
     test_overfit_one_batch()
+    test_overfit_one_batch_real()
     print("PASS")

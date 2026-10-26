@@ -30,22 +30,23 @@ from dataclasses import dataclass, fields
 import torch
 from torch import Tensor
 
+from engine.batch_config import BatchConfig
+
 PAD_ID = 0  # vocab id fields
 EMPTY_IDX = -1  # entry index fields
 
 
 @dataclass
-class FakeBatchConfig:
-    # Vocabulary sizes, including id 0 = PAD. Real ids are 1 .. vocab - 1.
+class FakeBatchConfig(BatchConfig):
+    # Small sizes for fake data (see BatchConfig for what each one is)
     vocab_card: int = 20
     vocab_ability: int = 10
     vocab_action: int = 6
-    vocab_choice: int = 4  # named choices (alt cost, modes); 0 = not a choice
-    # Feature widths
-    card_feature_dim: int = 5  # F
-    ability_feature_dim: int = 5  # F_a
-    global_state_dim: int = 7  # K
-    num_edge_types: int = 3  # E
+    vocab_choice: int = 4
+    card_feature_dim: int = 5
+    ability_feature_dim: int = 5
+    global_state_dim: int = 7
+    num_edge_types: int = 3
     # Per-example counts are drawn uniformly from [min, max]
     min_cards: int = 1
     max_cards: int = 6
@@ -153,7 +154,7 @@ def fake_batch(cfg: FakeBatchConfig, batch_size: int, seed: int = 0):
     return Batch(**{name: tensors[name] for name in names})
 
 
-def validate_batch(batch, cfg: FakeBatchConfig | None = None) -> None:
+def validate_batch(batch, cfg: BatchConfig | None = None) -> None:
     """Check a batch against the contract. Works on a Batch or a dict; skips fields that aren't there.
 
     Raises AssertionError with the first broken rule.
@@ -197,12 +198,21 @@ def validate_batch(batch, cfg: FakeBatchConfig | None = None) -> None:
     label = check("label", (B,), torch.long)
 
     if cfg is not None:
-        assert card_ids.min() >= 0 and card_ids.max() < cfg.vocab_card, "card_ids outside vocab"
-        assert ability_ids.min() >= 0 and ability_ids.max() < cfg.vocab_ability, "ability_ids outside vocab"
-        assert action_types.min() >= 0 and action_types.max() < cfg.vocab_action, "action_types outside vocab"
-        assert abilities.min() >= 0 and abilities.max() < cfg.vocab_ability, "action_abilities outside vocab"
+        def in_vocab(name: str, t: Tensor, size: int) -> None:
+            if t.numel():
+                assert t.min() >= 0 and t.max() < size, f"{name} outside vocab: min {t.min()}, max {t.max()}, vocab {size}"
+
+        in_vocab("card_ids", card_ids, cfg.vocab_card)
+        in_vocab("ability_ids", ability_ids, cfg.vocab_ability)
+        in_vocab("action_types", action_types, cfg.vocab_action)
+        in_vocab("action_abilities", abilities, cfg.vocab_ability)
         if choices is not None:
-            assert choices.min() >= 0 and choices.max() < cfg.vocab_choice, "action_choices outside vocab"
+            in_vocab("action_choices", choices, cfg.vocab_choice)
+        for name, got, want in [("card_features width F", F, cfg.card_feature_dim),
+                                ("ability_features width F_a", F_a, cfg.ability_feature_dim),
+                                ("global_state width K", K, cfg.global_state_dim),
+                                ("active_edges types E", E, cfg.num_edge_types)]:
+            assert got == want, f"{name} is {got}, config says {want}"
 
     # Masks: real ids are non-zero, padding is 0 everywhere
     if card_mask is not None:

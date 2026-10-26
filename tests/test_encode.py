@@ -7,7 +7,8 @@ import torch
 
 from engine.encode import (ACTION_TYPES, EDGE_TYPES, EMPTY_IDX, FACE_DOWN, PAD, Unmapped, Vocab, collate,
                            encode_decision, encode_file)
-from synthetic.fake_batch import FakeBatchConfig, validate_batch
+from engine.batch_config import BatchConfig
+from synthetic.fake_batch import validate_batch
 
 FIXTURE = Path(__file__).parent / "fixtures" / "xmage_decisions_sample.jsonl"
 
@@ -37,9 +38,7 @@ def test_vocab_ids(vocab):
 
 def test_fixture_encodes_and_passes_validate_batch(vocab, examples):
     batch = collate(examples)
-    cfg = FakeBatchConfig(vocab_card=vocab.num_cards, vocab_ability=vocab.num_abilities, vocab_action=len(ACTION_TYPES),
-                          vocab_choice=vocab.num_choices)
-    validate_batch(batch, cfg)
+    validate_batch(batch, BatchConfig.from_vocab(vocab))
     assert batch["active_edges"].shape[1] == len(EDGE_TYPES)
 
 
