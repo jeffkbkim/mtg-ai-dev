@@ -40,6 +40,14 @@ Reply with only one JSON object, no other text:
  "coherent": true or false, "concerns": ["<one or two words each, e.g. 'curve', 'lands', 'colors', 'removal', 'few creatures'>"],
  "rating": <integer 1-5, how a strong Limited player would rate this build; 3 = a fine deck, 5 = exceptional>,
  "verdict": "<one line>"}"""
+# v2 (2026-10-26, experiments/reviewer_bias): v1 marked UG and manifest dread decks down for "few creatures" when
+# their manifest dread, tokens and recursion make the bodies up (residual -0.34 for UG against card quality)
+BODIES_RULE = """
+Bodies: count creature cards plus the cards that put creatures onto the battlefield: manifest dread (each puts a
+face-down 2/2 creature onto the battlefield), creature tokens and creature recursion. A deck with enough bodies has
+enough creatures even with fewer creature cards; the counts line gives the body count when it differs."""
+SYSTEMS = {"v1": SYSTEM, "v2": SYSTEM.replace("Do not guess the deck's results.", "Do not guess the deck's results." + BODIES_RULE)}
+SYSTEM = SYSTEMS[os.environ.get("REVIEW_SYSTEM", "v2")]  # v2 from 2026-10-26; REVIEW_SYSTEM=v1 for the earlier ratings
 SYSTEM_SHA = hashlib.sha256(SYSTEM.encode()).hexdigest()[:12]
 
 HARD = [r"destroy (?:target|all|up to one target)[\w ,-]*?(creature|permanent)", r"exile (?:target|up to one target)[\w ,-]*?(creature|permanent)",

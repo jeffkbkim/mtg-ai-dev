@@ -5056,12 +5056,12 @@
     "archetype": "UG manifest dread value",
     "coherent": true,
     "concerns": [
+     "low power",
      "removal",
-     "creature quality",
-     "top end"
+     "threat density"
     ],
     "rating": 3,
-    "verdict": "A coherent UG manifest deck with good glue (Drowner, Growing Dread, Meat Locker, Vanish) and plenty of bodies, but it relies on bounce, stun and tuck effects instead of real removal and lacks bombs, so it plays fine but rarely dominates."
+    "verdict": "A coherent UG manifest deck with good tempo pieces like Floodpits Drowner, Vanish from Sight and Meat Locker, but many of its threats are midrange bodies and it lacks hard removal and top-end power."
    },
    "mana_score": 10.0,
    "mana": {
@@ -5140,7 +5140,19 @@
     ],
     "rating": 3,
     "verdict": "A coherent UG manifest deck with good blue tempo cards (Drowner, Vanish from Sight, Meat Locker, Fear of Isolation) and plenty of face-down bodies, but filler like 3 Spineseeker, Don't Make a Sound and Threats, plus little real removal, makes it solid but unspectacular."
-   }
+   },
+   "review_before_v2": {
+    "archetype": "UG manifest dread value",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "creature quality",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG manifest deck with good glue (Drowner, Growing Dread, Meat Locker, Vanish) and plenty of bodies, but it relies on bounce, stun and tuck effects instead of real removal and lacks bombs, so it plays fine but rarely dominates."
+   },
+   "reviewer_system": "v2 39f54cdfaa3b"
   },
   {
    "file": "good_51.dck",
@@ -5468,12 +5480,12 @@
     "archetype": "UG manifest dread",
     "coherent": true,
     "concerns": [
-     "few creatures",
      "filler",
-     "thin 3-4 drop"
+     "few removal",
+     "thin blue"
     ],
     "rating": 3,
-    "verdict": "Three Growing Dread with Cryptid Inspector and Zealot give a real face-down plan and solid green bodies, but the deck is light on creatures in the middle of the curve, its removal is mostly fight-style, and a lone Say Its Name and a main-deck Cathartic Parting are filler, so it is a fine deck rather than a strong one."
+    "verdict": "A reasonable UG manifest shell: 3 Growing Dread, Cryptid Inspectors and solid green fat give it a real plan. Filler like Cathartic Parting, a lone Say Its Name and Horrid Vigor, plus only about three real removal spells, keep it a middling deck."
    },
    "mana_score": 10.0,
    "mana": {
@@ -5550,7 +5562,19 @@
     ],
     "rating": 3,
     "verdict": "A real UG manifest shell built on 3x Growing Dread, Cryptid Inspectors, and Bookworm. But the creature count is light and the blue is thin, so it plays more like mono-green with some filler (Say Its Name, Cathartic Parting) and an awkward Altanak."
-   }
+   },
+   "review_before_v2": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "thin 3-4 drop"
+    ],
+    "rating": 3,
+    "verdict": "Three Growing Dread with Cryptid Inspector and Zealot give a real face-down plan and solid green bodies, but the deck is light on creatures in the middle of the curve, its removal is mostly fight-style, and a lone Say Its Name and a main-deck Cathartic Parting are filler, so it is a fine deck rather than a strong one."
+   },
+   "reviewer_system": "v2 39f54cdfaa3b"
   },
   {
    "file": "good_55.dck",
@@ -6442,15 +6466,15 @@
    "drafter_bucket": 0.7,
    "rank_17lands": "platinum",
    "review": {
-    "archetype": "UG manifest dread value",
+    "archetype": "UG manifest dread midrange",
     "coherent": true,
     "concerns": [
      "removal",
-     "weak equipment",
+     "filler",
      "delirium"
     ],
     "rating": 3,
-    "verdict": "A playable UG manifest/value deck with solid cyclers, Fear of Falling and Shrieker, but thin real removal and clunky Machetes and Say Its Name keep it at average."
+    "verdict": "A solid UG manifest dread shell with good top end and cycling flexibility, held back by thin removal and filler like 2x Say Its Name, the Machetes and Patchwork Beastie, whose delirium this deck rarely turns on."
    },
    "mana_score": 10.0,
    "mana": {
@@ -6533,7 +6557,19 @@
     ],
     "rating": 3,
     "verdict": "A coherent UG manifest shell: Shrieker, Inspector, Bookworm, Analyst and Fear of Falling give it a real plan, and the cyclers smooth the mana. Removal is thin, and filler like two Machetes, two Say Its Name and an unreliable Patchwork Beastie keeps it at a fine but unexceptional level."
-   }
+   },
+   "review_before_v2": {
+    "archetype": "UG manifest dread value",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "weak equipment",
+     "delirium"
+    ],
+    "rating": 3,
+    "verdict": "A playable UG manifest/value deck with solid cyclers, Fear of Falling and Shrieker, but thin real removal and clunky Machetes and Say Its Name keep it at average."
+   },
+   "reviewer_system": "v2 39f54cdfaa3b"
   },
   {
    "file": "good_65.dck",
@@ -7061,10 +7097,11 @@
     "coherent": true,
     "concerns": [
      "removal",
+     "Beastie reliability",
      "light blue"
     ],
     "rating": 3,
-    "verdict": "Solid green-heavy delirium deck with strong top end in Overlord, Tyvar and Enduring Vitality, plus good early drops, but thin on interaction, and the blue splash-level cards are mostly filler."
+    "verdict": "A solid green-heavy midrange deck with good top-end in Overlord, Tyvar, Vitality and the Wurm, plus enough delirium enablers; it's held back by thin interaction and two Patchwork Beasties that can sit idle early."
    },
    "mana_score": 10.0,
    "mana": {
@@ -7133,7 +7170,18 @@
     "Under the Skin": 1,
     "Vanish from Sight": 1,
     "Wary Watchdog": 3
-   }
+   },
+   "review_before_v2": {
+    "archetype": "UG delirium midrange",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "light blue"
+    ],
+    "rating": 3,
+    "verdict": "Solid green-heavy delirium deck with strong top end in Overlord, Tyvar and Enduring Vitality, plus good early drops, but thin on interaction, and the blue splash-level cards are mostly filler."
+   },
+   "reviewer_system": "v2 39f54cdfaa3b"
   },
   {
    "file": "good_71.dck",
@@ -7255,11 +7303,11 @@
     "coherent": true,
     "concerns": [
      "removal",
-     "delirium enablers",
-     "light blue"
+     "weak cards",
+     "blue thin"
     ],
     "rating": 3,
-    "verdict": "A solid green midrange shell with good bodies (Bashful Beastie, Altanak, Cryptid Inspector) and a strong Enduring Curiosity, but it has little interaction and some clunky delirium pieces like Patchwork Beastie, so it's fine rather than strong."
+    "verdict": "A solid green core with Enduring Curiosity and Growing Dread, but the removal is light, there are filler cards like Cathartic Parting and Insidious Fungus, and the blue is too thin to justify 7 Islands. Playable, but closer to average than strong."
    },
    "mana_score": 10.0,
    "mana": {
@@ -7339,7 +7387,19 @@
     ],
     "rating": 3,
     "verdict": "A solid green-heavy midrange deck with good bodies, Altanak and Enduring Curiosity at the top end and decent manifest synergy, but almost no real removal, so it has to win by out-sizing opponents and can lose to fliers or bombs."
-   }
+   },
+   "review_before_v2": {
+    "archetype": "UG manifest/delirium midrange",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "delirium enablers",
+     "light blue"
+    ],
+    "rating": 3,
+    "verdict": "A solid green midrange shell with good bodies (Bashful Beastie, Altanak, Cryptid Inspector) and a strong Enduring Curiosity, but it has little interaction and some clunky delirium pieces like Patchwork Beastie, so it's fine rather than strong."
+   },
+   "reviewer_system": "v2 39f54cdfaa3b"
   },
   {
    "file": "good_73.dck",
@@ -7559,12 +7619,12 @@
     "archetype": "UG manifest dread",
     "coherent": true,
     "concerns": [
-     "few creatures",
+     "threat quality",
      "delirium",
-     "small threats"
+     "flying defense"
     ],
     "rating": 3,
-    "verdict": "A coherent UG manifest shell: Growing Dread, Paranormal Analyst, Twist Reality and Bookworm reward each other, and the fight spells give solid removal. It is held back by a thin real creature count, small early bodies, and Patchwork Beastie and Spineseeker relying on delirium the deck barely supports."
+    "verdict": "A coherent UG manifest dread deck: Growing Dread, Paranormal Analyst, Bookworm and Twist Reality support the plan, with decent bite removal and solid top end, but small bodies, an awkward Patchwork Beastie and reactive counters keep it a fine deck rather than a strong one."
    },
    "mana_score": 10.0,
    "mana": {
@@ -7643,7 +7703,19 @@
     ],
     "rating": 3,
     "verdict": "A coherent UG manifest dread deck. Growing Dread, Paranormal Analyst, Bookworm and the many dread effects work together, and there is solid fight-style removal, but it is light on real creatures and leans on reactive counters and a delirium card it can't reliably turn on."
-   }
+   },
+   "review_before_v2": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "delirium",
+     "small threats"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG manifest shell: Growing Dread, Paranormal Analyst, Twist Reality and Bookworm reward each other, and the fight spells give solid removal. It is held back by a thin real creature count, small early bodies, and Patchwork Beastie and Spineseeker relying on delirium the deck barely supports."
+   },
+   "reviewer_system": "v2 39f54cdfaa3b"
   },
   {
    "file": "good_76.dck",
@@ -7760,15 +7832,14 @@
    "drafter_bucket": 0.68,
    "rank_17lands": "bronze",
    "review": {
-    "archetype": "UG manifest/tempo midrange",
+    "archetype": "UG tempo/midrange",
     "coherent": true,
     "concerns": [
      "top end",
-     "power level",
-     "card advantage"
+     "power level"
     ],
     "rating": 3,
-    "verdict": "Low-curve UG deck with solid commons and decent interaction (Drowner, Clobbering, Emergence, Unable to Scream), but no bombs and little reach; Valgavoth's Onslaught is its best late-game card, and the flat 4-drop top end can get outclassed."
+    "verdict": "A low-curve UG deck with 18 bodies and decent interaction: Drowner, Unable to Scream and two fight-style spells. It has a few strong threats in Fear of Exposure, Thresher and Valgavoth's Onslaught, but little top end and many filler two- and three-drops, so it is fine but not special. With nothing above four, 16 lands would also be reasonable."
    },
    "mana_score": 10.0,
    "mana": {
@@ -7850,7 +7921,19 @@
     ],
     "rating": 3,
     "verdict": "A solid, low-curve UG deck with good removal (Unable to Scream, Clobbering, Emergence, Drowner) and Valgavoth's Onslaught as a mana sink, but it is thin on power past four mana and the delirium payoffs are unreliable."
-   }
+   },
+   "review_before_v2": {
+    "archetype": "UG manifest/tempo midrange",
+    "coherent": true,
+    "concerns": [
+     "top end",
+     "power level",
+     "card advantage"
+    ],
+    "rating": 3,
+    "verdict": "Low-curve UG deck with solid commons and decent interaction (Drowner, Clobbering, Emergence, Unable to Scream), but no bombs and little reach; Valgavoth's Onslaught is its best late-game card, and the flat 4-drop top end can get outclassed."
+   },
+   "reviewer_system": "v2 39f54cdfaa3b"
   },
   {
    "file": "good_78.dck",
@@ -8168,16 +8251,14 @@
    "drafter_bucket": 0.68,
    "rank_17lands": "gold",
    "review": {
-    "archetype": "UG manifest/value midrange",
-    "coherent": false,
+    "archetype": "UG graveyard midrange",
+    "coherent": true,
     "concerns": [
-     "few creatures",
-     "graveyard enablers",
      "filler",
-     "top end"
+     "delirium setup"
     ],
     "rating": 3,
-    "verdict": "Playable UG with real pieces (Fear of Exposure, Vanish from Sight, Unnerving Grasp, Daggermaw), but too few creatures; Oculus and Patchwork Beastie lack enough self-mill; a single Say Its Name can't fetch Altanak, leaving it as a clunky 7-drop; and filler like Glimmerlight and Machete keeps it average."
+    "verdict": "Solid UG midrange with real top end in Abhorrent Oculus and Altanak, decent removal from fight spells, Vanish from Sight and Unnerving Grasp, and good card flow; a few weak slots like Overgrown Zealot, Don't Make a Sound and the conditional Patchwork Beastie keep it a fine deck rather than a great one."
    },
    "mana_score": 10.0,
    "mana": {
@@ -8259,7 +8340,20 @@
     ],
     "rating": 3,
     "verdict": "Solid UG shell with Oculus, Altanak, Megalodon, and good removal like Clobbering, Emergence, and Vanish, but only 13 creatures, a lone Say Its Name, and a delirium-dependent Beastie keep it a fine deck rather than a strong one."
-   }
+   },
+   "review_before_v2": {
+    "archetype": "UG manifest/value midrange",
+    "coherent": false,
+    "concerns": [
+     "few creatures",
+     "graveyard enablers",
+     "filler",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "Playable UG with real pieces (Fear of Exposure, Vanish from Sight, Unnerving Grasp, Daggermaw), but too few creatures; Oculus and Patchwork Beastie lack enough self-mill; a single Say Its Name can't fetch Altanak, leaving it as a clunky 7-drop; and filler like Glimmerlight and Machete keeps it average."
+   },
+   "reviewer_system": "v2 39f54cdfaa3b"
   },
   {
    "file": "good_82.dck",
@@ -8280,14 +8374,14 @@
    "drafter_bucket": 0.68,
    "rank_17lands": "gold",
    "review": {
-    "archetype": "UG rooms/manifest dread midrange",
+    "archetype": "UG rooms/manifest dread",
     "coherent": true,
     "concerns": [
      "removal",
-     "two-drops"
+     "top-end"
     ],
     "rating": 3,
-    "verdict": "Solid UG value deck with good fliers (2x Fear of Falling, 2x Keybearer), double Meat Locker, and manifest dread/ramp synergy, but it leans on tempo removal and Unable to Scream rather than hard answers, so it's a fine but not exceptional build."
+    "verdict": "A solid, synergistic UG deck. Fear of Falling, Meat Locker, Unable to Scream and Valgavoth's Onslaught carry it, and Keybearer and Peeper reward the Rooms. It lacks hard removal and has some filler 2-drops, so it's fine but not exceptional."
    },
    "mana_score": 10.0,
    "mana": {
@@ -8367,7 +8461,18 @@
     ],
     "rating": 3,
     "verdict": "Solid UG tempo-value deck. Fear of Falling, the Meat Lockers, Unable to Scream and Valgavoth's Onslaught give it real power, and Keybearer/Peeper reward the rooms, but the removal is soft and the creature quality is middling."
-   }
+   },
+   "review_before_v2": {
+    "archetype": "UG rooms/manifest dread midrange",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "two-drops"
+    ],
+    "rating": 3,
+    "verdict": "Solid UG value deck with good fliers (2x Fear of Falling, 2x Keybearer), double Meat Locker, and manifest dread/ramp synergy, but it leans on tempo removal and Unable to Scream rather than hard answers, so it's a fine but not exceptional build."
+   },
+   "reviewer_system": "v2 39f54cdfaa3b"
   },
   {
    "file": "good_83.dck",
@@ -9676,16 +9781,16 @@
    "drafter_bucket": 0.68,
    "rank_17lands": "platinum",
    "review": {
-    "archetype": "UG eerie/manifest",
-    "coherent": false,
+    "archetype": "UG enchantments/manifest midrange",
+    "coherent": true,
     "concerns": [
+     "threat quality",
+     "Oculus enabling",
      "splash",
-     "removal",
-     "creature quality",
-     "Oculus enabling"
+     "Mindskinner"
     ],
-    "rating": 2,
-    "verdict": "Entity Tracker, Mindskinner, Growing Dread and the Rooms give a real UG enchantment shell, but three 2/1 Centipedes with little delirium support, an Oculus with almost no self-mill, a pointless one-card white splash for Toby, and thin removal make it a below-average pile."
+    "rating": 3,
+    "verdict": "A playable UG deck with solid interaction (Meat Lockers, Vanish, Bear Trap, Unable to Scream) and card flow, but the threats are mediocre, Abhorrent Oculus is hard to cast with little self-mill, Mindskinner fights the damage plan, and splashing one Plains for Toby isn't worth it."
    },
    "mana_score": 9.5,
    "mana": {
@@ -9774,7 +9879,20 @@
     ],
     "rating": 3,
     "verdict": "Solid UG core in Growing Dread, Entity Tracker, Meat Locker x2, Onslaught and Beasties, but removal is thin, it has only 13 creatures, and the splash for one mediocre Toby is wasted. Oculus is hard to enable without self-mill, and Mindskinner works against the rest of the deck's damage."
-   }
+   },
+   "review_before_v2": {
+    "archetype": "UG eerie/manifest",
+    "coherent": false,
+    "concerns": [
+     "splash",
+     "removal",
+     "creature quality",
+     "Oculus enabling"
+    ],
+    "rating": 2,
+    "verdict": "Entity Tracker, Mindskinner, Growing Dread and the Rooms give a real UG enchantment shell, but three 2/1 Centipedes with little delirium support, an Oculus with almost no self-mill, a pointless one-card white splash for Toby, and thin removal make it a below-average pile."
+   },
+   "reviewer_system": "v2 39f54cdfaa3b"
   },
   {
    "file": "good_97.dck",
@@ -11200,6 +11318,115 @@
     "Vicious Clown": 1
    },
    "added": "2026-10-26 ★★ fill (WR, 17lands-good-v2-fill)"
+  },
+  {
+   "file": "good_111.dck",
+   "rank": 111,
+   "playmat_name": "★★ good_111 · UG+w manifest dread splashing W · review 4/5",
+   "tier": 2,
+   "draft_id": "deaa6a52ce3b4943bb49538b089b9819",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UG",
+   "splash_colors": "W",
+   "user_win_rate_bucket": "0.68",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.68,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "UG manifest dread splashing W",
+    "coherent": true,
+    "concerns": [
+     "splash gold card",
+     "Patchwork Beastie",
+     "filler"
+    ],
+    "rating": 4,
+    "verdict": "Solid UG dread/eerie deck. It has strong rares (Overlord, Tyvar, Enduring Vitality), a good flash and value suite, and enough removal with the cheap white splash for 2x Trapped in the Screen. Docked for a few weak slots: an unreliable delirium Beastie, a low-impact Say Its Name, and a gold Gremlin Tamer on the splash."
+   },
+   "reviewer_system": "v2 39f54cdfaa3b",
+   "mana_score": 7.5,
+   "mana": {
+    "U": {
+     "sources": 8,
+     "need": 8,
+     "cards": 10
+    },
+    "G": {
+     "sources": 8,
+     "need": 9,
+     "cards": 13
+    },
+    "W": {
+     "sources": 4,
+     "cards": 3,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     6,
+     10,
+     2,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "body_makers": 4,
+    "bodies": 17,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Coordinated Clobbering",
+     "Fear of Falling",
+     "Trapped in the Screen",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.57022,
+   "in_current_pool": null,
+   "deck": {
+    "Abandoned Campground": 1,
+    "Coordinated Clobbering": 1,
+    "Defiant Survivor": 2,
+    "Enduring Vitality": 1,
+    "Entity Tracker": 1,
+    "Fear of Exposure": 1,
+    "Fear of Falling": 1,
+    "Floodfarm Verge": 1,
+    "Forest": 7,
+    "Gremlin Tamer": 1,
+    "Growing Dread": 1,
+    "Island": 5,
+    "Lakeside Shack": 1,
+    "Manifest Dread": 1,
+    "Oblivious Bookworm": 1,
+    "Overlord of the Hauntwoods": 1,
+    "Paranormal Analyst": 1,
+    "Patchwork Beastie": 1,
+    "Plains": 2,
+    "Say Its Name": 1,
+    "Trapped in the Screen": 2,
+    "Tunnel Surveyor": 1,
+    "Tyvar, the Pummeler": 1,
+    "Under the Skin": 1,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Vanish from Sight": 2
+   },
+   "added": "2026-10-26 UG after the reviewer fix (experiments/reviewer_bias)"
   }
  ],
  "topups": [
@@ -11225,6 +11452,15 @@
    "added": 3,
    "capped": 6,
    "reviewer_cost_usd": 1.8
+  },
+  {
+   "date": "2026-10-26",
+   "from": "experiments/reviewer_bias (v2 reviewer)",
+   "pairs": [
+    "UG"
+   ],
+   "added": 1,
+   "reviewer_cost_usd": 1.45
   }
  ]
 }

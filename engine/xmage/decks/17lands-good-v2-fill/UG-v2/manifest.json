@@ -1,0 +1,2084 @@
+{
+ "source": "game_data_public.DSK.PremierDraft.csv.gz",
+ "drafts": 173545,
+ "skipped": {
+  "card not in XMage DSK": 3283,
+  "not 40 cards": 14279
+ },
+ "funnel": {
+  "eligible": 155983,
+  "pair, not in an excluded pool": 17564,
+  "wins >= 0": 17564,
+  "build games ok": 16201,
+  "drafter games bucket >= 100": 11461,
+  "colour rule ok": 9529,
+  "build checks ok": 9180,
+  "off-colour card (dropped)": 49,
+  "fails two-drops": 39,
+  "fails top end": 244,
+  "fails creatures": 18,
+  "fails lands": 8,
+  "drafter bucket >= 0.66": 217
+ },
+ "candidates_by_threshold": {
+  "0.66": {
+   "WU": 0,
+   "UB": 0,
+   "BR": 0,
+   "RG": 0,
+   "WG": 0,
+   "WB": 0,
+   "UR": 0,
+   "BG": 0,
+   "WR": 0,
+   "UG": 217
+  }
+ },
+ "threshold": 0.66,
+ "min_user_games": 100,
+ "min_build_games": 3,
+ "min_creatures": 13,
+ "shortlist_per_pair": 30,
+ "per_pair": 30,
+ "keep_rating": 3,
+ "tier2": "rating >= 4 and no build red flag (weak-archetype flag excluded, see archetype_flag)",
+ "reviewer": {
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b",
+  "reviewed": 30,
+  "cost_usd": 0.602
+ },
+ "shortlist_ratings": {
+  "WU": {},
+  "UB": {},
+  "BR": {},
+  "RG": {},
+  "WG": {},
+  "WB": {},
+  "UR": {},
+  "BG": {},
+  "WR": {},
+  "UG": {
+   "2": 10,
+   "3": 20
+  }
+ },
+ "kept": 20,
+ "kept_by_pair": {
+  "WU": 0,
+  "UB": 0,
+  "BR": 0,
+  "RG": 0,
+  "WG": 0,
+  "WB": 0,
+  "UR": 0,
+  "BG": 0,
+  "WR": 0,
+  "UG": 20
+ },
+ "tiers": {
+  "1": 20
+ },
+ "overlap_with_current": {
+  "draft_ids": [],
+  "shortlisted": 0
+ },
+ "decks": [
+  {
+   "file": "good_00.dck",
+   "rank": 0,
+   "playmat_name": "★ good_00 · UG enchantment tempo / manifest · review 3/5",
+   "tier": 1,
+   "draft_id": "83a818ce82104f458f43416197dadca6",
+   "build_index": "1",
+   "build_games": 5,
+   "build_wins": 4,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.74",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.74,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "UG enchantment tempo / manifest",
+    "coherent": true,
+    "concerns": [
+     "threat density",
+     "small creatures",
+     "Vanish redundancy"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG enchantment deck. Entity Tracker, Growing Dread and the auras give it real card flow, and the interaction is plentiful, but five 4-mana Vanish from Sight and a lot of 2/2 bodies leave it light on threats that actually close games beyond Fear of Falling and the Wurm."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 18
+    },
+    "G": {
+     "sources": 8,
+     "need": 8,
+     "cards": 8
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     9,
+     5,
+     5,
+     3,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 5,
+    "bodies": 16,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 7,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Fear of Falling",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Get Out",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.57095,
+   "in_current_pool": null,
+   "deck": {
+    "Balustrade Wurm": 1,
+    "Entity Tracker": 3,
+    "Fear of Falling": 2,
+    "Flesh Burrower": 1,
+    "Floodpits Drowner": 1,
+    "Forest": 8,
+    "Get Out": 1,
+    "Grasping Longneck": 1,
+    "Growing Dread": 3,
+    "House Cartographer": 1,
+    "Island": 9,
+    "Manifest Dread": 1,
+    "Stay Hidden, Stay Silent": 1,
+    "Tunnel Surveyor": 1,
+    "Unable to Scream": 1,
+    "Vanish from Sight": 5
+   }
+  },
+  {
+   "file": "good_01.dck",
+   "rank": 1,
+   "playmat_name": "★ good_01 · UG manifest dread rooms · review 3/5",
+   "tier": 1,
+   "draft_id": "28ea712516544eb2b2f99f2ccde30547",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "gold",
+   "review": {
+    "archetype": "UG manifest dread rooms",
+    "coherent": true,
+    "concerns": [
+     "creature quality",
+     "few threats",
+     "Emergence power"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG dread and rooms shell with good tempo removal (2 Vanish from Sight, Meat Locker, Stay Hidden), but the bodies are small, so the three Monstrous Emergence and the closing power are both weak. It's a fine but unspectacular deck."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 15
+    },
+    "G": {
+     "sources": 9,
+     "need": 9,
+     "cards": 10
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     11,
+     5,
+     4,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "body_makers": 6,
+    "bodies": 16,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 5,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Monstrous Emergence",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.57234,
+   "in_current_pool": null,
+   "deck": {
+    "Bottomless Pool // Locker Room": 1,
+    "Fear of Isolation": 3,
+    "Forest": 8,
+    "Island": 8,
+    "Meat Locker // Drowned Diner": 1,
+    "Moldering Gym // Weight Room": 1,
+    "Monstrous Emergence": 3,
+    "Oblivious Bookworm": 1,
+    "Paranormal Analyst": 1,
+    "Stalked Researcher": 1,
+    "Stay Hidden, Stay Silent": 1,
+    "Terramorphic Expanse": 1,
+    "Threats Around Every Corner": 1,
+    "Twist Reality": 1,
+    "Twitching Doll": 1,
+    "Tyvar, the Pummeler": 1,
+    "Underwater Tunnel // Slimy Aquarium": 2,
+    "Vanish from Sight": 2,
+    "Wickerfolk Thresher": 1,
+    "Zimone, All-Questioning": 1
+   }
+  },
+  {
+   "file": "good_02.dck",
+   "rank": 2,
+   "playmat_name": "★ good_02 · UG manifest dread value · review 3/5",
+   "tier": 1,
+   "draft_id": "61bdf0d2764248feb3c35c86805760aa",
+   "build_index": "1",
+   "build_games": 6,
+   "build_wins": 5,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "UG manifest dread value",
+    "coherent": true,
+    "concerns": [
+     "equipment glut",
+     "few creatures",
+     "aggression"
+    ],
+    "rating": 3,
+    "verdict": "Solid UG manifest deck with good removal-ish tools (Unable to Scream x2, Drowner, Vanish, Domination, Meat Locker) and strong top end, but leaning on three slow equipment and a few weak delirium cards like Patchwork Beastie keeps it a fine rather than great build."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 12
+    },
+    "G": {
+     "sources": 8,
+     "need": 8,
+     "cards": 10
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     6,
+     5,
+     4,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 6,
+    "bodies": 18,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 2,
+    "soft_removal": 5,
+    "removal_cards": [
+     "Fear of Falling",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Duskmourn's Domination",
+     "Floodpits Drowner",
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56491,
+   "in_current_pool": null,
+   "deck": {
+    "Balustrade Wurm": 1,
+    "Bashful Beastie": 1,
+    "Conductive Machete": 2,
+    "Cursed Windbreaker": 1,
+    "Duskmourn's Domination": 1,
+    "Fear of Exposure": 1,
+    "Fear of Falling": 1,
+    "Floodpits Drowner": 1,
+    "Forest": 8,
+    "Glimmerburst": 1,
+    "Glimmerlight": 1,
+    "House Cartographer": 1,
+    "Island": 9,
+    "Manifest Dread": 1,
+    "Meat Locker // Drowned Diner": 1,
+    "Oblivious Bookworm": 1,
+    "Paranormal Analyst": 1,
+    "Patchwork Beastie": 1,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 1,
+    "Unable to Scream": 2,
+    "Vanish from Sight": 1,
+    "Zimone, All-Questioning": 1
+   }
+  },
+  {
+   "file": "good_03.dck",
+   "rank": 3,
+   "playmat_name": "★ good_03 · UG tempo/control (manifest dread) · review 3/5",
+   "tier": 1,
+   "draft_id": "6fa54151d83942c8b7ba20ba5ddd91bb",
+   "build_index": "0",
+   "build_games": 7,
+   "build_wins": 7,
+   "games": 7,
+   "wins": 7,
+   "losses": 0,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "500",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "UG tempo/control (manifest dread)",
+    "coherent": true,
+    "concerns": [
+     "threat density",
+     "weak green",
+     "small creatures"
+    ],
+    "rating": 3,
+    "verdict": "A deep blue core of interaction (Drowners, Vanish, Domination, Unable to Scream, Meat Locker) plus Enduring Curiosity and Overlord gives a solid controlling shell, but the green is thin. Monstrous Emergence struggles with few big bodies, and the Glimmer/equipment filler keeps the threats underpowered, so it is a fine deck rather than a strong one."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 16
+    },
+    "G": {
+     "sources": 8,
+     "need": 8,
+     "cards": 6
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     9,
+     4,
+     5,
+     2,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "body_makers": 7,
+    "bodies": 17,
+    "noncreature_spells": 14,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 7,
+    "removal_cards": [
+     "Monstrous Emergence",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Duskmourn's Domination",
+     "Floodpits Drowner",
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.57282,
+   "in_current_pool": null,
+   "deck": {
+    "Conductive Machete": 1,
+    "Daggermaw Megalodon": 2,
+    "Dissection Tools": 1,
+    "Duskmourn's Domination": 1,
+    "Enduring Curiosity": 1,
+    "Floodpits Drowner": 2,
+    "Forest": 7,
+    "Glimmerburst": 1,
+    "Glimmerlight": 2,
+    "Island": 8,
+    "Meat Locker // Drowned Diner": 1,
+    "Monstrous Emergence": 2,
+    "Oblivious Bookworm": 1,
+    "Overlord of the Hauntwoods": 1,
+    "Paranormal Analyst": 1,
+    "Terramorphic Expanse": 1,
+    "Unable to Scream": 1,
+    "Unnerving Grasp": 2,
+    "Vanish from Sight": 2,
+    "Wary Watchdog": 1,
+    "Zimone, All-Questioning": 1
+   }
+  },
+  {
+   "file": "good_04.dck",
+   "rank": 4,
+   "playmat_name": "★ good_04 · UG midrange/ramp · review 3/5",
+   "tier": 1,
+   "draft_id": "1861a5e417914fb7b11b678d2be0b3b3",
+   "build_index": "0",
+   "build_games": 4,
+   "build_wins": 3,
+   "games": 7,
+   "wins": 4,
+   "losses": 3,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "UG midrange/ramp",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "2-drops"
+    ],
+    "rating": 3,
+    "verdict": "A solid UG midrange deck with good top end (Enduring Curiosity, Branchsnapper, Megalodon, Dissection Tools) and decent removal. The low creature count and filler like Say Its Name and Horrid Vigor hold it back, and the manifest dread payoffs (Bookworm) are thin."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 8,
+     "cards": 7
+    },
+    "G": {
+     "sources": 10,
+     "need": 8,
+     "cards": 16
+    }
+   },
+   "stats": {
+    "curve": [
+     0,
+     9,
+     5,
+     4,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 4,
+    "bodies": 16,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Monstrous Emergence",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56191,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Break Down the Door": 1,
+    "Cautious Survivor": 1,
+    "Daggermaw Megalodon": 1,
+    "Dissection Tools": 1,
+    "Enduring Curiosity": 1,
+    "Fear of Exposure": 1,
+    "Fear of Isolation": 1,
+    "Flesh Burrower": 1,
+    "Forest": 8,
+    "Glimmerlight": 1,
+    "Horrid Vigor": 1,
+    "Island": 7,
+    "Lakeside Shack": 1,
+    "Moldering Gym // Weight Room": 1,
+    "Monstrous Emergence": 2,
+    "Oblivious Bookworm": 1,
+    "Rootwise Survivor": 1,
+    "Say Its Name": 2,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 1,
+    "Terramorphic Expanse": 1,
+    "Vanish from Sight": 2,
+    "Zimone, All-Questioning": 1
+   }
+  },
+  {
+   "file": "good_05.dck",
+   "rank": 5,
+   "playmat_name": "★ good_05 · UG manifest dread · review 3/5",
+   "tier": 1,
+   "draft_id": "edba9feeea07478fb2533513d19f34e4",
+   "build_index": "0",
+   "build_games": 7,
+   "build_wins": 4,
+   "games": 7,
+   "wins": 4,
+   "losses": 3,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "threat quality",
+     "few fliers"
+    ],
+    "rating": 3,
+    "verdict": "Coherent UG manifest deck with Growing Dread, Paranormal Analyst and Enduring Vitality for value and solid interaction, but it leans on many 2/2 face-down bodies and few real threats, so it may grind well yet struggle to close games."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 10,
+     "need": 9,
+     "cards": 10
+    },
+    "G": {
+     "sources": 9,
+     "need": 9,
+     "cards": 10
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     7,
+     7,
+     4,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 8,
+    "body_makers": 10,
+    "bodies": 18,
+    "noncreature_spells": 15,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 4,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Bear Trap",
+     "Monstrous Emergence",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.5616,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 2,
+    "Bear Trap": 1,
+    "Bottomless Pool // Locker Room": 1,
+    "Conductive Machete": 2,
+    "Cursed Windbreaker": 1,
+    "Enduring Vitality": 1,
+    "Forest": 7,
+    "Growing Dread": 1,
+    "Island": 8,
+    "Malevolent Chandelier": 1,
+    "Manifest Dread": 1,
+    "Monstrous Emergence": 1,
+    "Paranormal Analyst": 1,
+    "Piranha Fly": 1,
+    "Spineseeker Centipede": 1,
+    "Stay Hidden, Stay Silent": 1,
+    "Terramorphic Expanse": 2,
+    "Twist Reality": 2,
+    "Twitching Doll": 1,
+    "Under the Skin": 2,
+    "Vanish from Sight": 2
+   }
+  },
+  {
+   "file": "good_06.dck",
+   "rank": 6,
+   "playmat_name": "★ good_06 · UG manifest dread · review 3/5",
+   "tier": 1,
+   "draft_id": "8d912846f6f64b998e4cf1a75e7f3de8",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "card quality",
+     "threat density"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG manifest deck with plenty of bodies, good Growing Dread and Threats synergy, and some value engines. Its removal is soft auras and tempo bounce, and many of its threats are vanilla 2/2s, so it lacks punch and has few answers to big threats."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 8,
+     "cards": 13
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 10
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     7,
+     9,
+     3,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "body_makers": 12,
+    "bodies": 21,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 1,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56749,
+   "in_current_pool": null,
+   "deck": {
+    "Break Down the Door": 1,
+    "Cursed Windbreaker": 1,
+    "Entity Tracker": 1,
+    "Flesh Burrower": 1,
+    "Forest": 8,
+    "Glimmerburst": 1,
+    "Glimmerlight": 1,
+    "Growing Dread": 2,
+    "Island": 8,
+    "Lakeside Shack": 1,
+    "Malevolent Chandelier": 1,
+    "Manifest Dread": 1,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 2,
+    "Stay Hidden, Stay Silent": 1,
+    "Threats Around Every Corner": 1,
+    "Tunnel Surveyor": 2,
+    "Unable to Scream": 1,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Unnerving Grasp": 2,
+    "Vanish from Sight": 1,
+    "Wary Watchdog": 1
+   }
+  },
+  {
+   "file": "good_07.dck",
+   "rank": 7,
+   "playmat_name": "★ good_07 · UG manifest dread · review 3/5",
+   "tier": 1,
+   "draft_id": "f334ca2b24404fe986453255e4415151",
+   "build_index": "1",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "power level",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG manifest deck. Three Cryptid Inspectors and plenty of dread enablers give it a real synergy plan, and Floodpits Drowner and Enduring Vitality are solid. It has very little removal and few powerful finishers, though, and the many 2/2 bodies with three Threats Around Every Corner make it grindy rather than strong."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 9
+    },
+    "G": {
+     "sources": 9,
+     "need": 9,
+     "cards": 14
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     5,
+     10,
+     4,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "body_makers": 10,
+    "bodies": 20,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 1,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Coordinated Clobbering"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56071,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Conductive Machete": 1,
+    "Coordinated Clobbering": 1,
+    "Creeping Peeper": 1,
+    "Cryptid Inspector": 3,
+    "Cursed Windbreaker": 2,
+    "Enduring Vitality": 1,
+    "Floodpits Drowner": 1,
+    "Forest": 8,
+    "Insidious Fungus": 1,
+    "Island": 8,
+    "Lakeside Shack": 1,
+    "Manifest Dread": 1,
+    "Mirror Room // Fractured Realm": 1,
+    "Oblivious Bookworm": 1,
+    "Threats Around Every Corner": 3,
+    "Twist Reality": 2,
+    "Unable to Scream": 1,
+    "Under the Skin": 1,
+    "Wary Watchdog": 1
+   }
+  },
+  {
+   "file": "good_08.dck",
+   "rank": 8,
+   "playmat_name": "★ good_08 · UG manifest dread midrange · review 3/5",
+   "tier": 1,
+   "draft_id": "32299bb3ff604050aa4f7ca429ad8328",
+   "build_index": "0",
+   "build_games": 3,
+   "build_wins": 0,
+   "games": 3,
+   "wins": 0,
+   "losses": 3,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "UG manifest dread midrange",
+    "coherent": true,
+    "concerns": [
+     "card quality",
+     "filler",
+     "thin 3-5 drops"
+    ],
+    "rating": 3,
+    "verdict": "A playable UG dread deck with solid interaction (Unable to Scream, Floodpits Drowner, Monstrous Emergence) and flexible cyclers. Too many low-impact 2-drops (Say Its Name, Glimmerlight) and a hollow 3-5 curve make it fine rather than strong."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 7
+    },
+    "G": {
+     "sources": 10,
+     "need": 8,
+     "cards": 15
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     13,
+     4,
+     2,
+     0,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 6,
+    "bodies": 17,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 2,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [
+     "Duskmourn's Domination",
+     "Floodpits Drowner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.55452,
+   "in_current_pool": null,
+   "deck": {
+    "Anthropede": 1,
+    "Conductive Machete": 1,
+    "Daggermaw Megalodon": 1,
+    "Duskmourn's Domination": 1,
+    "Flesh Burrower": 2,
+    "Floodpits Drowner": 1,
+    "Forest": 8,
+    "Glimmerlight": 1,
+    "Grasping Longneck": 1,
+    "Growing Dread": 1,
+    "Island": 7,
+    "Lakeside Shack": 1,
+    "Manifest Dread": 1,
+    "Moldering Gym // Weight Room": 1,
+    "Monstrous Emergence": 2,
+    "Say Its Name": 2,
+    "Silent Hallcreeper": 1,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 1,
+    "Terramorphic Expanse": 1,
+    "Twist Reality": 1,
+    "Unable to Scream": 1,
+    "Wary Watchdog": 2
+   }
+  },
+  {
+   "file": "good_09.dck",
+   "rank": 9,
+   "playmat_name": "★ good_09 · UG manifest dread · review 3/5",
+   "tier": 1,
+   "draft_id": "f52fead05c7b4da9912ef037defc03a4",
+   "build_index": "1",
+   "build_games": 5,
+   "build_wins": 5,
+   "games": 7,
+   "wins": 7,
+   "losses": 0,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "power level",
+     "few fliers",
+     "light blue"
+    ],
+    "rating": 3,
+    "verdict": "A coherent green-heavy manifest dread deck. Three Cryptid Inspectors, Growing Dread, Threats and plenty of bodies support each other well, with Monstrous Emergence, Vanish and Stay Hidden for interaction. It lacks bombs and evasion beyond Fear of Falling, so it plays as a solid but unspectacular midrange deck."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 7,
+     "need": 8,
+     "cards": 6
+    },
+    "G": {
+     "sources": 11,
+     "need": 8,
+     "cards": 18
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     8,
+     7,
+     3,
+     4,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 6,
+    "bodies": 18,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Fear of Falling",
+     "Monstrous Emergence",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.55336,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 3,
+    "Bottomless Pool // Locker Room": 1,
+    "Break Down the Door": 1,
+    "Cryptid Inspector": 3,
+    "Defiant Survivor": 1,
+    "Fear of Falling": 1,
+    "Flesh Burrower": 2,
+    "Forest": 10,
+    "Frantic Strength": 1,
+    "Growing Dread": 1,
+    "Island": 6,
+    "Lakeside Shack": 1,
+    "Manifest Dread": 1,
+    "Moldering Gym // Weight Room": 1,
+    "Monstrous Emergence": 2,
+    "Paranormal Analyst": 1,
+    "Stay Hidden, Stay Silent": 1,
+    "Threats Around Every Corner": 1,
+    "Vanish from Sight": 1,
+    "Wickerfolk Thresher": 1
+   }
+  },
+  {
+   "file": "good_10.dck",
+   "rank": 10,
+   "playmat_name": "★ good_10 · UG manifest dread · review 3/5",
+   "tier": 1,
+   "draft_id": "3434f42830394c98818c72dbf2153c05",
+   "build_index": "1",
+   "build_games": 4,
+   "build_wins": 2,
+   "games": 4,
+   "wins": 2,
+   "losses": 2,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "filler",
+     "light blue"
+    ],
+    "rating": 3,
+    "verdict": "A coherent green-heavy manifest deck with a strong top end in two Overlords and good dread synergy. Removal is thin and relies on creature combat, three Centipedes are filler, and the blue splash is light enough that 7 Islands may be more than it needs."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 8,
+     "need": 9,
+     "cards": 5
+    },
+    "G": {
+     "sources": 10,
+     "need": 8,
+     "cards": 18
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     7,
+     9,
+     3,
+     3,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 8,
+    "bodies": 20,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 3,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Coordinated Clobbering",
+     "Fear of Falling",
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [
+     "Meat Locker // Drowned Diner",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.55868,
+   "in_current_pool": null,
+   "deck": {
+    "Break Down the Door": 2,
+    "Conductive Machete": 2,
+    "Coordinated Clobbering": 1,
+    "Cryptid Inspector": 2,
+    "Fear of Falling": 1,
+    "Flesh Burrower": 1,
+    "Forest": 9,
+    "Growing Dread": 2,
+    "Island": 7,
+    "Lakeside Shack": 1,
+    "Manifest Dread": 1,
+    "Meat Locker // Drowned Diner": 1,
+    "Monstrous Emergence": 1,
+    "Overgrown Zealot": 1,
+    "Overlord of the Hauntwoods": 2,
+    "Spineseeker Centipede": 3,
+    "Unnerving Grasp": 1,
+    "Wary Watchdog": 1,
+    "Wickerfolk Thresher": 1
+   }
+  },
+  {
+   "file": "good_11.dck",
+   "rank": 11,
+   "playmat_name": "★ good_11 · UG manifest dread/delirium · review 3/5",
+   "tier": 1,
+   "draft_id": "f74ccdb570b4411bad9c07c4c24e8829",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "diamond",
+   "review": {
+    "archetype": "UG manifest dread/delirium",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "light blue"
+    ],
+    "rating": 3,
+    "verdict": "A coherent green-heavy dread/delirium deck with strong top-end (Oculus, Curiosity, Wurm, Thresher, Bashful Beasties) and good card types for delirium, but interaction is only two fight-style spells and two Threats Around Every Corner is a slow, low-impact inclusion."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 7,
+     "need": 8,
+     "cards": 4
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 21
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     7,
+     6,
+     4,
+     3,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "body_makers": 6,
+    "bodies": 22,
+    "noncreature_spells": 8,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 2,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Coordinated Clobbering",
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.57119,
+   "in_current_pool": null,
+   "deck": {
+    "Abhorrent Oculus": 1,
+    "Balustrade Wurm": 1,
+    "Bashful Beastie": 2,
+    "Coordinated Clobbering": 1,
+    "Enduring Curiosity": 1,
+    "Forest": 9,
+    "Island": 7,
+    "Manifest Dread": 2,
+    "Monstrous Emergence": 1,
+    "Oblivious Bookworm": 1,
+    "Paranormal Analyst": 1,
+    "Patchwork Beastie": 2,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 3,
+    "Threats Around Every Corner": 2,
+    "Under the Skin": 2,
+    "Wary Watchdog": 2,
+    "Wickerfolk Thresher": 1
+   }
+  },
+  {
+   "file": "good_12.dck",
+   "rank": 12,
+   "playmat_name": "★ good_12 · UG tempo-control · review 3/5",
+   "tier": 1,
+   "draft_id": "e08694ebfadd49ecb5ca4448ef27fe05",
+   "build_index": "0",
+   "build_games": 7,
+   "build_wins": 7,
+   "games": 7,
+   "wins": 7,
+   "losses": 0,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "UG tempo-control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat density",
+     "Patchwork Beastie"
+    ],
+    "rating": 3,
+    "verdict": "A reactive UG shell with good interaction (Drowners, Vanish from Sight, Stay Hidden, Twist Reality) and card flow from three Glimmerbursts, but the real threats are thin (Tyvar, Bashful Beasties, Megalodon, Onslaught), so it can stall out; Patchwork Beastie has little delirium support and should be cut for another creature."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 13
+    },
+    "G": {
+     "sources": 8,
+     "need": 9,
+     "cards": 10
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     7,
+     5,
+     5,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "body_makers": 8,
+    "bodies": 18,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 3,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Coordinated Clobbering",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.57326,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 2,
+    "Coordinated Clobbering": 1,
+    "Daggermaw Megalodon": 1,
+    "Floodpits Drowner": 2,
+    "Forest": 8,
+    "Found Footage": 1,
+    "Glimmerburst": 3,
+    "Island": 9,
+    "Oblivious Bookworm": 1,
+    "Patchwork Beastie": 1,
+    "Say Its Name": 1,
+    "Spineseeker Centipede": 1,
+    "Stay Hidden, Stay Silent": 2,
+    "Twist Reality": 2,
+    "Twitching Doll": 1,
+    "Tyvar, the Pummeler": 1,
+    "Valgavoth's Onslaught": 1,
+    "Vanish from Sight": 2
+   }
+  },
+  {
+   "file": "good_13.dck",
+   "rank": 13,
+   "playmat_name": "★ good_13 · UG manifest dread · review 3/5",
+   "tier": 1,
+   "draft_id": "394a2febec8343a0b8ebe18de02f20ed",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "diamond",
+   "review": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "threat quality",
+     "removal",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG manifest deck. Growing Dread, two Bookworms, Fear of Isolation and the rooms give it a real face-down engine with good card flow, but many bodies are vanilla 2/2s. Overgrown Zealot, Creeping Peeper and the double Underwater Tunnel are weak filler, and removal is thin, so it can stall against strong boards. A fine but unspectacular deck."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 8,
+     "need": 9,
+     "cards": 16
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 11
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     13,
+     6,
+     1,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "body_makers": 10,
+    "bodies": 20,
+    "noncreature_spells": 14,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 1,
+    "soft_removal": 5,
+    "removal_cards": [
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [
+     "Get Out",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56262,
+   "in_current_pool": null,
+   "deck": {
+    "Altanak, the Thrice-Called": 1,
+    "Creeping Peeper": 1,
+    "Cursed Windbreaker": 1,
+    "Daggermaw Megalodon": 1,
+    "Fear of Isolation": 2,
+    "Forest": 8,
+    "Get Out": 1,
+    "Growing Dread": 1,
+    "Island": 7,
+    "Lakeside Shack": 1,
+    "Manifest Dread": 1,
+    "Meat Locker // Drowned Diner": 2,
+    "Moldering Gym // Weight Room": 1,
+    "Monstrous Emergence": 1,
+    "Oblivious Bookworm": 2,
+    "Overgrown Zealot": 2,
+    "Spineseeker Centipede": 1,
+    "Stay Hidden, Stay Silent": 2,
+    "Threats Around Every Corner": 1,
+    "Twist Reality": 1,
+    "Underwater Tunnel // Slimy Aquarium": 2
+   }
+  },
+  {
+   "file": "good_14.dck",
+   "rank": 14,
+   "playmat_name": "★ good_14 · UG manifest dread midrange · review 3/5",
+   "tier": 1,
+   "draft_id": "21b5edbb393b45e490f19b67b240b384",
+   "build_index": "0",
+   "build_games": 4,
+   "build_wins": 4,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "UG manifest dread midrange",
+    "coherent": true,
+    "concerns": [
+     "top end",
+     "card quality"
+    ],
+    "rating": 3,
+    "verdict": "Solid UG deck with good removal (Monstrous Emergence x2, Clobbering, Unable to Scream, Stay Hidden, Meat Locker) and plenty of 2-drops, but it is light on four-drops and has no real bombs, so it plays as a fine but unexceptional midrange deck."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 8,
+     "need": 9,
+     "cards": 8
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 15
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     10,
+     6,
+     1,
+     3,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 6,
+    "bodies": 17,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 3,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Coordinated Clobbering",
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56336,
+   "in_current_pool": null,
+   "deck": {
+    "Balustrade Wurm": 1,
+    "Bashful Beastie": 1,
+    "Bottomless Pool // Locker Room": 1,
+    "Coordinated Clobbering": 1,
+    "Erratic Apparition": 1,
+    "Flesh Burrower": 3,
+    "Forest": 9,
+    "Glimmerlight": 1,
+    "Growing Dread": 1,
+    "Island": 8,
+    "Meat Locker // Drowned Diner": 1,
+    "Monstrous Emergence": 2,
+    "Rootwise Survivor": 1,
+    "Spineseeker Centipede": 1,
+    "Stalked Researcher": 1,
+    "Stay Hidden, Stay Silent": 1,
+    "Twist Reality": 1,
+    "Unable to Scream": 1,
+    "Under the Skin": 1,
+    "Valgavoth's Onslaught": 1,
+    "Wary Watchdog": 1,
+    "Wickerfolk Thresher": 1
+   }
+  },
+  {
+   "file": "good_15.dck",
+   "rank": 15,
+   "playmat_name": "★ good_15 · UG manifest dread · review 3/5",
+   "tier": 1,
+   "draft_id": "3f6129d3ab8a4fcf8bce9bcc2de8246d",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "top end",
+     "threat quality",
+     "light delirium"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG manifest deck: plenty of cheap bodies, good blue interaction in Unable to Scream x2, Floodpits Drowner and Get Out, and Enduring Vitality as a standout. But the curve is mostly 2-drops of face-down 2/2s with only Wurm and Branchsnapper as real finishers, so it can run out of power against bigger decks."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 8,
+     "need": 9,
+     "cards": 7
+    },
+    "G": {
+     "sources": 10,
+     "need": 9,
+     "cards": 17
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     10,
+     7,
+     1,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 7,
+    "bodies": 18,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 2,
+    "soft_removal": 6,
+    "removal_cards": [
+     "Coordinated Clobbering",
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Get Out",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56749,
+   "in_current_pool": null,
+   "deck": {
+    "Balustrade Wurm": 1,
+    "Break Down the Door": 1,
+    "Coordinated Clobbering": 1,
+    "Defiant Survivor": 1,
+    "Enduring Vitality": 1,
+    "Flesh Burrower": 1,
+    "Floodpits Drowner": 1,
+    "Forest": 9,
+    "Get Out": 1,
+    "Island": 7,
+    "Lakeside Shack": 1,
+    "Manifest Dread": 3,
+    "Monstrous Emergence": 1,
+    "Omnivorous Flytrap": 1,
+    "Overgrown Zealot": 1,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 1,
+    "Stay Hidden, Stay Silent": 1,
+    "Threats Around Every Corner": 1,
+    "Unable to Scream": 2,
+    "Unnerving Grasp": 1,
+    "Wary Watchdog": 1,
+    "Zimone, All-Questioning": 1
+   }
+  },
+  {
+   "file": "good_16.dck",
+   "rank": 16,
+   "playmat_name": "★ good_16 · UG manifest dread tempo · review 3/5",
+   "tier": 1,
+   "draft_id": "d7f290aea7b54a7191a3700f2d1a2358",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "UG manifest dread tempo",
+    "coherent": true,
+    "concerns": [
+     "top end",
+     "filler",
+     "threat density"
+    ],
+    "rating": 3,
+    "verdict": "A solid UG tempo deck with good interaction (two Floodpits Drowners, Vanish from Sight, Meat Locker, Monstrous Emergence) and quality pieces like Enduring Vitality and Oblivious Bookworm, but two Say Its Name without Altanak, a thin four-plus-drop finisher suite and some small bodies leave it short on power: fine, not great."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 8,
+     "need": 9,
+     "cards": 11
+    },
+    "G": {
+     "sources": 9,
+     "need": 9,
+     "cards": 14
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     11,
+     6,
+     3,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 3,
+    "bodies": 15,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 3,
+    "soft_removal": 5,
+    "removal_cards": [
+     "Monstrous Emergence",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Floodpits Drowner",
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56704,
+   "in_current_pool": null,
+   "deck": {
+    "Bottomless Pool // Locker Room": 1,
+    "Conductive Machete": 1,
+    "Defiant Survivor": 1,
+    "Enduring Vitality": 1,
+    "Fear of Isolation": 1,
+    "Floodpits Drowner": 2,
+    "Forest": 9,
+    "Growing Dread": 1,
+    "Island": 8,
+    "Manifest Dread": 1,
+    "Meat Locker // Drowned Diner": 1,
+    "Monstrous Emergence": 2,
+    "Oblivious Bookworm": 1,
+    "Say Its Name": 2,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 1,
+    "Tunnel Surveyor": 1,
+    "Unable to Scream": 1,
+    "Vanish from Sight": 1,
+    "Wary Watchdog": 1,
+    "Wickerfolk Thresher": 1,
+    "Zimone, All-Questioning": 1
+   }
+  },
+  {
+   "file": "good_17.dck",
+   "rank": 17,
+   "playmat_name": "★ good_17 · UG+w manifest dread · review 3/5",
+   "tier": 1,
+   "draft_id": "0373c3f960b3410cba1fcab523514f93",
+   "build_index": "0",
+   "build_games": 3,
+   "build_wins": 3,
+   "games": 3,
+   "wins": 3,
+   "losses": 0,
+   "main_colors": "UG",
+   "splash_colors": "W",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "gold",
+   "review": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "splash",
+     "removal",
+     "few creatures"
+    ],
+    "rating": 3,
+    "verdict": "Solid UG manifest dread shell built around Overlord of the Floodpits, Growing Dread and Cryptid Inspector, with plenty of bodies from manifest. The white splash is questionable: Optimistic Scavenger is a weak 1-drop that should never be splashed, leaving only Exorcise to justify it, and real removal is thin."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 11
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 10
+    },
+    "W": {
+     "sources": 4,
+     "cards": 2,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     9,
+     5,
+     3,
+     3,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 8,
+    "bodies": 19,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 3,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Exorcise",
+     "Monstrous Emergence",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Stay Hidden, Stay Silent",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56148,
+   "in_current_pool": null,
+   "deck": {
+    "Abandoned Campground": 1,
+    "Bashful Beastie": 2,
+    "Cautious Survivor": 1,
+    "Cryptid Inspector": 1,
+    "Daggermaw Megalodon": 1,
+    "Defiant Survivor": 1,
+    "Exorcise": 1,
+    "Fear of Isolation": 1,
+    "Flesh Burrower": 1,
+    "Forest": 7,
+    "Glimmerburst": 1,
+    "Glimmerlight": 1,
+    "Growing Dread": 1,
+    "Horrid Vigor": 1,
+    "Island": 6,
+    "Moldering Gym // Weight Room": 1,
+    "Monstrous Emergence": 1,
+    "Optimistic Scavenger": 1,
+    "Overlord of the Floodpits": 1,
+    "Piranha Fly": 1,
+    "Plains": 1,
+    "Stay Hidden, Stay Silent": 1,
+    "Terramorphic Expanse": 2,
+    "Twist Reality": 1,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Unnerving Grasp": 1,
+    "Vanish from Sight": 1
+   }
+  },
+  {
+   "file": "good_18.dck",
+   "rank": 18,
+   "playmat_name": "★ good_18 · UG+b manifest dread · review 3/5",
+   "tier": 1,
+   "draft_id": "a3921f35922d4cccb67480e49bd55dff",
+   "build_index": "0",
+   "build_games": 5,
+   "build_wins": 4,
+   "games": 5,
+   "wins": 4,
+   "losses": 1,
+   "main_colors": "UG",
+   "splash_colors": "B",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "diamond",
+   "review": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "light splash",
+     "few real creatures",
+     "pump-light"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG manifest dread deck with good synergy (Growing Dread, Cryptid Inspectors, Paranormal Analyst), solid removal from three Unable to Scream plus Vanish from Sight and Monstrous Emergence, and a bomb in Overlord. Splashing Kaito off one Swamp and two Expanses is greedy, and many bodies are vanilla 2/2s, so it's a fine deck rather than a great one."
+   },
+   "mana_score": 8.5,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 8,
+     "cards": 10
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 12
+    },
+    "B": {
+     "sources": 3,
+     "cards": 1,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     6,
+     6,
+     3,
+     4,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "body_makers": 8,
+    "bodies": 17,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 2,
+    "soft_removal": 6,
+    "removal_cards": [
+     "Monstrous Emergence",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Kaito, Bane of Nightmares",
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56992,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Cryptid Inspector": 2,
+    "Dissection Tools": 2,
+    "Flesh Burrower": 1,
+    "Forest": 7,
+    "Glimmerburst": 1,
+    "Growing Dread": 1,
+    "Island": 7,
+    "Kaito, Bane of Nightmares": 1,
+    "Manifest Dread": 1,
+    "Monstrous Emergence": 1,
+    "Overlord of the Hauntwoods": 1,
+    "Paranormal Analyst": 1,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 1,
+    "Swamp": 1,
+    "Terramorphic Expanse": 2,
+    "Unable to Scream": 3,
+    "Under the Skin": 1,
+    "Unnerving Grasp": 2,
+    "Vanish from Sight": 1,
+    "Wary Watchdog": 1
+   }
+  },
+  {
+   "file": "good_19.dck",
+   "rank": 19,
+   "playmat_name": "★ good_19 · UG+w manifest dread · review 3/5",
+   "tier": 1,
+   "draft_id": "f5462ff7b76842cf80db3cadf4bd3c42",
+   "build_index": "1",
+   "build_games": 7,
+   "build_wins": 6,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UG",
+   "splash_colors": "W",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "UG manifest dread",
+    "coherent": true,
+    "concerns": [
+     "threat quality",
+     "removal",
+     "Cathartic Parting"
+    ],
+    "rating": 3,
+    "verdict": "A coherent UG manifest dread deck with good blue tempo (Drowner, Grasp, Vanish, Windbreaker), but few creature cards hit hard, removal is mostly temporary, and the maindeck Cathartic Parting is a wasted slot. The light white splash for Trapped in the Screen is fine."
+   },
+   "mana_score": 7.5,
+   "mana": {
+    "U": {
+     "sources": 8,
+     "need": 9,
+     "cards": 9
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 13
+    },
+    "W": {
+     "sources": 3,
+     "cards": 1,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     0,
+     8,
+     8,
+     6,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 8,
+    "bodies": 19,
+    "noncreature_spells": 13,
+    "lands": 16,
+    "fixing_lands": 3,
+    "removal": 4,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Monstrous Emergence",
+     "Trapped in the Screen",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.556363391358675,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56426,
+   "in_current_pool": null,
+   "deck": {
+    "Abandoned Campground": 1,
+    "Bashful Beastie": 1,
+    "Cathartic Parting": 1,
+    "Conductive Machete": 2,
+    "Cryptid Inspector": 1,
+    "Cursed Windbreaker": 1,
+    "Flesh Burrower": 1,
+    "Floodpits Drowner": 1,
+    "Forest": 7,
+    "Glimmerburst": 1,
+    "Island": 5,
+    "Lakeside Shack": 1,
+    "Monstrous Emergence": 1,
+    "Oblivious Bookworm": 1,
+    "Overgrown Zealot": 1,
+    "Paranormal Analyst": 1,
+    "Plains": 1,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 2,
+    "Terramorphic Expanse": 1,
+    "Threats Around Every Corner": 1,
+    "Trapped in the Screen": 1,
+    "Twist Reality": 1,
+    "Under the Skin": 1,
+    "Unnerving Grasp": 1,
+    "Vanish from Sight": 2,
+    "Wary Watchdog": 1
+   }
+  }
+ ]
+}

@@ -94,6 +94,11 @@ exactly a browser answer maps to our options, and XMage AI decisions are flagged
 - ★★ capped at 4 per colour pair (Jeff 2026-10-26): the extra ★★ decks (WB 4, BG 1, BR 1) are ★ now, rating unchanged
   (`tier_capped` in the manifest). A fill for the pairs short of 4 reviewed 105 more candidates ($1.80): 3 rated 4/5
   (RG 2, WR 1, added as v2_108..110); UG 0 of 30, UR 0 of 15 and UB 0 of 10 reached 4/5, so those stay short.
+- Deck reviewer v2 prompt (2026-10-26, `experiments/reviewer_bias`): v1 under-rated UG (residual -0.34 against card
+  quality and drafter skill) and manifest decks, mostly for "few creatures"; v2 counts manifest dread, tokens and
+  recursion as bodies. Test set: UG/manifest +0.15, control +0.05. v2 is the default from now on (REVIEW_SYSTEM=v1 for
+  the old cache keys); earlier pool ratings stay v1 except the UG decks, re-reviewed with v2 (`reviewer_system`). UG
+  gets one ★★ (v2_111).
 - The web client's AI settings choose the Claude model (Opus 5.5, Sonnet 5.5) and effort; both are recorded with each
   decision, and games with different settings must not be pooled as one player.
 - Blocks XMage refused are recorded as `mapping: "refused"` (choice -1), not as decisions; the accepted blocks are

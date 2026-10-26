@@ -1,0 +1,904 @@
+{
+ "f30e8c8a11ac4e97": {
+  "review": {
+   "archetype": "UG manifest dread value",
+   "coherent": true,
+   "concerns": [
+    "equipment glut",
+    "few creatures",
+    "aggression"
+   ],
+   "rating": 3,
+   "verdict": "Solid UG manifest deck with good removal-ish tools (Unable to Scream x2, Drowner, Vanish, Domination, Meat Locker) and strong top end, but leaning on three slow equipment and a few weak delirium cards like Patchwork Beastie keeps it a fine rather than great build."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread value\", \"coherent\": true, \"concerns\": [\"equipment glut\", \"few creatures\", \"aggression\"], \"rating\": 3, \"verdict\": \"Solid UG manifest deck with good removal-ish tools (Unable to Scream x2, Drowner, Vanish, Domination, Meat Locker) and strong top end, but leaning on three slow equipment and a few weak delirium cards like Patchwork Beastie keeps it a fine rather than great build.\"}",
+  "cost_usd": 0.01634,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "605f035865dbe429": {
+  "review": {
+   "archetype": "UG manifest/value splash W",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "threat density",
+    "splash"
+   ],
+   "rating": 3,
+   "verdict": "Solid UG value shell with Floodpits, three Vanish from Sight and good fixing, but the creature quality is thin and the Mistmoors splash is greedy, so it may struggle to close games."
+  },
+  "reply": "{\"archetype\": \"UG manifest/value splash W\", \"coherent\": true, \"concerns\": [\"few creatures\", \"threat density\", \"splash\"], \"rating\": 3, \"verdict\": \"Solid UG value shell with Floodpits, three Vanish from Sight and good fixing, but the creature quality is thin and the Mistmoors splash is greedy, so it may struggle to close games.\"}",
+  "cost_usd": 0.01529,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "02a79341ba1a54f4": {
+  "review": {
+   "archetype": "UW tempo/control",
+   "coherent": true,
+   "concerns": [
+    "low threat density",
+    "white light"
+   ],
+   "rating": 4,
+   "verdict": "Strong blue-heavy UW deck. It has Enduring Curiosity and Overlord of the Mistmoors as bombs, three Seized from Slumber plus Floodpits Drowner and Meat Locker as tap-and-kill removal, and lots of manifest dread and card draw. The bodies are small, so it wins on value rather than pressure."
+  },
+  "reply": "{\"archetype\": \"UW tempo/control\", \"coherent\": true, \"concerns\": [\"low threat density\", \"white light\"], \"rating\": 4, \"verdict\": \"Strong blue-heavy UW deck. It has Enduring Curiosity and Overlord of the Mistmoors as bombs, three Seized from Slumber plus Floodpits Drowner and Meat Locker as tap-and-kill removal, and lots of manifest dread and card draw. The bodies are small, so it wins on value rather than pressure.\"}",
+  "cost_usd": 0.01531,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "009c7306ff116222": {
+  "review": {
+   "archetype": "RG delirium midrange",
+   "coherent": true,
+   "concerns": [
+    "card quality",
+    "small creatures",
+    "filler"
+   ],
+   "rating": 2,
+   "verdict": "The removal suite (Dragonfire, Inferno, Waltz, Dissection Tools) and the manifest dread package are solid, but too many low-impact slots (Ghost Vacuum, Say Its Name, 2x Turn Inside Out, 2x Fungus, Percussionist) and tiny bodies leave Monstrous Emergence weak, so the deck lacks threat density."
+  },
+  "reply": "{\"archetype\": \"RG delirium midrange\", \"coherent\": true, \"concerns\": [\"card quality\", \"small creatures\", \"filler\"], \"rating\": 2, \"verdict\": \"The removal suite (Dragonfire, Inferno, Waltz, Dissection Tools) and the manifest dread package are solid, but too many low-impact slots (Ghost Vacuum, Say Its Name, 2x Turn Inside Out, 2x Fungus, Percussionist) and tiny bodies leave Monstrous Emergence weak, so the deck lacks threat density.\"}",
+  "cost_usd": 0.02158,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "bf4260035fd10e45": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "threat quality",
+    "removal",
+    "Cathartic Parting"
+   ],
+   "rating": 3,
+   "verdict": "A coherent UG manifest dread deck with good blue tempo (Drowner, Grasp, Vanish, Windbreaker), but few creature cards hit hard, removal is mostly temporary, and the maindeck Cathartic Parting is a wasted slot. The light white splash for Trapped in the Screen is fine."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"threat quality\", \"removal\", \"Cathartic Parting\"], \"rating\": 3, \"verdict\": \"A coherent UG manifest dread deck with good blue tempo (Drowner, Grasp, Vanish, Windbreaker), but few creature cards hit hard, removal is mostly temporary, and the maindeck Cathartic Parting is a wasted slot. The light white splash for Trapped in the Screen is fine.\"}",
+  "cost_usd": 0.02218,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "c628b1ca0c7e9d76": {
+  "review": {
+   "archetype": "WU enchantments/glimmers",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "card quality",
+    "few fliers"
+   ],
+   "rating": 3,
+   "verdict": "A coherent WU enchantment deck with real removal (Hovership, Trapped in the Screen, two auras) and an Overlord of the Mistmoors to win games, but much of it is filler 2/2s and four Unnerving Grasp, so it has little power at the top end."
+  },
+  "reply": "{\"archetype\": \"WU enchantments/glimmers\", \"coherent\": true, \"concerns\": [\"top end\", \"card quality\", \"few fliers\"], \"rating\": 3, \"verdict\": \"A coherent WU enchantment deck with real removal (Hovership, Trapped in the Screen, two auras) and an Overlord of the Mistmoors to win games, but much of it is filler 2/2s and four Unnerving Grasp, so it has little power at the top end.\"}",
+  "cost_usd": 0.0206,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "bdc475d30f9505e8": {
+  "review": {
+   "archetype": "BG delirium/manifest dread",
+   "coherent": true,
+   "concerns": [
+    "card quality",
+    "evasion",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "A solid, coherent BG value deck with sticky bodies, two Murders, Emergence and Vile Mutilator, but filler like Walk-In Closet, Threats Around Every Corner and two Break Down the Door, plus almost no evasion, holds it back from being more than fine."
+  },
+  "reply": "{\"archetype\": \"BG delirium/manifest dread\", \"coherent\": true, \"concerns\": [\"card quality\", \"evasion\", \"filler\"], \"rating\": 3, \"verdict\": \"A solid, coherent BG value deck with sticky bodies, two Murders, Emergence and Vile Mutilator, but filler like Walk-In Closet, Threats Around Every Corner and two Break Down the Door, plus almost no evasion, holds it back from being more than fine.\"}",
+  "cost_usd": 0.02064,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "4b68bca234242665": {
+  "review": {
+   "archetype": "UW control (G splash)",
+   "coherent": true,
+   "concerns": [
+    "few threats",
+    "pointless splash",
+    "low power"
+   ],
+   "rating": 3,
+   "verdict": "Plenty of good blue interaction (Floodpits, Unable to Scream, Vanish, Trapped, Overlord) with a coherent enchantment-and-Room shell, but the threats are thin and small, and the green splash for Growing Dread and Under the Skin costs mana consistency for little payoff. A fine deck that might grind out games but often lacks a way to close them."
+  },
+  "reply": "{\"archetype\": \"UW control (G splash)\", \"coherent\": true, \"concerns\": [\"few threats\", \"pointless splash\", \"low power\"], \"rating\": 3, \"verdict\": \"Plenty of good blue interaction (Floodpits, Unable to Scream, Vanish, Trapped, Overlord) with a coherent enchantment-and-Room shell, but the threats are thin and small, and the green splash for Growing Dread and Under the Skin costs mana consistency for little payoff. A fine deck that might grind out games but often lacks a way to close them.\"}",
+  "cost_usd": 0.02145,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "06fa76ff6360f003": {
+  "review": {
+   "archetype": "UG delirium/manifest tempo",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "filler",
+    "delirium reliance"
+   ],
+   "rating": 3,
+   "verdict": "Solid UG shell with real power in Overlord, Enduring Curiosity and Valgavoth's Onslaught. The only removal is aura- and tap-based. Patchwork Beastie and Say Its Name are weak filler. The light Swarmweaver splash is well supported."
+  },
+  "reply": "{\"archetype\": \"UG delirium/manifest tempo\", \"coherent\": true, \"concerns\": [\"removal\", \"filler\", \"delirium reliance\"], \"rating\": 3, \"verdict\": \"Solid UG shell with real power in Overlord, Enduring Curiosity and Valgavoth's Onslaught. The only removal is aura- and tap-based. Patchwork Beastie and Say Its Name are weak filler. The light Swarmweaver splash is well supported.\"}",
+  "cost_usd": 0.02067,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "998414384db1de87": {
+  "review": {
+   "archetype": "BG delirium midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "threat density",
+    "durdle"
+   ],
+   "rating": 3,
+   "verdict": "A coherent BG delirium shell built on three Broodspinners, The Swarmweaver, Tyvar and Murder. Removal is light, and slots like two Threats Around Every Corner, Moldering Gym and Say Its Name spend too much on land-fetching value instead of pressure, so it is fine but not exceptional."
+  },
+  "reply": "{\"archetype\": \"BG delirium midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"threat density\", \"durdle\"], \"rating\": 3, \"verdict\": \"A coherent BG delirium shell built on three Broodspinners, The Swarmweaver, Tyvar and Murder. Removal is light, and slots like two Threats Around Every Corner, Moldering Gym and Say Its Name spend too much on land-fetching value instead of pressure, so it is fine but not exceptional.\"}",
+  "cost_usd": 0.02069,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "1038874413981602": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "threat density",
+    "few creatures",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A coherent UG manifest deck with good interaction (3 Vanish from Sight, 2 Unable to Scream) and card flow, but most of its bodies are vanilla 2/2s and equipment, so it lacks the real threats and top end to close games."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"threat density\", \"few creatures\", \"top end\"], \"rating\": 3, \"verdict\": \"A coherent UG manifest deck with good interaction (3 Vanish from Sight, 2 Unable to Scream) and card flow, but most of its bodies are vanilla 2/2s and equipment, so it lacks the real threats and top end to close games.\"}",
+  "cost_usd": 0.01992,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "673c0bb2a7b2b4fc": {
+  "review": {
+   "archetype": "UG manifest dread tempo",
+   "coherent": false,
+   "concerns": [
+    "threat density",
+    "few creatures",
+    "splash",
+    "win conditions"
+   ],
+   "rating": 2,
+   "verdict": "A near mono-blue pile of reactive tempo cards with a thin green layer and a pointless one-card black splash for Slasher. It has good interaction (Drowners, Vanish from Sight, Meat Locker), but its real creatures are few and weak and most bodies are vanilla 2/2 manifests, so it struggles to close games."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread tempo\", \"coherent\": false, \"concerns\": [\"threat density\", \"few creatures\", \"splash\", \"win conditions\"], \"rating\": 2, \"verdict\": \"A near mono-blue pile of reactive tempo cards with a thin green layer and a pointless one-card black splash for Slasher. It has good interaction (Drowners, Vanish from Sight, Meat Locker), but its real creatures are few and weak and most bodies are vanilla 2/2 manifests, so it struggles to close games.\"}",
+  "cost_usd": 0.02106,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "1ebce7bcc3904951": {
+  "review": {
+   "archetype": "UG tempo-control splashing R",
+   "coherent": false,
+   "concerns": [
+    "weak threats",
+    "creature quality",
+    "delirium",
+    "splash"
+   ],
+   "rating": 2,
+   "verdict": "The interaction is decent (3 Vanish from Sight, Drowner, Glassworks, Beatdown) and the splash is supported, but the bodies are mostly 1/1 Glimmers and defenders, and the delirium payoffs lack enablers, so the deck struggles to close games."
+  },
+  "reply": "{\"archetype\": \"UG tempo-control splashing R\", \"coherent\": false, \"concerns\": [\"weak threats\", \"creature quality\", \"delirium\", \"splash\"], \"rating\": 2, \"verdict\": \"The interaction is decent (3 Vanish from Sight, Drowner, Glassworks, Beatdown) and the splash is supported, but the bodies are mostly 1/1 Glimmers and defenders, and the delirium payoffs lack enablers, so the deck struggles to close games.\"}",
+  "cost_usd": 0.02267,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "d77ac04873e65d9a": {
+  "review": {
+   "archetype": "UB enchantment/manifest control",
+   "coherent": true,
+   "concerns": [
+    "mana split",
+    "weak creatures",
+    "threat density"
+   ],
+   "rating": 3,
+   "verdict": "A playable blue-heavy tempo-control deck with good interaction (Unable to Scream, Stay Hidden, 2x Vanish from Sight) and strong top-end in Enduring Curiosity, Fear of Falling, Unholy Annex and Vile Mutilator, but the creature base is thin and low-impact (Peeper, 2x Analyst), and 8 Swamps for only 5 black cards strains its many UU costs. It should run 10 Islands and 6 Swamps."
+  },
+  "reply": "{\"archetype\": \"UB enchantment/manifest control\", \"coherent\": true, \"concerns\": [\"mana split\", \"weak creatures\", \"threat density\"], \"rating\": 3, \"verdict\": \"A playable blue-heavy tempo-control deck with good interaction (Unable to Scream, Stay Hidden, 2x Vanish from Sight) and strong top-end in Enduring Curiosity, Fear of Falling, Unholy Annex and Vile Mutilator, but the creature base is thin and low-impact (Peeper, 2x Analyst), and 8 Swamps for only 5 black cards strains its many UU costs. It should run 10 Islands and 6 Swamps.\"}",
+  "cost_usd": 0.02624,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "13e784c49c237b05": {
+  "review": {
+   "archetype": "UG manifest dread, splashing red",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "top end",
+    "splash"
+   ],
+   "rating": 3,
+   "verdict": "A coherent UG manifest dread deck: 3 Growing Dread and 2 Cryptid Inspector give real synergy, 19 bodies and a low curve. Removal is thin and mostly tempo, though; the red splash for two Rooms and a mediocre Most Valuable Slayer is shaky, and the top end is light."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread, splashing red\", \"coherent\": true, \"concerns\": [\"removal\", \"top end\", \"splash\"], \"rating\": 3, \"verdict\": \"A coherent UG manifest dread deck: 3 Growing Dread and 2 Cryptid Inspector give real synergy, 19 bodies and a low curve. Removal is thin and mostly tempo, though; the red splash for two Rooms and a mediocre Most Valuable Slayer is shaky, and the top end is light.\"}",
+  "cost_usd": 0.02101,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "465d4c5acae644d8": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "card quality",
+    "unneeded splash"
+   ],
+   "rating": 3,
+   "verdict": "A coherent UG manifest dread deck: 3 Oblivious Bookworm, 2 Growing Dread and Overlord give it real synergy, and 3 Unable to Scream handle threats. But many slots are filler 2/2 makers, it has almost no hard removal or evasion, and the black splash for one Broodspinner adds little."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"removal\", \"card quality\", \"unneeded splash\"], \"rating\": 3, \"verdict\": \"A coherent UG manifest dread deck: 3 Oblivious Bookworm, 2 Growing Dread and Overlord give it real synergy, and 3 Unable to Scream handle threats. But many slots are filler 2/2 makers, it has almost no hard removal or evasion, and the black splash for one Broodspinner adds little.\"}",
+  "cost_usd": 0.0198,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "14be0d98c49e3db1": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "card quality",
+    "top end",
+    "light blue"
+   ],
+   "rating": 2,
+   "verdict": "The manifest dread plan hangs together, with Cryptid Inspector, Growing Dread and Bookworms rewarding face-down cards, but it is mostly low-impact filler (3 Insidious Fungus, 4 Manifest Dread). The only removal is 2 Coordinated Clobbering, and the blue adds little power, so it will struggle against better decks."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"removal\", \"card quality\", \"top end\", \"light blue\"], \"rating\": 2, \"verdict\": \"The manifest dread plan hangs together, with Cryptid Inspector, Growing Dread and Bookworms rewarding face-down cards, but it is mostly low-impact filler (3 Insidious Fungus, 4 Manifest Dread). The only removal is 2 Coordinated Clobbering, and the blue adds little power, so it will struggle against better decks.\"}",
+  "cost_usd": 0.01712,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "7980e0a2d059e663": {
+  "review": {
+   "archetype": "RG aggro/delirium",
+   "coherent": true,
+   "concerns": [
+    "creature quality",
+    "small bodies",
+    "thin 4-5 drops"
+   ],
+   "rating": 3,
+   "verdict": "Four Beastie Beatdowns plus Bargain and Glassworks give real removal and the low curve is aggressive, but many weak 1-2 power bodies like Percussionist and Norin fight poorly, and the 4-5 slots are nearly empty, so it's a fine, unspectacular deck."
+  },
+  "reply": "{\"archetype\": \"RG aggro/delirium\", \"coherent\": true, \"concerns\": [\"creature quality\", \"small bodies\", \"thin 4-5 drops\"], \"rating\": 3, \"verdict\": \"Four Beastie Beatdowns plus Bargain and Glassworks give real removal and the low curve is aggressive, but many weak 1-2 power bodies like Percussionist and Norin fight poorly, and the 4-5 slots are nearly empty, so it's a fine, unspectacular deck.\"}",
+  "cost_usd": 0.02141,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "1cc245b578804bc6": {
+  "review": {
+   "archetype": "UG tempo/control (manifest dread)",
+   "coherent": true,
+   "concerns": [
+    "threat density",
+    "weak green",
+    "small creatures"
+   ],
+   "rating": 3,
+   "verdict": "A deep blue core of interaction (Drowners, Vanish, Domination, Unable to Scream, Meat Locker) plus Enduring Curiosity and Overlord gives a solid controlling shell, but the green is thin. Monstrous Emergence struggles with few big bodies, and the Glimmer/equipment filler keeps the threats underpowered, so it is a fine deck rather than a strong one."
+  },
+  "reply": "{\"archetype\": \"UG tempo/control (manifest dread)\", \"coherent\": true, \"concerns\": [\"threat density\", \"weak green\", \"small creatures\"], \"rating\": 3, \"verdict\": \"A deep blue core of interaction (Drowners, Vanish, Domination, Unable to Scream, Meat Locker) plus Enduring Curiosity and Overlord gives a solid controlling shell, but the green is thin. Monstrous Emergence struggles with few big bodies, and the Glimmer/equipment filler keeps the threats underpowered, so it is a fine deck rather than a strong one.\"}",
+  "cost_usd": 0.02094,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "126ba06d8019b054": {
+  "review": {
+   "archetype": "UG manifest dread splashing W",
+   "coherent": true,
+   "concerns": [
+    "splash gold card",
+    "Patchwork Beastie",
+    "filler"
+   ],
+   "rating": 4,
+   "verdict": "Solid UG dread/eerie deck. It has strong rares (Overlord, Tyvar, Enduring Vitality), a good flash and value suite, and enough removal with the cheap white splash for 2x Trapped in the Screen. Docked for a few weak slots: an unreliable delirium Beastie, a low-impact Say Its Name, and a gold Gremlin Tamer on the splash."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread splashing W\", \"coherent\": true, \"concerns\": [\"splash gold card\", \"Patchwork Beastie\", \"filler\"], \"rating\": 4, \"verdict\": \"Solid UG dread/eerie deck. It has strong rares (Overlord, Tyvar, Enduring Vitality), a good flash and value suite, and enough removal with the cheap white splash for 2x Trapped in the Screen. Docked for a few weak slots: an unreliable delirium Beastie, a low-impact Say Its Name, and a gold Gremlin Tamer on the splash.\"}",
+  "cost_usd": 0.02489,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "d831c7e1f79d5976": {
+  "review": {
+   "archetype": "WB sacrifice control",
+   "coherent": true,
+   "concerns": [
+    "creature quality",
+    "few finishers"
+   ],
+   "rating": 4,
+   "verdict": "A deep, efficient removal suite with plenty of sacrifice fodder, plus Unholy Annex and Vile Mutilator for card advantage and a finish, makes a strong controlling deck, though the small bodies leave few ways to actually close games."
+  },
+  "reply": "{\"archetype\": \"WB sacrifice control\", \"coherent\": true, \"concerns\": [\"creature quality\", \"few finishers\"], \"rating\": 4, \"verdict\": \"A deep, efficient removal suite with plenty of sacrifice fodder, plus Unholy Annex and Vile Mutilator for card advantage and a finish, makes a strong controlling deck, though the small bodies leave few ways to actually close games.\"}",
+  "cost_usd": 0.02238,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "1aec4a26911bcdab": {
+  "review": {
+   "archetype": "WB reanimator control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "recursion glut",
+    "top-heavy",
+    "weak early drops"
+   ],
+   "rating": 3,
+   "verdict": "Strong removal plus two Shroudstompers and Overlord give it real power, but with only 9 real creatures, its six or seven reanimation effects (Surgical Suite x2, Emerge x2, Live or Die, Faithful) often have little worth returning, and the filler 1-drops make the early game shaky."
+  },
+  "reply": "{\"archetype\": \"WB reanimator control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"recursion glut\", \"top-heavy\", \"weak early drops\"], \"rating\": 3, \"verdict\": \"Strong removal plus two Shroudstompers and Overlord give it real power, but with only 9 real creatures, its six or seven reanimation effects (Surgical Suite x2, Emerge x2, Live or Die, Faithful) often have little worth returning, and the filler 1-drops make the early game shaky.\"}",
+  "cost_usd": 0.02081,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "a2aaf1e0caaf74e0": {
+  "review": {
+   "archetype": "WB reanimator control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "top-heavy",
+    "early game"
+   ],
+   "rating": 4,
+   "verdict": "Deep removal (three Trapped in the Screen, Murder, Seized, Exorcise) and two Shroudstompers backed by Rite of the Moth, Emerge and Cynical Loner give a strong grindy plan, though the thin, clunky early board can fall behind fast starts."
+  },
+  "reply": "{\"archetype\": \"WB reanimator control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"top-heavy\", \"early game\"], \"rating\": 4, \"verdict\": \"Deep removal (three Trapped in the Screen, Murder, Seized, Exorcise) and two Shroudstompers backed by Rite of the Moth, Emerge and Cynical Loner give a strong grindy plan, though the thin, clunky early board can fall behind fast starts.\"}",
+  "cost_usd": 0.02075,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "c738a30b5e48c3e8": {
+  "review": {
+   "archetype": "BG removal midrange",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "fight spells"
+   ],
+   "rating": 3,
+   "verdict": "Plenty of quality removal (2 Murder, Live or Die, Drag to the Roots) plus strong top end in Unholy Annex, Miasma Demon and Valgavoth's Onslaught, but only 8 real creatures (13 bodies) leaves Clobbering and Monstrous Emergence short of creatures and the board thin early, with Patchwork Beastie unreliable on delirium."
+  },
+  "reply": "{\"archetype\": \"BG removal midrange\", \"coherent\": true, \"concerns\": [\"few creatures\", \"fight spells\"], \"rating\": 3, \"verdict\": \"Plenty of quality removal (2 Murder, Live or Die, Drag to the Roots) plus strong top end in Unholy Annex, Miasma Demon and Valgavoth's Onslaught, but only 8 real creatures (13 bodies) leaves Clobbering and Monstrous Emergence short of creatures and the board thin early, with Patchwork Beastie unreliable on delirium.\"}",
+  "cost_usd": 0.02385,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "adff249be4f73096": {
+  "review": {
+   "archetype": "UB enchantments/control",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "Mindskinner tension",
+    "small threats"
+   ],
+   "rating": 4,
+   "verdict": "Strong UB deck with good removal (Murder, Withering Torment, Nowhere to Run, Sporogenic Infection, Miasma Demon), premium blue cards (Enduring Curiosity, Fear of Impostors, Floodpits Drowner, Meat Locker) and enough eerie payoffs; Ghost Vacuum, Valgavoth's Faithful and Defiled Crypt are weak filler, and Mindskinner's mill plan works against Curiosity's draws and the low-power aggro bodies."
+  },
+  "reply": "{\"archetype\": \"UB enchantments/control\", \"coherent\": true, \"concerns\": [\"filler\", \"Mindskinner tension\", \"small threats\"], \"rating\": 4, \"verdict\": \"Strong UB deck with good removal (Murder, Withering Torment, Nowhere to Run, Sporogenic Infection, Miasma Demon), premium blue cards (Enduring Curiosity, Fear of Impostors, Floodpits Drowner, Meat Locker) and enough eerie payoffs; Ghost Vacuum, Valgavoth's Faithful and Defiled Crypt are weak filler, and Mindskinner's mill plan works against Curiosity's draws and the low-power aggro bodies.\"}",
+  "cost_usd": 0.02417,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "c261bce225dbfc2e": {
+  "review": {
+   "archetype": "UB enchantments control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "clunky top end",
+    "threat density"
+   ],
+   "rating": 3,
+   "verdict": "A removal-heavy UB eerie deck with good card quality (Overlord, Enduring Curiosity, Slasher, Murder, two Fear of Infinity). It runs thin on real threats, and three six-mana Dominations plus filler like Skullcrab make it slow and clunky."
+  },
+  "reply": "{\"archetype\": \"UB enchantments control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"clunky top end\", \"threat density\"], \"rating\": 3, \"verdict\": \"A removal-heavy UB eerie deck with good card quality (Overlord, Enduring Curiosity, Slasher, Murder, two Fear of Infinity). It runs thin on real threats, and three six-mana Dominations plus filler like Skullcrab make it slow and clunky.\"}",
+  "cost_usd": 0.02072,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "c97c96ac3e1261b8": {
+  "review": {
+   "archetype": "WB removal control",
+   "coherent": true,
+   "concerns": [
+    "threat quality",
+    "early game"
+   ],
+   "rating": 3,
+   "verdict": "A deep removal suite (4 Seized from Slumber, Trapped in the Screen, Fear of Abduction, Split Up) and value creatures make this a solid grindy WB deck, but the bodies are small and the finishers few, leaning on two Shepherding Spirits and Fear to close games."
+  },
+  "reply": "{\"archetype\": \"WB removal control\", \"coherent\": true, \"concerns\": [\"threat quality\", \"early game\"], \"rating\": 3, \"verdict\": \"A deep removal suite (4 Seized from Slumber, Trapped in the Screen, Fear of Abduction, Split Up) and value creatures make this a solid grindy WB deck, but the bodies are small and the finishers few, leaning on two Shepherding Spirits and Fear to close games.\"}",
+  "cost_usd": 0.01828,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "f5cc0a3d87fc3055": {
+  "review": {
+   "archetype": "WB removal-heavy midrange/reanimator",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "top-heavy",
+    "Emerge filler",
+    "thin white"
+   ],
+   "rating": 3,
+   "verdict": "Removal is excellent: three Murder, Come Back Wrong, Nowhere to Run, Seized, Fear of Abduction and two Vile Mutilators. But the creature base is thin and low-impact. Weak cards like 2x Emerge from the Cocoon and two Commune with Evil clog a top-heavy curve. The white is light enough that a creature-dense mono-B or better second color would serve better. Still a solid deck that wins by grinding."
+  },
+  "reply": "{\"archetype\": \"WB removal-heavy midrange/reanimator\", \"coherent\": true, \"concerns\": [\"few creatures\", \"top-heavy\", \"Emerge filler\", \"thin white\"], \"rating\": 3, \"verdict\": \"Removal is excellent: three Murder, Come Back Wrong, Nowhere to Run, Seized, Fear of Abduction and two Vile Mutilators. But the creature base is thin and low-impact. Weak cards like 2x Emerge from the Cocoon and two Commune with Evil clog a top-heavy curve. The white is light enough that a creature-dense mono-B or better second color would serve better. Still a solid deck that wins by grinding.\"}",
+  "cost_usd": 0.02136,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "648ea44d7d4deb0d": {
+  "review": {
+   "archetype": "UB control",
+   "coherent": true,
+   "concerns": [
+    "few threats",
+    "few creatures"
+   ],
+   "rating": 4,
+   "verdict": "Deep removal (3 Murder, Withering Torment, Nowhere to Run, Miasma Demon, Meat Locker) plus Glimmerburst card flow makes a strong UB control deck; Fear of Infinity and eerie triggers add value, but it is light on real finishers and leans on glimmer tokens for board presence."
+  },
+  "reply": "{\"archetype\": \"UB control\", \"coherent\": true, \"concerns\": [\"few threats\", \"few creatures\"], \"rating\": 4, \"verdict\": \"Deep removal (3 Murder, Withering Torment, Nowhere to Run, Miasma Demon, Meat Locker) plus Glimmerburst card flow makes a strong UB control deck; Fear of Infinity and eerie triggers add value, but it is light on real finishers and leans on glimmer tokens for board presence.\"}",
+  "cost_usd": 0.02119,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "0653e56c86e15d5e": {
+  "review": {
+   "archetype": "WB reanimator/control (mostly black)",
+   "coherent": true,
+   "concerns": [
+    "creature quality",
+    "few threats",
+    "reanimation targets",
+    "clunky top end"
+   ],
+   "rating": 3,
+   "verdict": "Four Murders, Winter's Intervention, Unholy Annex, Shroudstomper and Derelict Attic card draw give it a strong removal and card-advantage core, but the bodies are weak (3 Innocuous Rat, 1/1s, 2/2s), and 2x Emerge from the Cocoon plus Cadaver Lab have few worthwhile targets, so it grinds well but can struggle to close or keep up on board."
+  },
+  "reply": "{\"archetype\": \"WB reanimator/control (mostly black)\", \"coherent\": true, \"concerns\": [\"creature quality\", \"few threats\", \"reanimation targets\", \"clunky top end\"], \"rating\": 3, \"verdict\": \"Four Murders, Winter's Intervention, Unholy Annex, Shroudstomper and Derelict Attic card draw give it a strong removal and card-advantage core, but the bodies are weak (3 Innocuous Rat, 1/1s, 2/2s), and 2x Emerge from the Cocoon plus Cadaver Lab have few worthwhile targets, so it grinds well but can struggle to close or keep up on board.\"}",
+  "cost_usd": 0.02189,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "2677ca7790d38630": {
+  "review": {
+   "archetype": "UB control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "threat density",
+    "splash",
+    "counterspells"
+   ],
+   "rating": 3,
+   "verdict": "The removal suite is solid (Murder, Live or Die, Nowhere to Run, 2x Unable to Scream, Meat Locker), but there are too few real threats, too many reactive counters and Get Outs, and the green splash for a single Swarmweaver isn't worth the mana."
+  },
+  "reply": "{\"archetype\": \"UB control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"threat density\", \"splash\", \"counterspells\"], \"rating\": 3, \"verdict\": \"The removal suite is solid (Murder, Live or Die, Nowhere to Run, 2x Unable to Scream, Meat Locker), but there are too few real threats, too many reactive counters and Get Outs, and the green splash for a single Swarmweaver isn't worth the mana.\"}",
+  "cost_usd": 0.02208,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "fc52ff7dd515bebd": {
+  "review": {
+   "archetype": "UB enchantments control",
+   "coherent": true,
+   "concerns": [
+    "weak threats",
+    "few creatures",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "Plenty of removal (Murder, Final Vengeance, Winter's Intervention and three Aura or Room answers) and good card flow from Glimmerburst, Entity Tracker and the Rooms, but the creatures are weak: Skullcrabs and Rats do little, and the clock rests on Slasher, Snatcher and manifests."
+  },
+  "reply": "{\"archetype\": \"UB enchantments control\", \"coherent\": true, \"concerns\": [\"weak threats\", \"few creatures\", \"filler\"], \"rating\": 3, \"verdict\": \"Plenty of removal (Murder, Final Vengeance, Winter's Intervention and three Aura or Room answers) and good card flow from Glimmerburst, Entity Tracker and the Rooms, but the creatures are weak: Skullcrabs and Rats do little, and the clock rests on Slasher, Snatcher and manifests.\"}",
+  "cost_usd": 0.02114,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "d5e3349ec9d61258": {
+  "review": {
+   "archetype": "UR rooms tempo-control",
+   "coherent": false,
+   "concerns": [
+    "few creatures",
+    "anti-synergy",
+    "Pyroclasm"
+   ],
+   "rating": 3,
+   "verdict": "The interaction is solid: Drowner, two Meat Lockers, two Stay Hidden, Vanish and Furnace, with two Fear of Falling on top. But only 9 real creatures, two Pyroclasms that kill most of its own small bodies, and a Mindskinner that turns off the aggressive red pieces leave it a playable but unfocused deck."
+  },
+  "reply": "{\"archetype\": \"UR rooms tempo-control\", \"coherent\": false, \"concerns\": [\"few creatures\", \"anti-synergy\", \"Pyroclasm\"], \"rating\": 3, \"verdict\": \"The interaction is solid: Drowner, two Meat Lockers, two Stay Hidden, Vanish and Furnace, with two Fear of Falling on top. But only 9 real creatures, two Pyroclasms that kill most of its own small bodies, and a Mindskinner that turns off the aggressive red pieces leave it a playable but unfocused deck.\"}",
+  "cost_usd": 0.02536,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "bc4760d2e9e970f7": {
+  "review": {
+   "archetype": "WB midrange removal control",
+   "coherent": true,
+   "concerns": [
+    "threat quality",
+    "few creatures"
+   ],
+   "rating": 3,
+   "verdict": "A deep removal suite (Murder, Seized from Slumber, Nowhere to Run, Final Vengeance, 2x Winter's Intervention, Exorcise, Sporogenic Infection, plus 2x Fear of Immobility) and solid mana carry a light, low-impact creature base of Rats, 2-drops and modest 4s, so it grinds well but can struggle to close games."
+  },
+  "reply": "{\"archetype\": \"WB midrange removal control\", \"coherent\": true, \"concerns\": [\"threat quality\", \"few creatures\"], \"rating\": 3, \"verdict\": \"A deep removal suite (Murder, Seized from Slumber, Nowhere to Run, Final Vengeance, 2x Winter's Intervention, Exorcise, Sporogenic Infection, plus 2x Fear of Immobility) and solid mana carry a light, low-impact creature base of Rats, 2-drops and modest 4s, so it grinds well but can struggle to close games.\"}",
+  "cost_usd": 0.02261,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "177f3e1ff71fbeff": {
+  "review": {
+   "archetype": "UR rooms control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "mana split",
+    "threat quality",
+    "Mindskinner anti-synergy"
+   ],
+   "rating": 2,
+   "verdict": "Solid interaction in 3x Meat Locker, 2x Impossible Inferno, Vanish and the counters. But the bodies are mostly 1/1s and manifests, the mana runs 7 Mountains for a light red splash beside UUU/UU costs, and Mindskinner fights the rest of the damage plan, so it struggles to actually close games."
+  },
+  "reply": "{\"archetype\": \"UR rooms control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"mana split\", \"threat quality\", \"Mindskinner anti-synergy\"], \"rating\": 2, \"verdict\": \"Solid interaction in 3x Meat Locker, 2x Impossible Inferno, Vanish and the counters. But the bodies are mostly 1/1s and manifests, the mana runs 7 Mountains for a light red splash beside UUU/UU costs, and Mindskinner fights the rest of the damage plan, so it struggles to actually close games.\"}",
+  "cost_usd": 0.02241,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "edabbac062fa0f9d": {
+  "review": {
+   "archetype": "UR rooms control",
+   "coherent": true,
+   "concerns": [
+    "weak threats",
+    "few creatures",
+    "Pyroclasm anti-synergy",
+    "colors"
+   ],
+   "rating": 2,
+   "verdict": "There is real interaction and room card advantage, but the creatures are low-impact (Skullcrab, defender Researchers, Percussionist), Pyroclasm hits your own small bodies, and heavy blue with a RR splash card leaves a clunky deck that struggles to close games."
+  },
+  "reply": "{\"archetype\": \"UR rooms control\", \"coherent\": true, \"concerns\": [\"weak threats\", \"few creatures\", \"Pyroclasm anti-synergy\", \"colors\"], \"rating\": 2, \"verdict\": \"There is real interaction and room card advantage, but the creatures are low-impact (Skullcrab, defender Researchers, Percussionist), Pyroclasm hits your own small bodies, and heavy blue with a RR splash card leaves a clunky deck that struggles to close games.\"}",
+  "cost_usd": 0.02204,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "b3c069ceb3b4c2d4": {
+  "review": {
+   "archetype": "WB removal control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "threat density",
+    "recursion targets"
+   ],
+   "rating": 3,
+   "verdict": "Excellent removal suite (Murder, 2x Seized from Slumber, Trapped in the Screen, Sheltered by Ghosts, Nowhere to Run) and real top end in Shroudstomper and Miasma Demon. But only 8 real creatures, padded by 1/1 tokens and Fear of Lost Teeth, makes it hard to close games. It also leaves Rite of the Moth, Emerge from the Cocoon, Cadaver Lab and Final Vengeance short on good targets or fodder."
+  },
+  "reply": "{\"archetype\": \"WB removal control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"threat density\", \"recursion targets\"], \"rating\": 3, \"verdict\": \"Excellent removal suite (Murder, 2x Seized from Slumber, Trapped in the Screen, Sheltered by Ghosts, Nowhere to Run) and real top end in Shroudstomper and Miasma Demon. But only 8 real creatures, padded by 1/1 tokens and Fear of Lost Teeth, makes it hard to close games. It also leaves Rite of the Moth, Emerge from the Cocoon, Cadaver Lab and Final Vengeance short on good targets or fodder.\"}",
+  "cost_usd": 0.02246,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "5d800b0271ca6170": {
+  "review": {
+   "archetype": "UR rooms/enchantments control",
+   "coherent": false,
+   "concerns": [
+    "threats",
+    "creature quality",
+    "few creatures",
+    "win condition"
+   ],
+   "rating": 2,
+   "verdict": "Good removal and card draw (Glassworks, Meat Locker, Unable to Scream, Rollercrusher, Glimmerburst), but the bodies are mostly 1/1s like Percussionist, Glimmer tokens and Skullcrab, so there is little pressure and no real way to close games."
+  },
+  "reply": "{\"archetype\": \"UR rooms/enchantments control\", \"coherent\": false, \"concerns\": [\"threats\", \"creature quality\", \"few creatures\", \"win condition\"], \"rating\": 2, \"verdict\": \"Good removal and card draw (Glassworks, Meat Locker, Unable to Scream, Rollercrusher, Glimmerburst), but the bodies are mostly 1/1s like Percussionist, Glimmer tokens and Skullcrab, so there is little pressure and no real way to close games.\"}",
+  "cost_usd": 0.01728,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "6c85efcb16f08e78": {
+  "review": {
+   "archetype": "WB midrange with top-end bombs",
+   "coherent": true,
+   "concerns": [
+    "top-heavy",
+    "mana",
+    "pointless splash"
+   ],
+   "rating": 3,
+   "verdict": "Strong card quality: Shroudstomper, Vile Mutilator, Hovership, Victor, two Live or Die and Valgavoth give real power and removal, but the WWBB/BBB top end with three seven-plus drops is greedy on 17 lands, and the thin green splash for Broodspinner and Clobbering adds little while straining the mana."
+  },
+  "reply": "{\"archetype\": \"WB midrange with top-end bombs\", \"coherent\": true, \"concerns\": [\"top-heavy\", \"mana\", \"pointless splash\"], \"rating\": 3, \"verdict\": \"Strong card quality: Shroudstomper, Vile Mutilator, Hovership, Victor, two Live or Die and Valgavoth give real power and removal, but the WWBB/BBB top end with three seven-plus drops is greedy on 17 lands, and the thin green splash for Broodspinner and Clobbering adds little while straining the mana.\"}",
+  "cost_usd": 0.0268,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "17bdb14f0a5d79f1": {
+  "review": {
+   "archetype": "WB removal control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "reanimation glut",
+    "top-heavy"
+   ],
+   "rating": 3,
+   "verdict": "Eight real removal spells plus Shroudstomper and Spectral Snatcher give a strong control core, but only 10 creatures make the 2x Emerge from the Cocoon, Rite of the Moth and Cadaver Lab clunky; swapping a couple of them for bodies would make this good rather than fine."
+  },
+  "reply": "{\"archetype\": \"WB removal control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"reanimation glut\", \"top-heavy\"], \"rating\": 3, \"verdict\": \"Eight real removal spells plus Shroudstomper and Spectral Snatcher give a strong control core, but only 10 creatures make the 2x Emerge from the Cocoon, Rite of the Moth and Cadaver Lab clunky; swapping a couple of them for bodies would make this good rather than fine.\"}",
+  "cost_usd": 0.02366,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "f9a3bcba3a67792f": {
+  "review": {
+   "archetype": "UG manifest dread value",
+   "coherent": true,
+   "concerns": [
+    "low power",
+    "removal",
+    "threat density"
+   ],
+   "rating": 3,
+   "verdict": "A coherent UG manifest deck with good tempo pieces like Floodpits Drowner, Vanish from Sight and Meat Locker, but many of its threats are midrange bodies and it lacks hard removal and top-end power."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread value\", \"coherent\": true, \"concerns\": [\"low power\", \"removal\", \"threat density\"], \"rating\": 3, \"verdict\": \"A coherent UG manifest deck with good tempo pieces like Floodpits Drowner, Vanish from Sight and Meat Locker, but many of its threats are midrange bodies and it lacks hard removal and top-end power.\"}",
+  "cost_usd": 0.01449,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "ec1fb46b62736ff3": {
+  "review": {
+   "archetype": "UG manifest/delirium midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "weak cards",
+    "blue thin"
+   ],
+   "rating": 3,
+   "verdict": "A solid green core with Enduring Curiosity and Growing Dread, but the removal is light, there are filler cards like Cathartic Parting and Insidious Fungus, and the blue is too thin to justify 7 Islands. Playable, but closer to average than strong."
+  },
+  "reply": "{\"archetype\": \"UG manifest/delirium midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"weak cards\", \"blue thin\"], \"rating\": 3, \"verdict\": \"A solid green core with Enduring Curiosity and Growing Dread, but the removal is light, there are filler cards like Cathartic Parting and Insidious Fungus, and the blue is too thin to justify 7 Islands. Playable, but closer to average than strong.\"}",
+  "cost_usd": 0.01572,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "304592c6a026df84": {
+  "review": {
+   "archetype": "UG manifest dread midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "filler",
+    "delirium"
+   ],
+   "rating": 3,
+   "verdict": "A solid UG manifest dread shell with good top end and cycling flexibility, held back by thin removal and filler like 2x Say Its Name, the Machetes and Patchwork Beastie, whose delirium this deck rarely turns on."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"filler\", \"delirium\"], \"rating\": 3, \"verdict\": \"A solid UG manifest dread shell with good top end and cycling flexibility, held back by thin removal and filler like 2x Say Its Name, the Machetes and Patchwork Beastie, whose delirium this deck rarely turns on.\"}",
+  "cost_usd": 0.02024,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "9c6f6b5faa9faa76": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "few removal",
+    "thin blue"
+   ],
+   "rating": 3,
+   "verdict": "A reasonable UG manifest shell: 3 Growing Dread, Cryptid Inspectors and solid green fat give it a real plan. Filler like Cathartic Parting, a lone Say Its Name and Horrid Vigor, plus only about three real removal spells, keep it a middling deck."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"filler\", \"few removal\", \"thin blue\"], \"rating\": 3, \"verdict\": \"A reasonable UG manifest shell: 3 Growing Dread, Cryptid Inspectors and solid green fat give it a real plan. Filler like Cathartic Parting, a lone Say Its Name and Horrid Vigor, plus only about three real removal spells, keep it a middling deck.\"}",
+  "cost_usd": 0.01874,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "8f012f1d9b914816": {
+  "review": {
+   "archetype": "UG delirium midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "Beastie reliability",
+    "light blue"
+   ],
+   "rating": 3,
+   "verdict": "A solid green-heavy midrange deck with good top-end in Overlord, Tyvar, Vitality and the Wurm, plus enough delirium enablers; it's held back by thin interaction and two Patchwork Beasties that can sit idle early."
+  },
+  "reply": "{\"archetype\": \"UG delirium midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"Beastie reliability\", \"light blue\"], \"rating\": 3, \"verdict\": \"A solid green-heavy midrange deck with good top-end in Overlord, Tyvar, Vitality and the Wurm, plus enough delirium enablers; it's held back by thin interaction and two Patchwork Beasties that can sit idle early.\"}",
+  "cost_usd": 0.02175,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "a960b13cad93db19": {
+  "review": {
+   "archetype": "UG tempo/midrange",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "power level"
+   ],
+   "rating": 3,
+   "verdict": "A low-curve UG deck with 18 bodies and decent interaction: Drowner, Unable to Scream and two fight-style spells. It has a few strong threats in Fear of Exposure, Thresher and Valgavoth's Onslaught, but little top end and many filler two- and three-drops, so it is fine but not special. With nothing above four, 16 lands would also be reasonable."
+  },
+  "reply": "{\"archetype\": \"UG tempo/midrange\", \"coherent\": true, \"concerns\": [\"top end\", \"power level\"], \"rating\": 3, \"verdict\": \"A low-curve UG deck with 18 bodies and decent interaction: Drowner, Unable to Scream and two fight-style spells. It has a few strong threats in Fear of Exposure, Thresher and Valgavoth's Onslaught, but little top end and many filler two- and three-drops, so it is fine but not special. With nothing above four, 16 lands would also be reasonable.\"}",
+  "cost_usd": 0.02063,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "ece3b760071ab055": {
+  "review": {
+   "archetype": "UG rooms/manifest dread",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "top-end"
+   ],
+   "rating": 3,
+   "verdict": "A solid, synergistic UG deck. Fear of Falling, Meat Locker, Unable to Scream and Valgavoth's Onslaught carry it, and Keybearer and Peeper reward the Rooms. It lacks hard removal and has some filler 2-drops, so it's fine but not exceptional."
+  },
+  "reply": "{\"archetype\": \"UG rooms/manifest dread\", \"coherent\": true, \"concerns\": [\"removal\", \"top-end\"], \"rating\": 3, \"verdict\": \"A solid, synergistic UG deck. Fear of Falling, Meat Locker, Unable to Scream and Valgavoth's Onslaught carry it, and Keybearer and Peeper reward the Rooms. It lacks hard removal and has some filler 2-drops, so it's fine but not exceptional.\"}",
+  "cost_usd": 0.01823,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "a21f0ef24052dcad": {
+  "review": {
+   "archetype": "UG enchantments/manifest midrange",
+   "coherent": true,
+   "concerns": [
+    "threat quality",
+    "Oculus enabling",
+    "splash",
+    "Mindskinner"
+   ],
+   "rating": 3,
+   "verdict": "A playable UG deck with solid interaction (Meat Lockers, Vanish, Bear Trap, Unable to Scream) and card flow, but the threats are mediocre, Abhorrent Oculus is hard to cast with little self-mill, Mindskinner fights the damage plan, and splashing one Plains for Toby isn't worth it."
+  },
+  "reply": "{\"archetype\": \"UG enchantments/manifest midrange\", \"coherent\": true, \"concerns\": [\"threat quality\", \"Oculus enabling\", \"splash\", \"Mindskinner\"], \"rating\": 3, \"verdict\": \"A playable UG deck with solid interaction (Meat Lockers, Vanish, Bear Trap, Unable to Scream) and card flow, but the threats are mediocre, Abhorrent Oculus is hard to cast with little self-mill, Mindskinner fights the damage plan, and splashing one Plains for Toby isn't worth it.\"}",
+  "cost_usd": 0.02117,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "f794d0934708db33": {
+  "review": {
+   "archetype": "UG graveyard midrange",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "delirium setup"
+   ],
+   "rating": 3,
+   "verdict": "Solid UG midrange with real top end in Abhorrent Oculus and Altanak, decent removal from fight spells, Vanish from Sight and Unnerving Grasp, and good card flow; a few weak slots like Overgrown Zealot, Don't Make a Sound and the conditional Patchwork Beastie keep it a fine deck rather than a great one."
+  },
+  "reply": "{\"archetype\": \"UG graveyard midrange\", \"coherent\": true, \"concerns\": [\"filler\", \"delirium setup\"], \"rating\": 3, \"verdict\": \"Solid UG midrange with real top end in Abhorrent Oculus and Altanak, decent removal from fight spells, Vanish from Sight and Unnerving Grasp, and good card flow; a few weak slots like Overgrown Zealot, Don't Make a Sound and the conditional Patchwork Beastie keep it a fine deck rather than a great one.\"}",
+  "cost_usd": 0.02168,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ },
+ "fcb14a2fa3de4514": {
+  "review": {
+   "archetype": "UG manifest dread",
+   "coherent": true,
+   "concerns": [
+    "threat quality",
+    "delirium",
+    "flying defense"
+   ],
+   "rating": 3,
+   "verdict": "A coherent UG manifest dread deck: Growing Dread, Paranormal Analyst, Bookworm and Twist Reality support the plan, with decent bite removal and solid top end, but small bodies, an awkward Patchwork Beastie and reactive counters keep it a fine deck rather than a strong one."
+  },
+  "reply": "{\"archetype\": \"UG manifest dread\", \"coherent\": true, \"concerns\": [\"threat quality\", \"delirium\", \"flying defense\"], \"rating\": 3, \"verdict\": \"A coherent UG manifest dread deck: Growing Dread, Paranormal Analyst, Bookworm and Twist Reality support the plan, with decent bite removal and solid top end, but small bodies, an awkward Patchwork Beastie and reactive counters keep it a fine deck rather than a strong one.\"}",
+  "cost_usd": 0.01855,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "39f54cdfaa3b"
+ }
+}
