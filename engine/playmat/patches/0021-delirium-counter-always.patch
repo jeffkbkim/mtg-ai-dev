@@ -1,0 +1,71 @@
+diff --git a/Mage.Web.Client/src/app/match/Piles.tsx b/Mage.Web.Client/src/app/match/Piles.tsx
+index 6f39ec168d..b55bfd2b77 100644
+--- a/Mage.Web.Client/src/app/match/Piles.tsx
++++ b/Mage.Web.Client/src/app/match/Piles.tsx
+@@ -218,12 +218,11 @@ function MiniButton({ icon, count, label, onOpen }: { icon: ReactNode; count: nu
+ }
+ 
+ /**
+- * mtg-ai: how far a player's graveyard is toward delirium ("Delirium 2/4"), for players with a delirium card in sight;
+- * lit at four card types. Hover lists the types counted.
++ * mtg-ai: how far a player's graveyard is toward delirium ("Delirium 2/4"), always shown for both players (Jeff
++ * 2026-10-26); faded below four card types, lit at four. Hover lists the types counted.
+  */
+ function DeliriumCount({ playerId }: { playerId: string }) {
+   const board = useContext(ConditionContext);
+-  if (!board.deliriumPlayers.has(playerId)) return null;
+   const types = board.graveyards.get(playerId)?.types ?? [];
+   const on = types.length >= 4;
+   const listed = types.length > 0 ? types.map((type) => type.toLowerCase()).join(', ') : 'no card types yet';
+diff --git a/Mage.Web.Client/src/core/game/conditions.test.ts b/Mage.Web.Client/src/core/game/conditions.test.ts
+index 35978cf53c..26a1868e11 100644
+--- a/Mage.Web.Client/src/core/game/conditions.test.ts
++++ b/Mage.Web.Client/src/core/game/conditions.test.ts
+@@ -34,8 +34,9 @@ describe('deliriumTypes', () => {
+     expect(deliriumTypes([...cards, { cardTypes: ['ENCHANTMENT', 'CREATURE'] } as CardView])).toHaveLength(4);
+   });
+ 
+-  it('shows the count only for players with a delirium card in sight', () => {
+-    const b = conditionBoard({ myPlayerId: 'me', myHand: { h: delirious }, players: [{ playerId: 'me', graveyard: {} }, { playerId: 'opp', graveyard: {} }] } as unknown as GameView);
+-    expect([...b.deliriumPlayers]).toEqual(['me']);
++  it('counts every player\'s graveyard, delirium card in sight or not', () => {
++    const b = conditionBoard({ myPlayerId: 'me', players: [{ playerId: 'me', graveyard: {} }, { playerId: 'opp', graveyard: { g: { cardTypes: ['LAND'] } } }] } as unknown as GameView);
++    expect(b.graveyards.get('me')?.types).toEqual([]);
++    expect(b.graveyards.get('opp')?.types).toEqual(['LAND']);
+   });
+ });
+diff --git a/Mage.Web.Client/src/core/game/conditions.ts b/Mage.Web.Client/src/core/game/conditions.ts
+index 7efca8b35c..1be9871de6 100644
+--- a/Mage.Web.Client/src/core/game/conditions.ts
++++ b/Mage.Web.Client/src/core/game/conditions.ts
+@@ -29,13 +29,9 @@ export function deliriumTypes(cards: readonly CardView[]): string[] {
+   return [...types].sort();
+ }
+ 
+-const hasDelirium = (card: CardView) => /\bDelirium\b/.test((card.rules ?? []).join(' '));
+-
+ export interface ConditionBoard {
+   /** per player: the card types in their graveyard (delirium), and how many cards it holds (threshold) */
+   graveyards: Map<string, { types: string[]; size: number }>;
+-  /** players with a delirium card where the viewer can see it (their battlefield or graveyard, or the viewer's hand) */
+-  deliriumPlayers: Set<string>;
+   activePlayerId: string | null;
+   step: string | null;
+   /** the viewer: the owner of the cards in their hand */
+@@ -44,15 +40,12 @@ export interface ConditionBoard {
+ 
+ export function conditionBoard(view: GameView | null | undefined): ConditionBoard {
+   const graveyards = new Map<string, { types: string[]; size: number }>();
+-  const deliriumPlayers = new Set<string>();
+   for (const player of view?.players ?? []) {
+     const id = player.playerId ?? '';
+     const cards = Object.values(player.graveyard ?? {});
+     graveyards.set(id, { types: deliriumTypes(cards), size: cards.length });
+-    if ([...cards, ...Object.values(player.battlefield ?? {})].some(hasDelirium)) deliriumPlayers.add(id);
+   }
+-  if (view?.myPlayerId && Object.values(view.myHand ?? {}).some(hasDelirium)) deliriumPlayers.add(view.myPlayerId);
+-  return { graveyards, deliriumPlayers, activePlayerId: view?.activePlayerId ?? null, step: view?.step ?? null, me: view?.myPlayerId ?? null };
++  return { graveyards, activePlayerId: view?.activePlayerId ?? null, step: view?.step ?? null, me: view?.myPlayerId ?? null };
+ }
+ 
+ function rulesText(card: CardView): string {
