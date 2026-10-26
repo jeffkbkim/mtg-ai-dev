@@ -24,12 +24,18 @@ Two kinds of take-back (see engine/playmat/README.md, "Take-backs"):
 
 superseded() and seat_history() are also used by claude_service.py.
 """
-import argparse, json, shutil, sys
+import argparse, json, re, shutil, sys
 from collections import Counter
 from datetime import date, timedelta
 from pathlib import Path
 
 ROLLBACK = "Rolling back to start of turn "
+# the engine putting the game back after an error (GameImpl): "Auto-restored to T18.M1 due game error: ..."
+AUTO_RESTORE = re.compile(r"Auto-restored to T(\d+)\.(\w+) due game error")
+# PhaseStep's short codes, in turn order: an auto-restore goes back to a step, not to the start of the turn
+STEP_CODES = ["UN", "UP", "DR", "M1", "BC", "DA", "DB", "FCD", "CD", "EC", "M2", "ET", "CL"]
+STEP_NAMES = ["Untap", "Upkeep", "Draw", "Precombat Main", "Begin Combat", "Declare Attackers", "Declare Blockers",
+              "First Combat Damage", "Combat Damage", "End Combat", "Postcombat Main", "End Turn", "Cleanup"]
 RESUMED = "The game carries on from the start of turn "
 RESUME_WINDOW_MS = 10 * 60 * 1000
 
@@ -50,8 +56,21 @@ def superseded(rec, rollbacks, by=None):
         return None
     ts = rec.get("ts", 0)
     for rb in rollbacks or ():
-        if ts < rb["ts"] and t >= rb["to_turn"]:
+        if ts >= rb["ts"] or t < rb["to_turn"]:
+            continue
+        if "to_step" not in rb:
             return "rollback"
+        # an auto-restore goes back to the start of a priority window in that step: the decisions of its turn from that
+        # step on, except the step's attack or block declaration, which comes before its first priority
+        if rec.get("kind") in ("ATTACK", "BLOCK") and t == rb["to_turn"] and STEP_NAMES.index(
+                {"ATTACK": "Declare Attackers", "BLOCK": "Declare Blockers"}[rec["kind"]]) == rb["to_step"]:
+            continue
+        try:
+            step = STEP_NAMES.index(rec["obs"]["entries"][0]["step"])
+        except (KeyError, IndexError, TypeError, ValueError):
+            step = len(STEP_NAMES)
+        if t > rb["to_turn"] or step >= rb["to_step"]:
+            return "auto_restore"
     if by and t >= by["from_turn"]:
         return f"resume:{by['game_id']}"
     return None
@@ -83,7 +102,7 @@ def seat_history(folder, seat, upto_turn=None, depth=0):
     by = {"game_id": "later", "from_turn": upto_turn} if upto_turn is not None else None
     for r in read_jsonl(folder / f"seat-{seat}.jsonl"):
         how = superseded(r, cfg.get("rollbacks"), by)
-        out.append({**r, "undone": None if how is None else ("a rollback" if how == "rollback" else "a take-back")})
+        out.append({**r, "undone": None if how is None else ("a rollback" if how in ("rollback", "auto_restore") else "a take-back")})
     return out
 
 
@@ -122,6 +141,12 @@ class Folder:
         self.superseded_by = json.loads(sb.read_text()) if sb.exists() else self.cfg.get("superseded_by")
         self.rollbacks = [{"ts": o["ts"], "to_turn": int(o["text"].split(ROLLBACK)[1].split()[0]), "from_turn": o["turn"]}
                           for o in self.log if o.get("type") == "INFO" and ROLLBACK in o.get("text", "")]
+        for o in self.log:
+            m = AUTO_RESTORE.search(o.get("text", "")) if o.get("type") == "INFO" else None
+            if m and m.group(2) in STEP_CODES:
+                self.rollbacks.append({"ts": o["ts"], "to_turn": int(m.group(1)), "to_step": STEP_CODES.index(m.group(2)),
+                                       "from_turn": o["turn"], "kind": "auto_restore"})
+        self.rollbacks.sort(key=lambda rb: rb["ts"])
         self.resumed_turn = next((int(o["text"].split(RESUMED)[1].split()[0]) for o in self.log[:5]
                                   if o.get("type") == "INFO" and RESUMED in o.get("text", "")), None)
 

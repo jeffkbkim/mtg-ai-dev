@@ -36,6 +36,7 @@ git clean -fdq -- Mage.Web.Client/public/starter-decks Mage.Web.Client/src Mage/
 for p in "$HERE"/patches/*.patch; do git apply "$p"; done
 cp "$ROOT/engine/xmage/BecomesFaceDownCreatureEffect.java" Mage/src/main/java/mage/abilities/effects/common/continuous/
 cp "$ROOT/engine/xmage/VeteranSurvivor.java" Mage.Sets/src/mage/cards/v/
+cp "$ROOT/engine/xmage/Exile.java" Mage/src/main/java/mage/game/
 "$PY" "$HERE/dsk_starters.py" "$PLAYMAT"
 
 echo "building the server"

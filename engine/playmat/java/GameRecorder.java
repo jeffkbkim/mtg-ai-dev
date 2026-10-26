@@ -76,6 +76,12 @@ public final class GameRecorder {
     final JsonArray warnings = new JsonArray();
 
     static final Pattern ROLLBACK = Pattern.compile("Rolling back to start of turn (\\d+)");
+    /** the engine putting the game back after an error (GameImpl): "Auto-restored to T18.M1 due game error: ..." */
+    static final Pattern AUTO_RESTORE = Pattern.compile("Auto-restored to T(\\d+)\\.(\\w+) due game error");
+    /** PhaseStep's short codes and names, in turn order (an auto-restore goes back to a step, not a turn's start) */
+    static final List<String> STEP_CODES = List.of("UN", "UP", "DR", "M1", "BC", "DA", "DB", "FCD", "CD", "EC", "M2", "ET", "CL");
+    static final List<String> STEP_NAMES = List.of("Untap", "Upkeep", "Draw", "Precombat Main", "Begin Combat", "Declare Attackers",
+            "Declare Blockers", "First Combat Damage", "Combat Damage", "End Combat", "Postcombat Main", "End Turn", "Cleanup");
     static final Pattern RESUMED = Pattern.compile("The game carries on from the start of turn (\\d+)");
     /** how long before this game started the earlier one may have ended to count as the one it resumes */
     static final long RESUME_WINDOW_MS = 10 * 60 * 1000L;
@@ -356,6 +362,25 @@ public final class GameRecorder {
         for (ClaudeSeat c : new ArrayList<>(claudeSeats)) c.sendRollback(toTurn);
     }
 
+    /**
+     * The engine put the game back to a step after an error (2026-10-26: resumed games crashed on exile). Listed with
+     * the rollbacks as {ts, to_turn, to_step, from_turn, kind: "auto_restore"}; the seats aren't told (the same priority
+     * window simply comes again), and the merge marks the decisions it undid (supersededHow).
+     */
+    void onAutoRestore(int toTurn, int toStep, long ts) {
+        synchronized (this) {
+            if (ended) return;
+            JsonObject rb = new JsonObject();
+            rb.addProperty("ts", ts);
+            rb.addProperty("to_turn", toTurn);
+            rb.addProperty("to_step", toStep);
+            rb.addProperty("from_turn", game.getTurnNum());
+            rb.addProperty("kind", "auto_restore");
+            rollbacks.add(rb);
+            writeConfig();
+        }
+    }
+
     /** The players of a seat map, as "kind|name", sorted: what a resumed table has in common with the old one. */
     static List<String> players(Map<String, JsonObject> seats) {
         List<String> out = new ArrayList<>();
@@ -561,7 +586,8 @@ public final class GameRecorder {
     /**
      * Merges a folder's seat files into game0.jsonl. A decision that didn't stand (see supersededHow) gets
      * "superseded": true and "superseded_by" ("rollback" or "resume:<game id>"); decisions after the first rollback
-     * get "after_rollback": true. The seat files stay as they were written.
+     * get "after_rollback": true. The seat files stay as they were written. An engine auto-restore after an error counts as
+     * a rollback to its step ("auto_restore").
      */
     static void mergeFolder(Path dir, List<String> seats, JsonArray rollbacks, JsonObject by) throws IOException {
         List<JsonObject> all = new ArrayList<>();
@@ -602,7 +628,23 @@ public final class GameRecorder {
         long ts = rec.has("ts") ? rec.get("ts").getAsLong() : 0L;
         for (com.google.gson.JsonElement e : rollbacks) {
             JsonObject rb = e.getAsJsonObject();
-            if (ts < rb.get("ts").getAsLong() && turn >= rb.get("to_turn").getAsInt()) return "rollback";
+            int toTurn = rb.get("to_turn").getAsInt();
+            if (ts >= rb.get("ts").getAsLong() || turn < toTurn) continue;
+            if (!rb.has("to_step")) return "rollback";
+            // an auto-restore goes back to the start of a priority window in that step: the decisions of its turn from
+            // that step on, except the step's attack or block declaration, which comes before its first priority
+            int toStep = rb.get("to_step").getAsInt();
+            String kind = rec.has("kind") ? rec.get("kind").getAsString() : "";
+            if (turn == toTurn && ((kind.equals("ATTACK") && toStep == STEP_NAMES.indexOf("Declare Attackers"))
+                    || (kind.equals("BLOCK") && toStep == STEP_NAMES.indexOf("Declare Blockers")))) continue;
+            int step;
+            try {
+                step = STEP_NAMES.indexOf(rec.getAsJsonObject("obs").getAsJsonArray("entries").get(0).getAsJsonObject().get("step").getAsString());
+            } catch (RuntimeException ex) {
+                step = -1;
+            }
+            if (step < 0) step = STEP_NAMES.size();
+            if (turn > toTurn || step >= toStep) return "auto_restore";
         }
         if (by != null && turn >= by.get("from_turn").getAsInt()) return "resume:" + by.get("game_id").getAsString();
         return null;
@@ -638,6 +680,8 @@ public final class GameRecorder {
                     long ts = o.get("ts").getAsLong();
                     Matcher rb = ROLLBACK.matcher(text);
                     if (rb.find()) r.onRollback(Integer.parseInt(rb.group(1)), ts);
+                    Matcher ar = AUTO_RESTORE.matcher(text);
+                    if (ar.find() && STEP_CODES.contains(ar.group(2))) r.onAutoRestore(Integer.parseInt(ar.group(1)), STEP_CODES.indexOf(ar.group(2)), ts);
                     Matcher rs = RESUMED.matcher(text);
                     if (event.getEventType() == TableEvent.EventType.INFO && rs.find()) r.onResumed(Integer.parseInt(rs.group(1)), ts);
                     // how a decided game was ended early (Jeff 2026-10-24): the player claimed it, or Claude conceded
