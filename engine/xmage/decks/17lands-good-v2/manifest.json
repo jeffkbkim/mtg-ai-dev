@@ -655,7 +655,7 @@
    "file": "good_05.dck",
    "rank": 5,
    "playmat_name": "★★ good_05 · BG delirium midrange · review 4/5",
-   "tier": 2,
+   "tier": 1,
    "draft_id": "3f51931893c049afa18d154994e9dc6e",
    "build_index": "0",
    "build_games": 7,
@@ -745,7 +745,8 @@
     "Tyvar, the Pummeler": 1,
     "Valgavoth's Lair": 1,
     "Wickerfolk Thresher": 1
-   }
+   },
+   "tier_capped": "2026-10-26: at most 4 ★★ per colour pair"
   },
   {
    "file": "good_06.dck",
@@ -1535,7 +1536,7 @@
    "file": "good_14.dck",
    "rank": 14,
    "playmat_name": "★★ good_14 · BR sacrifice aggro · review 4/5",
-   "tier": 2,
+   "tier": 1,
    "draft_id": "546daf7b6aea455badfa056e82a988af",
    "build_index": "0",
    "build_games": 7,
@@ -1627,7 +1628,8 @@
     "Swamp": 7,
     "Vengeful Possession": 1,
     "Winter's Intervention": 1
-   }
+   },
+   "tier_capped": "2026-10-26: at most 4 ★★ per colour pair"
   },
   {
    "file": "good_15.dck",
@@ -10269,7 +10271,7 @@
    "file": "good_102.dck",
    "rank": 102,
    "playmat_name": "★★ good_102 · WB+r enchantments control, light R splash · review 4/5",
-   "tier": 2,
+   "tier": 1,
    "draft_id": "001c67018ed041bb923a24a1831f1b48",
    "build_index": "0",
    "build_games": 8,
@@ -10383,13 +10385,14 @@
     "Winter's Intervention": 1,
     "Withering Torment": 1
    },
-   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)"
+   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)",
+   "tier_capped": "2026-10-26: at most 4 ★★ per colour pair"
   },
   {
    "file": "good_103.dck",
    "rank": 103,
    "playmat_name": "★★ good_103 · WB midrange removal · review 4/5",
-   "tier": 2,
+   "tier": 1,
    "draft_id": "c3c28342aa7b40d1af9629a2ff23ce58",
    "build_index": "0",
    "build_games": 7,
@@ -10480,13 +10483,14 @@
     "Unsettling Twins": 1,
     "Withering Torment": 1
    },
-   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)"
+   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)",
+   "tier_capped": "2026-10-26: at most 4 ★★ per colour pair"
   },
   {
    "file": "good_104.dck",
    "rank": 104,
    "playmat_name": "★★ good_104 · WB enchantments/sacrifice · review 4/5",
-   "tier": 2,
+   "tier": 1,
    "draft_id": "00bb2be5edcc4816a0262ff04a1cbb69",
    "build_index": "0",
    "build_games": 8,
@@ -10582,13 +10586,14 @@
     "Trapped in the Screen": 1,
     "Unsettling Twins": 1
    },
-   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)"
+   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)",
+   "tier_capped": "2026-10-26: at most 4 ★★ per colour pair"
   },
   {
    "file": "good_105.dck",
    "rank": 105,
    "playmat_name": "★★ good_105 · WB midrange removal · review 4/5",
-   "tier": 2,
+   "tier": 1,
    "draft_id": "ebea28e97e024f0fb475655de990d036",
    "build_index": "1",
    "build_games": 3,
@@ -10686,7 +10691,8 @@
     "Valgavoth's Faithful": 1,
     "Winter's Intervention": 1
    },
-   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)"
+   "added": "2026-10-25 WB top-up (17lands-good-v2-wb)",
+   "tier_capped": "2026-10-26: at most 4 ★★ per colour pair"
   },
   {
    "file": "good_106.dck",
@@ -10893,6 +10899,307 @@
     "Withering Torment": 1
    },
    "added": "2026-10-25 WB top-up (17lands-good-v2-wb)"
+  },
+  {
+   "file": "good_108.dck",
+   "rank": 108,
+   "playmat_name": "★★ good_108 · RG delirium aggro · review 4/5",
+   "tier": 2,
+   "draft_id": "ce7205f1505441a690c2ab310965cc5b",
+   "build_index": "0",
+   "build_games": 5,
+   "build_wins": 5,
+   "games": 5,
+   "wins": 5,
+   "losses": 0,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "RG delirium aggro",
+    "coherent": true,
+    "concerns": [
+     "top end",
+     "creature quality",
+     "no 4-drops"
+    ],
+    "rating": 4,
+    "verdict": "Strong RG deck with bombs like Screaming Nemesis and Tyvar plus plenty of removal (Chainsaw, Dragonfire, 3 Glassworks, Clobbering) and solid delirium enablers. The very low curve and modest creature count leave it a little thin on board presence, but it's a well-built aggressive deck."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 12
+    },
+    "G": {
+     "sources": 8,
+     "need": 9,
+     "cards": 13
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     13,
+     6,
+     0,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "body_makers": 2,
+    "bodies": 15,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Chainsaw",
+     "Coordinated Clobbering",
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire",
+     "Screaming Nemesis"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56764,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Chainsaw": 1,
+    "Coordinated Clobbering": 1,
+    "Fear of Being Hunted": 1,
+    "Flesh Burrower": 1,
+    "Forest": 8,
+    "Glassworks // Shattered Yard": 3,
+    "Hand That Feeds": 3,
+    "Manifest Dread": 2,
+    "Mountain": 9,
+    "Patchwork Beastie": 1,
+    "Say Its Name": 2,
+    "Scorching Dragonfire": 1,
+    "Screaming Nemesis": 1,
+    "Slavering Branchsnapper": 1,
+    "Tyvar, the Pummeler": 1,
+    "Wary Watchdog": 1,
+    "Wildfire Wickerfolk": 2
+   },
+   "added": "2026-10-26 ★★ fill (RG, 17lands-good-v2-fill)"
+  },
+  {
+   "file": "good_109.dck",
+   "rank": 109,
+   "playmat_name": "★★ good_109 · RG+b aggro-removal (light B splash) · review 4/5",
+   "tier": 2,
+   "draft_id": "3c58f5325f8e426fadbb24c00c0eb064",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "RG",
+   "splash_colors": "B",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "diamond",
+   "review": {
+    "archetype": "RG aggro-removal (light B splash)",
+    "coherent": true,
+    "concerns": [
+     "splash",
+     "some filler"
+    ],
+    "rating": 4,
+    "verdict": "A strong RG deck with premium removal (3 Dragonfire, 2 Glassworks, Overlord) and solid threats like Enduring Courage and Fear of Missing Out; the black splash for only Swarmweaver is marginal and a few slots like Glimmerlight and Fungus are filler, but the deck is well built."
+   },
+   "mana_score": 7.5,
+   "mana": {
+    "R": {
+     "sources": 8,
+     "need": 9,
+     "cards": 14
+    },
+    "G": {
+     "sources": 8,
+     "need": 8,
+     "cards": 9
+    },
+    "B": {
+     "sources": 3,
+     "cards": 1,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     10,
+     5,
+     5,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "body_makers": 3,
+    "bodies": 17,
+    "noncreature_spells": 9,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 7,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Monstrous Emergence",
+     "Overlord of the Boilerbilges",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [
+     "Fear of Missing Out"
+    ],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.57105,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Diversion Specialist": 2,
+    "Enduring Courage": 1,
+    "Fear of Exposure": 1,
+    "Fear of Missing Out": 1,
+    "Forest": 7,
+    "Glassworks // Shattered Yard": 2,
+    "Glimmerlight": 1,
+    "Insidious Fungus": 1,
+    "Irreverent Gremlin": 2,
+    "Monstrous Emergence": 1,
+    "Mountain": 7,
+    "Overlord of the Boilerbilges": 1,
+    "Razortrap Gorge": 1,
+    "Scorching Dragonfire": 3,
+    "Spineseeker Centipede": 1,
+    "Strangled Cemetery": 1,
+    "Swamp": 1,
+    "The Swarmweaver": 1,
+    "Threats Around Every Corner": 1,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Wary Watchdog": 1,
+    "Wildfire Wickerfolk": 1
+   },
+   "added": "2026-10-26 ★★ fill (RG, 17lands-good-v2-fill)"
+  },
+  {
+   "file": "good_110.dck",
+   "rank": 110,
+   "playmat_name": "★★ good_110 · WR aggro (low power) · review 4/5",
+   "tier": 2,
+   "draft_id": "adea860f14cb46238dd89467cd460012",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 6,
+   "games": 9,
+   "wins": 6,
+   "losses": 3,
+   "main_colors": "WR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "RW aggro (low power)",
+    "coherent": true,
+    "concerns": [
+     "filler creatures",
+     "top end",
+     "WW costs"
+    ],
+    "rating": 4,
+    "verdict": "Lean, focused RW aggro deck. It has a strong removal suite: 3 Glassworks, Trapped in the Screen, Hovership, Exorcise and Trial of Agony. Arabella, Balloon Man and Lionheart Glimmer give it real payoffs for small creatures. It's held back from exceptional by filler (Ragged Playmate x3, Turn Inside Out x2, Percussionist) and thin reach once the board stalls."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "W": {
+     "sources": 8,
+     "need": 9,
+     "cards": 10
+    },
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 16
+    }
+   },
+   "stats": {
+    "curve": [
+     4,
+     8,
+     9,
+     2,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "body_makers": 2,
+    "bodies": 17,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Exorcise",
+     "Glassworks // Shattered Yard",
+     "Trapped in the Screen",
+     "Unidentified Hovership"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.55679,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 1,
+    "Arabella, Abandoned Doll": 1,
+    "Clockwork Percussionist": 1,
+    "Cult Healer": 1,
+    "Exorcise": 1,
+    "Glassworks // Shattered Yard": 3,
+    "Hand That Feeds": 1,
+    "Lionheart Glimmer": 1,
+    "Living Phone": 1,
+    "Mountain": 8,
+    "Plains": 7,
+    "Ragged Playmate": 3,
+    "Razorkin Needlehead": 1,
+    "Ripchain Razorkin": 1,
+    "Terramorphic Expanse": 1,
+    "The Jolly Balloon Man": 1,
+    "Trapped in the Screen": 1,
+    "Trial of Agony": 1,
+    "Turn Inside Out": 2,
+    "Unidentified Hovership": 1,
+    "Unsettling Twins": 1,
+    "Vicious Clown": 1
+   },
+   "added": "2026-10-26 ★★ fill (WR, 17lands-good-v2-fill)"
   }
  ],
  "topups": [
@@ -10904,6 +11211,20 @@
    ],
    "added": 8,
    "reviewer_cost_usd": 0.782
+  },
+  {
+   "date": "2026-10-26",
+   "from": "17lands-good-v2-fill",
+   "pairs": [
+    "UG",
+    "RG",
+    "UR",
+    "WR",
+    "UB"
+   ],
+   "added": 3,
+   "capped": 6,
+   "reviewer_cost_usd": 1.8
   }
  ]
 }

@@ -1,0 +1,1194 @@
+{
+ "source": "game_data_public.DSK.PremierDraft.csv.gz",
+ "drafts": 173545,
+ "skipped": {
+  "card not in XMage DSK": 3283,
+  "not 40 cards": 14279
+ },
+ "funnel": {
+  "eligible": 155983,
+  "pair, not in an excluded pool": 8351,
+  "wins >= 0": 8351,
+  "build games ok": 7661,
+  "drafter games bucket >= 100": 5373,
+  "colour rule ok": 5083,
+  "build checks ok": 4097,
+  "fails creatures": 885,
+  "fails two-drops": 49,
+  "fails lands": 3,
+  "fails top end": 70,
+  "off-colour card (dropped)": 5,
+  "drafter bucket >= 0.66": 77
+ },
+ "candidates_by_threshold": {
+  "0.66": {
+   "WU": 0,
+   "UB": 0,
+   "BR": 0,
+   "RG": 0,
+   "WG": 0,
+   "WB": 0,
+   "UR": 77,
+   "BG": 0,
+   "WR": 0,
+   "UG": 0
+  }
+ },
+ "threshold": 0.66,
+ "min_user_games": 100,
+ "min_build_games": 3,
+ "min_creatures": 13,
+ "shortlist_per_pair": 15,
+ "per_pair": 15,
+ "keep_rating": 3,
+ "tier2": "rating >= 4 and no build red flag (weak-archetype flag excluded, see archetype_flag)",
+ "reviewer": {
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e",
+  "reviewed": 15,
+  "cost_usd": 0.309
+ },
+ "shortlist_ratings": {
+  "WU": {},
+  "UB": {},
+  "BR": {},
+  "RG": {},
+  "WG": {},
+  "WB": {},
+  "UR": {
+   "2": 4,
+   "3": 11
+  },
+  "BG": {},
+  "WR": {},
+  "UG": {}
+ },
+ "kept": 11,
+ "kept_by_pair": {
+  "WU": 0,
+  "UB": 0,
+  "BR": 0,
+  "RG": 0,
+  "WG": 0,
+  "WB": 0,
+  "UR": 11,
+  "BG": 0,
+  "WR": 0,
+  "UG": 0
+ },
+ "tiers": {
+  "1": 11
+ },
+ "overlap_with_current": {
+  "draft_ids": [],
+  "shortlisted": 0
+ },
+ "decks": [
+  {
+   "file": "good_00.dck",
+   "rank": 0,
+   "playmat_name": "★ good_00 · UR rooms/eerie · review 3/5",
+   "tier": 1,
+   "draft_id": "a559bb478532439587d873053a6e088f",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "UR rooms/eerie",
+    "coherent": true,
+    "concerns": [
+     "mana split",
+     "removal",
+     "weak red filler",
+     "few creatures"
+    ],
+    "rating": 3,
+    "verdict": "A real eerie/rooms shell with Enduring Curiosity, Entity Tracker and two Meat Lockers, but the red splash is thin (Percussionists are filler) while 7 Mountains starve a UU-heavy blue core, and removal is light, so it plays as a fine but unpolished deck."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 18
+    },
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 7
+    }
+   },
+   "stats": {
+    "curve": [
+     4,
+     5,
+     10,
+     3,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 7,
+    "bodies": 19,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 2,
+    "removal": 2,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Chainsaw",
+     "Impossible Inferno"
+    ],
+    "soft_removal_cards": [
+     "Meat Locker // Drowned Diner",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UR 52.2%",
+   "deck_score_gih": 0.55922,
+   "in_current_pool": null,
+   "deck": {
+    "Chainsaw": 1,
+    "Clockwork Percussionist": 2,
+    "Creeping Peeper": 2,
+    "Daggermaw Megalodon": 1,
+    "Enduring Curiosity": 1,
+    "Entity Tracker": 1,
+    "Fear of Isolation": 1,
+    "Glimmerburst": 2,
+    "Impossible Inferno": 1,
+    "Island": 7,
+    "Meat Locker // Drowned Diner": 2,
+    "Mountain": 7,
+    "Peculiar Lighthouse": 2,
+    "Scrabbling Skullcrab": 1,
+    "Smoky Lounge // Misty Salon": 1,
+    "Stalked Researcher": 1,
+    "Ticket Booth // Tunnel of Hate": 2,
+    "Tunnel Surveyor": 1,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Unnerving Grasp": 2,
+    "Unwilling Vessel": 1
+   }
+  },
+  {
+   "file": "good_01.dck",
+   "rank": 1,
+   "playmat_name": "★ good_01 · UR Rooms control · review 3/5",
+   "tier": 1,
+   "draft_id": "0692be1b3a544beaac6bcb4305428729",
+   "build_index": "0",
+   "build_games": 3,
+   "build_wins": 0,
+   "games": 3,
+   "wins": 0,
+   "losses": 3,
+   "main_colors": "UR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "UR Rooms control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat density",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "The Rooms plan is real: Glassworks, Roaring Furnace, Bottomless Pool, Smoky Lounge and Intruding/Rampaging Soulragers fit together, and the removal and interaction are solid. But only 10 true creatures, weak filler like Skullcrab, Paranormal Analyst and Piggy Bank, and an awkward Pyroclasm leave it short on pressure and finishers, so it's a playable but middling deck."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 15
+    },
+    "R": {
+     "sources": 9,
+     "need": 8,
+     "cards": 10
+    }
+   },
+   "stats": {
+    "curve": [
+     4,
+     7,
+     5,
+     4,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "body_makers": 4,
+    "bodies": 14,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Roaring Furnace // Steaming Sauna",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Duskmourn's Domination",
+     "Fear of Missing Out",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UR 52.2%",
+   "deck_score_gih": 0.55155,
+   "in_current_pool": null,
+   "deck": {
+    "Bottomless Pool // Locker Room": 1,
+    "Conductive Machete": 1,
+    "Daggermaw Megalodon": 1,
+    "Duskmourn's Domination": 1,
+    "Fear of Missing Out": 1,
+    "Glassworks // Shattered Yard": 1,
+    "Glimmerburst": 1,
+    "Intruding Soulrager": 1,
+    "Island": 8,
+    "Mountain": 8,
+    "Paranormal Analyst": 1,
+    "Peculiar Lighthouse": 1,
+    "Piggy Bank": 1,
+    "Pyroclasm": 1,
+    "Rampaging Soulrager": 2,
+    "Razorkin Hordecaller": 1,
+    "Roaring Furnace // Steaming Sauna": 1,
+    "Scrabbling Skullcrab": 1,
+    "Smoky Lounge // Misty Salon": 1,
+    "Stalked Researcher": 1,
+    "Twist Reality": 1,
+    "Unable to Scream": 1,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Vanish from Sight": 2
+   }
+  },
+  {
+   "file": "good_02.dck",
+   "rank": 2,
+   "playmat_name": "★ good_02 · UR tempo/manifest dread · review 3/5",
+   "tier": 1,
+   "draft_id": "2577b6e5020441589bae6014da8553c1",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 5,
+   "games": 8,
+   "wins": 5,
+   "losses": 3,
+   "main_colors": "UR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "UR tempo/manifest dread",
+    "coherent": true,
+    "concerns": [
+     "creature quality",
+     "Glimmerlight glut",
+     "threat density"
+    ],
+    "rating": 3,
+    "verdict": "Solid removal from 2 Glassworks, Bargain and Stay Hidden, plus real payoffs in Enduring Courage, Razorkin and Fear of Falling, but four Glimmerlights and many 1/1 or 2/2 bodies make the threats thin, so this is a playable but unspectacular deck."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 9
+    },
+    "R": {
+     "sources": 10,
+     "need": 9,
+     "cards": 9
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     9,
+     7,
+     3,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 8,
+    "body_makers": 12,
+    "bodies": 20,
+    "noncreature_spells": 15,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 4,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Fear of Falling",
+     "Glassworks // Shattered Yard"
+    ],
+    "soft_removal_cards": [
+     "Stay Hidden, Stay Silent",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UR 52.2%",
+   "deck_score_gih": 0.56679,
+   "in_current_pool": null,
+   "deck": {
+    "Betrayer's Bargain": 1,
+    "Clockwork Percussionist": 1,
+    "Conductive Machete": 1,
+    "Cursed Windbreaker": 1,
+    "Enduring Courage": 1,
+    "Fear of Falling": 1,
+    "Glassworks // Shattered Yard": 2,
+    "Glimmerburst": 1,
+    "Glimmerlight": 4,
+    "Island": 7,
+    "Mountain": 8,
+    "Peculiar Lighthouse": 2,
+    "Piggy Bank": 1,
+    "Piranha Fly": 2,
+    "Razorkin Hordecaller": 1,
+    "Stay Hidden, Stay Silent": 1,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Tunnel Surveyor": 1,
+    "Turn Inside Out": 1,
+    "Twist Reality": 1,
+    "Unnerving Grasp": 1
+   }
+  },
+  {
+   "file": "good_03.dck",
+   "rank": 3,
+   "playmat_name": "★ good_03 · UR rooms control · review 3/5",
+   "tier": 1,
+   "draft_id": "33340ecb9984433bab7ba6fb8240fe63",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 5,
+   "games": 8,
+   "wins": 5,
+   "losses": 3,
+   "main_colors": "UR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "gold",
+   "review": {
+    "archetype": "UR rooms control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "Pyroclasm antisynergy",
+     "Mindskinner fit",
+     "win conditions"
+    ],
+    "rating": 3,
+    "verdict": "Strong blue core (Fear of Falling x2, Drowner, Meat Locker x2, Stay Hidden x2, Keybearers) gives real tempo and control, but 9 true creatures, two Pyroclasms that kill your own small bodies, and an off-plan Mindskinner leave the clock thin; fine, not great."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 10,
+     "need": 9,
+     "cards": 13
+    },
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 8
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     9,
+     6,
+     4,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "body_makers": 6,
+    "bodies": 15,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 4,
+    "soft_removal": 5,
+    "removal_cards": [
+     "Fear of Falling",
+     "Roaring Furnace // Steaming Sauna",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UR 52.2%",
+   "deck_score_gih": 0.55734,
+   "in_current_pool": null,
+   "deck": {
+    "Bedhead Beastie": 1,
+    "Conductive Machete": 1,
+    "Cursed Windbreaker": 1,
+    "Fear of Being Hunted": 1,
+    "Fear of Falling": 2,
+    "Floodpits Drowner": 1,
+    "Found Footage": 1,
+    "Ghostly Keybearer": 2,
+    "Glimmerlight": 1,
+    "Island": 8,
+    "Meat Locker // Drowned Diner": 2,
+    "Mountain": 7,
+    "Painter's Studio // Defaced Gallery": 1,
+    "Peculiar Lighthouse": 1,
+    "Piggy Bank": 1,
+    "Pyroclasm": 2,
+    "Roaring Furnace // Steaming Sauna": 1,
+    "Stay Hidden, Stay Silent": 2,
+    "Terramorphic Expanse": 1,
+    "The Mindskinner": 1,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Vanish from Sight": 1
+   }
+  },
+  {
+   "file": "good_04.dck",
+   "rank": 4,
+   "playmat_name": "★ good_04 · UR rooms/enchantments · review 3/5",
+   "tier": 1,
+   "draft_id": "4ec8370d507a4988918388c3b11fa33e",
+   "build_index": "0",
+   "build_games": 6,
+   "build_wins": 4,
+   "games": 7,
+   "wins": 4,
+   "losses": 3,
+   "main_colors": "UR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "500",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "UR rooms/enchantments",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "durdly",
+     "weak threats"
+    ],
+    "rating": 3,
+    "verdict": "A real UR Rooms plan: Soulragers, Entity Tracker and Unwilling Vessel all reward the seven Rooms, and Meat Locker, Glassworks, Dragonfire and Vanish give solid interaction. But with only about 10 real creatures, two clunky Central Elevators, reactive counters and three Glimmerbursts, it can be too slow and short on pressure against aggressive decks."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 18
+    },
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 10
+    }
+   },
+   "stats": {
+    "curve": [
+     0,
+     7,
+     11,
+     4,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "body_makers": 4,
+    "bodies": 14,
+    "noncreature_spells": 14,
+    "lands": 16,
+    "fixing_lands": 2,
+    "removal": 4,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Fear of Burning Alive",
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Get Out",
+     "Meat Locker // Drowned Diner"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UR 52.2%",
+   "deck_score_gih": 0.55352,
+   "in_current_pool": null,
+   "deck": {
+    "Bedhead Beastie": 1,
+    "Central Elevator // Promising Stairs": 2,
+    "Don't Make a Sound": 1,
+    "Entity Tracker": 1,
+    "Fear of Being Hunted": 1,
+    "Fear of Burning Alive": 1,
+    "Fear of Isolation": 1,
+    "Get Out": 1,
+    "Glassworks // Shattered Yard": 1,
+    "Glimmerburst": 3,
+    "Intruding Soulrager": 3,
+    "Island": 7,
+    "Meat Locker // Drowned Diner": 2,
+    "Mountain": 7,
+    "Peculiar Lighthouse": 2,
+    "Scorching Dragonfire": 1,
+    "Smoky Lounge // Misty Salon": 1,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Tunnel Surveyor": 1,
+    "Unwilling Vessel": 1,
+    "Vanish from Sight": 1
+   }
+  },
+  {
+   "file": "good_05.dck",
+   "rank": 5,
+   "playmat_name": "★ good_05 · UR rooms control · review 3/5",
+   "tier": 1,
+   "draft_id": "de8a2a53c91f4e2c8653e6e5b62b6bf7",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "UR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "500",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "UR rooms control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat density",
+     "filler",
+     "card quality"
+    ],
+    "rating": 3,
+    "verdict": "Solid removal suite (Bargain, Inferno, Trial, Rollercrusher, Meat Locker, Drowner) and real Room synergy with the Soulragers, but only 12 creatures, weak Percussionists and four Underwater Tunnels leave it short on threats to actually close games."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 14
+    },
+    "R": {
+     "sources": 8,
+     "need": 8,
+     "cards": 11
+    }
+   },
+   "stats": {
+    "curve": [
+     8,
+     7,
+     4,
+     2,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 4,
+    "bodies": 16,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 4,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Impossible Inferno",
+     "Roaring Furnace // Steaming Sauna",
+     "The Rollercrusher Ride"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UR 52.2%",
+   "deck_score_gih": 0.55291,
+   "in_current_pool": null,
+   "deck": {
+    "Betrayer's Bargain": 1,
+    "Clockwork Percussionist": 2,
+    "Fear of Impostors": 1,
+    "Fear of Isolation": 2,
+    "Floodpits Drowner": 1,
+    "Ghostly Keybearer": 1,
+    "Impossible Inferno": 1,
+    "Intruding Soulrager": 2,
+    "Island": 9,
+    "Malevolent Chandelier": 1,
+    "Meat Locker // Drowned Diner": 1,
+    "Mountain": 8,
+    "Rampaging Soulrager": 2,
+    "Roaring Furnace // Steaming Sauna": 1,
+    "The Rollercrusher Ride": 1,
+    "Trial of Agony": 1,
+    "Unable to Scream": 1,
+    "Underwater Tunnel // Slimy Aquarium": 4
+   }
+  },
+  {
+   "file": "good_06.dck",
+   "rank": 6,
+   "playmat_name": "★ good_06 · UR Rooms control · review 3/5",
+   "tier": 1,
+   "draft_id": "2d846caf92cf4f63a7ee23fbf5b679b1",
+   "build_index": "0",
+   "build_games": 6,
+   "build_wins": 4,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "UR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "diamond",
+   "review": {
+    "archetype": "UR Rooms control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "weak filler",
+     "heavy blue"
+    ],
+    "rating": 3,
+    "verdict": "A real UR Rooms shell with good interaction (Glassworks, Meat Locker, Bargain, Fear of Impostors) and solid top end in Fear of Falling, Megalodon and Hordecaller, but only 10 real creatures plus filler like Keys to the House, Underwater Tunnel and the awkward Waltz of Rage leave it short on pressure; a fine but unspectacular deck."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 18
+    },
+    "R": {
+     "sources": 8,
+     "need": 8,
+     "cards": 8
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     10,
+     5,
+     1,
+     4,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "body_makers": 3,
+    "bodies": 13,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 7,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Fear of Falling",
+     "Glassworks // Shattered Yard",
+     "Roaring Furnace // Steaming Sauna",
+     "Waltz of Rage"
+    ],
+    "soft_removal_cards": [
+     "Get Out",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UR 52.2%",
+   "deck_score_gih": 0.55588,
+   "in_current_pool": null,
+   "deck": {
+    "Betrayer's Bargain": 1,
+    "Creeping Peeper": 2,
+    "Daggermaw Megalodon": 1,
+    "Fear of Falling": 2,
+    "Fear of Impostors": 1,
+    "Get Out": 2,
+    "Glassworks // Shattered Yard": 1,
+    "Glimmerburst": 1,
+    "Intruding Soulrager": 1,
+    "Island": 9,
+    "Keys to the House": 1,
+    "Meat Locker // Drowned Diner": 1,
+    "Mountain": 8,
+    "Razorkin Hordecaller": 1,
+    "Roaring Furnace // Steaming Sauna": 2,
+    "Silent Hallcreeper": 1,
+    "Smoky Lounge // Misty Salon": 1,
+    "Stay Hidden, Stay Silent": 1,
+    "Tunnel Surveyor": 1,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Waltz of Rage": 1
+   }
+  },
+  {
+   "file": "good_07.dck",
+   "rank": 7,
+   "playmat_name": "★ good_07 · UR Rooms/enchantments · review 3/5",
+   "tier": 1,
+   "draft_id": "b2beb79832a642d2aaa98ec0061b8133",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 6,
+   "games": 9,
+   "wins": 6,
+   "losses": 3,
+   "main_colors": "UR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "gold",
+   "review": {
+    "archetype": "UR Rooms/enchantments",
+    "coherent": true,
+    "concerns": [
+     "threat density",
+     "mana split",
+     "removal",
+     "few creatures"
+    ],
+    "rating": 3,
+    "verdict": "A real Rooms shell with good glue in Intruding Soulrager, Unwilling Vessel and Vanish from Sight, but the bodies are small, the removal is mostly tempo, and the 8/8 lands should lean toward Islands for this blue-heavy list."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 18
+    },
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 9
+    }
+   },
+   "stats": {
+    "curve": [
+     4,
+     8,
+     7,
+     3,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "body_makers": 6,
+    "bodies": 16,
+    "noncreature_spells": 13,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 3,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Roaring Furnace // Steaming Sauna",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Meat Locker // Drowned Diner",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UR 52.2%",
+   "deck_score_gih": 0.55276,
+   "in_current_pool": null,
+   "deck": {
+    "Bottomless Pool // Locker Room": 2,
+    "Creeping Peeper": 1,
+    "Daggermaw Megalodon": 1,
+    "Erratic Apparition": 1,
+    "Glimmerburst": 1,
+    "Grab the Prize": 1,
+    "Intruding Soulrager": 3,
+    "Irreverent Gremlin": 2,
+    "Island": 8,
+    "Meat Locker // Drowned Diner": 1,
+    "Mountain": 8,
+    "Peculiar Lighthouse": 1,
+    "Roaring Furnace // Steaming Sauna": 1,
+    "Ticket Booth // Tunnel of Hate": 2,
+    "Underwater Tunnel // Slimy Aquarium": 2,
+    "Unnerving Grasp": 1,
+    "Unwilling Vessel": 2,
+    "Vanish from Sight": 2
+   }
+  },
+  {
+   "file": "good_08.dck",
+   "rank": 8,
+   "playmat_name": "★ good_08 · UR tempo/removal · review 3/5",
+   "tier": 1,
+   "draft_id": "f2d499cce1724bd9a817995bc95f593d",
+   "build_index": "1",
+   "build_games": 5,
+   "build_wins": 3,
+   "games": 7,
+   "wins": 5,
+   "losses": 2,
+   "main_colors": "UR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.74",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.74,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "UR tempo/removal",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat quality",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "The removal suite is strong: 3 Dragonfire, Bargain, Glassworks, Vanish and Drowner. The low curve suits 16 lands. But the creatures are small and few, and filler like 2x Turn Inside Out and Ragged Playmate means it can run out of pressure against bigger boards."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 8,
+     "need": 8,
+     "cards": 11
+    },
+    "R": {
+     "sources": 8,
+     "need": 9,
+     "cards": 12
+    }
+   },
+   "stats": {
+    "curve": [
+     4,
+     11,
+     5,
+     4,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 6,
+    "bodies": 18,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 6,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UR 52.2%",
+   "deck_score_gih": 0.56305,
+   "in_current_pool": null,
+   "deck": {
+    "Betrayer's Bargain": 1,
+    "Clockwork Percussionist": 1,
+    "Creeping Peeper": 1,
+    "Entity Tracker": 1,
+    "Erratic Apparition": 1,
+    "Fear of Isolation": 1,
+    "Floodpits Drowner": 1,
+    "Friendly Teddy": 1,
+    "Ghostly Keybearer": 1,
+    "Glassworks // Shattered Yard": 1,
+    "Glimmerburst": 1,
+    "Island": 8,
+    "Most Valuable Slayer": 1,
+    "Mountain": 8,
+    "Piggy Bank": 1,
+    "Ragged Playmate": 1,
+    "Scorching Dragonfire": 3,
+    "Stay Hidden, Stay Silent": 1,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Tunnel Surveyor": 1,
+    "Turn Inside Out": 2,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Vanish from Sight": 1
+   }
+  },
+  {
+   "file": "good_09.dck",
+   "rank": 9,
+   "playmat_name": "★ good_09 · UR rooms control · review 3/5",
+   "tier": 1,
+   "draft_id": "45ad57b7a4444a4ea72053c4779926b7",
+   "build_index": "0",
+   "build_games": 4,
+   "build_wins": 1,
+   "games": 4,
+   "wins": 1,
+   "losses": 3,
+   "main_colors": "UR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "UR rooms control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "mana",
+     "Mindskinner anti-synergy",
+     "threat density"
+    ],
+    "rating": 3,
+    "verdict": "Solid removal and card advantage from 3 Meat Locker, 2 Inferno, Vanish and Glimmerburst on a coherent rooms plan, but only 7 real creatures, a heavy blue base with UUU and UU costs on 8 Islands, and Mindskinner fighting the rest of the damage plan make it a fine but clunky deck."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 17
+    },
+    "R": {
+     "sources": 8,
+     "need": 9,
+     "cards": 6
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     4,
+     11,
+     2,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 7,
+    "body_makers": 7,
+    "bodies": 14,
+    "noncreature_spells": 17,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Boilerbilges Ripper",
+     "Impossible Inferno",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "red_flags": [
+     "4 two-drops"
+    ]
+   },
+   "archetype_flag": "weak archetype UR 52.2%",
+   "deck_score_gih": 0.54591,
+   "in_current_pool": null,
+   "deck": {
+    "Boilerbilges Ripper": 1,
+    "Central Elevator // Promising Stairs": 1,
+    "Creeping Peeper": 1,
+    "Cursed Windbreaker": 1,
+    "Daggermaw Megalodon": 2,
+    "Don't Make a Sound": 1,
+    "Glimmerburst": 1,
+    "Glimmerlight": 2,
+    "Impossible Inferno": 2,
+    "Island": 8,
+    "Meat Locker // Drowned Diner": 3,
+    "Mountain": 7,
+    "Peculiar Lighthouse": 1,
+    "Rampaging Soulrager": 1,
+    "Smoky Lounge // Misty Salon": 1,
+    "The Mindskinner": 1,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Tunnel Surveyor": 1,
+    "Twist Reality": 1,
+    "Unable to Scream": 1,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Vanish from Sight": 1
+   }
+  },
+  {
+   "file": "good_10.dck",
+   "rank": 10,
+   "playmat_name": "★ good_10 · UR enchantments/eerie midrange · review 3/5",
+   "tier": 1,
+   "draft_id": "09db1f90262a41a485de96d7dfed4b9b",
+   "build_index": "1",
+   "build_games": 7,
+   "build_wins": 6,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "gold",
+   "review": {
+    "archetype": "UR enchantments/eerie midrange",
+    "coherent": true,
+    "concerns": [
+     "removal quality",
+     "RR costs",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "A playable UR deck with a strong top end in Overlord, Fear of Falling, Waltz of Rage and two Fear of Burning Alive. It's held back by soft removal (Vanish, Unable to Scream, bounce), low-impact filler like 3x Stalked Researcher and Glimmerlight, and RR costs on only 7 Mountains."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 10,
+     "need": 8,
+     "cards": 14
+    },
+    "R": {
+     "sources": 8,
+     "need": 9,
+     "cards": 6
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     5,
+     5,
+     5,
+     3,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 5,
+    "bodies": 17,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 6,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Fear of Burning Alive",
+     "Fear of Falling",
+     "Vanish from Sight",
+     "Waltz of Rage"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5220938239080322,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UR 52.2%",
+   "deck_score_gih": 0.56682,
+   "in_current_pool": null,
+   "deck": {
+    "Bottomless Pool // Locker Room": 2,
+    "Conductive Machete": 1,
+    "Enduring Courage": 1,
+    "Entity Tracker": 1,
+    "Fear of Being Hunted": 1,
+    "Fear of Burning Alive": 2,
+    "Fear of Falling": 1,
+    "Glimmerburst": 1,
+    "Glimmerlight": 2,
+    "Island": 9,
+    "Mountain": 7,
+    "Overlord of the Floodpits": 1,
+    "Peculiar Lighthouse": 1,
+    "Stalked Researcher": 3,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Tunnel Surveyor": 2,
+    "Unable to Scream": 1,
+    "Vanish from Sight": 2,
+    "Waltz of Rage": 1
+   }
+  }
+ ]
+}

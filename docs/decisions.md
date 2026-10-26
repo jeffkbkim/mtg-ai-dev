@@ -91,6 +91,9 @@ exactly a browser answer maps to our options, and XMage AI decisions are flagged
   and creature recursion (`review_decks.makes_bodies`), in the >= 13 build check and in what the reviewer is shown. No
   win/loss filter (Jeff: a 7-x record is noise). A WB top-up under this count added 8 decks rated 4/5 to v2
   (`17lands-good-v2-wb`, v2_100..107); the manifest-dread decks of v2 and r2 were re-reviewed (`play/rereview_bodies.py`).
+- ★★ capped at 4 per colour pair (Jeff 2026-10-26): the extra ★★ decks (WB 4, BG 1, BR 1) are ★ now, rating unchanged
+  (`tier_capped` in the manifest). A fill for the pairs short of 4 reviewed 105 more candidates ($1.80): 3 rated 4/5
+  (RG 2, WR 1, added as v2_108..110); UG 0 of 30, UR 0 of 15 and UB 0 of 10 reached 4/5, so those stay short.
 - The web client's AI settings choose the Claude model (Opus 5.5, Sonnet 5.5) and effort; both are recorded with each
   decision, and games with different settings must not be pooled as one player.
 - Blocks XMage refused are recorded as `mapping: "refused"` (choice -1), not as decisions; the accepted blocks are

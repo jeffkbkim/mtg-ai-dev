@@ -1,0 +1,1025 @@
+{
+ "source": "game_data_public.DSK.PremierDraft.csv.gz",
+ "drafts": 173545,
+ "skipped": {
+  "card not in XMage DSK": 3283,
+  "not 40 cards": 14279
+ },
+ "funnel": {
+  "eligible": 155983,
+  "pair, not in an excluded pool": 6458,
+  "wins >= 0": 6458,
+  "build games ok": 5833,
+  "drafter games bucket >= 100": 3866,
+  "colour rule ok": 3516,
+  "build checks ok": 3055,
+  "fails top end": 171,
+  "fails two-drops": 83,
+  "fails creatures": 185,
+  "off-colour card (dropped)": 48,
+  "fails lands": 1,
+  "drafter bucket >= 0.66": 44
+ },
+ "candidates_by_threshold": {
+  "0.66": {
+   "WU": 0,
+   "UB": 44,
+   "BR": 0,
+   "RG": 0,
+   "WG": 0,
+   "WB": 0,
+   "UR": 0,
+   "BG": 0,
+   "WR": 0,
+   "UG": 0
+  }
+ },
+ "threshold": 0.66,
+ "min_user_games": 100,
+ "min_build_games": 3,
+ "min_creatures": 13,
+ "shortlist_per_pair": 10,
+ "per_pair": 10,
+ "keep_rating": 3,
+ "tier2": "rating >= 4 and no build red flag (weak-archetype flag excluded, see archetype_flag)",
+ "reviewer": {
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e",
+  "reviewed": 10,
+  "cost_usd": 0.21
+ },
+ "shortlist_ratings": {
+  "WU": {},
+  "UB": {
+   "2": 1,
+   "3": 9
+  },
+  "BR": {},
+  "RG": {},
+  "WG": {},
+  "WB": {},
+  "UR": {},
+  "BG": {},
+  "WR": {},
+  "UG": {}
+ },
+ "kept": 9,
+ "kept_by_pair": {
+  "WU": 0,
+  "UB": 9,
+  "BR": 0,
+  "RG": 0,
+  "WG": 0,
+  "WB": 0,
+  "UR": 0,
+  "BG": 0,
+  "WR": 0,
+  "UG": 0
+ },
+ "tiers": {
+  "1": 9
+ },
+ "overlap_with_current": {
+  "draft_ids": [],
+  "shortlisted": 0
+ },
+ "decks": [
+  {
+   "file": "good_00.dck",
+   "rank": 0,
+   "playmat_name": "★ good_00 · UB enchantments/manifest control · review 3/5",
+   "tier": 1,
+   "draft_id": "51aa1f595d3c4c688d8ac0c7ba20eaba",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 5,
+   "games": 8,
+   "wins": 5,
+   "losses": 3,
+   "main_colors": "UB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "gold",
+   "review": {
+    "archetype": "UB enchantments/manifest control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "mana split",
+     "threat density",
+     "reactive"
+    ],
+    "rating": 3,
+    "verdict": "Strong blue core: Enduring Curiosity, Fear of Falling, Unable to Scream, Vanish from Sight and a manifest dread package for Paranormal Analyst. But only 9 real creatures, a light black splash run on an even 8/8 land split that strains the UU costs, and sac-cost cards (Final Vengeance, Vile Mutilator) with little fodder leave it reactive and short on threats."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 18
+    },
+    "B": {
+     "sources": 9,
+     "need": 9,
+     "cards": 5
+    }
+   },
+   "stats": {
+    "curve": [
+     4,
+     8,
+     5,
+     4,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "body_makers": 7,
+    "bodies": 16,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 6,
+    "soft_removal": 4,
+    "removal_cards": [
+     "Fear of Falling",
+     "Final Vengeance",
+     "Sporogenic Infection",
+     "Vanish from Sight",
+     "Vile Mutilator"
+    ],
+    "soft_removal_cards": [
+     "Get Out",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UB 51.6%",
+   "deck_score_gih": 0.56293,
+   "in_current_pool": null,
+   "deck": {
+    "Conductive Machete": 1,
+    "Creeping Peeper": 1,
+    "Enduring Curiosity": 1,
+    "Fear of Falling": 1,
+    "Final Vengeance": 1,
+    "Get Out": 1,
+    "Island": 8,
+    "Mirror Room // Fractured Realm": 1,
+    "Murky Sewer": 1,
+    "Nashi, Searcher in the Dark": 1,
+    "Paranormal Analyst": 2,
+    "Sporogenic Infection": 1,
+    "Stalked Researcher": 1,
+    "Stay Hidden, Stay Silent": 1,
+    "Swamp": 8,
+    "Tunnel Surveyor": 1,
+    "Twist Reality": 1,
+    "Unable to Scream": 1,
+    "Underwater Tunnel // Slimy Aquarium": 2,
+    "Unholy Annex // Ritual Chamber": 1,
+    "Unnerving Grasp": 1,
+    "Vanish from Sight": 2,
+    "Vile Mutilator": 1
+   }
+  },
+  {
+   "file": "good_01.dck",
+   "rank": 1,
+   "playmat_name": "★ good_01 · UB enchantments/graveyard midrange · review 3/5",
+   "tier": 1,
+   "draft_id": "92eb7ca01ed64a92bc5064018d3b515a",
+   "build_index": "1",
+   "build_games": 6,
+   "build_wins": 6,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "500",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "UB enchantments/graveyard midrange",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "weak threats"
+    ],
+    "rating": 3,
+    "verdict": "Strong top end with Slasher x2, Enduring Curiosity, Murder and Live or Die, plus decent eerie synergy with Fear of Infinity, but only 11 real creatures and filler like Defiled Crypt x2, The Tale of Tamiyo, Valgavoth's Faithful and Glimmerlight make it a fine but clunky deck."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 11
+    },
+    "B": {
+     "sources": 9,
+     "need": 9,
+     "cards": 15
+    }
+   },
+   "stats": {
+    "curve": [
+     5,
+     6,
+     8,
+     3,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 8,
+    "bodies": 19,
+    "noncreature_spells": 13,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Final Vengeance",
+     "Live or Die",
+     "Murder",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UB 51.6%",
+   "deck_score_gih": 0.55491,
+   "in_current_pool": null,
+   "deck": {
+    "Cynical Loner": 2,
+    "Daggermaw Megalodon": 1,
+    "Defiled Crypt // Cadaver Lab": 2,
+    "Enduring Curiosity": 1,
+    "Fear of Infinity": 2,
+    "Final Vengeance": 1,
+    "Glimmerburst": 2,
+    "Glimmerlight": 1,
+    "Innocuous Rat": 1,
+    "Island": 7,
+    "Live or Die": 1,
+    "Mirror Room // Fractured Realm": 1,
+    "Murder": 1,
+    "Murky Sewer": 1,
+    "Skullsnap Nuisance": 1,
+    "Swamp": 7,
+    "The Tale of Tamiyo": 1,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Unnerving Grasp": 1,
+    "Unstoppable Slasher": 2,
+    "Valgavoth's Faithful": 1,
+    "Valgavoth's Lair": 1,
+    "Winter's Intervention": 1
+   }
+  },
+  {
+   "file": "good_02.dck",
+   "rank": 2,
+   "playmat_name": "★ good_02 · UB enchantments control · review 3/5",
+   "tier": 1,
+   "draft_id": "b99287732800499ca215d91fef348078",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "500",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "UB enchantments control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "top-heavy removal",
+     "threat density"
+    ],
+    "rating": 3,
+    "verdict": "Plenty of interaction and card advantage, with Overlord, Curiosity, Murder, Attics and cheap auras, but only 9 real creatures and three clunky 6-mana Dominations make it slow and light on pressure."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 8,
+     "cards": 14
+    },
+    "B": {
+     "sources": 8,
+     "need": 9,
+     "cards": 11
+    }
+   },
+   "stats": {
+    "curve": [
+     5,
+     4,
+     8,
+     2,
+     1,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "body_makers": 5,
+    "bodies": 14,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 3,
+    "soft_removal": 6,
+    "removal_cards": [
+     "Final Vengeance",
+     "Murder",
+     "Sporogenic Infection"
+    ],
+    "soft_removal_cards": [
+     "Duskmourn's Domination",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "red_flags": [
+     "4 two-drops"
+    ]
+   },
+   "archetype_flag": "weak archetype UB 51.6%",
+   "deck_score_gih": 0.55739,
+   "in_current_pool": null,
+   "deck": {
+    "Defiled Crypt // Cadaver Lab": 1,
+    "Derelict Attic // Widow's Walk": 2,
+    "Duskmourn's Domination": 3,
+    "Enduring Curiosity": 1,
+    "Fear of Infinity": 2,
+    "Final Vengeance": 1,
+    "Glimmerburst": 1,
+    "Innocuous Rat": 1,
+    "Island": 9,
+    "Murder": 1,
+    "Overlord of the Floodpits": 1,
+    "Resurrected Cultist": 1,
+    "Scrabbling Skullcrab": 1,
+    "Sporogenic Infection": 1,
+    "Stalked Researcher": 1,
+    "Stay Hidden, Stay Silent": 1,
+    "Swamp": 8,
+    "Unable to Scream": 1,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Unnerving Grasp": 1,
+    "Unstoppable Slasher": 1
+   }
+  },
+  {
+   "file": "good_03.dck",
+   "rank": 3,
+   "playmat_name": "★ good_03 · UB enchantments/eerie · review 3/5",
+   "tier": 1,
+   "draft_id": "d2e7fdffdf854f6abb9355e5ad0202f9",
+   "build_index": "0",
+   "build_games": 3,
+   "build_wins": 3,
+   "games": 3,
+   "wins": 3,
+   "losses": 0,
+   "main_colors": "UB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "UB enchantments/eerie",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "thin top end",
+     "small bodies"
+    ],
+    "rating": 3,
+    "verdict": "Solid UB enchantment shell with good removal (Murder, Nowhere to Run, 2x Final Vengeance, Meat Locker) and Overlord as a strong top end. The threats are small and few, though, and the Glimmerlights and Tunnel are filler, so it relies on grinding with fodder for Final Vengeance and Egotist rather than winning through power."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 11
+    },
+    "B": {
+     "sources": 8,
+     "need": 9,
+     "cards": 12
+    }
+   },
+   "stats": {
+    "curve": [
+     4,
+     8,
+     8,
+     1,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 5,
+    "bodies": 16,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 6,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Fear of Lost Teeth",
+     "Final Vengeance",
+     "Murder",
+     "Nowhere to Run",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Get Out",
+     "Meat Locker // Drowned Diner",
+     "Unnerving Grasp"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UB 51.6%",
+   "deck_score_gih": 0.55349,
+   "in_current_pool": null,
+   "deck": {
+    "Balemurk Leech": 2,
+    "Cursed Windbreaker": 1,
+    "Fear of Infinity": 1,
+    "Fear of Lost Teeth": 1,
+    "Fear of the Dark": 1,
+    "Final Vengeance": 2,
+    "Get Out": 1,
+    "Glimmerlight": 2,
+    "Island": 9,
+    "Meat Locker // Drowned Diner": 1,
+    "Murder": 1,
+    "Nashi, Searcher in the Dark": 1,
+    "Nowhere to Run": 1,
+    "Overlord of the Floodpits": 1,
+    "Popular Egotist": 2,
+    "Stalked Researcher": 1,
+    "Swamp": 8,
+    "Tunnel Surveyor": 1,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Unnerving Grasp": 1,
+    "Vanish from Sight": 1
+   }
+  },
+  {
+   "file": "good_04.dck",
+   "rank": 4,
+   "playmat_name": "★ good_04 · UB enchantments/eerie aggro · review 3/5",
+   "tier": 1,
+   "draft_id": "346e43a434b747d0b59bf720334a2ce1",
+   "build_index": "0",
+   "build_games": 3,
+   "build_wins": 2,
+   "games": 5,
+   "wins": 2,
+   "losses": 3,
+   "main_colors": "UB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "500",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "UB enchantments/eerie aggro",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "Grievous Wound",
+     "Mindskinner anti-synergy",
+     "small creatures"
+    ],
+    "rating": 3,
+    "verdict": "A coherent low-curve eerie deck: four Balemurk Leech, many cheap enchantment creatures and Rooms, plus Enduring Curiosity. But the interaction is thin, Grievous Wound is a weak slot, and The Mindskinner works against its own damage plan."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 8,
+     "need": 9,
+     "cards": 9
+    },
+    "B": {
+     "sources": 8,
+     "need": 8,
+     "cards": 17
+    }
+   },
+   "stats": {
+    "curve": [
+     5,
+     6,
+     7,
+     3,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 17,
+    "body_makers": 1,
+    "bodies": 18,
+    "noncreature_spells": 7,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 5,
+    "soft_removal": 2,
+    "removal_cards": [
+     "Fear of Lost Teeth",
+     "Sporogenic Infection",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UB 51.6%",
+   "deck_score_gih": 0.53348,
+   "in_current_pool": null,
+   "deck": {
+    "Appendage Amalgam": 2,
+    "Balemurk Leech": 4,
+    "Derelict Attic // Widow's Walk": 1,
+    "Enduring Curiosity": 1,
+    "Fanatic of the Harrowing": 1,
+    "Fear of Infinity": 1,
+    "Fear of Lost Teeth": 3,
+    "Fear of the Dark": 1,
+    "Grievous Wound": 1,
+    "Island": 8,
+    "Meat Locker // Drowned Diner": 1,
+    "Nashi, Searcher in the Dark": 1,
+    "Spectral Snatcher": 1,
+    "Sporogenic Infection": 1,
+    "Swamp": 8,
+    "The Mindskinner": 1,
+    "Tunnel Surveyor": 1,
+    "Unable to Scream": 1,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Vanish from Sight": 1
+   }
+  },
+  {
+   "file": "good_05.dck",
+   "rank": 5,
+   "playmat_name": "★ good_05 · UB+w eerie enchantments (near mono-U) · review 3/5",
+   "tier": 1,
+   "draft_id": "68521573472c448194642f5354f67dee",
+   "build_index": "1",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UB",
+   "splash_colors": "W",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "UB eerie enchantments (near mono-U)",
+    "coherent": true,
+    "concerns": [
+     "mana",
+     "colors",
+     "splash",
+     "graveyard fuel"
+    ],
+    "rating": 3,
+    "verdict": "A real blue eerie engine with strong cards like Overlord of the Floodpits, Entity Tracker, Floodpits Drowner and Fear of Falling, but the manabase hurts it: only 11 blue sources for a deck full of UU costs, too many Swamps for four black cards, and a splash for two Gremlin Tamers as two-drops."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "U": {
+     "sources": 11,
+     "need": 9,
+     "cards": 20
+    },
+    "B": {
+     "sources": 8,
+     "need": 7,
+     "cards": 4
+    },
+    "W": {
+     "sources": 4,
+     "cards": 2,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     9,
+     7,
+     3,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "body_makers": 6,
+    "bodies": 19,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 4,
+    "removal": 4,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Fear of Falling",
+     "Final Vengeance",
+     "Vanish from Sight"
+    ],
+    "soft_removal_cards": [
+     "Floodpits Drowner",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UB 51.6%",
+   "deck_score_gih": 0.56776,
+   "in_current_pool": null,
+   "deck": {
+    "Abandoned Campground": 1,
+    "Abhorrent Oculus": 1,
+    "Cracked Skull": 1,
+    "Creeping Peeper": 1,
+    "Entity Tracker": 1,
+    "Fear of Falling": 1,
+    "Fear of Infinity": 1,
+    "Fear of Isolation": 1,
+    "Final Vengeance": 1,
+    "Floodpits Drowner": 1,
+    "Glimmerburst": 1,
+    "Glimmerlight": 1,
+    "Gremlin Tamer": 2,
+    "Island": 7,
+    "Murky Sewer": 1,
+    "Overlord of the Floodpits": 1,
+    "Plains": 1,
+    "Skullsnap Nuisance": 1,
+    "Stay Hidden, Stay Silent": 2,
+    "Swamp": 5,
+    "Terramorphic Expanse": 2,
+    "Tunnel Surveyor": 1,
+    "Twist Reality": 1,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Unwilling Vessel": 1,
+    "Vanish from Sight": 2
+   }
+  },
+  {
+   "file": "good_06.dck",
+   "rank": 6,
+   "playmat_name": "★ good_06 · UB+g control · review 3/5",
+   "tier": 1,
+   "draft_id": "ba7d2acf5a4241c596c1939a5f6b29fd",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UB",
+   "splash_colors": "G",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "UB control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "splash",
+     "win conditions",
+     "counterspells"
+    ],
+    "rating": 3,
+    "verdict": "Solid UB control. Real removal (Murder, Live or Die, Nowhere to Run, 2x Unable to Scream, Meat Locker), card flow from Glimmerburst and Drowned Diner, and Megalodon/Mutilator/Slasher to finish. But only 9 real creatures and a heavy counterspell suite make it reactive and slow to close. The green splash for Swarmweaver alone isn't worth the mana strain."
+   },
+   "mana_score": 8.5,
+   "mana": {
+    "U": {
+     "sources": 9,
+     "need": 9,
+     "cards": 12
+    },
+    "B": {
+     "sources": 9,
+     "need": 9,
+     "cards": 10
+    },
+    "G": {
+     "sources": 3,
+     "cards": 1,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     4,
+     7,
+     6,
+     3,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "body_makers": 5,
+    "bodies": 14,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 5,
+    "soft_removal": 5,
+    "removal_cards": [
+     "Live or Die",
+     "Murder",
+     "Nowhere to Run",
+     "Vile Mutilator",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [
+     "Get Out",
+     "Meat Locker // Drowned Diner",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UB 51.6%",
+   "deck_score_gih": 0.56015,
+   "in_current_pool": null,
+   "deck": {
+    "Cynical Loner": 1,
+    "Daggermaw Megalodon": 1,
+    "Fear of Impostors": 1,
+    "Fear of Isolation": 1,
+    "Forest": 1,
+    "Get Out": 2,
+    "Glimmerburst": 2,
+    "Haunted Screen": 1,
+    "Innocuous Rat": 1,
+    "Island": 6,
+    "Lakeside Shack": 1,
+    "Live or Die": 1,
+    "Meat Locker // Drowned Diner": 1,
+    "Murder": 1,
+    "Murky Sewer": 1,
+    "Nowhere to Run": 1,
+    "Swamp": 7,
+    "Terramorphic Expanse": 1,
+    "The Swarmweaver": 1,
+    "Twist Reality": 1,
+    "Unable to Scream": 2,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Unstoppable Slasher": 1,
+    "Valgavoth's Faithful": 1,
+    "Vile Mutilator": 1,
+    "Winter's Intervention": 1
+   }
+  },
+  {
+   "file": "good_07.dck",
+   "rank": 7,
+   "playmat_name": "★ good_07 · UB enchantment control · review 3/5",
+   "tier": 1,
+   "draft_id": "aa9cf354f4fc482a94d1461128befbb3",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "UB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "500",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "UB enchantment control",
+    "coherent": true,
+    "concerns": [
+     "few threats",
+     "creature count",
+     "clunky rooms"
+    ],
+    "rating": 3,
+    "verdict": "Deep removal (3 Murder, Withering Torment, Nowhere to Run, Miasma Demon) and Glimmerburst card flow make a solid control shell, but nine real creatures, many of them small, make the deck slow to close games and soft to early pressure."
+   },
+   "mana_score": 8.0,
+   "mana": {
+    "U": {
+     "sources": 8,
+     "need": 9,
+     "cards": 12
+    },
+    "B": {
+     "sources": 8,
+     "need": 9,
+     "cards": 14
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     6,
+     8,
+     4,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "body_makers": 6,
+    "bodies": 15,
+    "noncreature_spells": 15,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 6,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Murder",
+     "Nowhere to Run",
+     "Winter's Intervention",
+     "Withering Torment"
+    ],
+    "soft_removal_cards": [
+     "Bottomless Pool // Locker Room",
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UB 51.6%",
+   "deck_score_gih": 0.54958,
+   "in_current_pool": null,
+   "deck": {
+    "Bottomless Pool // Locker Room": 1,
+    "Defiled Crypt // Cadaver Lab": 1,
+    "Don't Make a Sound": 1,
+    "Fanatic of the Harrowing": 1,
+    "Fear of Failed Tests": 1,
+    "Fear of Infinity": 2,
+    "Glimmerburst": 3,
+    "Glimmerlight": 1,
+    "Island": 8,
+    "Meat Locker // Drowned Diner": 1,
+    "Miasma Demon": 1,
+    "Murder": 3,
+    "Nowhere to Run": 1,
+    "Skullsnap Nuisance": 1,
+    "Spectral Snatcher": 1,
+    "Stay Hidden, Stay Silent": 1,
+    "Swamp": 8,
+    "Tunnel Surveyor": 1,
+    "Valgavoth's Faithful": 1,
+    "Winter's Intervention": 1,
+    "Withering Torment": 1
+   }
+  },
+  {
+   "file": "good_08.dck",
+   "rank": 8,
+   "playmat_name": "★ good_08 · UB enchantment/eerie control · review 3/5",
+   "tier": 1,
+   "draft_id": "854783a186354582b8d2890dbea29d68",
+   "build_index": "2",
+   "build_games": 6,
+   "build_wins": 4,
+   "games": 8,
+   "wins": 5,
+   "losses": 3,
+   "main_colors": "UB",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "500",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "UB enchantment/eerie control",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threats",
+     "skullcrabs"
+    ],
+    "rating": 3,
+    "verdict": "Solid removal suite (Murder, Final Vengeance x2, Meat Locker, Stay Hidden) and good card flow with Entity Tracker and Rooms, but a thin, low-impact creature base and weak filler like Scrabbling Skullcrab and Fanatic leave it short on ways to actually close games."
+   },
+   "mana_score": 8.0,
+   "mana": {
+    "U": {
+     "sources": 8,
+     "need": 9,
+     "cards": 12
+    },
+    "B": {
+     "sources": 8,
+     "need": 9,
+     "cards": 11
+    }
+   },
+   "stats": {
+    "curve": [
+     6,
+     6,
+     8,
+     3,
+     0,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 10,
+    "body_makers": 6,
+    "bodies": 16,
+    "noncreature_spells": 14,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 4,
+    "soft_removal": 3,
+    "removal_cards": [
+     "Final Vengeance",
+     "Murder",
+     "Winter's Intervention"
+    ],
+    "soft_removal_cards": [
+     "Meat Locker // Drowned Diner",
+     "Stay Hidden, Stay Silent",
+     "Unable to Scream"
+    ],
+    "archetype_wr": 0.5160092378752886,
+    "red_flags": []
+   },
+   "archetype_flag": "weak archetype UB 51.6%",
+   "deck_score_gih": 0.55491,
+   "in_current_pool": null,
+   "deck": {
+    "Derelict Attic // Widow's Walk": 1,
+    "Don't Make a Sound": 1,
+    "Entity Tracker": 1,
+    "Fanatic of the Harrowing": 1,
+    "Final Vengeance": 2,
+    "Glimmerburst": 2,
+    "Glimmerlight": 1,
+    "Innocuous Rat": 2,
+    "Island": 8,
+    "Meat Locker // Drowned Diner": 1,
+    "Murder": 1,
+    "Resurrected Cultist": 1,
+    "Scrabbling Skullcrab": 2,
+    "Spectral Snatcher": 1,
+    "Stay Hidden, Stay Silent": 1,
+    "Swamp": 8,
+    "Tunnel Surveyor": 1,
+    "Twist Reality": 1,
+    "Unable to Scream": 1,
+    "Underwater Tunnel // Slimy Aquarium": 1,
+    "Unstoppable Slasher": 1,
+    "Winter's Intervention": 1
+   }
+  }
+ ]
+}

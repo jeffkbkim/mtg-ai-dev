@@ -1,0 +1,2718 @@
+{
+ "source": "game_data_public.DSK.PremierDraft.csv.gz",
+ "drafts": 173545,
+ "skipped": {
+  "card not in XMage DSK": 3283,
+  "not 40 cards": 14279
+ },
+ "funnel": {
+  "eligible": 155983,
+  "pair, not in an excluded pool": 17763,
+  "wins >= 0": 17763,
+  "build games ok": 16537,
+  "drafter games bucket >= 100": 12031,
+  "colour rule ok": 10464,
+  "build checks ok": 9998,
+  "fails top end": 217,
+  "fails lands": 5,
+  "fails creatures": 171,
+  "off-colour card (dropped)": 59,
+  "fails two-drops": 18,
+  "drafter bucket >= 0.66": 227
+ },
+ "candidates_by_threshold": {
+  "0.66": {
+   "WU": 0,
+   "UB": 0,
+   "BR": 0,
+   "RG": 227,
+   "WG": 0,
+   "WB": 0,
+   "UR": 0,
+   "BG": 0,
+   "WR": 0,
+   "UG": 0
+  }
+ },
+ "threshold": 0.66,
+ "min_user_games": 100,
+ "min_build_games": 3,
+ "min_creatures": 13,
+ "shortlist_per_pair": 30,
+ "per_pair": 30,
+ "keep_rating": 3,
+ "tier2": "rating >= 4 and no build red flag (weak-archetype flag excluded, see archetype_flag)",
+ "reviewer": {
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e",
+  "reviewed": 30,
+  "cost_usd": 0.596
+ },
+ "shortlist_ratings": {
+  "WU": {},
+  "UB": {},
+  "BR": {},
+  "RG": {
+   "2": 4,
+   "3": 24,
+   "4": 2
+  },
+  "WG": {},
+  "WB": {},
+  "UR": {},
+  "BG": {},
+  "WR": {},
+  "UG": {}
+ },
+ "kept": 26,
+ "kept_by_pair": {
+  "WU": 0,
+  "UB": 0,
+  "BR": 0,
+  "RG": 26,
+  "WG": 0,
+  "WB": 0,
+  "UR": 0,
+  "BG": 0,
+  "WR": 0,
+  "UG": 0
+ },
+ "tiers": {
+  "2": 2,
+  "1": 24
+ },
+ "overlap_with_current": {
+  "draft_ids": [],
+  "shortlisted": 0
+ },
+ "decks": [
+  {
+   "file": "good_00.dck",
+   "rank": 0,
+   "playmat_name": "★★ good_00 · RG delirium aggro · review 4/5",
+   "tier": 2,
+   "draft_id": "ce7205f1505441a690c2ab310965cc5b",
+   "build_index": "0",
+   "build_games": 5,
+   "build_wins": 5,
+   "games": 5,
+   "wins": 5,
+   "losses": 0,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "RG delirium aggro",
+    "coherent": true,
+    "concerns": [
+     "top end",
+     "creature quality",
+     "no 4-drops"
+    ],
+    "rating": 4,
+    "verdict": "Strong RG deck with bombs like Screaming Nemesis and Tyvar plus plenty of removal (Chainsaw, Dragonfire, 3 Glassworks, Clobbering) and solid delirium enablers. The very low curve and modest creature count leave it a little thin on board presence, but it's a well-built aggressive deck."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 12
+    },
+    "G": {
+     "sources": 8,
+     "need": 9,
+     "cards": 13
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     13,
+     6,
+     0,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "body_makers": 2,
+    "bodies": 15,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Chainsaw",
+     "Coordinated Clobbering",
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire",
+     "Screaming Nemesis"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56764,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Chainsaw": 1,
+    "Coordinated Clobbering": 1,
+    "Fear of Being Hunted": 1,
+    "Flesh Burrower": 1,
+    "Forest": 8,
+    "Glassworks // Shattered Yard": 3,
+    "Hand That Feeds": 3,
+    "Manifest Dread": 2,
+    "Mountain": 9,
+    "Patchwork Beastie": 1,
+    "Say Its Name": 2,
+    "Scorching Dragonfire": 1,
+    "Screaming Nemesis": 1,
+    "Slavering Branchsnapper": 1,
+    "Tyvar, the Pummeler": 1,
+    "Wary Watchdog": 1,
+    "Wildfire Wickerfolk": 2
+   }
+  },
+  {
+   "file": "good_01.dck",
+   "rank": 1,
+   "playmat_name": "★★ good_01 · RG+b aggro-removal (light B splash) · review 4/5",
+   "tier": 2,
+   "draft_id": "3c58f5325f8e426fadbb24c00c0eb064",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "RG",
+   "splash_colors": "B",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "diamond",
+   "review": {
+    "archetype": "RG aggro-removal (light B splash)",
+    "coherent": true,
+    "concerns": [
+     "splash",
+     "some filler"
+    ],
+    "rating": 4,
+    "verdict": "A strong RG deck with premium removal (3 Dragonfire, 2 Glassworks, Overlord) and solid threats like Enduring Courage and Fear of Missing Out; the black splash for only Swarmweaver is marginal and a few slots like Glimmerlight and Fungus are filler, but the deck is well built."
+   },
+   "mana_score": 7.5,
+   "mana": {
+    "R": {
+     "sources": 8,
+     "need": 9,
+     "cards": 14
+    },
+    "G": {
+     "sources": 8,
+     "need": 8,
+     "cards": 9
+    },
+    "B": {
+     "sources": 3,
+     "cards": 1,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     10,
+     5,
+     5,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "body_makers": 3,
+    "bodies": 17,
+    "noncreature_spells": 9,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 7,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Monstrous Emergence",
+     "Overlord of the Boilerbilges",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [
+     "Fear of Missing Out"
+    ],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.57105,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Diversion Specialist": 2,
+    "Enduring Courage": 1,
+    "Fear of Exposure": 1,
+    "Fear of Missing Out": 1,
+    "Forest": 7,
+    "Glassworks // Shattered Yard": 2,
+    "Glimmerlight": 1,
+    "Insidious Fungus": 1,
+    "Irreverent Gremlin": 2,
+    "Monstrous Emergence": 1,
+    "Mountain": 7,
+    "Overlord of the Boilerbilges": 1,
+    "Razortrap Gorge": 1,
+    "Scorching Dragonfire": 3,
+    "Spineseeker Centipede": 1,
+    "Strangled Cemetery": 1,
+    "Swamp": 1,
+    "The Swarmweaver": 1,
+    "Threats Around Every Corner": 1,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Wary Watchdog": 1,
+    "Wildfire Wickerfolk": 1
+   }
+  },
+  {
+   "file": "good_02.dck",
+   "rank": 2,
+   "playmat_name": "★ good_02 · RG delirium aggro · review 3/5",
+   "tier": 1,
+   "draft_id": "c1962b4c27574440aa952e1baab36a8a",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "RG delirium aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "weak 1-drops"
+    ],
+    "rating": 3,
+    "verdict": "Solid removal suite (Dragonfire, Bargain, Inferno, Beastie Beatdown) and good haste top end (Wurm, Hordecaller, Rootwise) carry a deck padded with low-impact filler like 2x Glimmerlight, Saw, Frantic Strength and Percussionists, and its 11 real creatures are thin for an aggro plan."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 11
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 11
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     10,
+     5,
+     2,
+     4,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 6,
+    "bodies": 17,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Betrayer's Bargain",
+     "Impossible Inferno",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56409,
+   "in_current_pool": null,
+   "deck": {
+    "Balustrade Wurm": 1,
+    "Beastie Beatdown": 1,
+    "Betrayer's Bargain": 1,
+    "Break Down the Door": 1,
+    "Clockwork Percussionist": 2,
+    "Fear of Being Hunted": 1,
+    "Forest": 8,
+    "Frantic Strength": 1,
+    "Glimmerlight": 2,
+    "Hand That Feeds": 1,
+    "House Cartographer": 1,
+    "Impossible Inferno": 1,
+    "Manifest Dread": 1,
+    "Most Valuable Slayer": 1,
+    "Mountain": 8,
+    "Razorkin Hordecaller": 1,
+    "Rootwise Survivor": 1,
+    "Saw": 1,
+    "Scorching Dragonfire": 1,
+    "Terramorphic Expanse": 1,
+    "Under the Skin": 2,
+    "Wickerfolk Thresher": 1,
+    "Wildfire Wickerfolk": 1
+   }
+  },
+  {
+   "file": "good_03.dck",
+   "rank": 3,
+   "playmat_name": "★ good_03 · RG aggro/delirium · review 3/5",
+   "tier": 1,
+   "draft_id": "6055e4525fe44d80a15230bfc2b6d787",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "RG aggro/delirium",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "creature quality",
+     "delirium"
+    ],
+    "rating": 3,
+    "verdict": "Plenty of cheap red removal (2 Dragonfire, Chainsaw, Bargain, Inferno, 2 Beatdown) and a low curve suited to 16 lands. But only 12 real creatures, mostly small ones like Percussionist, Playmate and Hand That Feeds, plus inconsistent delirium enablers, leave it light on pressure and board presence."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 10,
+     "need": 9,
+     "cards": 17
+    },
+    "G": {
+     "sources": 8,
+     "need": 8,
+     "cards": 9
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     14,
+     5,
+     0,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 5,
+    "bodies": 17,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 2,
+    "removal": 7,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Betrayer's Bargain",
+     "Chainsaw",
+     "Impossible Inferno",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [
+     "Fear of Missing Out"
+    ],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56873,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Beastie Beatdown": 2,
+    "Betrayer's Bargain": 1,
+    "Break Down the Door": 1,
+    "Chainsaw": 1,
+    "Clockwork Percussionist": 2,
+    "Fear of Missing Out": 1,
+    "Forest": 6,
+    "Grasping Longneck": 1,
+    "Hand That Feeds": 2,
+    "Impossible Inferno": 1,
+    "Irreverent Gremlin": 1,
+    "Manifest Dread": 1,
+    "Mountain": 8,
+    "Ragged Playmate": 1,
+    "Razorkin Needlehead": 1,
+    "Scorching Dragonfire": 2,
+    "Spineseeker Centipede": 1,
+    "Terramorphic Expanse": 2,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Turn Inside Out": 1,
+    "Valgavoth's Onslaught": 1,
+    "Wary Watchdog": 1
+   }
+  },
+  {
+   "file": "good_04.dck",
+   "rank": 4,
+   "playmat_name": "★ good_04 · RG aggro/delirium · review 3/5",
+   "tier": 1,
+   "draft_id": "a263bfa5a56a464392ba0b8a9d1d74cf",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "RG aggro/delirium",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "delirium enablers"
+    ],
+    "rating": 3,
+    "verdict": "Strong red removal (2 Dragonfire, 2 Glassworks, Beatdown) and solid tops in Hordecaller and Fear of Being Hunted, but thin on real creatures and padded with weak cards like Percussionist, Violent Urge and Patchwork Beastie with few delirium enablers; a fine but unexceptional deck."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 10,
+     "need": 9,
+     "cards": 15
+    },
+    "G": {
+     "sources": 8,
+     "need": 8,
+     "cards": 10
+    }
+   },
+   "stats": {
+    "curve": [
+     5,
+     9,
+     7,
+     0,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 4,
+    "bodies": 16,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 2,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56205,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Beastie Beatdown": 1,
+    "Clockwork Percussionist": 2,
+    "Fear of Being Hunted": 1,
+    "Forest": 6,
+    "Frantic Strength": 1,
+    "Glassworks // Shattered Yard": 2,
+    "Hand That Feeds": 2,
+    "Manifest Dread": 2,
+    "Mountain": 8,
+    "Patchwork Beastie": 1,
+    "Piggy Bank": 1,
+    "Razorkin Hordecaller": 1,
+    "Scorching Dragonfire": 2,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 1,
+    "Terramorphic Expanse": 1,
+    "Thornspire Verge": 1,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Under the Skin": 1,
+    "Violent Urge": 2,
+    "Wary Watchdog": 1
+   }
+  },
+  {
+   "file": "good_05.dck",
+   "rank": 5,
+   "playmat_name": "★ good_05 · RG manifest/delirium midrange · review 3/5",
+   "tier": 1,
+   "draft_id": "2659da092bd04779b9732b029f3946a3",
+   "build_index": "0",
+   "build_games": 6,
+   "build_wins": 3,
+   "games": 6,
+   "wins": 3,
+   "losses": 3,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "RG manifest/delirium midrange",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A solid RG shell with Overlord of the Hauntwoods, Valgavoth's Onslaught, Kona and four fight/burn removal spells. But it has only 12 real creatures and leans on three Manifest Dread plus weak filler like Glimmerlight and Turn Inside Out, so it's a fine deck rather than a strong one."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 8,
+     "cards": 8
+    },
+    "G": {
+     "sources": 10,
+     "need": 8,
+     "cards": 16
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     12,
+     3,
+     3,
+     3,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 6,
+    "bodies": 18,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Monstrous Emergence",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.5616,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 2,
+    "Beastie Beatdown": 1,
+    "Bleeding Woods": 1,
+    "Clockwork Percussionist": 1,
+    "Defiant Survivor": 1,
+    "Flesh Burrower": 1,
+    "Forest": 8,
+    "Glimmerlight": 1,
+    "Grab the Prize": 1,
+    "Kona, Rescue Beastie": 1,
+    "Manifest Dread": 3,
+    "Monstrous Emergence": 2,
+    "Most Valuable Slayer": 2,
+    "Mountain": 7,
+    "Overgrown Zealot": 1,
+    "Overlord of the Hauntwoods": 1,
+    "Scorching Dragonfire": 1,
+    "Spineseeker Centipede": 1,
+    "Terramorphic Expanse": 1,
+    "Turn Inside Out": 1,
+    "Valgavoth's Onslaught": 1,
+    "Wildfire Wickerfolk": 1
+   }
+  },
+  {
+   "file": "good_06.dck",
+   "rank": 6,
+   "playmat_name": "★ good_06 · RG delirium · review 3/5",
+   "tier": 1,
+   "draft_id": "e116808077b74cb98345071aeb74878f",
+   "build_index": "1",
+   "build_games": 8,
+   "build_wins": 5,
+   "games": 8,
+   "wins": 5,
+   "losses": 3,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "RG delirium",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "Beastie reliance",
+     "filler",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A real RG delirium shell with good red removal (Bargain x2, Dragonfire, Emergence, Beatdown), but it leans on three Patchwork Beasties and three Say Its Name without Altanak, so creature quality is thin and the deck depends on hitting delirium; the curve is heavy at two with almost nothing at 3–5."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 8,
+     "need": 8,
+     "cards": 9
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 16
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     16,
+     2,
+     1,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 3,
+    "bodies": 15,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Betrayer's Bargain",
+     "Fear of Burning Alive",
+     "Monstrous Emergence",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56456,
+   "in_current_pool": null,
+   "deck": {
+    "Beastie Beatdown": 1,
+    "Betrayer's Bargain": 2,
+    "Bleeding Woods": 1,
+    "Break Down the Door": 1,
+    "Enduring Courage": 1,
+    "Fear of Burning Alive": 1,
+    "Flesh Burrower": 1,
+    "Forest": 8,
+    "Glimmerlight": 1,
+    "Hand That Feeds": 1,
+    "Manifest Dread": 1,
+    "Monstrous Emergence": 1,
+    "Mountain": 7,
+    "Omnivorous Flytrap": 1,
+    "Painter's Studio // Defaced Gallery": 1,
+    "Patchwork Beastie": 3,
+    "Say Its Name": 3,
+    "Scorching Dragonfire": 1,
+    "Slavering Branchsnapper": 1,
+    "Wary Watchdog": 2,
+    "Wildfire Wickerfolk": 1
+   }
+  },
+  {
+   "file": "good_07.dck",
+   "rank": 7,
+   "playmat_name": "★ good_07 · RG aggro · review 3/5",
+   "tier": 1,
+   "draft_id": "943e348a97c84723afd437c820b2551f",
+   "build_index": "0",
+   "build_games": 5,
+   "build_wins": 2,
+   "games": 5,
+   "wins": 2,
+   "losses": 3,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.68",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.68,
+   "rank_17lands": "diamond",
+   "review": {
+    "archetype": "RG aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "Solid removal (Dragonfire, Beatdown, Emergence, Waltz) and strong payoffs in Hordecaller, Onslaught and three Slayers, but only 12 real creatures, and weak filler like Norin, Vengeful Possession with no sac outlet, Turn Inside Out and Glimmerlight make it a fine but unspectacular aggro deck."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 14
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 9
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     7,
+     6,
+     4,
+     3,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 5,
+    "bodies": 17,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Monstrous Emergence",
+     "Scorching Dragonfire",
+     "Waltz of Rage"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56155,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Beastie Beatdown": 1,
+    "Bleeding Woods": 1,
+    "Break Down the Door": 1,
+    "Cautious Survivor": 1,
+    "Clockwork Percussionist": 1,
+    "Forest": 8,
+    "Glimmerlight": 1,
+    "Grab the Prize": 1,
+    "Grasping Longneck": 1,
+    "Hand That Feeds": 1,
+    "Monstrous Emergence": 1,
+    "Most Valuable Slayer": 3,
+    "Mountain": 8,
+    "Norin, Swift Survivalist": 1,
+    "Razorkin Hordecaller": 1,
+    "Scorching Dragonfire": 1,
+    "Spineseeker Centipede": 1,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Turn Inside Out": 1,
+    "Valgavoth's Onslaught": 1,
+    "Vengeful Possession": 1,
+    "Waltz of Rage": 1,
+    "Wary Watchdog": 1
+   }
+  },
+  {
+   "file": "good_08.dck",
+   "rank": 8,
+   "playmat_name": "★ good_08 · RG aggro · review 3/5",
+   "tier": 1,
+   "draft_id": "b625725901cd40369f56505848e7e3de",
+   "build_index": "0",
+   "build_games": 4,
+   "build_wins": 2,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.68",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.68,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "RG aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A solid RG aggro shell with good burn (2 Dragonfire, Inferno, Emergence), Fear of Being Hunted, Hordecaller and Onslaught. It is held back by only 13 true creatures, durdly slots like Ghost Vacuum, Norin and Charred Foyer, and a thin top end."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 10,
+     "need": 9,
+     "cards": 15
+    },
+    "G": {
+     "sources": 10,
+     "need": 7,
+     "cards": 7
+    }
+   },
+   "stats": {
+    "curve": [
+     4,
+     7,
+     7,
+     3,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "body_makers": 4,
+    "bodies": 17,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Impossible Inferno",
+     "Monstrous Emergence",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56099,
+   "in_current_pool": null,
+   "deck": {
+    "Bleeding Woods": 1,
+    "Charred Foyer // Warped Space": 1,
+    "Clockwork Percussionist": 1,
+    "Defiant Survivor": 1,
+    "Fear of Being Hunted": 2,
+    "Flesh Burrower": 1,
+    "Forest": 6,
+    "Ghost Vacuum": 1,
+    "House Cartographer": 1,
+    "Impossible Inferno": 1,
+    "Irreverent Gremlin": 2,
+    "Moldering Gym // Weight Room": 1,
+    "Monstrous Emergence": 1,
+    "Most Valuable Slayer": 1,
+    "Mountain": 7,
+    "Norin, Swift Survivalist": 1,
+    "Razorkin Hordecaller": 1,
+    "Ripchain Razorkin": 1,
+    "Scorching Dragonfire": 2,
+    "Spineseeker Centipede": 1,
+    "Strangled Cemetery": 1,
+    "Thornspire Verge": 2,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Turn Inside Out": 1,
+    "Valgavoth's Onslaught": 1
+   }
+  },
+  {
+   "file": "good_09.dck",
+   "rank": 9,
+   "playmat_name": "★ good_09 · RG aggro-midrange · review 3/5",
+   "tier": 1,
+   "draft_id": "b24c8ab979fe4b3b9c99326027f723db",
+   "build_index": "0",
+   "build_games": 6,
+   "build_wins": 3,
+   "games": 6,
+   "wins": 3,
+   "losses": 3,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.68",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.68,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "RG aggro-midrange",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "filler",
+     "delirium"
+    ],
+    "rating": 3,
+    "verdict": "Solid RG beats with strong tops in 2x Fear of Burning Alive, Enduring Courage, Chainsaw and Wickerfolk. Interaction is thin, and cards like Norin, Violent Urge, Patchwork Beastie and a lone Say Its Name lower the quality."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 11
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 11
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     8,
+     6,
+     2,
+     2,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "body_makers": 6,
+    "bodies": 19,
+    "noncreature_spells": 10,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Chainsaw",
+     "Fear of Burning Alive"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56147,
+   "in_current_pool": null,
+   "deck": {
+    "Beastie Beatdown": 1,
+    "Chainsaw": 1,
+    "Conductive Machete": 1,
+    "Dissection Tools": 1,
+    "Enduring Courage": 1,
+    "Fear of Burning Alive": 2,
+    "Fear of Exposure": 1,
+    "Flesh Burrower": 1,
+    "Forest": 8,
+    "Glimmerlight": 1,
+    "Grasping Longneck": 1,
+    "Manifest Dread": 1,
+    "Moldering Gym // Weight Room": 1,
+    "Mountain": 8,
+    "Norin, Swift Survivalist": 1,
+    "Patchwork Beastie": 1,
+    "Piggy Bank": 1,
+    "Rootwise Survivor": 1,
+    "Say Its Name": 1,
+    "Spineseeker Centipede": 1,
+    "Terramorphic Expanse": 1,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Vicious Clown": 1,
+    "Violent Urge": 1,
+    "Wildfire Wickerfolk": 1
+   }
+  },
+  {
+   "file": "good_10.dck",
+   "rank": 10,
+   "playmat_name": "★ good_10 · RG delirium aggro · review 3/5",
+   "tier": 1,
+   "draft_id": "d765453782114196bb39937c0581c36f",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.68",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.68,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "RG delirium aggro",
+    "coherent": true,
+    "concerns": [
+     "creature quality",
+     "filler",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "A low-curve RG delirium deck with strong removal (2 Glassworks, Chainsaw, Bargain, Emergence) and good card-type diversity. Two Fungus, two Turn Inside Out and the delirium-gated Beasties are weak filler, and there are only 14 real creatures with little top end. Fine, not special."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 8,
+     "cards": 13
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 13
+    }
+   },
+   "stats": {
+    "curve": [
+     6,
+     10,
+     5,
+     2,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "body_makers": 4,
+    "bodies": 18,
+    "noncreature_spells": 10,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Chainsaw",
+     "Glassworks // Shattered Yard",
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.57031,
+   "in_current_pool": null,
+   "deck": {
+    "Betrayer's Bargain": 1,
+    "Bleeding Woods": 1,
+    "Break Down the Door": 1,
+    "Chainsaw": 1,
+    "Forest": 7,
+    "Glassworks // Shattered Yard": 2,
+    "Hand That Feeds": 1,
+    "Insidious Fungus": 2,
+    "Irreverent Gremlin": 1,
+    "Monstrous Emergence": 1,
+    "Most Valuable Slayer": 1,
+    "Mountain": 7,
+    "Painter's Studio // Defaced Gallery": 1,
+    "Patchwork Beastie": 2,
+    "Razorkin Hordecaller": 1,
+    "Spineseeker Centipede": 1,
+    "Turn Inside Out": 2,
+    "Under the Skin": 1,
+    "Valgavoth's Lair": 1,
+    "Wary Watchdog": 2,
+    "Wickerfolk Thresher": 1,
+    "Wildfire Wickerfolk": 2
+   }
+  },
+  {
+   "file": "good_11.dck",
+   "rank": 11,
+   "playmat_name": "★ good_11 · RG delirium aggro/removal · review 3/5",
+   "tier": 1,
+   "draft_id": "49770e0da23f432fbf4befdb913fb2cd",
+   "build_index": "1",
+   "build_games": 5,
+   "build_wins": 2,
+   "games": 5,
+   "wins": 2,
+   "losses": 3,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.68",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.68,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "RG delirium aggro/removal",
+    "coherent": true,
+    "concerns": [
+     "creature quality",
+     "few creatures",
+     "thin top end"
+    ],
+    "rating": 3,
+    "verdict": "Four Beastie Beatdowns plus Glassworks, Bargain and Fear of Burning Alive give it plenty of removal, but the small 1-2 drop bodies (Percussionists, Norin, Playmates) are weak fight partners and the 12-creature count leans heavily on manifest dread to keep the Beatdowns live."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 10,
+     "need": 9,
+     "cards": 15
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 11
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     11,
+     6,
+     1,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 4,
+    "bodies": 16,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Betrayer's Bargain",
+     "Fear of Burning Alive",
+     "Glassworks // Shattered Yard"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56288,
+   "in_current_pool": null,
+   "deck": {
+    "Beastie Beatdown": 4,
+    "Betrayer's Bargain": 1,
+    "Bleeding Woods": 1,
+    "Clockwork Percussionist": 2,
+    "Conductive Machete": 1,
+    "Defiant Survivor": 1,
+    "Fear of Burning Alive": 1,
+    "Forest": 7,
+    "Glassworks // Shattered Yard": 1,
+    "Manifest Dread": 1,
+    "Mountain": 8,
+    "Norin, Swift Survivalist": 1,
+    "Omnivorous Flytrap": 1,
+    "Overgrown Zealot": 1,
+    "Piggy Bank": 1,
+    "Ragged Playmate": 2,
+    "Say Its Name": 1,
+    "Slavering Branchsnapper": 1,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Under the Skin": 1,
+    "Valgavoth's Lair": 1,
+    "Vicious Clown": 1
+   }
+  },
+  {
+   "file": "good_12.dck",
+   "rank": 12,
+   "playmat_name": "★ good_12 · RG delirium aggro · review 3/5",
+   "tier": 1,
+   "draft_id": "aa0e8b151c84464582455a33110e0073",
+   "build_index": "0",
+   "build_games": 5,
+   "build_wins": 2,
+   "games": 5,
+   "wins": 2,
+   "losses": 3,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.68",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.68,
+   "rank_17lands": "diamond",
+   "review": {
+    "archetype": "RG delirium aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "early drops"
+    ],
+    "rating": 3,
+    "verdict": "Strong top end and removal (Nemesis, Enduring Courage, Fear of Burning Alive, Inferno, Dragonfire, Waltz) carry a deck light on real creatures, with filler 2-drops like Say Its Name diluting the aggressive curve."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 14
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 10
+    }
+   },
+   "stats": {
+    "curve": [
+     0,
+     10,
+     4,
+     5,
+     3,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 3,
+    "bodies": 14,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Fear of Burning Alive",
+     "Impossible Inferno",
+     "Monstrous Emergence",
+     "Scorching Dragonfire",
+     "Screaming Nemesis",
+     "Waltz of Rage"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.55587,
+   "in_current_pool": null,
+   "deck": {
+    "Bleeding Woods": 1,
+    "Break Down the Door": 1,
+    "Cautious Survivor": 1,
+    "Diversion Specialist": 1,
+    "Enduring Courage": 1,
+    "Fear of Burning Alive": 1,
+    "Flesh Burrower": 1,
+    "Forest": 8,
+    "Frantic Strength": 1,
+    "Glimmerlight": 1,
+    "Hand That Feeds": 2,
+    "Impossible Inferno": 1,
+    "Monstrous Emergence": 1,
+    "Most Valuable Slayer": 1,
+    "Mountain": 8,
+    "Painter's Studio // Defaced Gallery": 1,
+    "Peer Past the Veil": 1,
+    "Rootwise Survivor": 1,
+    "Say Its Name": 2,
+    "Scorching Dragonfire": 1,
+    "Screaming Nemesis": 1,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Waltz of Rage": 1,
+    "Wildfire Wickerfolk": 1
+   }
+  },
+  {
+   "file": "good_13.dck",
+   "rank": 13,
+   "playmat_name": "★ good_13 · RG midrange · review 3/5",
+   "tier": 1,
+   "draft_id": "4021aa75b8d3442a84f45965776195f8",
+   "build_index": "0",
+   "build_games": 4,
+   "build_wins": 1,
+   "games": 4,
+   "wins": 1,
+   "losses": 3,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.68",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.68,
+   "rank_17lands": "diamond",
+   "review": {
+    "archetype": "RG midrange",
+    "coherent": true,
+    "concerns": [
+     "filler",
+     "delirium"
+    ],
+    "rating": 3,
+    "verdict": "Solid RG midrange with strong removal (Dragonfire, Inferno, Waltz, Beatdown, Emergence) and good threats like Hordecaller, Enduring Courage and Branchsnapper. Patchwork Beastie, Hand That Feeds, Turn Inside Out and Vengeful Possession are weak filler, and delirium will be hard to turn on reliably."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 14
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 10
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     9,
+     3,
+     3,
+     4,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "body_makers": 2,
+    "bodies": 17,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Impossible Inferno",
+     "Monstrous Emergence",
+     "Scorching Dragonfire",
+     "Waltz of Rage"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.55858,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Beastie Beatdown": 1,
+    "Clockwork Percussionist": 1,
+    "Diversion Specialist": 1,
+    "Enduring Courage": 1,
+    "Flesh Burrower": 2,
+    "Forest": 8,
+    "Hand That Feeds": 1,
+    "Impossible Inferno": 1,
+    "Monstrous Emergence": 1,
+    "Most Valuable Slayer": 1,
+    "Mountain": 8,
+    "Overgrown Zealot": 2,
+    "Patchwork Beastie": 1,
+    "Piggy Bank": 1,
+    "Razorkin Hordecaller": 1,
+    "Scorching Dragonfire": 1,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 1,
+    "Thornspire Verge": 1,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Turn Inside Out": 1,
+    "Vengeful Possession": 1,
+    "Waltz of Rage": 1
+   }
+  },
+  {
+   "file": "good_14.dck",
+   "rank": 14,
+   "playmat_name": "★ good_14 · RG delirium aggro · review 3/5",
+   "tier": 1,
+   "draft_id": "2856efedd2764b6b9c823d7bb6539011",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 5,
+   "games": 8,
+   "wins": 5,
+   "losses": 3,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.68",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.68,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "RG delirium aggro",
+    "coherent": true,
+    "concerns": [
+     "top end",
+     "delirium",
+     "card advantage"
+    ],
+    "rating": 3,
+    "verdict": "A low, fast RG aggro deck: 4 Wildfire Wickerfolk, 4 Wary Watchdog and a good removal suite (Chainsaw, Trial of Agony, Beastie Beatdown, Inferno, 2 Emergence) make it solid, but with almost nothing above 3 mana it can run out of gas, and its delirium enablers are thin for Patchwork Beastie."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 8,
+     "cards": 11
+    },
+    "G": {
+     "sources": 10,
+     "need": 8,
+     "cards": 18
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     14,
+     4,
+     1,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "body_makers": 1,
+    "bodies": 16,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 3,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Chainsaw",
+     "Impossible Inferno",
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56495,
+   "in_current_pool": null,
+   "deck": {
+    "Beastie Beatdown": 1,
+    "Bleeding Woods": 1,
+    "Chainsaw": 1,
+    "Clockwork Percussionist": 1,
+    "Forest": 7,
+    "Frantic Strength": 2,
+    "House Cartographer": 2,
+    "Impossible Inferno": 1,
+    "Monstrous Emergence": 2,
+    "Most Valuable Slayer": 1,
+    "Mountain": 6,
+    "Patchwork Beastie": 1,
+    "Razorkin Hordecaller": 1,
+    "Spineseeker Centipede": 1,
+    "Terramorphic Expanse": 2,
+    "Trial of Agony": 1,
+    "Under the Skin": 1,
+    "Wary Watchdog": 4,
+    "Wildfire Wickerfolk": 4
+   }
+  },
+  {
+   "file": "good_15.dck",
+   "rank": 15,
+   "playmat_name": "★ good_15 · RG delirium / Altanak · review 3/5",
+   "tier": 1,
+   "draft_id": "747e40938c2b4fa9b01a429b8c4e8920",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.68",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.68,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "RG delirium / Altanak",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "threat density",
+     "fight-dependent removal"
+    ],
+    "rating": 3,
+    "verdict": "Plenty of quality removal (Dragonfire x2, Inferno, Bargain), and the Say Its Name package makes Altanak a real late-game plan. But only 9 true creatures and three cantrip-style Say Its Names leave the deck thin on threats, which also hurts Beatdown and Monstrous Emergence."
+   },
+   "mana_score": 10.0,
+   "mana": {
+    "R": {
+     "sources": 8,
+     "need": 7,
+     "cards": 7
+    },
+    "G": {
+     "sources": 10,
+     "need": 8,
+     "cards": 17
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     13,
+     3,
+     3,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 9,
+    "body_makers": 4,
+    "bodies": 13,
+    "noncreature_spells": 14,
+    "lands": 17,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Betrayer's Bargain",
+     "Impossible Inferno",
+     "Monstrous Emergence",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.5633,
+   "in_current_pool": null,
+   "deck": {
+    "Altanak, the Thrice-Called": 1,
+    "Bashful Beastie": 1,
+    "Beastie Beatdown": 2,
+    "Betrayer's Bargain": 1,
+    "Bleeding Woods": 1,
+    "Break Down the Door": 1,
+    "Cautious Survivor": 2,
+    "Conductive Machete": 1,
+    "Forest": 9,
+    "Glimmerlight": 1,
+    "Impossible Inferno": 1,
+    "Insidious Fungus": 1,
+    "Monstrous Emergence": 1,
+    "Mountain": 7,
+    "Overgrown Zealot": 1,
+    "Say Its Name": 3,
+    "Scorching Dragonfire": 2,
+    "Spineseeker Centipede": 1,
+    "Twitching Doll": 1,
+    "Valgavoth's Onslaught": 1,
+    "Wildfire Wickerfolk": 1
+   }
+  },
+  {
+   "file": "good_16.dck",
+   "rank": 16,
+   "playmat_name": "★ good_16 · RG+b delirium aggro (light B splash) · review 3/5",
+   "tier": 1,
+   "draft_id": "09d97543298045b183be6f5dac2493d5",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "RG",
+   "splash_colors": "B",
+   "user_win_rate_bucket": "0.74",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.74,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "RG delirium aggro (light B splash)",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "filler",
+     "splash"
+    ],
+    "rating": 3,
+    "verdict": "A solid RG delirium shell: Chainsaw, Beastie Beatdown, Tyvar, Balustrade Wurm and two Fear of Burning Alive give it real power, and the artifact, enchantment and creature card types help delirium. But removal is thin. Cathartic Parting, Violent Urge and Vengeful Possession are weak slots, and splashing two gold black cards for modest payoff is questionable."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 8,
+     "cards": 12
+    },
+    "G": {
+     "sources": 9,
+     "need": 9,
+     "cards": 13
+    },
+    "B": {
+     "sources": 4,
+     "cards": 2,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     10,
+     5,
+     2,
+     1,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 17,
+    "body_makers": 1,
+    "bodies": 18,
+    "noncreature_spells": 6,
+    "lands": 17,
+    "fixing_lands": 2,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Chainsaw",
+     "Fear of Burning Alive",
+     "Sawblade Skinripper"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56599,
+   "in_current_pool": null,
+   "deck": {
+    "Balustrade Wurm": 1,
+    "Beastie Beatdown": 1,
+    "Broodspinner": 1,
+    "Cathartic Parting": 1,
+    "Chainsaw": 1,
+    "Clockwork Percussionist": 1,
+    "Fear of Burning Alive": 2,
+    "Forest": 7,
+    "Grasping Longneck": 1,
+    "Hand That Feeds": 2,
+    "House Cartographer": 1,
+    "Mountain": 6,
+    "Razortrap Gorge": 1,
+    "Ripchain Razorkin": 1,
+    "Sawblade Skinripper": 1,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 1,
+    "Swamp": 1,
+    "Terramorphic Expanse": 1,
+    "Threats Around Every Corner": 1,
+    "Twitching Doll": 1,
+    "Tyvar, the Pummeler": 1,
+    "Valgavoth's Lair": 1,
+    "Vengeful Possession": 1,
+    "Violent Urge": 1,
+    "Wary Watchdog": 1,
+    "Wildfire Wickerfolk": 1
+   }
+  },
+  {
+   "file": "good_17.dck",
+   "rank": 17,
+   "playmat_name": "★ good_17 · RG aggro · review 3/5",
+   "tier": 1,
+   "draft_id": "459a77b0ce344315adfdc2f0e65ada12",
+   "build_index": "0",
+   "build_games": 7,
+   "build_wins": 7,
+   "games": 7,
+   "wins": 7,
+   "losses": 0,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.74",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.74,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "RG aggro",
+    "coherent": true,
+    "concerns": [
+     "filler one-drops",
+     "delirium",
+     "card quality"
+    ],
+    "rating": 3,
+    "verdict": "A low-curve RG beatdown deck with good red removal (3 Scorching Dragonfire, Chainsaw, Betrayer's Bargain) and strong pieces in Hordecaller and Fear of Exposure; it is held back by weak one-drops (Percussionists, Turn Inside Out, Violent Urge) and unreliable delirium for Patchwork Beastie, making it a fine but unspectacular deck."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 16
+    },
+    "G": {
+     "sources": 7,
+     "need": 8,
+     "cards": 9
+    }
+   },
+   "stats": {
+    "curve": [
+     6,
+     11,
+     3,
+     2,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "body_makers": 3,
+    "bodies": 18,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Chainsaw",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56401,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Betrayer's Bargain": 1,
+    "Chainsaw": 1,
+    "Clockwork Percussionist": 2,
+    "Fear of Exposure": 2,
+    "Forest": 7,
+    "Hand That Feeds": 1,
+    "House Cartographer": 1,
+    "Irreverent Gremlin": 1,
+    "Mountain": 9,
+    "Patchwork Beastie": 1,
+    "Razorkin Hordecaller": 1,
+    "Razorkin Needlehead": 1,
+    "Ripchain Razorkin": 1,
+    "Scorching Dragonfire": 3,
+    "Spineseeker Centipede": 1,
+    "Threats Around Every Corner": 1,
+    "Turn Inside Out": 2,
+    "Violent Urge": 1,
+    "Wary Watchdog": 1,
+    "Wildfire Wickerfolk": 1
+   }
+  },
+  {
+   "file": "good_18.dck",
+   "rank": 18,
+   "playmat_name": "★ good_18 · RG aggro · review 3/5",
+   "tier": 1,
+   "draft_id": "a2c6205d61424a088e8eb589e32f17e6",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "RG",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "RG aggro",
+    "coherent": true,
+    "concerns": [
+     "weak bodies",
+     "thin midgame",
+     "delirium"
+    ],
+    "rating": 3,
+    "verdict": "Solid removal (2 Dragonfire, 2 Glassworks, Bargain) and good green threats like Enduring Vitality, Fear of Exposure and Thresher. But the low curve leans on weak 1–2 drops (Percussionist, Playmate, Fungus), Say Its Name is filler, and delirium payoffs are underfed, so it plays as a fine but unspectacular deck."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "R": {
+     "sources": 8,
+     "need": 8,
+     "cards": 15
+    },
+    "G": {
+     "sources": 8,
+     "need": 9,
+     "cards": 10
+    }
+   },
+   "stats": {
+    "curve": [
+     6,
+     10,
+     5,
+     1,
+     0,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 14,
+    "body_makers": 4,
+    "bodies": 18,
+    "noncreature_spells": 10,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Fear of Burning Alive",
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56173,
+   "in_current_pool": null,
+   "deck": {
+    "Betrayer's Bargain": 1,
+    "Clockwork Percussionist": 2,
+    "Enduring Vitality": 1,
+    "Fear of Burning Alive": 1,
+    "Fear of Exposure": 1,
+    "Forest": 8,
+    "Glassworks // Shattered Yard": 2,
+    "Insidious Fungus": 1,
+    "Manifest Dread": 2,
+    "Mountain": 8,
+    "Norin, Swift Survivalist": 1,
+    "Ragged Playmate": 3,
+    "Say Its Name": 1,
+    "Scorching Dragonfire": 2,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 1,
+    "Turn Inside Out": 2,
+    "Wickerfolk Thresher": 1,
+    "Wildfire Wickerfolk": 1
+   }
+  },
+  {
+   "file": "good_19.dck",
+   "rank": 19,
+   "playmat_name": "★ good_19 · RG+u delirium aggro-midrange · review 3/5",
+   "tier": 1,
+   "draft_id": "100c7af91aa24bffa49f6e0fad15e151",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 5,
+   "games": 8,
+   "wins": 5,
+   "losses": 3,
+   "main_colors": "RG",
+   "splash_colors": "U",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "RG delirium aggro-midrange",
+    "coherent": true,
+    "concerns": [
+     "pointless splash",
+     "mana",
+     "card quality"
+    ],
+    "rating": 3,
+    "verdict": "A solid red-heavy RG deck with real removal (Bargain, Glassworks, 2 Inferno) and decent threats, but the two Islands only serve the back half of one Room. They should be Mountains to fix a mana base that is short on red sources, and several filler cards (Beastie, Playmate, Turn Inside Out) keep it average."
+   },
+   "mana_score": 8.5,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 17
+    },
+    "G": {
+     "sources": 9,
+     "need": 7,
+     "cards": 7
+    },
+    "U": {
+     "sources": 4,
+     "cards": 1,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     7,
+     7,
+     4,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "body_makers": 2,
+    "bodies": 17,
+    "noncreature_spells": 8,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Glassworks // Shattered Yard",
+     "Impossible Inferno",
+     "Roaring Furnace // Steaming Sauna"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.55279,
+   "in_current_pool": null,
+   "deck": {
+    "Bedhead Beastie": 1,
+    "Betrayer's Bargain": 1,
+    "Bleeding Woods": 1,
+    "Cautious Survivor": 1,
+    "Fear of Being Hunted": 1,
+    "Fear of Exposure": 1,
+    "Forest": 6,
+    "Glassworks // Shattered Yard": 1,
+    "Grasping Longneck": 1,
+    "Greenhouse // Rickety Gazebo": 1,
+    "Hand That Feeds": 1,
+    "Impossible Inferno": 2,
+    "Irreverent Gremlin": 2,
+    "Island": 2,
+    "Most Valuable Slayer": 2,
+    "Mountain": 6,
+    "Patchwork Beastie": 1,
+    "Ragged Playmate": 1,
+    "Ripchain Razorkin": 1,
+    "Roaring Furnace // Steaming Sauna": 1,
+    "Spineseeker Centipede": 1,
+    "Terramorphic Expanse": 2,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Turn Inside Out": 1,
+    "Wildfire Wickerfolk": 1
+   }
+  },
+  {
+   "file": "good_20.dck",
+   "rank": 20,
+   "playmat_name": "★ good_20 · RG+b delirium midrange (B splash) · review 3/5",
+   "tier": 1,
+   "draft_id": "a979022fe4ec494393fece78b4058b93",
+   "build_index": "0",
+   "build_games": 6,
+   "build_wins": 3,
+   "games": 6,
+   "wins": 3,
+   "losses": 3,
+   "main_colors": "RG",
+   "splash_colors": "B",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "gold",
+   "review": {
+    "archetype": "RG delirium midrange (B splash)",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "splash",
+     "top-heavy"
+    ],
+    "rating": 3,
+    "verdict": "A strong red removal suite (3 Glassworks, 3 Impossible Inferno, Fear of Burning Alive) carries a thin 12-creature deck, and the black splash spends fixing on mediocre cards like Fanatic of the Harrowing and Broodspinner rather than bombs."
+   },
+   "mana_score": 8.5,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 8,
+     "cards": 14
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 9
+    },
+    "B": {
+     "sources": 5,
+     "cards": 3,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     0,
+     8,
+     6,
+     4,
+     4,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 4,
+    "bodies": 16,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 4,
+    "removal": 9,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Boilerbilges Ripper",
+     "Fear of Burning Alive",
+     "Glassworks // Shattered Yard",
+     "Impossible Inferno",
+     "Sawblade Skinripper"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.55658,
+   "in_current_pool": null,
+   "deck": {
+    "Bleeding Woods": 1,
+    "Boilerbilges Ripper": 1,
+    "Broodspinner": 1,
+    "Fanatic of the Harrowing": 1,
+    "Fear of Burning Alive": 1,
+    "Flesh Burrower": 1,
+    "Forest": 6,
+    "Glassworks // Shattered Yard": 3,
+    "Glimmerlight": 1,
+    "Grasping Longneck": 1,
+    "Hand That Feeds": 1,
+    "Impossible Inferno": 3,
+    "Manifest Dread": 1,
+    "Moldering Gym // Weight Room": 1,
+    "Most Valuable Slayer": 1,
+    "Mountain": 5,
+    "Razortrap Gorge": 1,
+    "Ripchain Razorkin": 1,
+    "Sawblade Skinripper": 1,
+    "Say Its Name": 1,
+    "Swamp": 2,
+    "Terramorphic Expanse": 2,
+    "Threats Around Every Corner": 1,
+    "Wildfire Wickerfolk": 2
+   }
+  },
+  {
+   "file": "good_21.dck",
+   "rank": 21,
+   "playmat_name": "★ good_21 · RG+b delirium midrange (light B splash) · review 3/5",
+   "tier": 1,
+   "draft_id": "d0a31b6a85f14c3daf9333771e6cf397",
+   "build_index": "0",
+   "build_games": 5,
+   "build_wins": 2,
+   "games": 5,
+   "wins": 2,
+   "losses": 3,
+   "main_colors": "RG",
+   "splash_colors": "B",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "RG delirium midrange (light B splash)",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "splash value",
+     "filler"
+    ],
+    "rating": 3,
+    "verdict": "Strong red-green removal suite (Beastie Beatdown x2, Betrayer's Bargain x2, Glassworks, Fear of Burning Alive) with decent delirium enablers. But only about 11 real creatures strains the fight and bite effects, the black splash buys just one Swarmweaver, and Peer Past the Veil and Say Its Name are filler, so it's a solid but unspectacular deck."
+   },
+   "mana_score": 8.5,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 8,
+     "cards": 12
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 14
+    },
+    "B": {
+     "sources": 3,
+     "cards": 1,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     10,
+     4,
+     5,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 3,
+    "bodies": 14,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Betrayer's Bargain",
+     "Fear of Burning Alive",
+     "Glassworks // Shattered Yard",
+     "Monstrous Emergence"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56038,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Beastie Beatdown": 2,
+    "Betrayer's Bargain": 2,
+    "Bleeding Woods": 1,
+    "Break Down the Door": 1,
+    "Cryptid Inspector": 1,
+    "Diversion Specialist": 1,
+    "Fear of Burning Alive": 1,
+    "Forest": 6,
+    "Glassworks // Shattered Yard": 1,
+    "Hand That Feeds": 1,
+    "Hedge Shredder": 1,
+    "Insidious Fungus": 1,
+    "Manifest Dread": 1,
+    "Moldering Gym // Weight Room": 1,
+    "Monstrous Emergence": 1,
+    "Most Valuable Slayer": 1,
+    "Mountain": 6,
+    "Peer Past the Veil": 1,
+    "Ragged Playmate": 1,
+    "Razorkin Hordecaller": 1,
+    "Say Its Name": 1,
+    "Swamp": 2,
+    "Terramorphic Expanse": 1,
+    "The Swarmweaver": 1,
+    "Thornspire Verge": 1,
+    "Wary Watchdog": 1
+   }
+  },
+  {
+   "file": "good_22.dck",
+   "rank": 22,
+   "playmat_name": "★ good_22 · RG+b delirium (light B splash) · review 3/5",
+   "tier": 1,
+   "draft_id": "cbb021d0e1dc42f99de1d1b9af518775",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 6,
+   "games": 9,
+   "wins": 6,
+   "losses": 3,
+   "main_colors": "RG",
+   "splash_colors": "B",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "gold",
+   "review": {
+    "archetype": "RG delirium (light B splash)",
+    "coherent": true,
+    "concerns": [
+     "filler",
+     "removal",
+     "power level"
+    ],
+    "rating": 3,
+    "verdict": "A coherent, low-curve RG delirium deck with plenty of card-type enablers, Overlord of the Hauntwoods as a strong top end and a cheap Swarmweaver splash, but Turn Inside Out, two Found Footage and only three real removal spells keep it around average."
+   },
+   "mana_score": 8.5,
+   "mana": {
+    "R": {
+     "sources": 8,
+     "need": 8,
+     "cards": 9
+    },
+    "G": {
+     "sources": 9,
+     "need": 8,
+     "cards": 15
+    },
+    "B": {
+     "sources": 3,
+     "cards": 1,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     5,
+     8,
+     6,
+     3,
+     1,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 16,
+    "body_makers": 2,
+    "bodies": 18,
+    "noncreature_spells": 8,
+    "lands": 16,
+    "fixing_lands": 3,
+    "removal": 3,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Chainsaw",
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56579,
+   "in_current_pool": null,
+   "deck": {
+    "Bleeding Woods": 1,
+    "Chainsaw": 1,
+    "Flesh Burrower": 1,
+    "Forest": 6,
+    "Found Footage": 2,
+    "Glassworks // Shattered Yard": 1,
+    "Grasping Longneck": 1,
+    "Hand That Feeds": 1,
+    "Most Valuable Slayer": 1,
+    "Mountain": 6,
+    "Omnivorous Flytrap": 1,
+    "Overlord of the Hauntwoods": 1,
+    "Patchwork Beastie": 1,
+    "Say Its Name": 1,
+    "Scorching Dragonfire": 1,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 3,
+    "Strangled Cemetery": 1,
+    "Swamp": 1,
+    "Terramorphic Expanse": 1,
+    "The Swarmweaver": 1,
+    "Turn Inside Out": 2,
+    "Wary Watchdog": 1,
+    "Wickerfolk Thresher": 1,
+    "Wildfire Wickerfolk": 2
+   }
+  },
+  {
+   "file": "good_23.dck",
+   "rank": 23,
+   "playmat_name": "★ good_23 · RG+b delirium aggro (light B splash) · review 3/5",
+   "tier": 1,
+   "draft_id": "759f8fe8dda7452a9ec119134eca0299",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "RG",
+   "splash_colors": "B",
+   "user_win_rate_bucket": "0.74",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.74,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "RG delirium aggro (light B splash)",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "splash",
+     "top end"
+    ],
+    "rating": 3,
+    "verdict": "Solid RG delirium shell with good removal (3 Beastie Beatdown, Dragonfire, Inferno) and decent threats like Hordecaller and Wickerfolk, but only 13 real creatures for creature-dependent fight spells, and splashing two gold Broodspinners on 3 black sources is clunky; cutting them for on-color bodies would tighten it."
+   },
+   "mana_score": 8.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 8,
+     "cards": 14
+    },
+    "G": {
+     "sources": 8,
+     "need": 8,
+     "cards": 14
+    },
+    "B": {
+     "sources": 3,
+     "cards": 2,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     12,
+     4,
+     5,
+     2,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 13,
+    "body_makers": 4,
+    "bodies": 17,
+    "noncreature_spells": 11,
+    "lands": 16,
+    "fixing_lands": 3,
+    "removal": 5,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Beastie Beatdown",
+     "Impossible Inferno",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56388,
+   "in_current_pool": null,
+   "deck": {
+    "Beastie Beatdown": 3,
+    "Broodspinner": 2,
+    "Clockwork Percussionist": 1,
+    "Forest": 6,
+    "Glimmerlight": 1,
+    "Grasping Longneck": 1,
+    "Hand That Feeds": 3,
+    "Hedge Shredder": 1,
+    "Impossible Inferno": 1,
+    "Mountain": 6,
+    "Peer Past the Veil": 1,
+    "Razorkin Hordecaller": 1,
+    "Razortrap Gorge": 1,
+    "Ripchain Razorkin": 2,
+    "Scorching Dragonfire": 1,
+    "Spineseeker Centipede": 1,
+    "Swamp": 1,
+    "Terramorphic Expanse": 1,
+    "Thornspire Verge": 1,
+    "Threats Around Every Corner": 1,
+    "Under the Skin": 2,
+    "Wary Watchdog": 1,
+    "Wildfire Wickerfolk": 1
+   }
+  },
+  {
+   "file": "good_24.dck",
+   "rank": 24,
+   "playmat_name": "★ good_24 · RG+w delirium midrange splash W · review 3/5",
+   "tier": 1,
+   "draft_id": "cff3d2ac9370462c813e9fe02c57b686",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 7,
+   "games": 9,
+   "wins": 7,
+   "losses": 2,
+   "main_colors": "RG",
+   "splash_colors": "W",
+   "user_win_rate_bucket": "0.7000000000000001",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.7,
+   "rank_17lands": "gold",
+   "review": {
+    "archetype": "RG delirium midrange splash W",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "splash",
+     "Ghost Vacuum"
+    ],
+    "rating": 3,
+    "verdict": "Strong red removal suite (Dragonfire, Bargain, 2x Glassworks, Emergence) plus manifest dread value carries a light creature count. Overlord is a strong splash, Toby is a weaker one, and Ghost Vacuum is filler."
+   },
+   "mana_score": 8.0,
+   "mana": {
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 11
+    },
+    "G": {
+     "sources": 8,
+     "need": 8,
+     "cards": 9
+    },
+    "W": {
+     "sources": 5,
+     "cards": 2,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     1,
+     9,
+     6,
+     4,
+     1,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 5,
+    "bodies": 16,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 4,
+    "removal": 5,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Betrayer's Bargain",
+     "Glassworks // Shattered Yard",
+     "Monstrous Emergence",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [
+     "Fear of Missing Out"
+    ],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.57102,
+   "in_current_pool": null,
+   "deck": {
+    "Bashful Beastie": 1,
+    "Betrayer's Bargain": 1,
+    "Bleeding Woods": 1,
+    "Conductive Machete": 1,
+    "Diversion Specialist": 1,
+    "Etched Cornfield": 1,
+    "Fear of Missing Out": 1,
+    "Forest": 4,
+    "Ghost Vacuum": 1,
+    "Glassworks // Shattered Yard": 2,
+    "Glimmerlight": 1,
+    "Monstrous Emergence": 1,
+    "Most Valuable Slayer": 1,
+    "Mountain": 6,
+    "Overlord of the Mistmoors": 1,
+    "Plains": 3,
+    "Say Its Name": 1,
+    "Scorching Dragonfire": 1,
+    "Slavering Branchsnapper": 1,
+    "Spineseeker Centipede": 1,
+    "Terramorphic Expanse": 1,
+    "Thornspire Verge": 1,
+    "Threats Around Every Corner": 1,
+    "Ticket Booth // Tunnel of Hate": 2,
+    "Toby, Beastie Befriender": 1,
+    "Wary Watchdog": 1,
+    "Wildfire Wickerfolk": 2
+   }
+  },
+  {
+   "file": "good_25.dck",
+   "rank": 25,
+   "playmat_name": "★ good_25 · RG+b G-based delirium, R/B split · review 3/5",
+   "tier": 1,
+   "draft_id": "d03710f760c74883b6646e403928c1eb",
+   "build_index": "1",
+   "build_games": 4,
+   "build_wins": 4,
+   "games": 9,
+   "wins": 6,
+   "losses": 3,
+   "main_colors": "RG",
+   "splash_colors": "B",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "G-based delirium, R/B split",
+    "coherent": true,
+    "concerns": [
+     "colors",
+     "mana",
+     "few creatures",
+     "top-end"
+    ],
+    "rating": 3,
+    "verdict": "Solid green delirium core with good removal (2 Dragonfire, Glassworks, Drag to the Roots) and plenty of graveyard enablers, but it is really three colors: two BG Broodspinners and an RG Wickerfolk run on only 4-5 off-color sources, and the creature count is thin."
+   },
+   "mana_score": 6.5,
+   "mana": {
+    "R": {
+     "sources": 5,
+     "need": 7,
+     "cards": 4
+    },
+    "G": {
+     "sources": 12,
+     "need": 8,
+     "cards": 18
+    },
+    "B": {
+     "sources": 4,
+     "cards": 3,
+     "splash": true
+    }
+   },
+   "stats": {
+    "curve": [
+     2,
+     10,
+     7,
+     1,
+     2,
+     1
+    ],
+    "zero_drops": 0,
+    "creatures": 11,
+    "body_makers": 6,
+    "bodies": 17,
+    "noncreature_spells": 12,
+    "lands": 17,
+    "fixing_lands": 3,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Drag to the Roots",
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5543647320332227,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.563,
+   "in_current_pool": null,
+   "deck": {
+    "Altanak, the Thrice-Called": 1,
+    "Bleeding Woods": 1,
+    "Break Down the Door": 2,
+    "Broodspinner": 2,
+    "Dissection Tools": 1,
+    "Drag to the Roots": 1,
+    "Fear of Exposure": 1,
+    "Forest": 9,
+    "Found Footage": 1,
+    "Glassworks // Shattered Yard": 1,
+    "Grasping Longneck": 1,
+    "Manifest Dread": 2,
+    "Moldering Gym // Weight Room": 1,
+    "Mountain": 3,
+    "Patchwork Beastie": 1,
+    "Rootwise Survivor": 1,
+    "Say Its Name": 1,
+    "Scorching Dragonfire": 2,
+    "Spineseeker Centipede": 1,
+    "Strangled Cemetery": 1,
+    "Swamp": 2,
+    "Terramorphic Expanse": 1,
+    "Wary Watchdog": 2,
+    "Wildfire Wickerfolk": 1
+   }
+  }
+ ]
+}

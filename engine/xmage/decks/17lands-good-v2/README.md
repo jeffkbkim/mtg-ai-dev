@@ -111,3 +111,12 @@ stats and red flags, archetype flag, GIH deck score (info), `in_current_pool`, a
 - Re-review of the decks whose review mentioned manifest (`play/rereview_bodies.py`): 18 here, 39 in ../17lands-r2.
   Here only good_96 (UG eerie/manifest) changed, 3 -> 2, so it loses its star (file dsk-goodx-v2-96). The old review is
   kept as `review_before`.
+
+## 2026-10-26 ★★ cap and fill
+
+At most 4 ★★ per colour pair (Jeff): where a pair had more, the best 4 by review rating, drafter bucket and GIH deck
+score keep ★★ and the rest become ★ with their rating unchanged (`tier_capped`): good_14 (BR), good_05 (BG), good_102-105
+(WB). The pairs short of 4 got longer shortlists from the same filters (`../17lands-good-v2-fill/<pair>`, keep-rating 3):
+UG 30 reviewed (15 at 2, 15 at 3), RG 30 (4/24/2), UR 15 (4/11), WR 5 (4 at 3, 1 at 4), UB 10 (1/9); $1.80. The 4/5
+decks are added as good_108, good_109 (RG) and good_110 (WR). ★★ now: WU 4, WR 4, WG 4, WB 4, BR 4, BG 4, UB 3, UR 2,
+RG 2, UG 0.

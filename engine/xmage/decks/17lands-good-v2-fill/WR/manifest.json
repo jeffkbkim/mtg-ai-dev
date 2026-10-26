@@ -1,0 +1,578 @@
+{
+ "source": "game_data_public.DSK.PremierDraft.csv.gz",
+ "drafts": 173545,
+ "skipped": {
+  "card not in XMage DSK": 3283,
+  "not 40 cards": 14279
+ },
+ "funnel": {
+  "eligible": 155983,
+  "pair, not in an excluded pool": 21637,
+  "wins >= 0": 21637,
+  "build games ok": 20165,
+  "drafter games bucket >= 100": 13937,
+  "colour rule ok": 13529,
+  "build checks ok": 12832,
+  "fails creatures": 47,
+  "off-colour card (dropped)": 502,
+  "fails top end": 92,
+  "fails two-drops": 43,
+  "fails lands": 15,
+  "drafter bucket >= 0.66": 243
+ },
+ "candidates_by_threshold": {
+  "0.66": {
+   "WU": 0,
+   "UB": 0,
+   "BR": 0,
+   "RG": 0,
+   "WG": 0,
+   "WB": 0,
+   "UR": 0,
+   "BG": 0,
+   "WR": 243,
+   "UG": 0
+  }
+ },
+ "threshold": 0.66,
+ "min_user_games": 100,
+ "min_build_games": 3,
+ "min_creatures": 13,
+ "shortlist_per_pair": 5,
+ "per_pair": 5,
+ "keep_rating": 3,
+ "tier2": "rating >= 4 and no build red flag (weak-archetype flag excluded, see archetype_flag)",
+ "reviewer": {
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "53639186c19e",
+  "reviewed": 5,
+  "cost_usd": 0.1
+ },
+ "shortlist_ratings": {
+  "WU": {},
+  "UB": {},
+  "BR": {},
+  "RG": {},
+  "WG": {},
+  "WB": {},
+  "UR": {},
+  "BG": {},
+  "WR": {
+   "3": 4,
+   "4": 1
+  },
+  "UG": {}
+ },
+ "kept": 5,
+ "kept_by_pair": {
+  "WU": 0,
+  "UB": 0,
+  "BR": 0,
+  "RG": 0,
+  "WG": 0,
+  "WB": 0,
+  "UR": 0,
+  "BG": 0,
+  "WR": 5,
+  "UG": 0
+ },
+ "tiers": {
+  "2": 1,
+  "1": 4
+ },
+ "overlap_with_current": {
+  "draft_ids": [
+   "ec0dcbdb48f54286af81a2618ed56401"
+  ],
+  "shortlisted": 1
+ },
+ "decks": [
+  {
+   "file": "good_00.dck",
+   "rank": 0,
+   "playmat_name": "★★ good_00 · WR aggro (low power) · review 4/5",
+   "tier": 2,
+   "draft_id": "adea860f14cb46238dd89467cd460012",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 6,
+   "games": 9,
+   "wins": 6,
+   "losses": 3,
+   "main_colors": "WR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "silver",
+   "review": {
+    "archetype": "RW aggro (low power)",
+    "coherent": true,
+    "concerns": [
+     "filler creatures",
+     "top end",
+     "WW costs"
+    ],
+    "rating": 4,
+    "verdict": "Lean, focused RW aggro deck. It has a strong removal suite: 3 Glassworks, Trapped in the Screen, Hovership, Exorcise and Trial of Agony. Arabella, Balloon Man and Lionheart Glimmer give it real payoffs for small creatures. It's held back from exceptional by filler (Ragged Playmate x3, Turn Inside Out x2, Percussionist) and thin reach once the board stalls."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "W": {
+     "sources": 8,
+     "need": 9,
+     "cards": 10
+    },
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 16
+    }
+   },
+   "stats": {
+    "curve": [
+     4,
+     8,
+     9,
+     2,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "body_makers": 2,
+    "bodies": 17,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 6,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Exorcise",
+     "Glassworks // Shattered Yard",
+     "Trapped in the Screen",
+     "Unidentified Hovership"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.55679,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 1,
+    "Arabella, Abandoned Doll": 1,
+    "Clockwork Percussionist": 1,
+    "Cult Healer": 1,
+    "Exorcise": 1,
+    "Glassworks // Shattered Yard": 3,
+    "Hand That Feeds": 1,
+    "Lionheart Glimmer": 1,
+    "Living Phone": 1,
+    "Mountain": 8,
+    "Plains": 7,
+    "Ragged Playmate": 3,
+    "Razorkin Needlehead": 1,
+    "Ripchain Razorkin": 1,
+    "Terramorphic Expanse": 1,
+    "The Jolly Balloon Man": 1,
+    "Trapped in the Screen": 1,
+    "Trial of Agony": 1,
+    "Turn Inside Out": 2,
+    "Unidentified Hovership": 1,
+    "Unsettling Twins": 1,
+    "Vicious Clown": 1
+   }
+  },
+  {
+   "file": "good_01.dck",
+   "rank": 1,
+   "playmat_name": "★ good_01 · WR aggro · review 3/5",
+   "tier": 1,
+   "draft_id": "f75c37ce8bc54e77a60e07838fd3b2c9",
+   "build_index": "0",
+   "build_games": 8,
+   "build_wins": 7,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "WR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.74",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.74,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "card quality",
+     "filler",
+     "few creatures"
+    ],
+    "rating": 3,
+    "verdict": "A low-curve RW aggro deck with real removal in 2x Hovership, Glassworks, Trial of Agony and Waltz, but three Glimmerlights, Turn Inside Out and Vengeful Possession make the threat base thin, so it's fine rather than strong."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "W": {
+     "sources": 9,
+     "need": 9,
+     "cards": 9
+    },
+    "R": {
+     "sources": 8,
+     "need": 9,
+     "cards": 11
+    }
+   },
+   "stats": {
+    "curve": [
+     3,
+     10,
+     7,
+     3,
+     1,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 6,
+    "bodies": 18,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 4,
+    "soft_removal": 1,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Unidentified Hovership",
+     "Waltz of Rage"
+    ],
+    "soft_removal_cards": [
+     "Fear of Missing Out"
+    ],
+    "archetype_wr": 0.5695678773827924,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.5655,
+   "in_current_pool": null,
+   "deck": {
+    "Conductive Machete": 1,
+    "Fear of Being Hunted": 1,
+    "Fear of Missing Out": 1,
+    "Fear of Surveillance": 2,
+    "Friendly Ghost": 1,
+    "Glassworks // Shattered Yard": 1,
+    "Glimmerlight": 3,
+    "Mountain": 7,
+    "Plains": 8,
+    "Ragged Playmate": 1,
+    "Raucous Carnival": 1,
+    "Ripchain Razorkin": 1,
+    "Splitskin Doll": 2,
+    "Surgical Suite // Hospital Room": 1,
+    "Trial of Agony": 1,
+    "Turn Inside Out": 1,
+    "Unidentified Hovership": 2,
+    "Vengeful Possession": 1,
+    "Veteran Survivor": 1,
+    "Vicious Clown": 2,
+    "Waltz of Rage": 1
+   }
+  },
+  {
+   "file": "good_02.dck",
+   "rank": 2,
+   "playmat_name": "★ good_02 · WR aggro · review 3/5",
+   "tier": 1,
+   "draft_id": "c272893efa4a42149b99fbef4f3d9259",
+   "build_index": "1",
+   "build_games": 7,
+   "build_wins": 6,
+   "games": 8,
+   "wins": 7,
+   "losses": 1,
+   "main_colors": "WR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.74",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.74,
+   "rank_17lands": "bronze",
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "removal",
+     "filler tricks",
+     "card quality"
+    ],
+    "rating": 3,
+    "verdict": "A real go-wide RW aggro shell with strong payoffs (2x Arabella, 2x Razorkin Hordecaller, Enduring Courage, Midnight Mayhem), but Glassworks is the only true removal and too many slots go to weak one-drops and pump tricks (2x Turn Inside Out, 2x Jump Scare, Ethereal Armor), so it plays fine rather than great."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "W": {
+     "sources": 7,
+     "need": 8,
+     "cards": 10
+    },
+    "R": {
+     "sources": 9,
+     "need": 8,
+     "cards": 16
+    }
+   },
+   "stats": {
+    "curve": [
+     8,
+     6,
+     3,
+     3,
+     2,
+     2
+    ],
+    "zero_drops": 0,
+    "creatures": 15,
+    "body_makers": 4,
+    "bodies": 19,
+    "noncreature_spells": 9,
+    "lands": 16,
+    "fixing_lands": 0,
+    "removal": 3,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Fear of Burning Alive",
+     "Glassworks // Shattered Yard"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.57254,
+   "in_current_pool": null,
+   "deck": {
+    "Arabella, Abandoned Doll": 2,
+    "Clockwork Percussionist": 2,
+    "Enduring Courage": 1,
+    "Ethereal Armor": 1,
+    "Fear of Burning Alive": 2,
+    "Fear of Surveillance": 1,
+    "Glassworks // Shattered Yard": 1,
+    "Glimmerlight": 1,
+    "Hardened Escort": 1,
+    "Irreverent Gremlin": 1,
+    "Jump Scare": 2,
+    "Midnight Mayhem": 1,
+    "Mountain": 9,
+    "Optimistic Scavenger": 1,
+    "Painter's Studio // Defaced Gallery": 1,
+    "Plains": 7,
+    "Razorkin Hordecaller": 2,
+    "Turn Inside Out": 2,
+    "Unsettling Twins": 1,
+    "Vicious Clown": 1
+   }
+  },
+  {
+   "file": "good_03.dck",
+   "rank": 3,
+   "playmat_name": "★ good_03 · WR aggro · review 3/5",
+   "tier": 1,
+   "draft_id": "ec0dcbdb48f54286af81a2618ed56401",
+   "build_index": "0",
+   "build_games": 7,
+   "build_wins": 7,
+   "games": 7,
+   "wins": 7,
+   "losses": 0,
+   "main_colors": "WR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "thin middle curve",
+     "creature count",
+     "pump tricks"
+    ],
+    "rating": 3,
+    "verdict": "A low-curve RW aggro deck with real power at the top: Overlord of the Boilerbilges, Fear of Burning Alive, Hovership, two Sheltered by Ghosts and Glassworks. It is held back by only 12 true creatures, almost nothing at 3-4 mana, and too many cheap pump spells like Violent Urge, Turn Inside Out and Ethereal Armor where more bodies would serve better."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "W": {
+     "sources": 8,
+     "need": 9,
+     "cards": 11
+    },
+    "R": {
+     "sources": 9,
+     "need": 8,
+     "cards": 13
+    }
+   },
+   "stats": {
+    "curve": [
+     6,
+     12,
+     2,
+     1,
+     0,
+     3
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 4,
+    "bodies": 16,
+    "noncreature_spells": 12,
+    "lands": 16,
+    "fixing_lands": 1,
+    "removal": 7,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Fear of Abduction",
+     "Fear of Burning Alive",
+     "Glassworks // Shattered Yard",
+     "Overlord of the Boilerbilges",
+     "Sheltered by Ghosts",
+     "Unidentified Hovership"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.57707,
+   "in_current_pool": "good_53.dck",
+   "deck": {
+    "Clockwork Percussionist": 2,
+    "Ethereal Armor": 1,
+    "Fear of Abduction": 1,
+    "Fear of Burning Alive": 1,
+    "Fear of Surveillance": 1,
+    "Glassworks // Shattered Yard": 1,
+    "Glimmerlight": 1,
+    "Grand Entryway // Elegant Rotunda": 1,
+    "Hand That Feeds": 1,
+    "Irreverent Gremlin": 2,
+    "Jump Scare": 1,
+    "Midnight Mayhem": 1,
+    "Mountain": 8,
+    "Overlord of the Boilerbilges": 1,
+    "Painter's Studio // Defaced Gallery": 1,
+    "Piggy Bank": 1,
+    "Plains": 7,
+    "Sheltered by Ghosts": 2,
+    "Splitskin Doll": 2,
+    "Terramorphic Expanse": 1,
+    "Turn Inside Out": 1,
+    "Unidentified Hovership": 1,
+    "Violent Urge": 1
+   }
+  },
+  {
+   "file": "good_04.dck",
+   "rank": 4,
+   "playmat_name": "★ good_04 · WR aggro · review 3/5",
+   "tier": 1,
+   "draft_id": "bc17bedc9a434980b419758ca6d52fa3",
+   "build_index": "0",
+   "build_games": 9,
+   "build_wins": 6,
+   "games": 9,
+   "wins": 6,
+   "losses": 3,
+   "main_colors": "WR",
+   "splash_colors": "",
+   "user_win_rate_bucket": "0.72",
+   "user_n_games_bucket": "100",
+   "drafter_bucket": 0.72,
+   "rank_17lands": "platinum",
+   "review": {
+    "archetype": "RW aggro",
+    "coherent": true,
+    "concerns": [
+     "few creatures",
+     "filler",
+     "top-end"
+    ],
+    "rating": 3,
+    "verdict": "A lean, mostly-red aggro deck with good removal (2 Dragonfire, 2 Glassworks, Trial of Agony) and payoffs like Enduring Innocence, Midnight Mayhem and Fear of Being Hunted. It has only 12 real creatures, a light white splash-level commitment and filler like Percussionists, Hand That Feeds and Painter's Studio, so it can run out of gas against bigger boards; 16 lands would suit the curve."
+   },
+   "mana_score": 9.0,
+   "mana": {
+    "W": {
+     "sources": 8,
+     "need": 9,
+     "cards": 5
+    },
+    "R": {
+     "sources": 9,
+     "need": 9,
+     "cards": 17
+    }
+   },
+   "stats": {
+    "curve": [
+     5,
+     8,
+     6,
+     4,
+     0,
+     0
+    ],
+    "zero_drops": 0,
+    "creatures": 12,
+    "body_makers": 4,
+    "bodies": 16,
+    "noncreature_spells": 11,
+    "lands": 17,
+    "fixing_lands": 0,
+    "removal": 4,
+    "soft_removal": 0,
+    "removal_cards": [
+     "Glassworks // Shattered Yard",
+     "Scorching Dragonfire"
+    ],
+    "soft_removal_cards": [],
+    "archetype_wr": 0.5695678773827924,
+    "red_flags": []
+   },
+   "archetype_flag": null,
+   "deck_score_gih": 0.56115,
+   "in_current_pool": null,
+   "deck": {
+    "Acrobatic Cheerleader": 1,
+    "Clockwork Percussionist": 2,
+    "Enduring Innocence": 1,
+    "Fear of Being Hunted": 1,
+    "Friendly Teddy": 1,
+    "Glassworks // Shattered Yard": 2,
+    "Glimmerlight": 1,
+    "Hand That Feeds": 1,
+    "Jump Scare": 1,
+    "Midnight Mayhem": 1,
+    "Most Valuable Slayer": 2,
+    "Mountain": 9,
+    "Painter's Studio // Defaced Gallery": 1,
+    "Plains": 8,
+    "Ragged Playmate": 1,
+    "Scorching Dragonfire": 2,
+    "Ticket Booth // Tunnel of Hate": 1,
+    "Trial of Agony": 1,
+    "Turn Inside Out": 1,
+    "Unsettling Twins": 1,
+    "Vicious Clown": 1
+   }
+  }
+ ]
+}
