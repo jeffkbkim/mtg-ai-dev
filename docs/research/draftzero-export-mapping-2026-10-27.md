@@ -62,3 +62,26 @@ Theirs: `PRIORITY`, `CHOOSE_USE`, `CHOOSE_TARGET`. Ours (Playmat counts so far):
 
 Both come from the same recorder (`seat-A.jsonl`, `seat-B.jsonl`, `games.jsonl`, decks, config). The full decision log
 stays the source of truth; any export is derived from it.
+
+## Built: `play/export_replays.py` (2026-10-27)
+
+Jeff chose to provide two versions. Both are derived from the decision logs, read through `play/manifest.py`
+manifests (clean games only by default):
+
+- `draftzero-style.jsonl.gz`: the layout above, one line per seat per game. `features`, `q`, `heuristic` are null;
+  `legal` is readable option text (plus `legal_actions` with source and target card names); `visits` is one-hot on
+  the option played. Each record keeps our `kind`, `step`, the seat's observation, who decided (Claude, human UI,
+  rule) and Claude's reason. All decision kinds are kept; ours that have no DraftZero type keep our name.
+- `17lands-style.csv.gz`: one row per seat per game with 17lands `replay_data` column names and Arena ids from
+  17lands `cards.csv` (DSK, tokens from TDSK). Exact: mulligans, candidate and opening hands, each turn's lands,
+  spells cast (split creature / other / instant-sorcery), attackers, blockers and what they blocked, the deck.
+  Approximate: `cards_drawn` (anything that entered the hand between two of the seat's decisions) and the `eot_*`
+  columns (the state at the first decision of a later turn, since we only see the game when someone has a choice).
+  Left out: mana spent, combat damage, creatures killed, discards, tutors, ability ids (we write the ability's source
+  card to `x_user_ability_sources` / `x_oppo_ability_sources` instead). Face-down cards are left out of board lists.
+- Games are skipped, and listed in `export-manifest.jsonl`, when a human player isn't passed with `--human`, a deck
+  has non-DSK cards, or a deck file is missing.
+
+First run on Playmat (76 clean games, `--human kimster`): 37 games, 5,117 decisions exported; 38 skipped for other
+human names (binpy 24, ffffxxxx 8, testercla 3, Smoketest 2, prpb14qp 1) and 1 for a missing deck. A spot check of
+one game against XMage's game log matched every land, spell, attack and draw.
