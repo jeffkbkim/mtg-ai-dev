@@ -64,8 +64,9 @@ public final class Observer {
     // XMage keeps reveals in one game-wide map that it empties at every priority and update event, often before this
     // seat's next decision, while the card is still in its owner's hand. A card revealed from another player's hand
     // stays visible to that observer (zone HAND, revealed:true) until it leaves the hand: while it is the same card
-    // object with the same zone change counter. Cards revealed from anywhere else (a library) are not remembered,
-    // even if they then go to a hand. Kept per game and observing seat; cleared by forget(game) or dropped with the
+    // object with the same zone change counter. Since 2026-10-27 (Jeff) any card revealed to all players that is or
+    // goes into a hand is remembered too (revealed from a library, then put into the hand), and so is a face-up card
+    // that goes from a public zone (battlefield, graveyard, exile) to its owner's hand. A private look is never kept. Kept per game and observing seat; cleared by forget(game) or dropped with the
     // oldest game once MAX_GAMES games are held, and trimmed after a turn rollback.
 
     private static final int MAX_GAMES = 32;
@@ -81,6 +82,9 @@ public final class Observer {
         // cards in XMage's revealed map at the last look, and whether each was in a hand when first seen there:
         // one reveal lasts until the map is emptied, so a card first seen in a library stays "not from hand"
         Map<UUID, Boolean> fromHand = new HashMap<>();
+        // face-up cards in public zones (battlefield, graveyards, exile) at the last look: one that is in its owner's
+        // hand at the next look went there in public (bounced, returned), and is known like a revealed card
+        Set<UUID> publicCards = new HashSet<>();
     }
 
     private static final Map<UUID, Memory> memory = new LinkedHashMap<UUID, Memory>() {
@@ -120,7 +124,9 @@ public final class Observer {
                 Boolean before = mem.fromHand.get(id);
                 boolean revealedFromHand = before == null ? inHand : before && inHand;
                 fromHand.put(id, revealedFromHand);
-                if (!revealedFromHand) continue;
+                // Jeff 2026-10-27: a revealed card is public wherever it was revealed from (XMage's revealed map is
+                // what every player sees; a look at cards is private and never lands here): in a hand, it is known
+                if (!inHand) continue;
                 for (UUID seat : game.getState().getPlayers().keySet()) {
                     if (seat.equals(owner)) continue;  // my own hand is visible anyway
                     mem.bySeat.computeIfAbsent(seat, s -> new HashMap<>())
@@ -129,6 +135,37 @@ public final class Observer {
             }
         }
         mem.fromHand = fromHand;
+        // Jeff 2026-10-27: a public card that went to a hand stays known (bounced, returned from a graveyard or exile)
+        Set<UUID> now = publicCards(game);
+        for (UUID id : mem.publicCards) {
+            if (now.contains(id) || game.getState().getZone(id) != mage.constants.Zone.HAND) continue;
+            UUID owner = game.getOwnerId(id);
+            Player p = owner == null ? null : game.getPlayer(owner);
+            if (p == null || !p.getHand().contains(id)) continue;
+            for (UUID seat : game.getState().getPlayers().keySet()) {
+                if (seat.equals(owner)) continue;
+                mem.bySeat.computeIfAbsent(seat, s -> new HashMap<>())
+                    .put(id, new Seen(game.getState().getZoneChangeCounter(id), game.getTurnNum()));
+            }
+        }
+        mem.publicCards = now;
+    }
+
+    /** Face-up nontoken cards on the battlefield, in graveyards and in exile, and cards being revealed. */
+    private static Set<UUID> publicCards(Game game) {
+        Set<UUID> out = new HashSet<>();
+        for (mage.cards.Cards cards : game.getState().getRevealed().values()) out.addAll(cards);
+        for (mage.game.permanent.Permanent perm : game.getBattlefield().getAllPermanents()) {
+            if (!(perm instanceof mage.game.permanent.PermanentToken) && !perm.isFaceDown(game)) out.add(perm.getId());
+        }
+        for (UUID pid : game.getState().getPlayers().keySet()) {
+            Player p = game.getPlayer(pid);
+            if (p != null) out.addAll(p.getGraveyard());
+        }
+        for (Card card : game.getExile().getAllCards(game)) {
+            if (!card.isFaceDown(game)) out.add(card.getId());
+        }
+        return out;
     }
 
     /** Drop the per-game memory once a game is over. */
@@ -142,6 +179,7 @@ public final class Observer {
         if (mem == null) return;
         for (Map<UUID, Seen> m : mem.bySeat.values()) m.values().removeIf(s -> s.turn >= turn);
         mem.fromHand.clear();
+        mem.publicCards.clear();
     }
 
     /** Remembered cards still in the same hand as the same object, for this seat; forgets the rest. */

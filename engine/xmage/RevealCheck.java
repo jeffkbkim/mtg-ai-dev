@@ -17,9 +17,11 @@ import java.util.*;
  * observation is built, Jump Scare is revealed and cleared with no observation in between; both must show as
  * zone HAND, revealed:true after priority and update events. Bashful Beastie, never revealed, must never show.
  * Then Glimmerburst is shuffled into the library and put back into the hand (a new object: must not show), Jump Scare
- * is discarded (must not show), Overgrown Zealot is revealed from the library and put into the hand (must not show:
- * only cards revealed from a hand are remembered), and Enduring Vitality is revealed and the turn rolled back (must
+ * is discarded (must not show), Overgrown Zealot is revealed from the library and put into the hand (must show: a
+ * reveal is to every player), and Enduring Vitality is revealed and the turn rolled back (must
  * not show).
+ * Then Jump Scare goes from the graveyard back to the hand and a second Bashful Beastie is bounced from the battlefield:
+ * both public moves, so both show as HAND revealed (the first, never-revealed Bashful Beastie still not).
  * Every observation must pass the leak checks. Prints PASS or FAIL and exits 1 on FAIL.
  */
 public class RevealCheck {
@@ -118,7 +120,7 @@ public class RevealCheck {
         o = observe(game, me, "after Glimmerburst returns to the hand (a new object)");
         expect(shown(o.json, "Glimmerburst").isEmpty(), "Glimmerburst back in hand not shown: " + shown(o.json, "Glimmerburst"));
 
-        // revealed from the library, then put into the hand: not a card revealed from hand
+        // revealed from the library to everyone, then put into the hand: public, so known
         Card top = ManaCheck.make(game, "Overgrown Zealot", opp.getId());
         opp.getLibrary().putOnTop(top, game);
         game.getState().setZone(top.getId(), Zone.LIBRARY);
@@ -127,7 +129,21 @@ public class RevealCheck {
         game.fireUpdatePlayersEvent();
         o = observe(game, me, "after Overgrown Zealot is revealed from the library and put into the hand");
         expect(opp.getHand().contains(top.getId()), "Overgrown Zealot is in the opponent's hand");
-        expect(shown(o.json, "Overgrown Zealot").isEmpty(), "Overgrown Zealot not shown: " + shown(o.json, "Overgrown Zealot"));
+        // revealed to every player, so known in the hand (2026-10-27)
+        expect(shown(o.json, "Overgrown Zealot").equals(List.of("HAND revealed")), "Overgrown Zealot, revealed from the library, shows as HAND revealed: " + shown(o.json, "Overgrown Zealot"));
+
+        // a public card that goes back to the hand is known (2026-10-27): Jump Scare from the graveyard, a permanent bounced
+        opp.moveCards(c.get("Jump Scare"), Zone.HAND, null, game);
+        game.fireUpdatePlayersEvent();
+        o = observe(game, me, "after Jump Scare returns from the graveyard to the hand");
+        expect(shown(o.json, "Jump Scare").equals(List.of("HAND revealed")), "Jump Scare back from the graveyard shows as HAND revealed: " + shown(o.json, "Jump Scare"));
+        Card bear = ManaCheck.make(game, "Bashful Beastie", opp.getId());
+        opp.moveCards(bear, Zone.BATTLEFIELD, null, game);
+        o = observe(game, me, "with a second Bashful Beastie on the battlefield");
+        opp.moveCards(game.getPermanent(bear.getId()) != null ? game.getCard(bear.getId()) : bear, Zone.HAND, null, game);
+        game.fireUpdatePlayersEvent();
+        o = observe(game, me, "after that Bashful Beastie is bounced to the hand");
+        expect(shown(o.json, "Bashful Beastie").equals(List.of("HAND revealed")), "the bounced Bashful Beastie shows as HAND revealed, the never-revealed one not: " + shown(o.json, "Bashful Beastie"));
 
         // a reveal in a turn that is then rolled back did not happen
         game.getState().setTurnNum(2);

@@ -1,0 +1,583 @@
+diff --git a/Mage.Web.Client/src/app/match/GameLog.tsx b/Mage.Web.Client/src/app/match/GameLog.tsx
+index 025eb85d50..60da7f7b08 100644
+--- a/Mage.Web.Client/src/app/match/GameLog.tsx
++++ b/Mage.Web.Client/src/app/match/GameLog.tsx
+@@ -11,6 +11,7 @@ import {
+   type LogEntry, type LogIcon, type LogSegment,
+ } from '../../core/game/gameLog';
+ import { drawnCards, zoneMoves, zoneSnapshot, type ZoneSnapshot } from '../../core/game/zoneMoves';
++import { costUses } from '../../core/game/costUses';
+ import type { CardView, ChatMessage, GameView } from '../../protocol/generated/views';
+ import { api, events } from '../connection';
+ import { useSession } from '../stores/session';
+@@ -192,6 +193,9 @@ export function GameLog({ gameId, notices, canChat, view, replayLog, delayMs = 0
+   const updateSettings = useSettings((state) => state.update);
+   const recorded = useMemo(() => (replayLog ? replayEntries(replayLog) : null), [replayLog]);
+   const chat = recorded ? { ...live, entries: recorded } : live;
++  // mtg-ai: what spells' additional costs used, for the stack (costUses.ts)
++  const setCostUses = useMatchUi((state) => state.setCostUses);
++  useEffect(() => setCostUses(costUses(chat.entries)), [chat.entries, setCostUses]);
+   const [draft, setDraft] = useState('');
+   const list = useRef<HTMLOListElement>(null);
+   // every card seen this game, so lines about cards that left the table can still show them
+diff --git a/Mage.Web.Client/src/app/match/Hand.module.css b/Mage.Web.Client/src/app/match/Hand.module.css
+index dc51eda83f..b1139a22c6 100644
+--- a/Mage.Web.Client/src/app/match/Hand.module.css
++++ b/Mage.Web.Client/src/app/match/Hand.module.css
+@@ -169,3 +169,20 @@
+   text-transform: uppercase;
+   box-shadow: 0 0 12px 2px rgb(255 190 80 / 0.6);
+ }
++
++/* mtg-ai: a card the opponent knows (near the top: the bottom of a hand card is off screen) */
++.known {
++  position: absolute;
++  top: 34px;
++  left: 50%;
++  transform: translateX(-50%);
++  padding: 2px 8px;
++  border-radius: 999px;
++  background: rgb(255 200 90 / 0.92);
++  color: #2a1a00;
++  font-size: 12px;
++  font-weight: 700;
++  letter-spacing: 0.03em;
++  text-transform: uppercase;
++  white-space: nowrap;
++}
+diff --git a/Mage.Web.Client/src/app/match/Hand.tsx b/Mage.Web.Client/src/app/match/Hand.tsx
+index e4ef98b0f0..5d2987e512 100644
+--- a/Mage.Web.Client/src/app/match/Hand.tsx
++++ b/Mage.Web.Client/src/app/match/Hand.tsx
+@@ -34,6 +34,8 @@ export interface HandProps {
+   label?: string;
+   /** cards shown with the hand that are played from another zone (an adventurer in exile, flashback), by id */
+   fromZone?: ReadonlyMap<string, PlayableZone>;
++  /** mtg-ai: cards of this hand the opponent knows (revealed, or back from a public zone), by card id */
++  known?: ReadonlySet<string>;
+   /** stage x the fan keeps right of (your seat), and how far it keeps from the stage's right edge (the decision corner) */
+   clearLeft?: number;
+   clearRight?: number;
+@@ -44,7 +46,7 @@ const ZONE_TAG: Record<PlayableZone, string> = { exile: 'From exile', graveyard:
+ const DRAG_THRESHOLD = 12;
+ 
+ /** The player's hand, fanned along the bottom edge. Hover lifts a card; drag it up (or click it) to play it. */
+-export function Hand({ cards, choosing = false, clickable, selected, pending = null, sleeve, onPlay, playLine, libraryOrigin, faceDown = false, label = 'Your hand', fromZone, clearLeft = 0, clearRight = 0 }: HandProps) {
++export function Hand({ cards, choosing = false, clickable, selected, pending = null, sleeve, onPlay, playLine, libraryOrigin, faceDown = false, label = 'Your hand', fromZone, known, clearLeft = 0, clearRight = 0 }: HandProps) {
+   const t = useT();
+   const stage = useStage();
+   const hints = useKeyboardHints();
+@@ -90,6 +92,7 @@ export function Hand({ cards, choosing = false, clickable, selected, pending = n
+             libraryOrigin={libraryOrigin}
+             faceDown={faceDown}
+             fromZone={fromZone?.get(card.id!)}
++            known={!!known?.has(card.cardId ?? card.id!)}
+           />
+         );
+       })}
+@@ -114,9 +117,10 @@ interface HandCardProps {
+   libraryOrigin: string;
+   faceDown: boolean;
+   fromZone?: PlayableZone;
++  known?: boolean;
+ }
+ 
+-function HandCard({ card, choosing, index, hints, left, rotate, drop, clickable, selected, pending, sleeve, onPlay, playLine, libraryOrigin, faceDown, fromZone }: HandCardProps) {
++function HandCard({ card, choosing, index, hints, left, rotate, drop, clickable, selected, pending, sleeve, onPlay, playLine, libraryOrigin, faceDown, fromZone, known = false }: HandCardProps) {
+   const ref = useRef<HTMLDivElement>(null);
+   const stage = useStage();
+   const setZoom = useMatchUi((state) => state.setZoom);
+@@ -170,7 +174,7 @@ function HandCard({ card, choosing, index, hints, left, rotate, drop, clickable,
+       style={style}
+       tabIndex={clickable ? 0 : -1}
+       onMouseDown={preventMatchObjectMouseFocus}
+-      aria-label={`${faceDown ? 'Hidden card' : card.name ?? 'Card'}${fromZone ? `, ${ZONE_TAG[fromZone].toLowerCase()}` : ''}${clickable ? ', playable' : ''}${selected ? ', chosen' : ''}`}
++      aria-label={`${faceDown ? 'Hidden card' : card.name ?? 'Card'}${fromZone ? `, ${ZONE_TAG[fromZone].toLowerCase()}` : ''}${clickable ? ', playable' : ''}${selected ? ', chosen' : ''}${known ? ', known to the opponent' : ''}`}
+       onPointerDown={onPointerDown}
+       onPointerMove={onPointerMove}
+       onPointerUp={onPointerUp}
+@@ -194,6 +198,8 @@ function HandCard({ card, choosing, index, hints, left, rotate, drop, clickable,
+       {!faceDown && <HandConditions card={card} />}
+       {!faceDown && clickable && index < 10 && <kbd className={[styles.keyHint, hints ? styles.keyHintShown : ''].join(' ')} aria-hidden="true">{(index + 1) % 10}</kbd>}
+       {fromZone && <span className={styles.fromZone} aria-hidden="true">{ZONE_TAG[fromZone]}</span>}
++      {/* mtg-ai: the opponent has seen this card */}
++      {known && !faceDown && <span className={styles.known} title="Your opponent knows this card: it was revealed, or came back from a public zone">Known</span>}
+     </div>
+   );
+ }
+diff --git a/Mage.Web.Client/src/app/match/MatchStage.tsx b/Mage.Web.Client/src/app/match/MatchStage.tsx
+index 26cd639f13..37ee9cff8c 100644
+--- a/Mage.Web.Client/src/app/match/MatchStage.tsx
++++ b/Mage.Web.Client/src/app/match/MatchStage.tsx
+@@ -11,6 +11,7 @@ import { xLimit } from '../../core/game/announceX';
+ import { sortHand } from '../../core/game/handOrder';
+ import { askedAboutCards } from '../../core/game/reveals';
+ import { revealedInHand } from '../../core/game/revealedHand';
++import { collectCards } from '../../core/game/gameLog';
+ import { delayLabel, isBroadcastDelay } from '../../core/game/broadcastDelay';
+ import { spectatorHand } from '../../core/game/spectatorHand';
+ import { matchProgress } from '../../core/game/matchProgress';
+@@ -198,7 +199,30 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+   );
+   const combat = view?.combat;
+   const combatNow = useMemo(() => combatSets(combat), [combat]);
+-  const { blocking, links, attacks } = combatNow;
++  const { blocking, attacks } = combatNow;
++  // mtg-ai: what each stack spell's additional cost used, with the card when it is in view; a used permanent draws an
++  // arrow to the spell
++  const costUseLog = useMatchUi((ui) => ui.costUses);
++  const stackUses = useMemo(() => {
++    const cards = collectCards(view);
++    const out = new Map<string, { name: string; how: string; card?: CardView }[]>();
++    for (const item of Object.values(view?.stack ?? {})) {
++      const key = item.cardId ?? item.id;
++      const list = key ? costUseLog.get(key) : undefined;
++      if (key && list) out.set(key, list.map((use) => ({ name: use.name, how: use.how, card: use.objectId ? cards.get(use.objectId) : undefined })));
++    }
++    return out;
++  }, [view, costUseLog]);
++  const links = useMemo(() => {
++    const extra: [string, string][] = [];
++    const onBoard = new Set((view?.players ?? []).flatMap((player) => Object.keys(player.battlefield ?? {})));
++    for (const item of Object.values(view?.stack ?? {})) {
++      for (const use of costUseLog.get(item.cardId ?? item.id ?? '') ?? []) {
++        if (use.objectId && onBoard.has(use.objectId) && item.id) extra.push([use.objectId, item.id]);
++      }
++    }
++    return extra.length > 0 ? [...combatNow.links, ...extra] : combatNow.links;
++  }, [combatNow.links, view, costUseLog]);
+   const leads = useMemo(() => stackLeads([board.me, ...board.opponents]), [board.me, board.opponents]);
+   // a creature declared as an attacker steps forward before the server confirms it
+   const attacking = useMemo(() => withPredictedAttack(combatNow.attacking, prediction), [combatNow.attacking, prediction]);
+@@ -453,6 +477,8 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+   const overlayOpen = (interaction.mode === 'mulligan' || choosingStarter || !!pickerCards || interaction.mode === 'panel') && !awaitingServer;
+   // mtg-ai: a card choice hidden to look at the board ("See the board") shows the hand again, read-only
+   const pickerPeek = useMatchUi((ui) => ui.pickerPeek);
++  // mtg-ai: my cards the opponent knows (revealed, or back from a public zone)
++  const myKnown = useMemo(() => new Set(revealedInHand(state.revealedHands, myId ?? undefined).map((card) => card.cardId ?? card.id!)), [state.revealedHands, myId]);
+   const handHidden = (interaction.mode === 'mulligan' || choosingStarter || (!!pickerCards && !pickerPeek)) && !awaitingServer;
+   // a choice among cards in hand (discard, reveal...): eligible cards take the decision edge
+   const choosingInHand = interaction.mode === 'target' && !pickerCards && [...clickable].some((id) => handIds.has(id));
+@@ -616,7 +642,7 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+             )}
+ 
+             <Reveals view={view} myPlayerId={myId} opponentIds={opponentIds} autoDismiss={autoDismissReveals} />
+-            <StackZone items={stack} clickable={clickable} selected={interaction.selected} sleeveOf={sleeveOf} onClick={onClick} originOf={originOf} />
++            <StackZone items={stack} clickable={clickable} selected={interaction.selected} sleeveOf={sleeveOf} onClick={onClick} originOf={originOf} uses={stackUses} />
+             <PhaseLadder
+               step={view?.step}
+               myTurn={!spectating && !!myId && view?.activePlayerId === myId}
+@@ -642,6 +668,7 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+               <Hand
+                 cards={handAndPlayables}
+                 fromZone={fromZone}
++                known={myKnown}
+                 choosing={choosingInHand}
+                 clickable={pickerCards ? EMPTY : clickable}
+                 selected={interaction.selected}
+@@ -907,7 +934,7 @@ function HiddenHand({ playerId, count, revealed, sleeve, left }: { playerId: str
+   const shown = Math.min(count, 10);
+   // mtg-ai: cards revealed from this hand show face up, marked, in place of as many backs
+   const faceUp = revealed.slice(0, shown);
+-  const label = `${count} cards in hand` + (faceUp.length > 0 ? `, revealed: ${faceUp.map((card) => card.displayName ?? card.name).join(', ')}` : '');
++  const label = `${count} cards in hand` + (faceUp.length > 0 ? `, known: ${faceUp.map((card) => card.displayName ?? card.name).join(', ')}` : '');
+   return (
+     <div ref={ref} className={styles.hiddenHand} style={{ left }} aria-label={label} role="img">
+       {Array.from({ length: shown }, (_, i) => {
+@@ -921,7 +948,7 @@ function HiddenHand({ playerId, count, revealed, sleeve, left }: { playerId: str
+             onPointerLeave={() => setZoom(null)}
+           >
+             <CardFace card={card} sleeve={sleeve} size="small" />
+-            <span className={styles.revealedMark}>Revealed</span>
++            <span className={styles.revealedMark}>Known</span>
+           </div>
+         ) : (
+           <div key={i} className={styles.hiddenCard} style={{ ['--i' as string]: i - (shown - 1) / 2 }}>
+diff --git a/Mage.Web.Client/src/app/match/StackZone.module.css b/Mage.Web.Client/src/app/match/StackZone.module.css
+index ba159a2440..2aa17263a0 100644
+--- a/Mage.Web.Client/src/app/match/StackZone.module.css
++++ b/Mage.Web.Client/src/app/match/StackZone.module.css
+@@ -87,3 +87,27 @@
+ :global([data-layout='tall']) .item {
+   width: 170px;
+ }
++
++/* mtg-ai: what the spell's additional cost used */
++.uses {
++  position: absolute;
++  left: 50%;
++  bottom: -10px;
++  translate: -50% 100%;
++  display: flex;
++  flex-direction: column;
++  align-items: center;
++  gap: 4px;
++  z-index: 2;
++}
++
++.use {
++  padding: 3px 10px;
++  border-radius: 999px;
++  background: rgb(var(--mat-rgb) / 0.92);
++  box-shadow: inset 0 0 0 1.5px rgb(255 200 90 / 0.85);
++  color: var(--ink-strong);
++  font-size: 15px;
++  font-weight: 600;
++  white-space: nowrap;
++}
+diff --git a/Mage.Web.Client/src/app/match/StackZone.tsx b/Mage.Web.Client/src/app/match/StackZone.tsx
+index 0784a51ae7..892a3cb474 100644
+--- a/Mage.Web.Client/src/app/match/StackZone.tsx
++++ b/Mage.Web.Client/src/app/match/StackZone.tsx
+@@ -17,10 +17,12 @@ export interface StackZoneProps {
+   onClick(id: string): void;
+   /** opponents' spells fly in from their hidden hand */
+   originOf(card: CardView): string | undefined;
++  /** mtg-ai: what each spell's additional cost used, by the spell's card id, with the card when it is in view */
++  uses?: ReadonlyMap<string, { name: string; how: string; card?: CardView }[]>;
+ }
+ 
+ /** Spells and abilities waiting to resolve, stacked at the right of the table; the top one resolves first. */
+-export function StackZone({ items, clickable, selected, sleeveOf, onClick, originOf }: StackZoneProps) {
++export function StackZone({ items, clickable, selected, sleeveOf, onClick, originOf, uses }: StackZoneProps) {
+   // a spell keeps its card's identity (abilities have no card of their own): it is the card that left the hand
+   const keys = useMemo(() => zoneKeys(items.map((item) => (isStackAbility(item) ? { id: item.id } : item))), [items]);
+   if (items.length === 0) return null;
+@@ -39,6 +41,7 @@ export function StackZone({ items, clickable, selected, sleeveOf, onClick, origi
+             sleeve={sleeveOf(item)}
+             onClick={onClick}
+             origin={originOf(item)}
++            uses={uses?.get(item.cardId ?? '') ?? uses?.get(item.id ?? '')}
+           />
+         ))}
+       </ol>
+@@ -46,7 +49,7 @@ export function StackZone({ items, clickable, selected, sleeveOf, onClick, origi
+   );
+ }
+ 
+-function StackItem({ item, index, total, clickable, selected, sleeve, onClick, origin }: {
++function StackItem({ item, index, total, clickable, selected, sleeve, onClick, origin, uses }: {
+   item: CardView;
+   index: number;
+   total: number;
+@@ -55,6 +58,7 @@ function StackItem({ item, index, total, clickable, selected, sleeve, onClick, o
+   sleeve: string;
+   onClick(id: string): void;
+   origin: string | undefined;
++  uses?: { name: string; how: string; card?: CardView }[];
+ }) {
+   const ref = useRef<HTMLLIElement>(null);
+   const setZoom = useMatchUi((state) => state.setZoom);
+@@ -75,6 +79,24 @@ function StackItem({ item, index, total, clickable, selected, sleeve, onClick, o
+     >
+       {ability ? <AbilityCard ability={item} sleeve={sleeve} /> : <CardFace card={face} sleeve={sleeve} size="normal" />}
+       {index === 0 && <span className={styles.next}>Resolving next</span>}
++      {/* mtg-ai: what the spell's additional cost revealed, chose or sacrificed */}
++      {uses && uses.length > 0 && (
++        <div className={styles.uses}>
++          {uses.map((use, i) => (
++            <span
++              key={i}
++              className={styles.use}
++              title={`${use.how[0].toUpperCase()}${use.how.slice(1)} for this spell's cost`}
++              onPointerEnter={(event) => {
++                event.stopPropagation();
++                if (use.card) setZoom({ card: use.card, x: event.clientX, y: event.clientY, sleeve, anchor: event.currentTarget });
++              }}
++            >
++              Using: {use.name}{use.card?.power !== undefined && (use.card.cardTypes ?? []).includes('CREATURE') ? ` (${use.card.power} power)` : ''}
++            </span>
++          ))}
++        </div>
++      )}
+     </li>
+   );
+ }
+diff --git a/Mage.Web.Client/src/app/match/matchUi.ts b/Mage.Web.Client/src/app/match/matchUi.ts
+index bd9764102f..a1b91ebfe0 100644
+--- a/Mage.Web.Client/src/app/match/matchUi.ts
++++ b/Mage.Web.Client/src/app/match/matchUi.ts
+@@ -1,5 +1,6 @@
+ import { create } from 'zustand';
+ import type { CardView } from '../../protocol/generated/views';
++import type { CostUse } from '../../core/game/costUses';
+ 
+ /** Local, per-match UI state: what is hovered, held or open. Game state lives in the GameSession. */
+ interface MatchUiState {
+@@ -20,6 +21,8 @@ interface MatchUiState {
+   logOpen: boolean;
+   /** mtg-ai: a card choice is hidden to look at the board ("See the board"): the hand shows, read-only */
+   pickerPeek: boolean;
++  /** mtg-ai: what each spell's additional cost revealed, chose or sacrificed, by the spell's card id (costUses.ts) */
++  costUses: ReadonlyMap<string, CostUse[]>;
+   /** card opened in the detail view (right click); the id keeps it live as the game changes */
+   detail: { id: string; card: CardView } | null;
+   setZoom(zoom: MatchUiState['zoom']): void;
+@@ -30,6 +33,7 @@ interface MatchUiState {
+   openViewer(viewer: MatchUiState['viewer']): void;
+   toggleLog(open?: boolean): void;
+   setPickerPeek(peek: boolean): void;
++  setCostUses(uses: ReadonlyMap<string, CostUse[]>): void;
+   openDetail(detail: MatchUiState['detail']): void;
+ }
+ 
+@@ -42,9 +46,11 @@ export const useMatchUi = create<MatchUiState>((set) => ({
+   viewer: null,
+   logOpen: false,
+   pickerPeek: false,
++  costUses: new Map(),
+   detail: null,
+   setZoom: (zoom) => set({ zoom }),
+   setPickerPeek: (pickerPeek) => set({ pickerPeek }),
++  setCostUses: (costUses) => set({ costUses }),
+   setPointer: (pointer) => set({ pointer }),
+   setArrowFrom: (arrowFrom) => set({ arrowFrom }),
+   setDragging: (dragging) => set({ dragging }),
+diff --git a/Mage.Web.Client/src/core/game/costUses.test.ts b/Mage.Web.Client/src/core/game/costUses.test.ts
+new file mode 100644
+index 0000000000..48a573a0d8
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/costUses.test.ts
+@@ -0,0 +1,31 @@
++import { describe, expect, it } from 'vitest';
++import { parseChatMessage, type LogEntry } from './gameLog';
++import { costUses } from './costUses';
++
++const line = (html: string, i: number): LogEntry => parseChatMessage({ message: html, messageType: 'GAME' } as never, `k${i}`)!;
++const p = (name: string) => `<font color='#20B2AA'>${name}</font>`;
++const c = (name: string, id?: string) => `<font color='#90EE90'${id ? ` object_id='${id}'` : ''}>${name}</font>`;
++
++describe('costUses', () => {
++  it('reads a reveal named by its source, and the same reveal from hand only once', () => {
++    const uses = costUses([
++      line(`${p('kimster')} reveals ${c('Fear of the Dark', 'fd')} [fd1] from their hand`, 0),
++      line(`${p('kimster')} reveals ${c('Fear of the Dark')} (source: ${c('Monstrous Emergence', 'me')} [me1])`, 1),
++      line(`${p('kimster')} casts ${c('Monstrous Emergence', 'me')} [me1] targeting ${c('Bear', 'b')} [b11] from hand`, 2),
++    ]);
++    expect(uses.get('me')).toEqual([{ name: 'Fear of the Dark', objectId: 'fd', how: 'revealed' }]);
++  });
++
++  it('gives a chosen creature to the next spell its player casts', () => {
++    const uses = costUses([
++      line(`${p('Claude AI')} chooses ${c('Shroudstomper', 'ss')} [ss1] on the battlefield`, 0),
++      line(`${p('Claude AI')} casts ${c('Monstrous Emergence', 'm2')} [m21] targeting ${c('Bear', 'b')} [b11] from hand`, 1),
++    ]);
++    expect(uses.get('m2')).toEqual([{ name: 'Shroudstomper', objectId: 'ss', how: 'chosen' }]);
++  });
++
++  it('reads a sacrifice cost', () => {
++    const uses = costUses([line(`${p('Claude AI')} sacrificed ${c('Disturbing Mirth', 'dm')} [dm1] (source: ${c('Final Vengeance', 'fv')} [fv1])`, 0)]);
++    expect(uses.get('fv')).toEqual([{ name: 'Disturbing Mirth', objectId: 'dm', how: 'sacrificed' }]);
++  });
++});
+diff --git a/Mage.Web.Client/src/core/game/costUses.ts b/Mage.Web.Client/src/core/game/costUses.ts
+new file mode 100644
+index 0000000000..93156abcec
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/costUses.ts
+@@ -0,0 +1,61 @@
++import type { LogEntry, LogSegment } from './gameLog';
++
++/**
++ * mtg-ai: what a spell's additional cost used, read from the engine's game log: "kimster reveals Fear of the Dark
++ * (source: Monstrous Emergence)", "… sacrificed Disturbing Mirth (source: Final Vengeance)", and, for a cost that
++ * names no source ("… chooses Bear on the battlefield", "… reveals Bear from their hand"), the next spell that player
++ * casts. By the spell's card id (the object id the log gives the spell), newest last.
++ */
++export interface CostUse {
++  name: string;
++  /** the used card's object id, when the log gives it */
++  objectId: string | null;
++  how: 'revealed' | 'chosen' | 'sacrificed';
++}
++
++const VERB: [RegExp, CostUse['how']][] = [[/ reveals /, 'revealed'], [/ chooses /, 'chosen'], [/ sacrificed /, 'sacrificed']];
++
++type CardSegment = Extract<LogSegment, { kind: 'card' }>;
++
++export function costUses(entries: readonly LogEntry[]): Map<string, CostUse[]> {
++  const out = new Map<string, CostUse[]>();
++  const pending = new Map<string, CostUse[]>();
++  for (const entry of entries) {
++    if (entry.tone !== 'game') continue;
++    const player = entry.segments.find((segment) => segment.kind === 'player');
++    const cards = entry.segments.filter((segment): segment is CardSegment => segment.kind === 'card');
++    if (!player || player.kind !== 'player' || cards.length === 0) continue;
++    const how = VERB.find(([pattern]) => pattern.test(entry.text))?.[1];
++    if (how) {
++      const sourceAt = entry.text.indexOf('(source: ');
++      const used = cards[0];
++      const use: CostUse = { name: used.name, objectId: used.objectId, how };
++      if (sourceAt >= 0 && cards.length > 1) {
++        const source = cards[cards.length - 1].objectId;
++        if (source) {
++          const list = out.get(source) ?? [];
++          // the same card revealed twice (the reveal and its cost line): once
++          if (!list.some((u) => u.name === use.name && u.how === use.how)) out.set(source, [...list, use]);
++        }
++      } else if (/ on the battlefield| from (their|his|her) hand/.test(entry.text)) {
++        pending.set(player.name, [...(pending.get(player.name) ?? []), use]);
++      }
++      continue;
++    }
++    if (/ casts /.test(entry.text)) {
++      const spell = cards[0].objectId;
++      const waiting = pending.get(player.name);
++      pending.delete(player.name);
++      if (spell && waiting) {
++        const list = out.get(spell) ?? [];
++        for (const use of waiting) {
++          const same = list.find((u) => u.name === use.name && u.how === use.how);
++          if (same) same.objectId ??= use.objectId;
++          else list.push(use);
++        }
++        out.set(spell, list);
++      }
++    }
++  }
++  return out;
++}
+diff --git a/Mage.Web.Client/src/core/game/gameSession.ts b/Mage.Web.Client/src/core/game/gameSession.ts
+index 9127d70160..607c2d8cab 100644
+--- a/Mage.Web.Client/src/core/game/gameSession.ts
++++ b/Mage.Web.Client/src/core/game/gameSession.ts
+@@ -376,7 +376,7 @@ export class GameSession {
+     const playerId = this.store.getState().playerId ?? (this.store.getState().mode === 'play' ? view.myPlayerId ?? null : null);
+     // mtg-ai: a replay jumps between moments, so what was revealed before is only remembered live
+     const { mode, revealedHands } = this.store.getState();
+-    this.store.setState({ view: next, playerId, revealedHands: mode === 'replay' ? revealedHands : rememberRevealedHands(revealedHands, next) });
++    this.store.setState({ view: next, playerId, revealedHands: mode === 'replay' ? revealedHands : rememberRevealedHands(revealedHands, next, previous) });
+     this.refreshInteraction();
+   }
+ 
+diff --git a/Mage.Web.Client/src/core/game/revealedHand.test.ts b/Mage.Web.Client/src/core/game/revealedHand.test.ts
+index 2a037212f3..63464c1cb6 100644
+--- a/Mage.Web.Client/src/core/game/revealedHand.test.ts
++++ b/Mage.Web.Client/src/core/game/revealedHand.test.ts
+@@ -80,4 +80,38 @@ describe('rememberRevealedHands', () => {
+     expect(names(rememberRevealedHands(start, view(player(THEM, 1, 30))))).toEqual([]);
+     expect(names(rememberRevealedHands(start, view(player(THEM, 0, 37))))).toEqual([]);
+   });
++
++  // mtg-ai: public cards that go to a hand
++  it('knows a permanent bounced to its owner\'s hand, and a card returned from the graveyard', () => {
++    const bear: CardView = { id: 'b1', cardId: 'b1', ownerId: THEM, name: 'Bear' };
++    const before = view(player(THEM, 3, 30, { battlefield: { b1: bear }, graveyard: { c2: bolt } }));
++    const after = view(player(THEM, 5, 30));
++    expect(names(rememberRevealedHands(NO_REVEALED_HANDS, after, before))).toEqual(['Bear', 'Lightning Bolt']);
++  });
++
++  it('remembers nothing when the hand did not grow by as many cards (some went elsewhere)', () => {
++    const bear: CardView = { id: 'b1', cardId: 'b1', ownerId: THEM, name: 'Bear' };
++    const before = view(player(THEM, 3, 30, { battlefield: { b1: bear }, graveyard: { c2: bolt } }));
++    expect(names(rememberRevealedHands(NO_REVEALED_HANDS, view(player(THEM, 4, 31)), before))).toEqual([]);
++  });
++
++  it('never knows a face-down permanent or a token that left', () => {
++    const down: CardView = { id: 'm1', cardId: 'm1', ownerId: THEM, name: 'Secret', faceDown: true };
++    const token: CardView = { id: 't1', cardId: 't1', ownerId: THEM, name: 'Glimmer', isToken: true };
++    const before = view(player(THEM, 3, 30, { battlefield: { m1: down, t1: token } }));
++    expect(names(rememberRevealedHands(NO_REVEALED_HANDS, view(player(THEM, 5, 30)), before))).toEqual([]);
++  });
++
++  it('marks my own public card that came back to my hand', () => {
++    const mine: CardView = { id: 'x1', cardId: 'x1', ownerId: ME, name: 'Shock' };
++    const before: GameView = { myPlayerId: ME, players: [player(ME, 6, 30, { graveyard: { x1: mine } }), player(THEM, 5)] };
++    const after: GameView = { myPlayerId: ME, myHand: { x1: mine }, players: [player(ME, 7, 30), player(THEM, 5)] };
++    expect(revealedInHand(rememberRevealedHands(NO_REVEALED_HANDS, after, before), ME).map((card) => card.name)).toEqual(['Shock']);
++  });
++
++  it('knows a card revealed from the library that went to the hand after the reveal ended', () => {
++    const top: CardView = { id: 't9', cardId: 't9', ownerId: THEM, name: 'Overgrown Zealot', zone: 'LIBRARY' };
++    const before = view(player(THEM, 3, 30), { revealed: revealed(top) });
++    expect(names(rememberRevealedHands(NO_REVEALED_HANDS, view(player(THEM, 4, 29)), before))).toEqual(['Overgrown Zealot']);
++  });
+ });
+diff --git a/Mage.Web.Client/src/core/game/revealedHand.ts b/Mage.Web.Client/src/core/game/revealedHand.ts
+index 8d06918e14..d89590d870 100644
+--- a/Mage.Web.Client/src/core/game/revealedHand.ts
++++ b/Mage.Web.Client/src/core/game/revealedHand.ts
+@@ -8,6 +8,11 @@ import type { CardView, GameView } from '../../protocol/generated/views';
+  * for a hidden zone (put back on the library: the hand shrinks as the library grows) or the hand holds fewer cards
+  * than are remembered, which ones left is unknown, and all of them are forgotten. Nothing that was not revealed is
+  * ever remembered; a server that doesn't send the zone of revealed cards gives nothing to remember.
++ *
++ * mtg-ai (2026-10-27): a card that was face up in a public zone (battlefield, graveyard, exile, stack) or being
++ * revealed (from anywhere: "reveal the top cards, put one into your hand") and went to its owner's hand is known too: bounced, returned from a graveyard or from exile. Seen in the previous view, gone from
++ * every public zone now, while that hand grew by at least as many cards (else which cards went there is unknown and
++ * none is remembered); for the viewer's own hand, the hand's card ids say it exactly. Face-down cards and tokens never.
+  */
+ export interface RevealedHand {
+   /** revealed cards still in the hand, by physical card id (cardId, else id), in the order they were revealed */
+@@ -25,8 +30,30 @@ function physicalId(card: CardView, fallback: string): string {
+   return card.cardId ?? card.id ?? fallback;
+ }
+ 
+-/** The memory after one more game view. */
+-export function rememberRevealedHands(previous: RevealedHands, view: GameView): RevealedHands {
++/** Every face-up, nontoken card in a public zone, by physical card id, with its owner. */
++function publicCards(view: GameView): Map<string, { owner: string; card: CardView }> {
++  const out = new Map<string, { owner: string; card: CardView }>();
++  const add = (cards: Record<string, CardView> | undefined, fallbackOwner?: string) => {
++    for (const [id, card] of Object.entries(cards ?? {})) {
++      if (card.faceDown || card.isToken) continue;
++      const owner = card.ownerId ?? fallbackOwner;
++      if (owner) out.set(physicalId(card, id), { owner, card: { ...card, id: card.id ?? id } });
++    }
++  };
++  add(view.stack);
++  for (const zone of view.exiles ?? []) add(zone);
++  // cards being revealed are public too, wherever they are (a reveal is to every player; a private look isn't listed)
++  for (const group of view.revealed ?? []) add(group.cards);
++  for (const player of view.players ?? []) {
++    add(player.battlefield);
++    add(player.graveyard, player.playerId);
++    add(player.exile, player.playerId);
++  }
++  return out;
++}
++
++/** The memory after one more game view (`before`: the view this one follows, for cards that went to a hand). */
++export function rememberRevealedHands(previous: RevealedHands, view: GameView, before?: GameView | null): RevealedHands {
+   // every card in a public zone: none of them is in a hand
+   const seen = new Set<string>();
+   const addSeen = (cards: Record<string, CardView> | undefined) => {
+@@ -45,6 +72,29 @@ export function rememberRevealedHands(previous: RevealedHands, view: GameView):
+     for (const [id, card] of Object.entries(group.cards ?? {})) revealed.push({ key: physicalId(card, id), card: { ...card, id: card.id ?? id } });
+   }
+ 
++  // public cards gone from every public zone since the last view, by owner: to the hand when the hand says so
++  const toHand = new Map<string, { key: string; card: CardView }[]>();
++  if (before) {
++    const was = publicCards(before);
++    const gone = new Map<string, { key: string; card: CardView }[]>();
++    for (const [key, { owner, card }] of was) {
++      if (seen.has(key)) continue;
++      gone.set(owner, [...(gone.get(owner) ?? []), { key, card }]);
++    }
++    const mine = new Set(Object.entries(view.myHand ?? {}).map(([id, card]) => physicalId(card, id)));
++    for (const [owner, cards] of gone) {
++      if (owner === view.myPlayerId) {
++        const inHand = cards.filter(({ key }) => mine.has(key));
++        if (inHand.length > 0) toHand.set(owner, inHand);
++        continue;
++      }
++      const then = before.players?.find((player) => player.playerId === owner);
++      const now = view.players?.find((player) => player.playerId === owner);
++      const gain = (now?.handCount ?? 0) - (then?.handCount ?? 0);
++      if (then && now && gain >= cards.length) toHand.set(owner, cards);
++    }
++  }
++
+   const next = new Map<string, RevealedHand>();
+   for (const player of view.players ?? []) {
+     const playerId = player.playerId;
+@@ -60,6 +110,8 @@ export function rememberRevealedHands(previous: RevealedHands, view: GameView):
+       if (card.zone === 'HAND') cards.set(key, card);
+       else cards.delete(key);
+     }
++    // public cards of this player's that went to the hand
++    for (const { key, card } of toHand.get(playerId) ?? []) cards.set(key, card);
+     // more remembered than held: which ones left is unknown; only the ones seen in the hand right now stay
+     if (cards.size > handCount) {
+       const now = new Set(revealed.filter(({ card }) => card.ownerId === playerId && card.zone === 'HAND').map(({ key }) => key));
