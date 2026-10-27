@@ -1,0 +1,237 @@
+diff --git a/Mage.Common/src/main/java/mage/view/GameView.java b/Mage.Common/src/main/java/mage/view/GameView.java
+index af9ddca678..ce668a2549 100644
+--- a/Mage.Common/src/main/java/mage/view/GameView.java
++++ b/Mage.Common/src/main/java/mage/view/GameView.java
+@@ -60,6 +60,8 @@ public class GameView implements Serializable {
+     private final Map<String, SimpleCardsView> watchedHands = new HashMap<>();
+     private final CardsView stack = new CardsView();
+     private final List<ExileView> exiles = new ArrayList<>();
++    // mtg-ai: exiled card id -> the permanent holding it ("exile ... until it leaves"), for the client to show them together
++    private final Map<UUID, UUID> heldBy = new HashMap<>();
+     private final List<RevealedView> revealed = new ArrayList<>();
+     private final List<LookedAtView> lookedAt = new ArrayList<>();
+     private final List<RevealedView> companion = new ArrayList<>();
+@@ -188,8 +190,26 @@ public class GameView implements Serializable {
+             }
+         }
+ 
++        // mtg-ai: which permanent holds each "exile ... until it leaves" zone: the zone id XMage filed under the
++        // permanent's id and zone change counter (CardUtil.getExileZoneId), read without creating one
++        Map<UUID, UUID> holders = new HashMap<>();
++        for (Permanent permanent : state.getBattlefield().getAllPermanents()) {
++            int zcc = permanent.getZoneChangeCounter(game);
++            for (int z = zcc; z >= zcc - 1; z--) {
++                Object zone = state.getValue(CardUtil.getObjectZoneString(CardUtil.SOURCE_EXILE_ZONE_TEXT, permanent.getId(), game, z, false));
++                if (zone instanceof UUID) {
++                    holders.putIfAbsent((UUID) zone, permanent.getId());
++                }
++            }
++        }
+         for (ExileZone exileZone : state.getExile().getExileZones()) {
+             exiles.add(new ExileView(exileZone, game, createdForPlayerId));
++            UUID holder = holders.get(exileZone.getId());
++            if (holder != null) {
++                for (UUID cardId : exileZone) {
++                    heldBy.put(cardId, holder);
++                }
++            }
+         }
+         for (String name : state.getRevealed().keySet()) {
+             revealed.add(new RevealedView(name, state.getRevealed().get(name), game));
+diff --git a/Mage.Web.Client/src/app/match/MatchStage.tsx b/Mage.Web.Client/src/app/match/MatchStage.tsx
+index 1f8a66e7f7..26cd639f13 100644
+--- a/Mage.Web.Client/src/app/match/MatchStage.tsx
++++ b/Mage.Web.Client/src/app/match/MatchStage.tsx
+@@ -75,7 +75,8 @@ import { clothOf, clothStyle } from './playmats';
+ import { arrowTints, landStyleKey, lookCloth, pairsOf, sparkColorOf, stampOf, theirClothBox } from './touches';
+ import { CardStyleContext } from '../ui/cardStyles';
+ import { LandStyleContext } from '../ui/landStyles';
+-import { ConditionContext } from './conditionContext';
++import { ConditionContext, HeldContext } from './conditionContext';
++import { heldCards } from '../../core/game/heldCards';
+ import { conditionBoard } from '../../core/game/conditions';
+ import { useCosmetics } from '../ui/cosmeticsCatalog';
+ import { usePlayerLooks } from '../support/supportData';
+@@ -510,12 +511,14 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+   const [plateRef, plateRight] = useRightEdge();
+   // mtg-ai: graveyards, turn and step for the condition highlight
+   const conditions = useMemo(() => conditionBoard(view), [view]);
++  // mtg-ai: exiled cards by the permanent holding them
++  const held = useMemo(() => heldCards(view), [view]);
+   // quick emotes (B298): players only, at their own seat
+   const emotes = mode === 'play' && !!board.me?.isMe;
+ 
+   return (
+     // basic lands show their players' land styles anywhere on the stage (B301, ui/landStyles.ts)
+-    <LandStyleContext.Provider value={landStyleOf}><CardStyleContext.Provider value={cardStylesOf}><ConditionContext.Provider value={conditions}><Stage style={matStyle}>
++    <LandStyleContext.Provider value={landStyleOf}><CardStyleContext.Provider value={cardStylesOf}><ConditionContext.Provider value={conditions}><HeldContext.Provider value={held}><Stage style={matStyle}>
+       {(stage) => {
+         // the stage widens with the window and the field takes the extra width; a portrait window gets the tall layout
+         const layout = matchLayout(stage);
+@@ -768,7 +771,7 @@ export function MatchStage({ session, state, replayLog, onLeave }: MatchStagePro
+           </div>
+         );
+       }}
+-    </Stage></ConditionContext.Provider></CardStyleContext.Provider></LandStyleContext.Provider>
++    </Stage></HeldContext.Provider></ConditionContext.Provider></CardStyleContext.Provider></LandStyleContext.Provider>
+   );
+ }
+ 
+diff --git a/Mage.Web.Client/src/app/match/PermanentStack.module.css b/Mage.Web.Client/src/app/match/PermanentStack.module.css
+index 7227f42194..6656ee8253 100644
+--- a/Mage.Web.Client/src/app/match/PermanentStack.module.css
++++ b/Mage.Web.Client/src/app/match/PermanentStack.module.css
+@@ -669,3 +669,26 @@
+   white-space: nowrap;
+   box-shadow: 0 2px 6px rgb(0 0 0 / 0.5);
+ }
++
++/* mtg-ai: exiled cards a permanent holds until it leaves: small, over its upper right corner (clear of the hand fan
++   below the bottom row), so a neighbour can't hide them */
++.held {
++  position: absolute;
++  right: -10%;
++  top: -6%;
++  z-index: 4;
++  width: 50%;
++  aspect-ratio: 63 / 88;
++  pointer-events: none;
++}
++
++.heldCard {
++  position: absolute;
++  inset: 0;
++  display: block;
++  border-radius: 5px;
++  box-shadow: 0 0 0 1.5px rgb(255 255 255 / 0.55), 0 4px 12px rgb(0 0 0 / 0.6);
++  pointer-events: auto;
++  translate: calc(var(--i) * -22%) calc(var(--i) * 10%);
++  rotate: 6deg;
++}
+diff --git a/Mage.Web.Client/src/app/match/PermanentStack.tsx b/Mage.Web.Client/src/app/match/PermanentStack.tsx
+index 81a9a8ea19..3c51e3a8db 100644
+--- a/Mage.Web.Client/src/app/match/PermanentStack.tsx
++++ b/Mage.Web.Client/src/app/match/PermanentStack.tsx
+@@ -2,14 +2,14 @@ import {
+   Anvil, ArrowUpToLine, Castle, Crosshair, Eye, EyeOff, Feather, FlaskConical, Footprints, HeartPulse, Lock, LockOpen, Shield, ShieldCheck,
+   ShieldHalf, Skull, Sword, Swords, Users, Zap, type LucideIcon,
+ } from 'lucide-react';
+-import { memo, useMemo, useRef, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
++import { memo, useContext, useMemo, useRef, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
+ import { roomDoors } from '../../core/game/cards';
+ import { keywordEffects, keywordMarks, type KeywordEffect, type MarkedKeyword } from '../../core/game/keywords';
+ import type { PermanentView } from '../../protocol/generated/views';
+ import { useSettings } from '../stores/settings';
+ import { CardFace } from '../ui/CardFace';
+ import { CounterBadges } from './CounterBadges';
+-import { useActiveConditions } from './conditionContext';
++import { HeldContext, useActiveConditions } from './conditionContext';
+ import { cardKey, stackBadge, stackOffsetRatio, type PermanentGroup } from './boardModel';
+ import { useFlip } from './flip';
+ import { useMatchUi } from './matchUi';
+@@ -192,6 +192,8 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+   const doors = roomDoors(permanent);
+   // mtg-ai: a conditional ability that is on now glows and says so
+   const conditions = useActiveConditions(permanent, permanent.controllerId);
++  // mtg-ai: exiled cards this permanent holds until it leaves (Trapped in the Screen...), tucked under it
++  const held = useContext(HeldContext).get(id);
+   // summoning sick: it can't attack or tap yet, so it dozes (the server's flag ignores haste; a hasty creature is awake)
+   const asleep = isCreature && !!permanent.summoningSickness && !keywords.some((mark) => mark.name === 'Haste');
+   const flying = effects.includes('float');
+@@ -286,6 +288,22 @@ function PlacedCard({ permanent, width, sleeve, clickable, selected, quiet, atta
+         </div>
+       )}
+ 
++      {held && held.length > 0 && (
++        <div className={styles.held} aria-label={`Holding ${held.map((card) => card.name).join(', ')} until it leaves`}>
++          {held.map((card, index) => (
++            <span
++              key={card.id ?? index}
++              className={styles.heldCard}
++              style={{ ['--i' as string]: index }}
++              title={`${card.name}: held by ${permanent.name}, returns when it leaves`}
++              onPointerEnter={(event) => setZoom({ card, x: event.clientX, y: event.clientY, sleeve, anchor: event.currentTarget })}
++            >
++              <CardFace card={card} size="small" />
++            </span>
++          ))}
++        </div>
++      )}
++
+       {/* mtg-ai: counters as symbols, and how long an impending permanent has left */}
+       <CounterBadges permanent={permanent} className={styles.counters} />
+ 
+diff --git a/Mage.Web.Client/src/app/match/conditionContext.ts b/Mage.Web.Client/src/app/match/conditionContext.ts
+index 6730a87744..c0cfb83517 100644
+--- a/Mage.Web.Client/src/app/match/conditionContext.ts
++++ b/Mage.Web.Client/src/app/match/conditionContext.ts
+@@ -8,3 +8,6 @@ export const ConditionContext = createContext<ConditionBoard>(conditionBoard(nul
+ export function useActiveConditions(card: CardView, controllerId: string | null | undefined): ActiveCondition[] {
+   return activeConditions(card, controllerId, useContext(ConditionContext));
+ }
++
++/** mtg-ai: exiled cards by the permanent holding them (heldCards.ts) */
++export const HeldContext = createContext<ReadonlyMap<string, CardView[]>>(new Map());
+diff --git a/Mage.Web.Client/src/core/game/heldCards.test.ts b/Mage.Web.Client/src/core/game/heldCards.test.ts
+new file mode 100644
+index 0000000000..f03d112810
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/heldCards.test.ts
+@@ -0,0 +1,20 @@
++import { describe, expect, it } from 'vitest';
++import type { GameView } from '../../protocol/generated/views';
++import { heldCards } from './heldCards';
++
++describe('heldCards', () => {
++  it('groups exiled cards under the permanent holding them, for either player', () => {
++    const view = {
++      exiles: [{ a: { id: 'a', name: 'Bear' } }, { b: { id: 'b', name: 'Wolf' } }],
++      players: [{ playerId: 'p', exile: { c: { id: 'c', name: 'Shock' } } }],
++      heldBy: { a: 'trap1', b: 'trap2', c: 'trap1', gone: 'trap2' },
++    } as unknown as GameView;
++    const held = heldCards(view);
++    expect(held.get('trap1')?.map((card) => card.name)).toEqual(['Bear', 'Shock']);
++    expect(held.get('trap2')?.map((card) => card.name)).toEqual(['Wolf']);
++  });
++
++  it('is empty for a server that does not send heldBy', () => {
++    expect(heldCards({ exiles: [{ a: { id: 'a' } }] } as unknown as GameView).size).toBe(0);
++  });
++});
+diff --git a/Mage.Web.Client/src/core/game/heldCards.ts b/Mage.Web.Client/src/core/game/heldCards.ts
+new file mode 100644
+index 0000000000..8fa63b0e44
+--- /dev/null
++++ b/Mage.Web.Client/src/core/game/heldCards.ts
+@@ -0,0 +1,19 @@
++import type { CardView, GameView } from '../../protocol/generated/views';
++
++/**
++ * mtg-ai: exiled cards held by a permanent ("exile ... until it leaves": Trapped in the Screen, Fear of Abduction,
++ * Unidentified Hovership), by the holding permanent's id, from the game view's heldBy (exiled card id -> holder).
++ */
++export function heldCards(view: GameView | null | undefined): Map<string, CardView[]> {
++  const out = new Map<string, CardView[]>();
++  if (!view?.heldBy) return out;
++  const exiled = new Map<string, CardView>();
++  for (const zone of view.exiles ?? []) for (const [id, card] of Object.entries(zone ?? {})) exiled.set(id, card);
++  for (const player of view.players ?? []) for (const [id, card] of Object.entries(player.exile ?? {})) exiled.set(id, card);
++  for (const [cardId, holder] of Object.entries(view.heldBy)) {
++    const card = exiled.get(cardId);
++    if (!card) continue;
++    out.set(holder, [...(out.get(holder) ?? []), card]);
++  }
++  return out;
++}
+diff --git a/Mage.Web.Client/src/protocol/generated/views.ts b/Mage.Web.Client/src/protocol/generated/views.ts
+index d4460f0e6e..966312083a 100644
+--- a/Mage.Web.Client/src/protocol/generated/views.ts
++++ b/Mage.Web.Client/src/protocol/generated/views.ts
+@@ -1462,6 +1462,7 @@ export interface GameView extends Serializable {
+     companion?: RevealedView[];
+     events?: GameEventView[];
+     exiles?: { [index: string]: CardView }[];
++    heldBy?: { [index: string]: string };
+     gameCycle?: number;
+     lookedAt?: LookedAtView[];
+     myHand?: { [index: string]: CardView };
