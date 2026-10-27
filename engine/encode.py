@@ -10,11 +10,22 @@ Two steps:
 Nothing unknown is silently replaced. A card name, token name, ability key, step or action type that isn't
 in the vocabulary raises Unmapped; encode_file collects those into a report instead of dropping the game.
 
+What an option means, three kinds:
+- a pointer to an entry (action_sources / action_targets): a card, permanent or stack object
+- an ability id (action_abilities): something that happens, including a mode ("Get Out#mode1") and an
+  alternative cost ("Overlord of the Hauntwoods#alt:ImpendingAbility"); casting normally has no ability id
+- a named option (action_named_options): an answer that is neither, like a colour or a counter type
+
+Modal spells and abilities on the stack carry their chosen modes (card_modes / ability_modes, ability ids).
+Recordings made before the seat sent "modes" only have them for abilities, read from XMage's "Chosen mode:"
+text; a modal spell on the stack in those recordings has no modes.
+
 Feature lists below are a first pass for the plumbing. Which features the model gets is a design choice:
 change them freely, the layout comments say what each column is.
 """
 
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -40,7 +51,8 @@ ACTION_TYPES = ["PAD", "PASS", "PLAY_LAND", "CAST", "ACTIVATE", "SPECIAL", "TARG
 EDGE_TYPES = ["blocks", "blocked_by", "attached_to", "has_attached", "targets", "targeted_by",
               "resolves_before", "resolves_after"]
 TARGET_PLAYER = {"me": 1, "opp": 2}  # action_target_players: 0 = not a player
-NAMED_CHOICE_ACTIONS = {"CHOICE", "MODE"}  # options whose meaning is a named choice, not a card
+NAMED_CHOICE_ACTIONS = {"CHOICE", "MODE"}  # options whose meaning comes from their choice_key, not a card
+NO_ALT_COST = "alt_cost:none"  # casting normally
 
 # card feature layout (F columns)
 CARD_FEATURES = (
@@ -68,7 +80,8 @@ class Unmapped(Exception):
 class Vocab:
     card_ids: dict[str, int]
     ability_ids: dict[str, int]
-    choice_ids: dict[str, int]  # named non-card answers, e.g. "alt_cost:ImpendingAbility", "Get Out#mode1"
+    named_option_ids: dict[str, int]  # answers that are not cards or abilities, e.g. "choice:White"
+    mode_texts: dict[str, list[tuple[str, str]]]  # card name -> [(mode key, mode text)], to read old recordings
     rooms: dict[str, tuple[str, str]]  # full Room name -> (left door, right door)
     door_to_room: dict[str, str]
 
@@ -78,14 +91,18 @@ class Vocab:
         names = sorted(v["cards"]) + sorted(v.get("tokens", []))
         card_ids = {name: i + 2 for i, name in enumerate(names)}  # 0 PAD, 1 FACE_DOWN
         ability_ids = {a["key"]: i + 1 for i, a in enumerate(v["abilities"])}  # 0 = none / PAD
-        choice_ids = {c: i + 1 for i, c in enumerate(v.get("choices", []))}  # 0 = not a named choice
+        named_option_ids = {c: i + 1 for i, c in enumerate(v.get("named_options", []))}  # 0 = not a named option
+        mode_texts = {}
+        for a in v["abilities"]:
+            if a.get("type") == "Mode":
+                mode_texts.setdefault(a["key"].rsplit("#", 1)[0], []).append((a["key"], a["text"]))
         rooms, door_to_room = {}, {}
         for name in v["cards"]:
             if " // " in name:
                 left, right = name.split(" // ")
                 rooms[name] = (left, right)
                 door_to_room[left] = door_to_room[right] = name
-        return cls(card_ids, ability_ids, choice_ids, rooms, door_to_room)
+        return cls(card_ids, ability_ids, named_option_ids, mode_texts, rooms, door_to_room)
 
     @property
     def num_cards(self) -> int:
@@ -96,13 +113,13 @@ class Vocab:
         return max(self.ability_ids.values()) + 1
 
     @property
-    def num_choices(self) -> int:
-        return max(self.choice_ids.values(), default=0) + 1
+    def num_named_options(self) -> int:
+        return max(self.named_option_ids.values(), default=0) + 1
 
-    def choice(self, key: str) -> int:
-        if key not in self.choice_ids:
-            raise Unmapped(f"choice not in vocabulary: {key!r}")
-        return self.choice_ids[key]
+    def named_option(self, key: str) -> int:
+        if key not in self.named_option_ids:
+            raise Unmapped(f"named option not in vocabulary: {key!r}")
+        return self.named_option_ids[key]
 
     def card(self, name: str) -> int:
         if name not in self.card_ids:
@@ -194,8 +211,10 @@ class Example:
     action_targets: list[int]
     action_abilities: list[int]
     action_target_players: list[int]
-    action_choices: list[int]
+    action_named_options: list[int]
     label: int
+    card_modes: list[list[int]] = field(default_factory=list)  # per card: chosen modes (ability ids), mostly []
+    ability_modes: list[list[int]] = field(default_factory=list)  # per stack ability: chosen modes
     meta: dict = field(default_factory=dict)
 
 
@@ -212,18 +231,21 @@ def encode_decision(d: dict, vocab: Vocab) -> Example:
     for k, e in enumerate(abilities):
         remap[e["i"]] = 1 + len(cards) + k
 
-    card_ids, card_features = [], []
+    card_ids, card_features, card_modes = [], [], []
     for e in cards:
         cid, left, right = _card_identity(e, vocab)
         card_ids.append(cid)
         card_features.append(_card_features(e, left, right))
-    ability_ids, ability_features = [], []
+        card_modes.append(_chosen_modes(e, vocab))
+    ability_ids, ability_features, ability_modes = [], [], []
     for e in abilities:
         key = e.get("ability_key")
         if key is None:
             raise Unmapped(f"ability on the stack has no key: {e.get('source_name')!r}: {e.get('text', '')[:80]!r}")
         ability_ids.append(vocab.ability(key))
         ability_features.append(_ability_features(e))
+        ability_modes.append(_chosen_modes(e, vocab))
+    by_index = {e["i"]: e for e in entries if "i" in e}
 
     edges = []
     for etype, f, t in d["obs"].get("edges", []):
@@ -231,7 +253,7 @@ def encode_decision(d: dict, vocab: Vocab) -> Example:
             raise Unmapped(f"edge type not in list: {etype!r}")
         edges.append((EDGE_TYPES.index(etype), remap[f], remap[t]))
 
-    types, sources, targets, abil, players, choice = [], [], [], [], [], []
+    types, sources, targets, abil, players, named = [], [], [], [], [], []
     for o in d["options"]:
         if o["action"] not in ACTION_TYPES:
             raise Unmapped(f"action type not in list: {o['action']!r}")
@@ -243,15 +265,51 @@ def encode_decision(d: dict, vocab: Vocab) -> Example:
         sources.append(remap[src["entry"]] if "entry" in src else EMPTY_IDX)
         targets.append(remap[tgt["entry"]] if "entry" in tgt else EMPTY_IDX)
         players.append(TARGET_PLAYER.get(tgt.get("player"), 0))
-        abil.append(vocab.ability(o["ability_key"]) if o.get("ability_key") else PAD)
         if o["action"] in NAMED_CHOICE_ACTIONS and not o.get("choice_key"):
             raise Unmapped(f"{o['action']} option has no choice key: {o['label'][:60]!r}")
-        choice.append(vocab.choice(o["choice_key"]) if o.get("choice_key") else 0)
+        ability, option = _option_meaning(o, by_index.get(src.get("entry")), vocab)
+        abil.append(ability)
+        named.append(option)
 
     return Example(card_ids, card_features, ability_ids, ability_features,
                    _global_features(entries[0], d["kind"]), edges,
-                   types, sources, targets, abil, players, choice, d["choice"],
-                   meta={"kind": d["kind"]})
+                   types, sources, targets, abil, players, named, d["choice"],
+                   card_modes=card_modes, ability_modes=ability_modes, meta={"kind": d["kind"]})
+
+
+def _option_meaning(o: dict, source: dict | None, vocab: Vocab) -> tuple[int, int]:
+    """(ability id, named option id) of one option. The seat sends modes and alternative costs as choice keys."""
+    key = o.get("choice_key")
+    if not key:
+        return (vocab.ability(o["ability_key"]) if o.get("ability_key") else PAD), 0
+    if key == NO_ALT_COST:
+        return PAD, 0
+    if key.startswith("alt_cost:"):  # e.g. "alt_cost:ImpendingAbility" -> "<card being cast>#alt:ImpendingAbility"
+        name = (source or {}).get("card_name") or (source or {}).get("name")
+        if not name:
+            raise Unmapped(f"alternative cost with no card to cast: {key!r}")
+        return vocab.ability(f"{name}#alt:{key.split(':', 1)[1]}"), 0
+    if "#mode" in key:
+        return vocab.ability(key), 0
+    return PAD, vocab.named_option(key)
+
+
+def _chosen_modes(e: dict, vocab: Vocab) -> list[int]:
+    """Ability ids of the modes chosen for a modal spell or ability on the stack; [] for everything else."""
+    if "modes" in e:
+        if "?" in e["modes"]:
+            raise Unmapped(f"chosen mode the seat could not key: {e.get('name') or e.get('source_name')!r}")
+        return [vocab.ability(k) for k in e["modes"]]
+    text = e.get("text", "")
+    if "Chosen mode" not in text:
+        return []
+    # older recordings: XMage appends "Chosen mode: <mode text>" to a modal ability's rules text
+    card = e.get("ability_key", "#").rsplit("#", 1)[0]
+    chosen = re.sub(r"<[^>]+>", " ", text.split("Chosen mode", 1)[1])
+    found = [vocab.ability(k) for k, t in vocab.mode_texts.get(card, []) if t.rstrip(".").lower() in chosen.lower()]
+    if not found:
+        raise Unmapped(f"chosen mode not recognised: {card!r}: {chosen[:80]!r}")
+    return found
 
 
 def collate(examples: list[Example]) -> dict[str, Tensor]:
@@ -260,6 +318,7 @@ def collate(examples: list[Example]) -> dict[str, Tensor]:
     N = max(len(x.card_ids) for x in examples)
     N_a = max(len(x.ability_ids) for x in examples)
     A = max(len(x.action_types) for x in examples)
+    K_m = max([1] + [len(m) for x in examples for m in x.card_modes + x.ability_modes])  # chosen modes per entry
     M = 1 + N + N_a
     F, F_a, K = len(CARD_FEATURES), len(ABILITY_FEATURES), len(GLOBAL_FEATURES)
 
@@ -268,6 +327,8 @@ def collate(examples: list[Example]) -> dict[str, Tensor]:
         "card_features": torch.zeros(B, N, F),
         "ability_ids": torch.zeros(B, N_a, dtype=torch.long),
         "ability_features": torch.zeros(B, N_a, F_a),
+        "card_modes": torch.zeros(B, N, K_m, dtype=torch.long),
+        "ability_modes": torch.zeros(B, N_a, K_m, dtype=torch.long),
         "global_state": torch.zeros(B, K),
         "active_edges": torch.zeros(B, len(EDGE_TYPES), M, M, dtype=torch.bool),
         "action_types": torch.zeros(B, A, dtype=torch.long),
@@ -275,7 +336,7 @@ def collate(examples: list[Example]) -> dict[str, Tensor]:
         "action_targets": torch.full((B, A), EMPTY_IDX, dtype=torch.long),
         "action_abilities": torch.zeros(B, A, dtype=torch.long),
         "action_target_players": torch.zeros(B, A, dtype=torch.long),
-        "action_choices": torch.zeros(B, A, dtype=torch.long),
+        "action_named_options": torch.zeros(B, A, dtype=torch.long),
         "card_mask": torch.zeros(B, N, dtype=torch.bool),
         "ability_mask": torch.zeros(B, N_a, dtype=torch.bool),
         "action_mask": torch.zeros(B, A, dtype=torch.bool),
@@ -306,7 +367,11 @@ def collate(examples: list[Example]) -> dict[str, Tensor]:
         out["action_targets"][b, :a] = torch.tensor([place(i) for i in x.action_targets], dtype=torch.long)
         out["action_abilities"][b, :a] = torch.tensor(x.action_abilities, dtype=torch.long)
         out["action_target_players"][b, :a] = torch.tensor(x.action_target_players, dtype=torch.long)
-        out["action_choices"][b, :a] = torch.tensor(x.action_choices, dtype=torch.long)
+        out["action_named_options"][b, :a] = torch.tensor(x.action_named_options, dtype=torch.long)
+        for j, modes in enumerate(x.card_modes):
+            out["card_modes"][b, j, :len(modes)] = torch.tensor(modes, dtype=torch.long)
+        for k, modes in enumerate(x.ability_modes):
+            out["ability_modes"][b, k, :len(modes)] = torch.tensor(modes, dtype=torch.long)
         out["action_mask"][b, :a] = True
         out["label"][b] = x.label
     return out

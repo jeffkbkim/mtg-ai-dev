@@ -216,7 +216,7 @@ public final class Observer {
         List<StackAbilityView> stackAbilities = new ArrayList<>();
         for (CardView c : view.getStack().values()) {
             if (c instanceof StackAbilityView) stackAbilities.add((StackAbilityView) c);
-            else addCard(game, obs, c, "STACK", me.equals(game.getControllerId(c.getId())), attacking, blocking);
+            else addChosenModes(game, addCard(game, obs, c, "STACK", me.equals(game.getControllerId(c.getId())), attacking, blocking), c.getId());
         }
         for (RevealedView r : view.getRevealed()) {
             for (CardView c : r.getCards().values()) {
@@ -262,6 +262,7 @@ public final class Observer {
                 e.addProperty("ability_key", key);
                 obs.knownNames.add(key.substring(0, key.lastIndexOf('#')));
             }
+            addChosenModes(game, e, a.getId());
             obs.names.put(a.getId(), a.getName() + " (ability)");
             obs.add(a.getId(), e);
         }
@@ -327,6 +328,21 @@ public final class Observer {
         if (droppedPlayerTargets[0] > 0) obs.json.addProperty("player_targets_not_in_edges", droppedPlayerTargets[0]);
         check(obs, game);
         return obs;
+    }
+
+    /** Modes already chosen for a modal spell or ability on the stack, as mode keys ("Card#mode<i>"). Public: modes are announced. */
+    private static void addChosenModes(Game game, JsonObject e, UUID stackId) {
+        mage.game.stack.StackObject so = game.getStack().getStackObject(stackId);
+        if (so == null || so.getStackAbility() == null) return;
+        mage.abilities.Ability ability = so.getStackAbility();
+        mage.abilities.Modes modes = ability.getModes();
+        if (modes.size() < 2 || modes.getSelectedModes().isEmpty()) return;
+        JsonArray keys = new JsonArray();
+        for (UUID id : modes.getSelectedModes()) {
+            String key = AbilityKeys.modeKey(game, ability, modes.get(id));
+            keys.add(key == null ? "?" : key);  // "?" = chosen but unmapped; the encoder reports it
+        }
+        e.add("modes", keys);
     }
 
     private static JsonObject addCard(Game game, Obs obs, CardView c, String zone, boolean mine, Set<UUID> attacking, Set<UUID> blocking) {

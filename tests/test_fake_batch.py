@@ -53,7 +53,7 @@ def test_player_targets_only_where_there_is_no_target_entry():
     players = t["action_target_players"]
     assert (players == 1).any() and (players == 2).any()
     assert (players[t["action_targets"] != -1] == 0).all()
-    assert (t["action_choices"] > 0).any()
+    assert (t["action_named_options"] > 0).any()
 
     t["action_target_players"][~t["action_mask"]] = 1  # a padded action that targets me
     with pytest.raises(AssertionError):

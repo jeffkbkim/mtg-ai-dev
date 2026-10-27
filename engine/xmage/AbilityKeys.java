@@ -195,6 +195,11 @@ public final class AbilityKeys {
 
     public static final String NO_ALT_COST = "alt_cost:none";
 
+    /** Ability key of a card's alternative cost, e.g. "Overlord of the Hauntwoods#alt:ImpendingAbility". */
+    public static String altCostAbilityKey(String cardName, Object altCost) {
+        return cardName + "#alt:" + altCost.getClass().getSimpleName();
+    }
+
     /** Modal abilities of a card in printed order (main card, then halves). */
     public static List<Ability> modalAbilities(Card card) {
         List<Ability> all = new ArrayList<>(card.getAbilities());
@@ -212,6 +217,15 @@ public final class AbilityKeys {
         List<String> out = new ArrayList<>();
         for (Ability a : modalAbilities(card)) {
             for (int i = 0; i < a.getModes().size(); i++) out.add(card.getName() + "#mode" + out.size());
+        }
+        return out;
+    }
+
+    /** Effect text of each mode, same order as modeKeys. */
+    public static List<String> modeTexts(Card card) {
+        List<String> out = new ArrayList<>();
+        for (Ability a : modalAbilities(card)) {
+            for (mage.abilities.Mode m : a.getModes().values()) out.add(m.getEffects().getText(m));
         }
         return out;
     }

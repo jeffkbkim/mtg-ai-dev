@@ -13,12 +13,16 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   opponent revealed from its hand stays in later observations as zone `HAND`, `mine: false`, `revealed: true` while
   the same card object stays in that hand (XMage forgets reveals at every priority and update event, so Observer
   remembers them per game and seat, and forgets them when the card changes zone, the game ends or the turn is rolled
-  back).
+  back). A modal spell or ability on the stack lists its chosen modes as `"modes": ["<card name>#mode<i>", ...]`
+  (modes are announced, so this is public).
 - `AbilityKeys.java`: stable ability keys `"<card name>#<i>"` (printed) and `"<card name>#g<i>"` (granted to
   another object or put on a token), and named choices: `alt_cost:none` / `alt_cost:ImpendingAbility` for an
   alternative-cost prompt, `"<card name>#mode<i>"` for a mode of a modal card (printed order), `choice:<text>`
   for other named prompts.
-- `VocabDump.java`: writes `engine/vocab/dsk_vocab.json` (276 DSK card names, ability keys and texts, named choices).
+- `VocabDump.java`: writes `engine/vocab/dsk_vocab.json` (DSK card names, ability keys and texts). Modes
+  (`"<card name>#mode<i>"`) and alternative costs (`"<card name>#alt:ImpendingAbility"`) are abilities too, appended
+  after the printed and granted ones so existing ids stay put. `named_options` (colours, counter types) and token
+  names come from recorded games and are kept from the existing file.
 - `SeatSpike.java`: runs N games, our seat vs XMage's AI.
 - `TwoSeatMatch.java`: runs N games with both seats driven from Python (used by `play/match.py`).
 - `CardTextDump.java`: writes `engine/vocab/dsk_card_text.json` (rules text of every DSK card as XMage implements it).

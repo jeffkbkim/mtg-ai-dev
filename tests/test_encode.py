@@ -163,25 +163,67 @@ def test_encode_file_collects_problems(vocab, decisions, tmp_path):
     assert problems == {"step not in list: 'Not A Step'": 1}
 
 
-def test_named_choices(vocab, decisions, examples):
-    """CHOICE / MODE options carry a named choice id (meaning, not list position); other options carry 0."""
+def test_modes_and_alt_costs_are_abilities(vocab, decisions, examples):
+    """MODE options and the Impending cost carry an ability id; casting normally carries none; no named option."""
     batch = collate(examples)
     seen = 0
     for b, d in enumerate(decisions):
+        entries = {e["i"]: e for e in d["obs"]["entries"] if "i" in e}
         for a, o in enumerate(d["options"]):
-            got = batch["action_choices"][b, a].item()
-            if o["action"] in ("CHOICE", "MODE"):
-                assert got == vocab.choice(o["choice_key"])
+            ability = batch["action_abilities"][b, a].item()
+            key = o.get("choice_key")
+            if key and "#mode" in key:
+                assert ability == vocab.ability(key)
                 seen += 1
-            else:
-                assert got == 0
-    assert seen > 0
-    assert "alt_cost:ImpendingAbility" in vocab.choice_ids and "alt_cost:none" in vocab.choice_ids
+            elif key == "alt_cost:ImpendingAbility":
+                card = entries[o["source"]["entry"]]["name"]
+                assert ability == vocab.ability(f"{card}#alt:ImpendingAbility")
+                seen += 1
+            elif key == "alt_cost:none":
+                assert ability == 0
+            assert batch["action_named_options"][b, a].item() == 0  # nothing in the fixture is a named option
+    assert seen >= 4  # 3 Silent Hallcreeper modes + Impending
 
     d = copy.deepcopy(next(d for d in decisions if d["kind"] == "CHOICE"))
     d["options"][0]["choice_key"] = "alt_cost:NotARealCost"
     with pytest.raises(Unmapped):
         encode_decision(d, vocab)
     del d["options"][0]["choice_key"]
+    with pytest.raises(Unmapped):
+        encode_decision(d, vocab)
+
+
+def test_named_options(vocab, decisions):
+    """Answers that are neither cards nor abilities (a colour) get a named option id; unknown ones are reported."""
+    d = copy.deepcopy(next(d for d in decisions if d["kind"] == "CHOICE"))
+    d["options"] = [dict(o, choice_key=k, source={}) for o, k in zip(d["options"], ["choice:White", "choice:Blue"])]
+    d["choice"] = 0
+    x = encode_decision(d, vocab)
+    assert x.action_named_options == [vocab.named_option("choice:White"), vocab.named_option("choice:Blue")]
+    assert x.action_abilities == [0, 0]
+    d["options"][0]["choice_key"] = "choice:Purple"
+    with pytest.raises(Unmapped):
+        encode_decision(d, vocab)
+
+
+def test_chosen_modes_on_the_stack(vocab, decisions):
+    """A modal ability on the stack carries its chosen mode: from the seat's "modes", or from XMage's text."""
+    d = copy.deepcopy(next(d for d in decisions if d["kind"] == "MODE"))
+    stack = next(e for e in d["obs"]["entries"] if e.get("kind") == "ability" and e.get("ability_key") == "Silent Hallcreeper#0")
+    want = vocab.ability("Silent Hallcreeper#mode2")
+
+    stack["modes"] = ["Silent Hallcreeper#mode2"]
+    x = encode_decision(d, vocab)
+    assert want in [m for modes in x.ability_modes for m in modes]
+
+    del stack["modes"]  # an older recording: only the rules text says which mode
+    stack["text"] += " Chosen mode: {this} becomes a copy of another target creature you control."
+    x = encode_decision(d, vocab)
+    assert want in [m for modes in x.ability_modes for m in modes]
+    batch = collate([x])
+    assert batch["ability_modes"].shape[-1] == 1 and (batch["ability_modes"] == want).sum() == 1
+    assert (batch["card_modes"] == 0).all()
+
+    stack["modes"] = ["?"]
     with pytest.raises(Unmapped):
         encode_decision(d, vocab)

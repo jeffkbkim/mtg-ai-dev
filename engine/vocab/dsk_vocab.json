@@ -1667,35 +1667,159 @@
       "key": "Zimone, All-Questioning#0",
       "type": "Triggered",
       "text": "At the beginning of your end step, if a land entered the battlefield under your control this turn and you control a prime number of lands, create Primo, the Indivisible, a legendary 0/0 green and blue Fractal creature token, then put that many +1/+1 counters on it."
+    },
+    {
+      "key": "Break Down the Door#mode0",
+      "type": "Mode",
+      "text": "exile target artifact."
+    },
+    {
+      "key": "Break Down the Door#mode1",
+      "type": "Mode",
+      "text": "exile target enchantment."
+    },
+    {
+      "key": "Break Down the Door#mode2",
+      "type": "Mode",
+      "text": "manifest dread."
+    },
+    {
+      "key": "Get Out#mode0",
+      "type": "Mode",
+      "text": "counter target creature or enchantment spell."
+    },
+    {
+      "key": "Get Out#mode1",
+      "type": "Mode",
+      "text": "return one or two target creatures and/or enchantments you own to your hand."
+    },
+    {
+      "key": "Insidious Fungus#mode0",
+      "type": "Mode",
+      "text": "destroy target artifact."
+    },
+    {
+      "key": "Insidious Fungus#mode1",
+      "type": "Mode",
+      "text": "destroy target enchantment."
+    },
+    {
+      "key": "Insidious Fungus#mode2",
+      "type": "Mode",
+      "text": "draw a card. Then you may put a land card from your hand onto the battlefield tapped."
+    },
+    {
+      "key": "Let\u0027s Play a Game#mode0",
+      "type": "Mode",
+      "text": "creatures your opponents control get -1/-1 until end of turn."
+    },
+    {
+      "key": "Let\u0027s Play a Game#mode1",
+      "type": "Mode",
+      "text": "each opponent discards two cards."
+    },
+    {
+      "key": "Let\u0027s Play a Game#mode2",
+      "type": "Mode",
+      "text": "each opponent loses 3 life and you gain 3 life."
+    },
+    {
+      "key": "Live or Die#mode0",
+      "type": "Mode",
+      "text": "return target creature card from your graveyard to the battlefield."
+    },
+    {
+      "key": "Live or Die#mode1",
+      "type": "Mode",
+      "text": "destroy target creature."
+    },
+    {
+      "key": "Overlord of the Balemurk#alt:ImpendingAbility",
+      "type": "AlternativeCost",
+      "text": "Impending 5\u0026mdash;{1}{B} \u003ci\u003e(If you cast this spell for its impending cost, it enters with five time counters and isn\u0027t a creature until the last is removed. At the beginning of your end step, remove a time counter from it.)\u003c/i\u003e"
+    },
+    {
+      "key": "Overlord of the Boilerbilges#alt:ImpendingAbility",
+      "type": "AlternativeCost",
+      "text": "Impending 4\u0026mdash;{2}{R}{R} \u003ci\u003e(If you cast this spell for its impending cost, it enters with four time counters and isn\u0027t a creature until the last is removed. At the beginning of your end step, remove a time counter from it.)\u003c/i\u003e"
+    },
+    {
+      "key": "Overlord of the Floodpits#alt:ImpendingAbility",
+      "type": "AlternativeCost",
+      "text": "Impending 4\u0026mdash;{1}{U}{U} \u003ci\u003e(If you cast this spell for its impending cost, it enters with four time counters and isn\u0027t a creature until the last is removed. At the beginning of your end step, remove a time counter from it.)\u003c/i\u003e"
+    },
+    {
+      "key": "Overlord of the Hauntwoods#alt:ImpendingAbility",
+      "type": "AlternativeCost",
+      "text": "Impending 4\u0026mdash;{1}{G}{G} \u003ci\u003e(If you cast this spell for its impending cost, it enters with four time counters and isn\u0027t a creature until the last is removed. At the beginning of your end step, remove a time counter from it.)\u003c/i\u003e"
+    },
+    {
+      "key": "Overlord of the Mistmoors#alt:ImpendingAbility",
+      "type": "AlternativeCost",
+      "text": "Impending 4\u0026mdash;{2}{W}{W} \u003ci\u003e(If you cast this spell for its impending cost, it enters with four time counters and isn\u0027t a creature until the last is removed. At the beginning of your end step, remove a time counter from it.)\u003c/i\u003e"
+    },
+    {
+      "key": "Silent Hallcreeper#mode0",
+      "type": "Mode",
+      "text": "put two +1/+1 counters on {this}."
+    },
+    {
+      "key": "Silent Hallcreeper#mode1",
+      "type": "Mode",
+      "text": "draw a card."
+    },
+    {
+      "key": "Silent Hallcreeper#mode2",
+      "type": "Mode",
+      "text": "{this} becomes a copy of another target creature you control."
+    },
+    {
+      "key": "Split Up#mode0",
+      "type": "Mode",
+      "text": "destroy all tapped creatures."
+    },
+    {
+      "key": "Split Up#mode1",
+      "type": "Mode",
+      "text": "destroy all untapped creatures."
+    },
+    {
+      "key": "Twist Reality#mode0",
+      "type": "Mode",
+      "text": "counter target spell."
+    },
+    {
+      "key": "Twist Reality#mode1",
+      "type": "Mode",
+      "text": "manifest dread."
+    },
+    {
+      "key": "Untimely Malfunction#mode0",
+      "type": "Mode",
+      "text": "destroy target artifact."
+    },
+    {
+      "key": "Untimely Malfunction#mode1",
+      "type": "Mode",
+      "text": "change the target of target spell or ability with a single target."
+    },
+    {
+      "key": "Untimely Malfunction#mode2",
+      "type": "Mode",
+      "text": "one or two target creatures can\u0027t block this turn."
     }
   ],
-  "choices": [
-    "Break Down the Door#mode0",
-    "Break Down the Door#mode1",
-    "Break Down the Door#mode2",
-    "Get Out#mode0",
-    "Get Out#mode1",
-    "Insidious Fungus#mode0",
-    "Insidious Fungus#mode1",
-    "Insidious Fungus#mode2",
-    "Let\u0027s Play a Game#mode0",
-    "Let\u0027s Play a Game#mode1",
-    "Let\u0027s Play a Game#mode2",
-    "Live or Die#mode0",
-    "Live or Die#mode1",
-    "Silent Hallcreeper#mode0",
-    "Silent Hallcreeper#mode1",
-    "Silent Hallcreeper#mode2",
-    "Split Up#mode0",
-    "Split Up#mode1",
-    "Twist Reality#mode0",
-    "Twist Reality#mode1",
-    "Untimely Malfunction#mode0",
-    "Untimely Malfunction#mode1",
-    "Untimely Malfunction#mode2",
-    "alt_cost:ImpendingAbility",
-    "alt_cost:none"
+  "named_options": [
+    "choice:+1/+1",
+    "choice:Black",
+    "choice:Blue",
+    "choice:Flying",
+    "choice:Green",
+    "choice:Lifelink",
+    "choice:Red",
+    "choice:White"
   ],
+  "named_options_note": "Answers the game asks for that are not cards or abilities (a colour, a counter type). From recorded games: add new ones when the encoder reports them.",
   "tokens": [
     "Beast Token",
     "Demon Token",

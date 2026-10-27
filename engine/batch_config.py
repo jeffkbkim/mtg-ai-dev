@@ -16,7 +16,7 @@ class BatchConfig:
     vocab_card: int
     vocab_ability: int
     vocab_action: int
-    vocab_choice: int  # named choices (alt cost, modes); 0 = not a choice
+    vocab_named_option: int  # answers that are not cards or abilities (a colour, a counter type); 0 = none
     # Feature widths
     card_feature_dim: int  # F
     ability_feature_dim: int  # F_a
@@ -33,7 +33,7 @@ class BatchConfig:
             vocab_card=vocab.num_cards,
             vocab_ability=vocab.num_abilities,
             vocab_action=len(ACTION_TYPES),
-            vocab_choice=vocab.num_choices,
+            vocab_named_option=vocab.num_named_options,
             card_feature_dim=len(CARD_FEATURES),
             ability_feature_dim=len(ABILITY_FEATURES),
             global_state_dim=len(GLOBAL_FEATURES),

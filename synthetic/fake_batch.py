@@ -9,7 +9,8 @@ Layout of the M entries in every example (entity id = position in M):
       index 0      1 .. N      N+1 .. N+N_a
 
 N, N_a and A are the largest counts in the batch. Smaller examples are padded:
-- vocab id fields (card_ids, ability_ids, action_types, action_abilities, action_choices): 0
+- vocab id fields (card_ids, ability_ids, card_modes, ability_modes, action_types, action_abilities,
+  action_named_options): 0
 - entry index fields (action_sources, action_targets): -1
 - action_target_players: 0 (1 = me, 2 = opponent, only on actions with no target entry)
 - float fields: 0.0
@@ -42,7 +43,7 @@ class FakeBatchConfig(BatchConfig):
     vocab_card: int = 20
     vocab_ability: int = 10
     vocab_action: int = 6
-    vocab_choice: int = 4
+    vocab_named_option: int = 4
     card_feature_dim: int = 5
     ability_feature_dim: int = 5
     global_state_dim: int = 7
@@ -62,8 +63,11 @@ class FakeBatchConfig(BatchConfig):
     ability_prob: float = 0.3
     # Chance that a real action with no target entry targets a player instead
     player_target_prob: float = 0.4
-    # Chance that a real action carries a named choice
-    choice_prob: float = 0.2
+    # Chance that a real action carries a named option
+    named_option_prob: float = 0.2
+    # Chosen modes: up to max_modes per card or stack ability, on this share of real entries
+    max_modes: int = 2
+    mode_prob: float = 0.1
 
 
 def fake_batch_tensors(cfg: FakeBatchConfig, batch_size: int, seed: int = 0) -> dict[str, Tensor]:
@@ -120,14 +124,24 @@ def fake_batch_tensors(cfg: FakeBatchConfig, batch_size: int, seed: int = 0) -> 
     player = randint(1, 2, (B, A))  # 1 = me, 2 = opponent
     has_player = (torch.rand(B, A, generator=g) < cfg.player_target_prob) & action_mask & ~has_target
     action_target_players = player * has_player
-    has_choice = (torch.rand(B, A, generator=g) < cfg.choice_prob) & action_mask
-    action_choices = randint(1, cfg.vocab_choice - 1, (B, A)) * has_choice
+    has_named = (torch.rand(B, A, generator=g) < cfg.named_option_prob) & action_mask
+    action_named_options = randint(1, cfg.vocab_named_option - 1, (B, A)) * has_named
+
+    def modes(mask: Tensor) -> Tensor:
+        # chosen modes (ability ids) fill the first slots of an entry; the rest are 0
+        count = randint(1, cfg.max_modes, mask.shape) * ((torch.rand(mask.shape, generator=g) < cfg.mode_prob) & mask)
+        ids = randint(1, cfg.vocab_ability - 1, (*mask.shape, cfg.max_modes))
+        return ids * (torch.arange(cfg.max_modes) < count[..., None])
+
+    card_modes, ability_modes = modes(card_mask), modes(ability_mask)
 
     return {
         "card_ids": card_ids,
         "ability_ids": ability_ids,
         "card_features": card_features,
         "ability_features": ability_features,
+        "card_modes": card_modes,
+        "ability_modes": ability_modes,
         "global_state": global_state,
         "active_edges": active_edges,
         "action_types": action_types,
@@ -135,7 +149,7 @@ def fake_batch_tensors(cfg: FakeBatchConfig, batch_size: int, seed: int = 0) -> 
         "action_targets": action_targets,
         "action_abilities": action_abilities,
         "action_target_players": action_target_players,
-        "action_choices": action_choices,
+        "action_named_options": action_named_options,
         "card_mask": card_mask,
         "ability_mask": ability_mask,
         "action_mask": action_mask,
@@ -191,7 +205,10 @@ def validate_batch(batch, cfg: BatchConfig | None = None) -> None:
     targets = check("action_targets", (B, A), torch.long)
     abilities = check("action_abilities", (B, A), torch.long)
     players = check("action_target_players", (B, A), torch.long)
-    choices = check("action_choices", (B, A), torch.long)
+    named = check("action_named_options", (B, A), torch.long)
+    K_m = get("card_modes").shape[-1] if get("card_modes") is not None else 0
+    card_modes = check("card_modes", (B, N, K_m), torch.long)
+    ability_modes = check("ability_modes", (B, N_a, K_m), torch.long)
     card_mask = check("card_mask", (B, N), torch.bool)
     ability_mask = check("ability_mask", (B, N_a), torch.bool)
     action_mask = check("action_mask", (B, A), torch.bool)
@@ -206,8 +223,11 @@ def validate_batch(batch, cfg: BatchConfig | None = None) -> None:
         in_vocab("ability_ids", ability_ids, cfg.vocab_ability)
         in_vocab("action_types", action_types, cfg.vocab_action)
         in_vocab("action_abilities", abilities, cfg.vocab_ability)
-        if choices is not None:
-            in_vocab("action_choices", choices, cfg.vocab_choice)
+        if named is not None:
+            in_vocab("action_named_options", named, cfg.vocab_named_option)
+        for name, t in (("card_modes", card_modes), ("ability_modes", ability_modes)):
+            if t is not None:
+                in_vocab(name, t, cfg.vocab_ability)
         for name, got, want in [("card_features width F", F, cfg.card_feature_dim),
                                 ("ability_features width F_a", F_a, cfg.ability_feature_dim),
                                 ("global_state width K", K, cfg.global_state_dim),
@@ -218,9 +238,13 @@ def validate_batch(batch, cfg: BatchConfig | None = None) -> None:
     if card_mask is not None:
         assert ((card_ids != PAD_ID) == card_mask).all(), "card_ids: PAD (0) must be exactly where card_mask is False"
         assert (card_features[~card_mask] == 0).all(), "card_features: padded cards must be 0"
+        if card_modes is not None:
+            assert (card_modes[~card_mask] == PAD_ID).all(), "card_modes: padded cards must be 0"
     if ability_mask is not None:
         assert ((ability_ids != PAD_ID) == ability_mask).all(), "ability_ids: PAD (0) must be exactly where ability_mask is False"
         assert (ability_features[~ability_mask] == 0).all(), "ability_features: padded abilities must be 0"
+        if ability_modes is not None:
+            assert (ability_modes[~ability_mask] == PAD_ID).all(), "ability_modes: padded abilities must be 0"
 
     if action_mask is not None:
         assert action_mask.any(dim=1).all(), "every example needs at least one legal action"
@@ -232,8 +256,8 @@ def validate_batch(batch, cfg: BatchConfig | None = None) -> None:
             assert ((players >= 0) & (players <= 2)).all(), "action_target_players: must be 0 (none), 1 (me) or 2 (opp)"
             assert (players[~action_mask] == 0).all(), "action_target_players: padded actions must be 0"
             assert (players[targets != EMPTY_IDX] == 0).all(), "action_target_players: action has both a target entry and a player"
-        if choices is not None:
-            assert (choices[~action_mask] == PAD_ID).all(), "action_choices: padded actions must be 0"
+        if named is not None:
+            assert (named[~action_mask] == PAD_ID).all(), "action_named_options: padded actions must be 0"
 
     # Entry indices are -1 or point at a real entry
     if card_mask is not None and ability_mask is not None:

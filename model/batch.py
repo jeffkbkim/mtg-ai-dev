@@ -25,7 +25,7 @@ Example (of a batch B):
 - legal action types (B, A) -> long: padded up to A, with action type
 - legal action sources (B, A) -> long: padded up to A, with source entity_id
 - legal action targets (B, A) -> long: padded up to A, with target entity_id
-- legal action abilities (B, A) -> long: padded up to A, with ability_id
+- legal action abilities (B, A) -> long: padded up to A, with ability_id (also modes and alternative costs)
 
 Masks & Padding
 - use 0 as the sentinel across all features with embeddings; idx features use -1. Pad via sentinel
@@ -54,6 +54,8 @@ class Batch:
     ability_ids: Tensor
     card_features: Tensor # (B, N, F) -> float32
     ability_features: Tensor # (B, N_a, F) -> float32
+    card_modes: Tensor # (B, N, K_m) -> long: chosen modes of a modal spell on the stack (ability ids), 0 = none
+    ability_modes: Tensor # (B, N_a, K_m) -> long: chosen modes of a modal ability on the stack, 0 = none
 
     global_state: Tensor # (B, G)
     active_edges: Tensor
@@ -62,8 +64,8 @@ class Batch:
     action_sources: Tensor
     action_targets: Tensor
     action_abilities: Tensor
-    action_target_players: Tensor # (B, 2)
-    action_choices: Tensor # (B, 2)
+    action_target_players: Tensor # (B, A): 0 = not a player, 1 = me, 2 = opponent
+    action_named_options: Tensor # (B, A): answer that is not a card or ability (colour, counter type), 0 = none
 
     card_mask: Tensor # (B, N)
     ability_mask: Tensor # (B, N_a)
