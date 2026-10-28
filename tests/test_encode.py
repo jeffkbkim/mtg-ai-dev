@@ -122,6 +122,34 @@ def test_opponent_revealed_hand_card(vocab, decisions):
     assert f["zone_hand"] == 1.0 and f["mine"] == 0.0
 
 
+def test_keywords_and_counters(vocab, decisions):
+    """Two Reluctant Role Models, one with a flying counter and one with a lifelink counter, encode differently:
+    each counter type has its own column and the keyword it grants shows in the has_ columns."""
+    from engine.encode import CARD_FEATURES
+    d = copy.deepcopy(decisions[0])
+    entries = d["obs"]["entries"]
+    base = {"kind": "card", "zone": "BATTLEFIELD", "name": "Reluctant Role Model", "card_name": "Reluctant Role Model",
+            "mine": True, "face_down": False, "token": False, "types": "[Creature]", "mana_value": 2,
+            "power": "2", "toughness": "2", "tapped": True, "damage": 0}
+    entries.append({**base, "counters": {"flying": 1}, "keywords": ["flying"], "i": len(entries)})
+    entries.append({**base, "counters": {"lifelink": 1, "stun": 2},
+                    "keywords": ["lifelink", "ward&mdash;Discard a card.", "Equip {1}"], "i": len(entries)})
+    x = encode_decision(d, vocab)
+    n_cards = sum(e["kind"] == "card" for e in entries[1:])
+    fly, life = (dict(zip(CARD_FEATURES, x.card_features[n_cards - k])) for k in (2, 1))
+    assert fly["flying_counters/5"] == 0.2 and fly["has_flying"] == 1.0 and fly["has_lifelink"] == 0.0
+    assert life["lifelink_counters/5"] == 0.2 and life["stun_counters/5"] == 0.4
+    assert life["has_lifelink"] == 1.0 and life["has_ward"] == 1.0 and life["has_flying"] == 0.0
+
+    entries[-1]["keywords"] = ["banding"]
+    with pytest.raises(Unmapped, match="keyword"):
+        encode_decision(d, vocab)
+    entries[-1]["keywords"] = []
+    entries[-1]["counters"] = {"oil": 1}
+    with pytest.raises(Unmapped, match="counter"):
+        encode_decision(d, vocab)
+
+
 def test_edges_follow_entries(decisions, examples):
     batch = collate(examples)
     N = batch["card_ids"].shape[1]

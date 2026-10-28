@@ -55,12 +55,25 @@ NAMED_CHOICE_ACTIONS = {"CHOICE", "MODE"}  # options whose meaning comes from th
 NO_ALT_COST = "alt_cost:none"  # casting normally
 
 # card feature layout (F columns)
+# counter types seen in DSK games, (XMage name, column label); a count each, /5
+COUNTER_TYPES = [("+1/+1", "plus1"), ("-1/-1", "minus1"), ("stun", "stun"), ("finality", "finality"),
+                 ("time", "time"), ("rev", "rev"), ("possession", "possession"), ("nest", "nest"),
+                 ("loyalty", "loyalty"), ("flying", "flying"), ("lifelink", "lifelink")]
+# keywords a permanent has right now, from any source (printed, counter, Aura, until end of turn); 0/1 each.
+# Cards off the battlefield get none: the seat only reports them for permanents (the card id covers printed text).
+KEYWORDS = ["flying", "reach", "vigilance", "haste", "lifelink", "deathtouch", "menace", "trample", "first strike",
+            "double strike", "hexproof", "indestructible", "defender", "ward", "can't be blocked",
+            "can't attack or block alone"]
+# keywords that are printed costs or casting permissions; the card id already says them and play doesn't change them
+IGNORED_KEYWORDS = {"flash", "equip", "crew", "convoke", "ninjutsu"}  # plus any "<type>cycling"
 CARD_FEATURES = (
     [f"zone_{z.lower()}" for z in ZONES]
     + ["mine", "face_down", "token", "tapped", "summoning_sick", "attacking", "blocking", "being_cast",
        "room_left_unlocked", "room_right_unlocked"]  # on the stack: which door is being cast
     + [f"is_{t.lower()}" for t in CURRENT_TYPES]
-    + ["power/10", "toughness/10", "damage/10", "mana_value/10", "plus1_counters/5", "other_counters/5"]
+    + ["power/10", "toughness/10", "damage/10", "mana_value/10"]
+    + [f"{label}_counters/5" for _, label in COUNTER_TYPES]
+    + ["has_" + k.replace("'", "").replace(" ", "_") for k in KEYWORDS]
 )
 # ability-on-the-stack feature layout (F_a columns)
 ABILITY_FEATURES = ["mine", "triggered", "activated"]
@@ -171,12 +184,29 @@ def _card_features(e: dict, left: bool, right: bool) -> list[float]:
     flags += [float(left), float(right)]
     types = e.get("types") or ""
     current = [1.0 if t in types else 0.0 for t in CURRENT_TYPES]
-    counters = e.get("counters", {})
-    plus1 = counters.get("+1/+1", 0)
-    other = sum(v for k, v in counters.items() if k != "+1/+1")
     numbers = [_num(e.get("power")) / 10, _num(e.get("toughness")) / 10, _num(e.get("damage")) / 10,
-               _num(e.get("mana_value")) / 10, plus1 / 5, other / 5]
-    return zone + flags + current + numbers
+               _num(e.get("mana_value")) / 10]
+    counters = e.get("counters", {})
+    unknown = set(counters) - {name for name, _ in COUNTER_TYPES}
+    if unknown:
+        raise Unmapped(f"counter type not in list: {sorted(unknown)}")
+    counts = [counters.get(name, 0) / 5 for name, _ in COUNTER_TYPES]
+    keywords = {_keyword(k) for k in e.get("keywords", [])}
+    has = [1.0 if k in keywords else 0.0 for k in KEYWORDS]
+    return zone + flags + current + numbers + counts + has
+
+
+def _keyword(rule: str) -> str | None:
+    """XMage keyword rule text -> an entry of KEYWORDS, or None for an ignored one.
+    "ward {2}" and "ward&mdash;Discard a card." are both ward; "{this} can't be blocked." is can't be blocked."""
+    s = rule.lower().removeprefix("{this} ").rstrip(".").strip()
+    first = re.split(r" |&mdash;|—", s)[0]
+    if first in IGNORED_KEYWORDS or first.endswith("cycling"):
+        return None
+    for k in KEYWORDS:
+        if s == k or s.startswith(k + " ") or s.startswith(k + "&mdash;") or s.startswith(k + "—"):
+            return k
+    raise Unmapped(f"keyword not in list: {rule!r}")
 
 
 def _ability_features(e: dict) -> list[float]:
