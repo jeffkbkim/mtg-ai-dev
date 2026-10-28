@@ -26,7 +26,7 @@ for f in engine/xmage/*Check.java; do
   CHECKS+="- $c: ${r:-no result}\n"
 done
 OUT=$HOME/mtg-data/soak/nightly-$(date +%Y-%m-%d)-$HEAD
-uv run python experiments/coverage_soak/soak.py --runs 600 --games 4 --jobs 4 --seed 1 --classes $CLS --out $OUT > $OUT.log 2>&1
+uv run python experiments/coverage_soak/soak.py --runs 600 --games 4 --jobs 2 --seed 1 --classes $CLS --out $OUT > $OUT.log 2>&1
 uv run python experiments/coverage_soak/report.py $OUT > /dev/null
 BASE=$(cat $N/last_dir 2>/dev/null || echo $HOME/mtg-data/soak/full-2026-10-22)
 SUMMARY=$(uv run python experiments/coverage_soak/compare.py $BASE $OUT)
