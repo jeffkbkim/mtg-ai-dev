@@ -53,6 +53,15 @@ public class VocabDump {
                 a.addProperty("text", AbilityKeys.text(granted.get(i)));
                 abilities.add(a);
             }
+            List<AbilityKeys.Dynamic> dynamic = AbilityKeys.DYNAMIC.getOrDefault(card.getName(), List.of());
+            for (int i = 0; i < dynamic.size(); i++) {
+                JsonObject a = new JsonObject();
+                a.addProperty("key", card.getName() + "#d" + i);
+                a.addProperty("type", dynamic.get(i).type);
+                a.addProperty("granted", true);
+                a.addProperty("text", dynamic.get(i).text);
+                abilities.add(a);
+            }
         }
         abilities.addAll(extra);
         JsonObject out = new JsonObject();

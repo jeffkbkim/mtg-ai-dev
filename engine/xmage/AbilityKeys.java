@@ -169,6 +169,40 @@ public final class AbilityKeys {
      * - a token made by a card (Niko's Shard tokens): the running token's abilities are fresh objects, so match the
      *   granting card's "#g" abilities by class and rules text.
      */
+    /**
+     * Abilities a card's effect builds while it applies (a new object every time, so neither printed nor found inside
+     * its effects): the ability's type and rules text, keyed "<card name>#d<i>". Matched by a piece of the running
+     * ability's rules text, with the card somewhere in the game.
+     */
+    public static final class Dynamic {
+        public final String type, text, match;
+
+        Dynamic(String type, String text, String match) {
+            this.type = type;
+            this.text = text;
+            this.match = match;
+        }
+    }
+
+    public static final Map<String, List<Dynamic>> DYNAMIC = Map.of(
+            // equipped creature has "{1}, {T}, Tap Fishing Pole: Put a bait counter on Fishing Pole."
+            "Fishing Pole", List.of(new Dynamic("Activated", "{1}, {T}, Tap {this}: Put a bait counter on {this}.", ": Put a bait counter on Fishing Pole.")),
+            // its {1}{R} ability: it gains this trigger when it becomes a Detective
+            "Kellan, Planar Trailblazer", List.of(new Dynamic("Triggered", "Whenever {this} deals combat damage to a player, exile the top card of your library. You may play that card this turn.",
+                    "deals combat damage to a player, exile the top card of your library. You may play that card this turn.")));
+
+    private static String dynamic(Game game, Ability ability) {
+        String rule = text(ability);
+        for (Map.Entry<String, List<Dynamic>> e : DYNAMIC.entrySet()) {
+            List<Dynamic> list = e.getValue();
+            for (int i = 0; i < list.size(); i++) {
+                if (!rule.contains(list.get(i).match)) continue;
+                for (Card card : game.getCards()) if (card.getName().equals(e.getKey())) return e.getKey() + "#d" + i;
+            }
+        }
+        return null;
+    }
+
     private static String borrowed(Game game, Ability ability) {
         for (mage.game.permanent.Permanent p : game.getBattlefield().getAllActivePermanents(ability.getControllerId())) {
             if (p.getId().equals(ability.getSourceId()) || p.isFaceDown(game)) continue;
@@ -183,7 +217,7 @@ public final class AbilityKeys {
             List<Ability> list = grantedAbilities(card);
             for (int i = 0; i < list.size(); i++) if (sameAbility(list.get(i), ability, false)) return card.getName() + "#g" + i;
         }
-        return null;
+        return dynamic(game, ability);
     }
 
     // ---- named choices: what a non-card answer means, independent of the order XMage lists it in ----

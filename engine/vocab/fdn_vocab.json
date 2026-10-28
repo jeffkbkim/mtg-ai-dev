@@ -737,6 +737,12 @@
       "text": "Equip {2} \u003ci\u003e({2}: Attach to target creature you control. Equip only as a sorcery.)\u003c/i\u003e"
     },
     {
+      "key": "Fishing Pole#d0",
+      "type": "Activated",
+      "granted": true,
+      "text": "{1}, {T}, Tap {this}: Put a bait counter on {this}."
+    },
+    {
       "key": "Flamewake Phoenix#0",
       "type": "Triggered",
       "text": "\u003ci\u003eFerocious\u003c/i\u003e \u0026mdash; At the beginning of combat on your turn, if you control a creature with power 4 or greater, you may pay {R}. If you do, return this card from your graveyard to the battlefield."
@@ -890,6 +896,12 @@
       "key": "Kellan, Planar Trailblazer#1",
       "type": "Activated",
       "text": "{2}{R}: If {this} is a Detective, it becomes a 3/2 Human Faerie Rogue and gains double strike."
+    },
+    {
+      "key": "Kellan, Planar Trailblazer#d0",
+      "type": "Triggered",
+      "granted": true,
+      "text": "Whenever {this} deals combat damage to a player, exile the top card of your library. You may play that card this turn."
     },
     {
       "key": "Kiora, the Rising Tide#0",
