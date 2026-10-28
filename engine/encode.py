@@ -419,7 +419,7 @@ def collate(examples: list[Example]) -> dict[str, Tensor]:
 
         out["card_ids"][b, :n] = torch.tensor(x.card_ids, dtype=torch.long)
         if n:
-            out["card_features"][b, :n] = torch.tensor(x.card_features)
+            out["card_features"][b, :n] = torch.as_tensor(x.card_features)  # a list, or a tensor from a cache
         out["card_mask"][b, :n] = True
         if n_a:
             out["ability_ids"][b, :n_a] = torch.tensor(x.ability_ids, dtype=torch.long)

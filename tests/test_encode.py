@@ -20,10 +20,7 @@ def vocab():
 
 @pytest.fixture(scope="module")
 def decisions():
-    lines = [json.loads(line) for line in FIXTURE.read_text().splitlines()]
-    for d in lines:  # single decisions cut from older games: their land count is unknown, 0 stands in
-        d["obs"]["entries"][0].setdefault("lands_played", 0)
-    return lines
+    return [json.loads(line) for line in FIXTURE.read_text().splitlines()]
 
 
 @pytest.fixture(scope="module")
