@@ -176,3 +176,21 @@ On 100 games (seed 11, `--probe 30`) there were 9,045 rows: 8,066 recorded, 266 
 2. The opponent's plays that were never possible (its hand or mana after a reset).
 3. Activated abilities (37%): match more 17lands ability ids to XMage options, and try their timing.
 4. Label output: the per-decision rows (options, choice, exact or inferred) for training.
+
+## Quality batch, 2026-10-28 (1,500 games, seeds 2001/2002/2004, `--probe 30 --rows`, main `4966286`)
+
+Four workers of 500 games were started on the mini; the seed-2003 worker died at start (JVM socket timeout), and the
+four-worker start most likely caused a WindowServer hang and logout on the mini. Use at most two workers there.
+
+| Turns | Reproduced |
+|---|---:|
+| From an exact start, n = 23,357 | 75.8% |
+| Before a game's first miss ("clean"), n = 13,050 | 89.3% |
+| After a reset, n = 11,399 | 53.1% |
+| Final turns, n = 956 | 24.2% |
+
+Decision rows (user seat, clean reproduced turns): 129,610, about 86 per game. Recorded 115,816 (89.4%), unique
+3,881 (3.0%), ambiguous 9,582 (7.4%), not recorded 331 (0.3%).
+
+Speed: about 8.3 s per game per worker with three workers running, so about 21 games a minute in total. At two workers
+the full 1.01M games would take roughly seven weeks on the mini.
