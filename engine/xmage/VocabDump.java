@@ -7,12 +7,12 @@ import mage.cards.repository.*;
 import java.nio.file.*;
 import java.util.*;
 
-/** Writes the DSK card and ability vocabulary (Duskmourn and its Special Guests: names and ability keys) as JSON. */
+/** Writes one set's card and ability vocabulary (the set and its Special Guests: names and ability keys) as JSON. Set: see SetCards. */
 public class VocabDump {
     public static void main(String[] args) throws Exception {
         RepositoryUtil.bootstrapLocalDb();
         CardScanner.scan();
-        Map<String, CardInfo> byName = DskCards.byName();  // Duskmourn plus its 10 Special Guests
+        Map<String, CardInfo> byName = SetCards.byName();  // the set (-Dmtg.set, default DSK) plus its Special Guests
         JsonArray cards = new JsonArray(), abilities = new JsonArray();
         // modes and alternative costs are abilities too, appended after the printed and granted ones so their ids stay put
         JsonArray extra = new JsonArray();
@@ -56,7 +56,7 @@ public class VocabDump {
         }
         abilities.addAll(extra);
         JsonObject out = new JsonObject();
-        out.addProperty("set", "DSK");
+        out.addProperty("set", SetCards.current());
         out.addProperty("xmage", "1.4.62");
         out.add("cards", cards);
         out.add("abilities", abilities);

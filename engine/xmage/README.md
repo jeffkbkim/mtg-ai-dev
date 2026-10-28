@@ -24,6 +24,9 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   (`"<card name>#mode<i>"`) and alternative costs (`"<card name>#alt:ImpendingAbility"`) are abilities too, appended
   after the printed and granted ones so existing ids stay put. `named_options` (colours, counter types) and token
   names come from recorded games and are kept from the existing file.
+- `SetCards.java`: the cards one set's draft can open (DSK, FDN: the set's play-booster cards plus its 10 Special
+  Guests). VocabDump, CardTextDump and `SetNumbers.java` (number<TAB>name, `engine/vocab/<set>_numbers.tsv`) take the
+  set from `-Dmtg.set=FDN` or `$MTG_SET`, DSK when neither is given. The leak checker knows every supported set's names.
 - `SeatSpike.java`: runs N games, our seat vs XMage's AI.
 - `TwoSeatMatch.java`: runs N games with both seats driven from Python (used by `play/match.py`).
 - `CardTextDump.java`: writes `engine/vocab/dsk_card_text.json` (rules text of every DSK card as XMage implements it).
@@ -78,6 +81,7 @@ mkdir -p /tmp/xmage-cls && javac -cp "$CP" -d /tmp/xmage-cls *.java   # our clas
 
 # vocabulary (only when the XMage version changes)
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP VocabDump $OLDPWD/../vocab/dsk_vocab.json)
+# another set: -Dmtg.set=FDN, writing engine/vocab/fdn_vocab.json, fdn_card_text.json (CardTextDump), fdn_numbers.tsv (SetNumbers)
 
 # 4 games, random bot on dsk_ug vs XMage AI on dsk_uw, seed 1
 python3 run_games.py $R /tmp/xmage-cls $PWD/decks/dsk_ug.dck $PWD/decks/dsk_uw.dck 4 1 /tmp/games.jsonl

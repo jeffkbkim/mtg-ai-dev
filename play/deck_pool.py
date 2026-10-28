@@ -1,4 +1,4 @@
-"""Build a pool of real drafted DSK decks from 17lands' public game data, as XMage .dck files.
+"""Build a pool of real drafted decks of one set (DSK, FDN) from 17lands' public game data, as XMage .dck files.
 
   python3 play/deck_pool.py <game_data_public.DSK.PremierDraft.csv.gz> <xmage numbers .tsv> <out dir> [--n 20] [--seed 7]
       [--exclude <earlier manifest.json> ...]
@@ -6,7 +6,7 @@
 Each draft's deck is its most-played build (17lands logs the main deck of every game). Two kinds:
 - typical: drafts sampled uniformly, so archetypes appear as often as people draft them;
 - trophy: drafts that reached 7 wins (at most 2 losses).
-Only 40-card decks whose every card is in the numbers file are kept (DSK plus its Special Guests); decks with other
+Only 40-card decks whose every card is in the numbers file are kept (the set plus its Special Guests); decks with other
 cards are skipped and counted, never patched. Drafts listed in --exclude manifests (an earlier pool) are not picked again. The numbers file maps names to XMage collector numbers ("number<TAB>name").
 Writes <out>/<kind>_<nn>.dck and <out>/manifest.json (draft id, record, colors, rank, card counts per deck).
 """
@@ -18,7 +18,9 @@ p = argparse.ArgumentParser()
 p.add_argument("data"); p.add_argument("numbers"); p.add_argument("out")
 p.add_argument("--n", type=int, default=20); p.add_argument("--seed", type=int, default=7)
 p.add_argument("--exclude", nargs="*", default=[])
+p.add_argument("--set", help="set code; default: from the data file name (game_data_public.<SET>.PremierDraft...)")
 args = p.parse_args()
+SET = args.set or Path(args.data).name.split(".")[1]
 
 numbers = {}
 for line in Path(args.numbers).read_text().splitlines():
@@ -57,7 +59,7 @@ for d, info in drafts.items():
         continue
     missing = [c for c in deck if c not in numbers]
     if missing:
-        skipped["card not in XMage DSK"] += 1
+        skipped[f"card not in XMage {SET}"] += 1
         unsupported.update(missing)
         continue
     info.update(build_index=b, build_games=n, losses=info["games"] - info["wins"], deck=deck)
@@ -74,9 +76,9 @@ manifest = []
 for kind, picked in (("typical", typical), ("trophy", trophy)):
     for k, info in enumerate(picked):
         name = f"{kind}_{k:02d}"
-        lines = [f"NAME:{name} (17lands DSK draft {info['draft_id']}, {info['wins']}-{info['losses']}, {info['main_colors']})"]
-        # numbers are DSK collector numbers, or "SPG:<n>" for a Special Guest
-        lines += [f"{n} [{numbers[c] if ':' in numbers[c] else 'DSK:' + numbers[c]}] {c}" for c, n in sorted(info["deck"].items(), key=lambda kv: (-kv[1], kv[0]))]
+        lines = [f"NAME:{name} (17lands {SET} draft {info['draft_id']}, {info['wins']}-{info['losses']}, {info['main_colors']})"]
+        # numbers are the set's collector numbers, or "SPG:<n>" for a Special Guest
+        lines += [f"{n} [{numbers[c] if ':' in numbers[c] else f'{SET}:' + numbers[c]}] {c}" for c, n in sorted(info["deck"].items(), key=lambda kv: (-kv[1], kv[0]))]
         (out / f"{name}.dck").write_text("\n".join(lines) + "\n")
         manifest.append({"file": f"{name}.dck", "kind": kind, **{k2: info[k2] for k2 in (
             "draft_id", "build_index", "build_games", "games", "wins", "losses", "main_colors", "splash_colors",

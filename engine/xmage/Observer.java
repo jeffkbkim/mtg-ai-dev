@@ -520,9 +520,9 @@ public final class Observer {
      */
     private static synchronized Set<String> rulesWords() {
         if (rulesWords == null) {
-            Set<String> names = DskCards.byName().keySet();
+            Set<String> names = SetCards.allSets().keySet();
             StringBuilder rules = new StringBuilder();
-            for (mage.cards.repository.CardInfo ci : DskCards.byName().values())
+            for (mage.cards.repository.CardInfo ci : SetCards.allSets().values())
                 for (String r : ci.createCard().getRules()) rules.append(r).append('\n');
             String all = rules.toString();
             Set<String> words = new HashSet<>();

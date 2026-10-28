@@ -6,12 +6,12 @@ import mage.cards.repository.*;
 import java.nio.file.*;
 import java.util.*;
 
-/** Writes the rules text of every DSK card (and Special Guest) as XMage implements it (name, cost, types, P/T, rules lines) as JSON. */
+/** Writes the rules text of every card of one set (and its Special Guests; set: see SetCards) as XMage implements it (name, cost, types, P/T, rules lines) as JSON. */
 public class CardTextDump {
     public static void main(String[] args) throws Exception {
         RepositoryUtil.bootstrapLocalDb();
         CardScanner.scan();
-        Map<String, CardInfo> byName = DskCards.byName();  // Duskmourn plus its 10 Special Guests
+        Map<String, CardInfo> byName = SetCards.byName();  // the set (-Dmtg.set, default DSK) plus its Special Guests
         JsonArray cards = new JsonArray();
         for (CardInfo ci : byName.values()) {
             Card card = ci.createCard();

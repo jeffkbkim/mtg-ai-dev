@@ -24,7 +24,7 @@ Rank is missing for 5,163 games and 483,690 picks; splash colours are mostly emp
 **Cards:** 17lands lists 286 cards and XMage's DSK list 276. The 10 extra are Duskmourn's Special Guests (Collected
 Company, Damnation, Expropriate, Hallowed Haunting, Maddening Hex, Noxious Revival, Phantasmal Image, Sacrifice,
 Soul Warden, Unholy Heat). XMage implements all 10 under set SPG, so no card is unsupported. 20,928 games (2.1%)
-have a Special Guest in the deck. **2026-10-23:** they're now in our card list (`engine/xmage/DskCards.java`), so the
+have a Special Guest in the deck. **2026-10-23:** they're now in our card list (`engine/xmage/SetCards.java`), so the
 vocabulary and card text have 286 cards (card and ability ids shifted; no model had been trained on the old ones).
 XMage's own DSK boosters don't contain Special Guests, so a faithful draft needs our own pack generator.
 

@@ -18,7 +18,8 @@ def norm(s):
 def main(root):
     root = Path(root)
     runs = [json.loads((p / "run.json").read_text()) for p in sorted((root / "runs").iterdir()) if (p / "run.json").exists()]
-    names = [c["name"] for c in json.loads((REPO / "engine/vocab/dsk_card_text.json").read_text())]
+    set_code = json.loads((root / "config.json").read_text()).get("set", "DSK") if (root / "config.json").exists() else "DSK"
+    names = [c["name"] for c in json.loads((REPO / f"engine/vocab/{set_code.lower()}_card_text.json").read_text())]
     by_class = {norm(n): n for n in names}
     cards = {n: {"decks": 0, "runs_seen_in_play": 0, "problem_runs": 0, "issues": collections.Counter()} for n in names}
     statuses, games, terminal, turn_limit = collections.Counter(), 0, 0, 0

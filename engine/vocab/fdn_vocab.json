@@ -1,0 +1,1512 @@
+{
+  "set": "FDN",
+  "xmage": "1.4.62",
+  "cards": [
+    "Abrade",
+    "Abyssal Harvester",
+    "Adventuring Gear",
+    "Aegis Turtle",
+    "Aetherize",
+    "Affectionate Indrik",
+    "Ajani\u0027s Pridemate",
+    "Ajani, Caller of the Pride",
+    "Akroma\u0027s Memorial",
+    "Alesha, Who Laughs at Fate",
+    "Ambush Wolf",
+    "An Offer You Can\u0027t Refuse",
+    "Angel of Finality",
+    "Anthem of Champions",
+    "Apothecary Stomper",
+    "Arahbo, the First Fang",
+    "Arbiter of Woe",
+    "Arcane Epiphany",
+    "Archmage of Runes",
+    "Armasaur Guide",
+    "Ashroot Animist",
+    "Authority of the Consuls",
+    "Axgard Cavalry",
+    "Bake into a Pie",
+    "Balmor, Battlemage Captain",
+    "Banishing Light",
+    "Banner of Kinship",
+    "Battlesong Berserker",
+    "Beast-Kin Ranger",
+    "Bigfin Bouncer",
+    "Billowing Shriekmass",
+    "Bite Down",
+    "Blanchwood Armor",
+    "Blasphemous Edict",
+    "Bloodfell Caves",
+    "Bloodthirsty Conqueror",
+    "Bloom Tender",
+    "Blossoming Sands",
+    "Boltwave",
+    "Brass\u0027s Bounty",
+    "Brazen Scourge",
+    "Brineborn Cutthroat",
+    "Broken Wings",
+    "Bulk Up",
+    "Burglar Rat",
+    "Burnished Hart",
+    "Burst Lightning",
+    "Bushwhack",
+    "Cackling Prowler",
+    "Campus Guide",
+    "Cat Collector",
+    "Cathar Commando",
+    "Celestial Armor",
+    "Cephalid Inkmage",
+    "Chandra, Flameshaper",
+    "Claws Out",
+    "Clinquant Skymage",
+    "Condemn",
+    "Consuming Aberration",
+    "Courageous Goblin",
+    "Crackling Cyclops",
+    "Crypt Feaster",
+    "Crystal Barricade",
+    "Curator of Destinies",
+    "Dauntless Veteran",
+    "Day of Judgment",
+    "Dazzling Angel",
+    "Diregraf Ghoul",
+    "Dismal Backwater",
+    "Divine Resilience",
+    "Doubling Season",
+    "Dragon Trainer",
+    "Drake Hatcher",
+    "Drakuseth, Maw of Flames",
+    "Dreadwing Scavenger",
+    "Dwynen\u0027s Elite",
+    "Dwynen, Gilt-Leaf Daen",
+    "Eager Trufflesnout",
+    "Eaten Alive",
+    "Electroduplicate",
+    "Elementalist Adept",
+    "Elenda, Saint of Dusk",
+    "Elfsworn Giant",
+    "Elvish Archdruid",
+    "Elvish Regrower",
+    "Embercleave",
+    "Empyrean Eagle",
+    "Erudite Wizard",
+    "Essence Scatter",
+    "Etali, Primal Storm",
+    "Evolving Wilds",
+    "Exemplar of Light",
+    "Exsanguinate",
+    "Extravagant Replication",
+    "Faebloom Trick",
+    "Fake Your Own Death",
+    "Fanatical Firebrand",
+    "Felidar Savior",
+    "Felling Blow",
+    "Fiend Artisan",
+    "Fiendish Panda",
+    "Fiery Annihilation",
+    "Firebrand Archer",
+    "Firespitter Whelp",
+    "Fishing Pole",
+    "Flamewake Phoenix",
+    "Fleeting Distraction",
+    "Fleeting Flight",
+    "Forest",
+    "Frenzied Goblin",
+    "Garruk\u0027s Uprising",
+    "Genesis Wave",
+    "Ghalta, Primal Hunger",
+    "Giada, Font of Hope",
+    "Giant Growth",
+    "Gleaming Barrier",
+    "Gnarlid Colony",
+    "Goblin Boarders",
+    "Goblin Bushwhacker",
+    "Goblin Negotiation",
+    "Goblin Surprise",
+    "Goldvein Pick",
+    "Good-Fortune Unicorn",
+    "Gorehorn Raider",
+    "Grappling Kraken",
+    "Grim Tutor",
+    "Grow from the Ashes",
+    "Guarded Heir",
+    "Gutless Plunderer",
+    "Hare Apparent",
+    "Healer\u0027s Hawk",
+    "Heartfire Immolator",
+    "Helpful Hunter",
+    "Herald of Eternal Dawn",
+    "Heraldic Banner",
+    "Hero\u0027s Downfall",
+    "Heroic Reinforcements",
+    "Hidetsugu\u0027s Second Rite",
+    "High Fae Trickster",
+    "High-Society Hunter",
+    "Homunculus Horde",
+    "Hungry Ghoul",
+    "Icewind Elemental",
+    "Imprisoned in the Moon",
+    "Incinerating Blast",
+    "Infernal Vessel",
+    "Infestation Sage",
+    "Inspiration from Beyond",
+    "Inspiring Call",
+    "Inspiring Paladin",
+    "Involuntary Employment",
+    "Island",
+    "Joust Through",
+    "Juggernaut",
+    "Jungle Hollow",
+    "Kaito, Cunning Infiltrator",
+    "Kellan, Planar Trailblazer",
+    "Kiora, the Rising Tide",
+    "Koma, World-Eater",
+    "Krenko, Mob Boss",
+    "Kykar, Zephyr Awakener",
+    "Lathril, Blade of the Elves",
+    "Leyline Axe",
+    "Lightshell Duo",
+    "Liliana, Dreadhorde General",
+    "Llanowar Elves",
+    "Loot, Exuberant Explorer",
+    "Luminous Rebuke",
+    "Lunar Insight",
+    "Macabre Waltz",
+    "Make Your Move",
+    "Marauding Blight-Priest",
+    "Meteor Golem",
+    "Micromancer",
+    "Midnight Snack",
+    "Mild-Mannered Librarian",
+    "Mischievous Mystic",
+    "Mischievous Pup",
+    "Mocking Sprite",
+    "Mossborn Hydra",
+    "Mountain",
+    "Muldrotha, the Gravetide",
+    "Needletooth Pack",
+    "Nessian Hornbeetle",
+    "Nine-Lives Familiar",
+    "Niv-Mizzet, Visionary",
+    "Omniscience",
+    "Overrun",
+    "Painful Quandary",
+    "Paradise Druid",
+    "Perforating Artist",
+    "Phyrexian Arena",
+    "Pilfer",
+    "Plains",
+    "Preposterous Proportions",
+    "Prideful Parent",
+    "Progenitus",
+    "Quakestrider Ceratops",
+    "Quick-Draw Katana",
+    "Quilled Greatwurm",
+    "Raise the Past",
+    "Ravenous Amulet",
+    "Reassembling Skeleton",
+    "Reclamation Sage",
+    "Refute",
+    "Resolute Reinforcements",
+    "Revenge of the Rats",
+    "Rise of the Dark Realms",
+    "Rite of the Dragoncaller",
+    "Rogue\u0027s Passage",
+    "Ruby, Daring Tracker",
+    "Rugged Highlands",
+    "Run Away Together",
+    "Rune-Scarred Demon",
+    "Rune-Sealed Wall",
+    "Sanguine Syphoner",
+    "Savannah Lions",
+    "Scavenging Ooze",
+    "Scoured Barrens",
+    "Scrawling Crawler",
+    "Searslicer Goblin",
+    "Secluded Courtyard",
+    "Seeker\u0027s Folly",
+    "Seismic Rupture",
+    "Self-Reflection",
+    "Serra Angel",
+    "Shivan Dragon",
+    "Sire of Seven Deaths",
+    "Skyknight Squire",
+    "Skyship Buccaneer",
+    "Slagstorm",
+    "Slumbering Cerberus",
+    "Snakeskin Veil",
+    "Solemn Simulacrum",
+    "Soul-Shackled Zombie",
+    "Soulstone Sanctuary",
+    "Sower of Chaos",
+    "Spectral Sailor",
+    "Sphinx of Forgotten Lore",
+    "Sphinx\u0027s Tutelage",
+    "Spinner of Souls",
+    "Spitfire Lagac",
+    "Squad Rallier",
+    "Stab",
+    "Strix Lookout",
+    "Stroke of Midnight",
+    "Stromkirk Bloodthief",
+    "Strongbox Raider",
+    "Sun-Blessed Healer",
+    "Sure Strike",
+    "Swamp",
+    "Swiftblade Vindicator",
+    "Swiftfoot Boots",
+    "Swiftwater Cliffs",
+    "Sylvan Scavenging",
+    "Tatyova, Benthic Druid",
+    "Temporal Manipulation",
+    "Think Twice",
+    "Thornwood Falls",
+    "Thousand-Year Storm",
+    "Thrill of Possibility",
+    "Time Stop",
+    "Tinybones, Bauble Burglar",
+    "Tolarian Terror",
+    "Tragic Banshee",
+    "Tranquil Cove",
+    "Treetop Snarespinner",
+    "Twinblade Blessing",
+    "Twinflame Tyrant",
+    "Uncharted Voyage",
+    "Valkyrie\u0027s Call",
+    "Vampire Gourmand",
+    "Vampire Nighthawk",
+    "Vampire Soulcaller",
+    "Vanguard Seraph",
+    "Vengeful Bloodwitch",
+    "Vivien Reid",
+    "Wardens of the Cycle",
+    "Wary Thespian",
+    "Wildwood Scourge",
+    "Wind-Scarred Crag",
+    "Witness Protection",
+    "Youthful Valkyrie",
+    "Zimone, Paradox Sculptor",
+    "Zombify",
+    "Zul Ashur, Lich Lord"
+  ],
+  "abilities": [
+    {
+      "key": "Abyssal Harvester#0",
+      "type": "Activated",
+      "text": "{T}: Exile target creature card from a graveyard that was put there this turn. Create a token that\u0027s a copy of it, except it\u0027s a Nightmare in addition to its other types. Then exile all other Nightmare tokens you control."
+    },
+    {
+      "key": "Adventuring Gear#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eLandfall\u003c/i\u003e \u0026mdash; Whenever a land you control enters, equipped creature gets +2/+2 until end of turn."
+    },
+    {
+      "key": "Adventuring Gear#1",
+      "type": "Activated",
+      "text": "Equip {1} \u003ci\u003e({1}: Attach to target creature you control. Equip only as a sorcery.)\u003c/i\u003e"
+    },
+    {
+      "key": "Affectionate Indrik#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you may have it fight target creature you don\u0027t control. \u003ci\u003e(Each deals damage equal to its power to the other.)\u003c/i\u003e"
+    },
+    {
+      "key": "Ajani\u0027s Pridemate#0",
+      "type": "Triggered",
+      "text": "Whenever you gain life, put a +1/+1 counter on {this}."
+    },
+    {
+      "key": "Ajani, Caller of the Pride#0",
+      "type": "Activated",
+      "text": "+1: Put a +1/+1 counter on up to one target creature."
+    },
+    {
+      "key": "Ajani, Caller of the Pride#1",
+      "type": "Activated",
+      "text": "-3: Target creature gains flying and double strike until end of turn."
+    },
+    {
+      "key": "Ajani, Caller of the Pride#2",
+      "type": "Activated",
+      "text": "-8: Create X 2/2 white Cat creature tokens, where X is your life total."
+    },
+    {
+      "key": "Alesha, Who Laughs at Fate#0",
+      "type": "Triggered",
+      "text": "Whenever {this} attacks, put a +1/+1 counter on it."
+    },
+    {
+      "key": "Alesha, Who Laughs at Fate#1",
+      "type": "Triggered",
+      "text": "\u003ci\u003eRaid\u003c/i\u003e \u0026mdash; At the beginning of your end step, if you attacked this turn, return target creature card with mana value less than or equal to {this}\u0027s power from your graveyard to the battlefield."
+    },
+    {
+      "key": "Ambush Wolf#0",
+      "type": "Triggered",
+      "text": "When {this} enters, exile up to one target card from a graveyard."
+    },
+    {
+      "key": "Angel of Finality#0",
+      "type": "Triggered",
+      "text": "When {this} enters, exile target player\u0027s graveyard."
+    },
+    {
+      "key": "Apothecary Stomper#0",
+      "type": "Triggered",
+      "text": "When {this} enters, choose one \u0026mdash;\u003cbr\u003e\u0026bull Put two +1/+1 counters on target creature you control.\u003cbr\u003e\u0026bull You gain 4 life.\u003cbr\u003e"
+    },
+    {
+      "key": "Arahbo, the First Fang#0",
+      "type": "Triggered",
+      "text": "Whenever {this} or another nontoken Cat you control enters, create a 1/1 white Cat creature token."
+    },
+    {
+      "key": "Arbiter of Woe#0",
+      "type": "Triggered",
+      "text": "When {this} enters, each opponent discards a card and loses 2 life. You draw a card and gain 2 life."
+    },
+    {
+      "key": "Archmage of Runes#0",
+      "type": "Triggered",
+      "text": "Whenever you cast an instant or sorcery spell, draw a card."
+    },
+    {
+      "key": "Armasaur Guide#0",
+      "type": "Triggered",
+      "text": "Whenever you attack with three or more creatures, put a +1/+1 counter on target creature you control."
+    },
+    {
+      "key": "Ashroot Animist#0",
+      "type": "Triggered",
+      "text": "Whenever {this} attacks, another target creature you control gains trample and gets +X/+X until end of turn, where X is this creature\u0027s power."
+    },
+    {
+      "key": "Authority of the Consuls#0",
+      "type": "Triggered",
+      "text": "Whenever a creature an opponent controls enters, you gain 1 life."
+    },
+    {
+      "key": "Axgard Cavalry#0",
+      "type": "Activated",
+      "text": "{T}: Target creature gains haste until end of turn."
+    },
+    {
+      "key": "Bake into a Pie#g0",
+      "type": "Activated",
+      "granted": true,
+      "text": "{2}, {T}, Sacrifice {this}: You gain 3 life."
+    },
+    {
+      "key": "Balmor, Battlemage Captain#0",
+      "type": "Triggered",
+      "text": "Whenever you cast an instant or sorcery spell, creatures you control get +1/+0 and gain trample until end of turn."
+    },
+    {
+      "key": "Banishing Light#0",
+      "type": "Triggered",
+      "text": "When {this} enters, exile target nonland permanent an opponent controls until {this} leaves the battlefield."
+    },
+    {
+      "key": "Battlesong Berserker#0",
+      "type": "Triggered",
+      "text": "Whenever you attack, target creature you control gets +1/+0 and gains menace until end of turn."
+    },
+    {
+      "key": "Beast-Kin Ranger#0",
+      "type": "Triggered",
+      "text": "Whenever another creature you control enters, {this} gets +1/+0 until end of turn."
+    },
+    {
+      "key": "Bigfin Bouncer#0",
+      "type": "Triggered",
+      "text": "When {this} enters, return target creature an opponent controls to its owner\u0027s hand."
+    },
+    {
+      "key": "Billowing Shriekmass#0",
+      "type": "Triggered",
+      "text": "When {this} enters, mill three cards."
+    },
+    {
+      "key": "Bloodfell Caves#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you gain 1 life."
+    },
+    {
+      "key": "Bloodthirsty Conqueror#0",
+      "type": "Triggered",
+      "text": "Whenever an opponent loses life, you gain that much life."
+    },
+    {
+      "key": "Blossoming Sands#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you gain 1 life."
+    },
+    {
+      "key": "Brineborn Cutthroat#0",
+      "type": "Triggered",
+      "text": "Whenever you cast a spell during an opponent\u0027s turn, put a +1/+1 counter on {this}."
+    },
+    {
+      "key": "Burglar Rat#0",
+      "type": "Triggered",
+      "text": "When {this} enters, each opponent discards a card."
+    },
+    {
+      "key": "Burnished Hart#0",
+      "type": "Activated",
+      "text": "{3}, Sacrifice {this}: Search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle."
+    },
+    {
+      "key": "Cackling Prowler#0",
+      "type": "Triggered",
+      "text": "ward {2} \u003ci\u003e(Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\u003c/i\u003e"
+    },
+    {
+      "key": "Cackling Prowler#1",
+      "type": "Triggered",
+      "text": "\u003ci\u003eMorbid\u003c/i\u003e \u0026mdash; At the beginning of your end step, if a creature died this turn, put a +1/+1 counter on {this}."
+    },
+    {
+      "key": "Campus Guide#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you may search your library for a basic land card, reveal it, then shuffle and put that card on top."
+    },
+    {
+      "key": "Cat Collector#0",
+      "type": "Triggered",
+      "text": "When {this} enters, create a Food token."
+    },
+    {
+      "key": "Cat Collector#1",
+      "type": "Triggered",
+      "text": "Whenever you gain life for the first time during each of your turns, create a 1/1 white Cat creature token."
+    },
+    {
+      "key": "Cat Collector#g0",
+      "type": "Activated",
+      "granted": true,
+      "text": "{2}, {T}, Sacrifice {this}: You gain 3 life."
+    },
+    {
+      "key": "Cathar Commando#0",
+      "type": "Activated",
+      "text": "{1}, Sacrifice {this}: Destroy target artifact or enchantment."
+    },
+    {
+      "key": "Celestial Armor#0",
+      "type": "Triggered",
+      "text": "When {this} enters, attach it to target creature you control. That creature gains hexproof and indestructible until end of turn."
+    },
+    {
+      "key": "Celestial Armor#1",
+      "type": "Activated",
+      "text": "Equip {3}{W} \u003ci\u003e({3}{W}: Attach to target creature you control. Equip only as a sorcery.)\u003c/i\u003e"
+    },
+    {
+      "key": "Cephalid Inkmage#0",
+      "type": "Triggered",
+      "text": "When {this} enters, surveil 3. \u003ci\u003e(Look at the top three cards of your library, then put any number of them into your graveyard and the rest on top in any order.)\u003c/i\u003e"
+    },
+    {
+      "key": "Chandra, Flameshaper#0",
+      "type": "Activated",
+      "text": "+2: Add {R}{R}{R}. Exile the top three cards of your library. Choose one of them. You may play that card this turn."
+    },
+    {
+      "key": "Chandra, Flameshaper#1",
+      "type": "Activated",
+      "text": "+1: Create a token that\u0027s a copy of target creature you control, except it has haste and \"At the beginning of the end step, sacrifice this token.\""
+    },
+    {
+      "key": "Chandra, Flameshaper#2",
+      "type": "Activated",
+      "text": "-4: {this} deals 8 damage divided as you choose among any number of target creatures and/or planeswalkers."
+    },
+    {
+      "key": "Chandra, Flameshaper#g0",
+      "type": "Triggered",
+      "granted": true,
+      "text": "At the beginning of the end step, sacrifice {this}."
+    },
+    {
+      "key": "Clinquant Skymage#0",
+      "type": "Triggered",
+      "text": "Whenever you draw a card, put a +1/+1 counter on {this}."
+    },
+    {
+      "key": "Consuming Aberration#0",
+      "type": "Triggered",
+      "text": "Whenever you cast a spell, each opponent reveals cards from the top of their library until they reveal a land card, then puts those cards into their graveyard."
+    },
+    {
+      "key": "Courageous Goblin#0",
+      "type": "Triggered",
+      "text": "Whenever {this} attacks while you control a creature with power 4 or greater, it gets +1/+0 and gains menace until end of turn."
+    },
+    {
+      "key": "Crackling Cyclops#0",
+      "type": "Triggered",
+      "text": "Whenever you cast a noncreature spell, {this} gets +3/+0 until end of turn."
+    },
+    {
+      "key": "Crypt Feaster#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eThreshold\u003c/i\u003e \u0026mdash; Whenever {this} attacks, if seven or more cards are in your graveyard, {this} gets +2/+0 until end of turn."
+    },
+    {
+      "key": "Curator of Destinies#0",
+      "type": "Triggered",
+      "text": "When {this} enters, look at the top five cards of your library and separate them into a face-down pile and a face-up pile. An opponent chooses one of those piles. Put that pile into your hand and the other into your graveyard."
+    },
+    {
+      "key": "Dauntless Veteran#0",
+      "type": "Triggered",
+      "text": "Whenever {this} attacks, creatures you control get +1/+1 until end of turn."
+    },
+    {
+      "key": "Dazzling Angel#0",
+      "type": "Triggered",
+      "text": "Whenever another creature you control enters, you gain 1 life."
+    },
+    {
+      "key": "Dismal Backwater#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you gain 1 life."
+    },
+    {
+      "key": "Dragon Trainer#0",
+      "type": "Triggered",
+      "text": "When {this} enters, create a 4/4 red Dragon creature token with flying."
+    },
+    {
+      "key": "Drake Hatcher#0",
+      "type": "Triggered",
+      "text": "Prowess \u003ci\u003e(Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\u003c/i\u003e"
+    },
+    {
+      "key": "Drake Hatcher#1",
+      "type": "Triggered",
+      "text": "Whenever this creature deals combat damage to a player, put that many incubation counters on it."
+    },
+    {
+      "key": "Drake Hatcher#2",
+      "type": "Activated",
+      "text": "Remove three incubation counters from {this}: Create a 2/2 blue Drake creature token with flying."
+    },
+    {
+      "key": "Drakuseth, Maw of Flames#0",
+      "type": "Triggered",
+      "text": "Whenever {this} attacks, it deals 4 damage to any target and 3 damage to each of up to two other targets."
+    },
+    {
+      "key": "Dreadwing Scavenger#0",
+      "type": "Triggered",
+      "text": "Whenever {this} enters or attacks, draw a card, then discard a card."
+    },
+    {
+      "key": "Dwynen\u0027s Elite#0",
+      "type": "Triggered",
+      "text": "When {this} enters, if you control another Elf, create a 1/1 green Elf Warrior creature token."
+    },
+    {
+      "key": "Dwynen, Gilt-Leaf Daen#0",
+      "type": "Triggered",
+      "text": "Whenever {this} attacks, you gain 1 life for each attacking Elf you control."
+    },
+    {
+      "key": "Eager Trufflesnout#0",
+      "type": "Triggered",
+      "text": "Whenever {this} deals combat damage to a player, create a Food token."
+    },
+    {
+      "key": "Eager Trufflesnout#g0",
+      "type": "Activated",
+      "granted": true,
+      "text": "{2}, {T}, Sacrifice {this}: You gain 3 life."
+    },
+    {
+      "key": "Electroduplicate#g0",
+      "type": "Triggered",
+      "granted": true,
+      "text": "At the beginning of the end step, sacrifice {this}."
+    },
+    {
+      "key": "Elementalist Adept#0",
+      "type": "Triggered",
+      "text": "Prowess \u003ci\u003e(Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\u003c/i\u003e"
+    },
+    {
+      "key": "Elfsworn Giant#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eLandfall\u003c/i\u003e \u0026mdash; Whenever a land you control enters, create a 1/1 green Elf Warrior creature token."
+    },
+    {
+      "key": "Elvish Regrower#0",
+      "type": "Triggered",
+      "text": "When {this} enters, return target permanent card from your graveyard to your hand."
+    },
+    {
+      "key": "Embercleave#0",
+      "type": "Triggered",
+      "text": "When {this} enters, attach it to target creature you control."
+    },
+    {
+      "key": "Embercleave#1",
+      "type": "Activated",
+      "text": "Equip {3}"
+    },
+    {
+      "key": "Erudite Wizard#0",
+      "type": "Triggered",
+      "text": "Whenever you draw your second card each turn, put a +1/+1 counter on {this}."
+    },
+    {
+      "key": "Etali, Primal Storm#0",
+      "type": "Triggered",
+      "text": "Whenever {this} attacks, exile the top card of each player\u0027s library, then you may cast any number of spells from among those cards without paying their mana costs."
+    },
+    {
+      "key": "Evolving Wilds#0",
+      "type": "Activated",
+      "text": "{T}, Sacrifice {this}: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle."
+    },
+    {
+      "key": "Exemplar of Light#0",
+      "type": "Triggered",
+      "text": "Whenever you gain life, put a +1/+1 counter on {this}."
+    },
+    {
+      "key": "Exemplar of Light#1",
+      "type": "Triggered",
+      "text": "Whenever you put one or more +1/+1 counters on this creature, draw a card. This ability triggers only once each turn."
+    },
+    {
+      "key": "Extravagant Replication#0",
+      "type": "Triggered",
+      "text": "At the beginning of your upkeep, create a token that\u0027s a copy of another target nonland permanent you control."
+    },
+    {
+      "key": "Fake Your Own Death#g0",
+      "type": "Triggered",
+      "granted": true,
+      "text": "When {this} dies, return it to the battlefield tapped under its owner\u0027s control and you create a Treasure token."
+    },
+    {
+      "key": "Fanatical Firebrand#0",
+      "type": "Activated",
+      "text": "{T}, Sacrifice {this}: It deals 1 damage to any target."
+    },
+    {
+      "key": "Felidar Savior#0",
+      "type": "Triggered",
+      "text": "When {this} enters, put a +1/+1 counter on each of up to two target other creatures you control."
+    },
+    {
+      "key": "Fiend Artisan#0",
+      "type": "Activated",
+      "text": "{X}{B/G}, {T}, Sacrifice another creature: Search your library for a creature card with mana value X or less, put it onto the battlefield, then shuffle. Activate only as a sorcery."
+    },
+    {
+      "key": "Fiendish Panda#0",
+      "type": "Triggered",
+      "text": "Whenever you gain life, put a +1/+1 counter on {this}."
+    },
+    {
+      "key": "Fiendish Panda#1",
+      "type": "Triggered",
+      "text": "When {this} dies, return another target non-Bear creature card with mana value less than or equal to this creature\u0027s power from your graveyard to the battlefield."
+    },
+    {
+      "key": "Firebrand Archer#0",
+      "type": "Triggered",
+      "text": "Whenever you cast a noncreature spell, {this} deals 1 damage to each opponent."
+    },
+    {
+      "key": "Firespitter Whelp#0",
+      "type": "Triggered",
+      "text": "Whenever you cast a noncreature or Dragon spell, {this} deals 1 damage to each opponent."
+    },
+    {
+      "key": "Fishing Pole#0",
+      "type": "Triggered",
+      "text": "Whenever equipped creature becomes untapped, remove a bait counter from this Equipment. If you do, create a 1/1 blue Fish creature token."
+    },
+    {
+      "key": "Fishing Pole#1",
+      "type": "Activated",
+      "text": "Equip {2} \u003ci\u003e({2}: Attach to target creature you control. Equip only as a sorcery.)\u003c/i\u003e"
+    },
+    {
+      "key": "Flamewake Phoenix#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eFerocious\u003c/i\u003e \u0026mdash; At the beginning of combat on your turn, if you control a creature with power 4 or greater, you may pay {R}. If you do, return this card from your graveyard to the battlefield."
+    },
+    {
+      "key": "Frenzied Goblin#0",
+      "type": "Triggered",
+      "text": "Whenever {this} attacks, you may pay {R}. If you do, target creature can\u0027t block this turn."
+    },
+    {
+      "key": "Garruk\u0027s Uprising#0",
+      "type": "Triggered",
+      "text": "When {this} enters, if you control a creature with power 4 or greater, draw a card."
+    },
+    {
+      "key": "Garruk\u0027s Uprising#1",
+      "type": "Triggered",
+      "text": "Whenever a creature you control with power 4 or greater enters, draw a card."
+    },
+    {
+      "key": "Gleaming Barrier#0",
+      "type": "Triggered",
+      "text": "When {this} dies, create a Treasure token."
+    },
+    {
+      "key": "Goblin Bushwhacker#0",
+      "type": "Triggered",
+      "text": "When {this} enters, if it was kicked, creatures you control get +1/+0 and gain haste until end of turn."
+    },
+    {
+      "key": "Goldvein Pick#0",
+      "type": "Triggered",
+      "text": "Whenever equipped creature deals combat damage to a player, create a Treasure token."
+    },
+    {
+      "key": "Goldvein Pick#1",
+      "type": "Activated",
+      "text": "Equip {1} \u003ci\u003e({1}: Attach to target creature you control. Equip only as a sorcery.)\u003c/i\u003e"
+    },
+    {
+      "key": "Good-Fortune Unicorn#0",
+      "type": "Triggered",
+      "text": "Whenever another creature you control enters, put a +1/+1 counter on that creature."
+    },
+    {
+      "key": "Gorehorn Raider#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eRaid\u003c/i\u003e \u0026mdash; When {this} enters, if you attacked this turn, {this} deals 2 damage to any target."
+    },
+    {
+      "key": "Grappling Kraken#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eLandfall\u003c/i\u003e \u0026mdash; Whenever a land you control enters, tap target creature an opponent controls and put a stun counter on it."
+    },
+    {
+      "key": "Guarded Heir#0",
+      "type": "Triggered",
+      "text": "When {this} enters, create two 3/3 white Knight creature tokens."
+    },
+    {
+      "key": "Gutless Plunderer#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eRaid\u003c/i\u003e \u0026mdash; When {this} enters, if you attacked this turn, look at the top three cards of your library. Put up to one of them back on top of your library and the rest into your graveyard."
+    },
+    {
+      "key": "Hare Apparent#0",
+      "type": "Triggered",
+      "text": "When {this} enters, create a number of 1/1 white Rabbit creature tokens equal to the number of other creatures you control named Hare Apparent."
+    },
+    {
+      "key": "Heartfire Immolator#0",
+      "type": "Triggered",
+      "text": "Prowess \u003ci\u003e(Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\u003c/i\u003e"
+    },
+    {
+      "key": "Heartfire Immolator#1",
+      "type": "Activated",
+      "text": "{R}, Sacrifice {this}: It deals damage equal to its power to target creature or planeswalker."
+    },
+    {
+      "key": "Helpful Hunter#0",
+      "type": "Triggered",
+      "text": "When {this} enters, draw a card."
+    },
+    {
+      "key": "High-Society Hunter#0",
+      "type": "Triggered",
+      "text": "Whenever {this} attacks, you may sacrifice another creature. If you do, put a +1/+1 counter on {this}."
+    },
+    {
+      "key": "High-Society Hunter#1",
+      "type": "Triggered",
+      "text": "Whenever another nontoken creature dies, draw a card."
+    },
+    {
+      "key": "Homunculus Horde#0",
+      "type": "Triggered",
+      "text": "Whenever you draw your second card each turn, create a token that\u0027s a copy of {this}."
+    },
+    {
+      "key": "Hungry Ghoul#0",
+      "type": "Activated",
+      "text": "{1}, Sacrifice another creature: Put a +1/+1 counter on {this}."
+    },
+    {
+      "key": "Icewind Elemental#0",
+      "type": "Triggered",
+      "text": "When {this} enters, draw a card, then discard a card."
+    },
+    {
+      "key": "Infernal Vessel#0",
+      "type": "Triggered",
+      "text": "When {this} dies, if it wasn\u0027t a Demon, return it to the battlefield under its owner\u0027s control with two +1/+1 counters on it. It\u0027s a Demon in addition to its other types."
+    },
+    {
+      "key": "Infestation Sage#0",
+      "type": "Triggered",
+      "text": "When {this} dies, create a 1/1 black and green Insect creature token with flying."
+    },
+    {
+      "key": "Jungle Hollow#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you gain 1 life."
+    },
+    {
+      "key": "Kaito, Cunning Infiltrator#0",
+      "type": "Triggered",
+      "text": "Whenever a creature you control deals combat damage to a player, put a loyalty counter on {this}."
+    },
+    {
+      "key": "Kaito, Cunning Infiltrator#1",
+      "type": "Activated",
+      "text": "+1: Up to one target creature you control can\u0027t be blocked this turn. Draw a card, then discard a card."
+    },
+    {
+      "key": "Kaito, Cunning Infiltrator#2",
+      "type": "Activated",
+      "text": "-2: Create a 2/1 blue Ninja creature token."
+    },
+    {
+      "key": "Kaito, Cunning Infiltrator#3",
+      "type": "Activated",
+      "text": "-9: You get an emblem with \"Whenever a player casts a spell, you create a 2/1 blue Ninja creature token.\""
+    },
+    {
+      "key": "Kellan, Planar Trailblazer#0",
+      "type": "Activated",
+      "text": "{1}{R}: If {this} is a Scout, it becomes a Human Faerie Detective and gains \"Whenever {this} deals combat damage to a player, exile the top card of your library. You may play that card this turn.\""
+    },
+    {
+      "key": "Kellan, Planar Trailblazer#1",
+      "type": "Activated",
+      "text": "{2}{R}: If {this} is a Detective, it becomes a 3/2 Human Faerie Rogue and gains double strike."
+    },
+    {
+      "key": "Kiora, the Rising Tide#0",
+      "type": "Triggered",
+      "text": "When {this} enters, draw two cards, then discard two cards."
+    },
+    {
+      "key": "Kiora, the Rising Tide#1",
+      "type": "Triggered",
+      "text": "\u003ci\u003eThreshold\u003c/i\u003e \u0026mdash; Whenever {this} attacks, if seven or more cards are in your graveyard, you may create Scion of the Deep, a legendary 8/8 blue Octopus creature token."
+    },
+    {
+      "key": "Koma, World-Eater#0",
+      "type": "Triggered",
+      "text": "ward {4}"
+    },
+    {
+      "key": "Koma, World-Eater#1",
+      "type": "Triggered",
+      "text": "Whenever {this} deals combat damage to a player, create four 3/3 blue Serpent creature tokens named Koma\u0027s Coil."
+    },
+    {
+      "key": "Krenko, Mob Boss#0",
+      "type": "Activated",
+      "text": "{T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control."
+    },
+    {
+      "key": "Kykar, Zephyr Awakener#0",
+      "type": "Triggered",
+      "text": "Whenever you cast a noncreature spell, choose one \u0026mdash;\u003cbr\u003e\u0026bull Exile another target creature you control. Return that card to the battlefield under its owner\u0027s control at the beginning of the next end step.\u003cbr\u003e\u0026bull Create a 1/1 white Spirit creature token with flying.\u003cbr\u003e"
+    },
+    {
+      "key": "Lathril, Blade of the Elves#0",
+      "type": "Triggered",
+      "text": "Whenever {this} deals combat damage to a player, create that many 1/1 green Elf Warrior creature tokens."
+    },
+    {
+      "key": "Lathril, Blade of the Elves#1",
+      "type": "Activated",
+      "text": "{T}, Tap ten untapped Elves you control: Each opponent loses 10 life and you gain 10 life."
+    },
+    {
+      "key": "Leyline Axe#0",
+      "type": "Activated",
+      "text": "Equip {3} \u003ci\u003e({3}: Attach to target creature you control. Equip only as a sorcery.)\u003c/i\u003e"
+    },
+    {
+      "key": "Lightshell Duo#0",
+      "type": "Triggered",
+      "text": "Prowess \u003ci\u003e(Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\u003c/i\u003e"
+    },
+    {
+      "key": "Lightshell Duo#1",
+      "type": "Triggered",
+      "text": "When {this} enters, surveil 2. \u003ci\u003e(Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top in any order.)\u003c/i\u003e"
+    },
+    {
+      "key": "Liliana, Dreadhorde General#0",
+      "type": "Triggered",
+      "text": "Whenever a creature you control dies, draw a card."
+    },
+    {
+      "key": "Liliana, Dreadhorde General#1",
+      "type": "Activated",
+      "text": "+1: Create a 2/2 black Zombie creature token."
+    },
+    {
+      "key": "Liliana, Dreadhorde General#2",
+      "type": "Activated",
+      "text": "-4: Each player sacrifices two creatures of their choice."
+    },
+    {
+      "key": "Liliana, Dreadhorde General#3",
+      "type": "Activated",
+      "text": "-9: Each opponent chooses a permanent they control of each permanent type and sacrifices the rest."
+    },
+    {
+      "key": "Loot, Exuberant Explorer#0",
+      "type": "Activated",
+      "text": "{4}{G}{G}, {T}: Look at the top six cards of your library. You may put a creature card with mana value less than or equal to the number of lands you control from among them onto the battlefield. Put the rest on the bottom of your library in a random order."
+    },
+    {
+      "key": "Marauding Blight-Priest#0",
+      "type": "Triggered",
+      "text": "Whenever you gain life, each opponent loses 1 life."
+    },
+    {
+      "key": "Meteor Golem#0",
+      "type": "Triggered",
+      "text": "When {this} enters, destroy target nonland permanent an opponent controls."
+    },
+    {
+      "key": "Micromancer#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you may search your library for an instant or sorcery card with mana value 1, reveal it, put it into your hand, then shuffle."
+    },
+    {
+      "key": "Midnight Snack#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eRaid\u003c/i\u003e \u0026mdash; At the beginning of your end step, if you attacked this turn, create a Food token."
+    },
+    {
+      "key": "Midnight Snack#1",
+      "type": "Activated",
+      "text": "{2}{B}, Sacrifice {this}: Target opponent loses X life, where X is the amount of life you gained this turn."
+    },
+    {
+      "key": "Midnight Snack#g0",
+      "type": "Activated",
+      "granted": true,
+      "text": "{2}, {T}, Sacrifice {this}: You gain 3 life."
+    },
+    {
+      "key": "Mild-Mannered Librarian#0",
+      "type": "Activated",
+      "text": "{3}{G}: {this} becomes a Werewolf. Put two +1/+1 counters on it and you draw a card. Activate only once."
+    },
+    {
+      "key": "Mischievous Mystic#0",
+      "type": "Triggered",
+      "text": "Whenever you draw your second card each turn, create a 1/1 blue Faerie creature token with flying."
+    },
+    {
+      "key": "Mischievous Pup#0",
+      "type": "Triggered",
+      "text": "When {this} enters, return up to one other target permanent you control to its owner\u0027s hand."
+    },
+    {
+      "key": "Mossborn Hydra#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eLandfall\u003c/i\u003e \u0026mdash; Whenever a land you control enters, double the number of +1/+1 counters on {this}."
+    },
+    {
+      "key": "Needletooth Pack#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eMorbid\u003c/i\u003e \u0026mdash; At the beginning of your end step, if a creature died this turn, put two +1/+1 counters on target creature you control."
+    },
+    {
+      "key": "Nessian Hornbeetle#0",
+      "type": "Triggered",
+      "text": "At the beginning of combat on your turn, if you control another creature with power 4 or greater, put a +1/+1 counter on {this}."
+    },
+    {
+      "key": "Nine-Lives Familiar#0",
+      "type": "Triggered",
+      "text": "When {this} dies, if it had a revival counter on it, return it to the battlefield with one fewer revival counter on it at the beginning of the next end step."
+    },
+    {
+      "key": "Nine-Lives Familiar#g0",
+      "type": "Triggered",
+      "granted": true,
+      "text": "At the beginning of the next end step, return it to the battlefield with one fewer revival counter on it."
+    },
+    {
+      "key": "Niv-Mizzet, Visionary#0",
+      "type": "Triggered",
+      "text": "Whenever a source you control deals noncombat damage to an opponent, you draw that many cards."
+    },
+    {
+      "key": "Painful Quandary#0",
+      "type": "Triggered",
+      "text": "Whenever an opponent casts a spell, that player loses 5 life unless they discard a card."
+    },
+    {
+      "key": "Perforating Artist#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eRaid\u003c/i\u003e \u0026mdash; At the beginning of your end step, if you attacked this turn, each opponent loses 3 life unless that player sacrifices a nonland permanent of their choice or discards a card."
+    },
+    {
+      "key": "Phyrexian Arena#0",
+      "type": "Triggered",
+      "text": "At the beginning of your upkeep, you draw a card and you lose 1 life."
+    },
+    {
+      "key": "Prideful Parent#0",
+      "type": "Triggered",
+      "text": "When {this} enters, create a 1/1 white Cat creature token."
+    },
+    {
+      "key": "Quick-Draw Katana#0",
+      "type": "Activated",
+      "text": "Equip {2} \u003ci\u003e({2}: Attach to target creature you control. Equip only as a sorcery.)\u003c/i\u003e"
+    },
+    {
+      "key": "Quilled Greatwurm#0",
+      "type": "Triggered",
+      "text": "Whenever a creature you control deals combat damage during your turn, put that many +1/+1 counters on that creature."
+    },
+    {
+      "key": "Ravenous Amulet#0",
+      "type": "Activated",
+      "text": "{1}, {T}, Sacrifice a creature: Draw a card and put a soul counter on {this}. Activate only as a sorcery."
+    },
+    {
+      "key": "Ravenous Amulet#1",
+      "type": "Activated",
+      "text": "{4}, {T}, Sacrifice {this}: Each opponent loses 1 life for each soul counter on {this}."
+    },
+    {
+      "key": "Reassembling Skeleton#0",
+      "type": "Activated",
+      "text": "{1}{B}: Return this card from your graveyard to the battlefield tapped."
+    },
+    {
+      "key": "Reclamation Sage#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you may destroy target artifact or enchantment."
+    },
+    {
+      "key": "Resolute Reinforcements#0",
+      "type": "Triggered",
+      "text": "When {this} enters, create a 1/1 white Soldier creature token."
+    },
+    {
+      "key": "Rite of the Dragoncaller#0",
+      "type": "Triggered",
+      "text": "Whenever you cast an instant or sorcery spell, create a 5/5 red Dragon creature token with flying."
+    },
+    {
+      "key": "Rogue\u0027s Passage#0",
+      "type": "Activated",
+      "text": "{4}, {T}: Target creature can\u0027t be blocked this turn."
+    },
+    {
+      "key": "Ruby, Daring Tracker#0",
+      "type": "Triggered",
+      "text": "Whenever {this} attacks while you control a creature with power 4 or greater, it gets +2/+2 until end of turn."
+    },
+    {
+      "key": "Rugged Highlands#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you gain 1 life."
+    },
+    {
+      "key": "Rune-Scarred Demon#0",
+      "type": "Triggered",
+      "text": "When {this} enters, search your library for a card, put it into your hand, then shuffle."
+    },
+    {
+      "key": "Rune-Sealed Wall#0",
+      "type": "Activated",
+      "text": "{T}: Surveil 1. \u003ci\u003e(Look at the top card of your library. You may put that card into your graveyard.)\u003c/i\u003e"
+    },
+    {
+      "key": "Sanguine Syphoner#0",
+      "type": "Triggered",
+      "text": "Whenever {this} attacks, each opponent loses 1 life and you gain 1 life."
+    },
+    {
+      "key": "Scavenging Ooze#0",
+      "type": "Activated",
+      "text": "{G}: Exile target card from a graveyard. If it was a creature card, put a +1/+1 counter on {this} and you gain 1 life."
+    },
+    {
+      "key": "Scoured Barrens#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you gain 1 life."
+    },
+    {
+      "key": "Scrawling Crawler#0",
+      "type": "Triggered",
+      "text": "At the beginning of your upkeep, each player draws a card."
+    },
+    {
+      "key": "Scrawling Crawler#1",
+      "type": "Triggered",
+      "text": "Whenever an opponent draws a card, that player loses 1 life."
+    },
+    {
+      "key": "Searslicer Goblin#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eRaid\u003c/i\u003e \u0026mdash; At the beginning of your end step, if you attacked this turn, create a 1/1 red Goblin creature token."
+    },
+    {
+      "key": "Shivan Dragon#0",
+      "type": "Activated",
+      "text": "{R}: {this} gets +1/+0 until end of turn."
+    },
+    {
+      "key": "Sire of Seven Deaths#0",
+      "type": "Triggered",
+      "text": "ward\u0026mdash;Pay 7 life."
+    },
+    {
+      "key": "Skyknight Squire#0",
+      "type": "Triggered",
+      "text": "Whenever another creature you control enters, put a +1/+1 counter on {this}."
+    },
+    {
+      "key": "Skyship Buccaneer#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eRaid\u003c/i\u003e \u0026mdash; When {this} enters, if you attacked this turn, draw a card."
+    },
+    {
+      "key": "Slumbering Cerberus#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eMorbid\u003c/i\u003e \u0026mdash; At the beginning of each end step, if a creature died this turn, untap {this}."
+    },
+    {
+      "key": "Solemn Simulacrum#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you may search your library for a basic land card, put that card onto the battlefield tapped, then shuffle."
+    },
+    {
+      "key": "Solemn Simulacrum#1",
+      "type": "Triggered",
+      "text": "When {this} dies, you may draw a card."
+    },
+    {
+      "key": "Soul-Shackled Zombie#0",
+      "type": "Triggered",
+      "text": "When {this} enters, exile up to two target cards from a single graveyard. If at least one creature card was exiled this way, each opponent loses 2 life and you gain 2 life."
+    },
+    {
+      "key": "Soulstone Sanctuary#0",
+      "type": "Activated",
+      "text": "{4}: This land becomes a 3/3 creature with vigilance and all creature types. It\u0027s still a land."
+    },
+    {
+      "key": "Sower of Chaos#0",
+      "type": "Activated",
+      "text": "{2}{R}: Target creature can\u0027t block this turn."
+    },
+    {
+      "key": "Spectral Sailor#0",
+      "type": "Activated",
+      "text": "{3}{U}: Draw a card."
+    },
+    {
+      "key": "Sphinx of Forgotten Lore#0",
+      "type": "Triggered",
+      "text": "Whenever {this} attacks, target instant or sorcery card in your graveyard gains flashback until end of turn. The flashback cost is equal to that card\u0027s mana cost."
+    },
+    {
+      "key": "Sphinx\u0027s Tutelage#0",
+      "type": "Triggered",
+      "text": "Whenever you draw a card, target opponent mills two cards. If two nonland cards that share a color were milled this way, repeat this process."
+    },
+    {
+      "key": "Sphinx\u0027s Tutelage#1",
+      "type": "Activated",
+      "text": "{5}{U}: Draw a card, then discard a card."
+    },
+    {
+      "key": "Spinner of Souls#0",
+      "type": "Triggered",
+      "text": "Whenever another nontoken creature you control dies, you may reveal cards from the top of your library until you reveal a creature card. Put that card into your hand and the rest on the bottom of your library in a random order."
+    },
+    {
+      "key": "Spitfire Lagac#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eLandfall\u003c/i\u003e \u0026mdash; Whenever a land you control enters, {this} deals 1 damage to each opponent."
+    },
+    {
+      "key": "Squad Rallier#0",
+      "type": "Activated",
+      "text": "{2}{W}: Look at the top four cards of your library. You may reveal a creature card with power 2 or less from among them and put it into your hand. Put the rest on the bottom of your library in a random order."
+    },
+    {
+      "key": "Strix Lookout#0",
+      "type": "Activated",
+      "text": "{1}{U}, {T}: Draw a card, then discard a card."
+    },
+    {
+      "key": "Stromkirk Bloodthief#0",
+      "type": "Triggered",
+      "text": "At the beginning of your end step, if an opponent lost life this turn, put a +1/+1 counter on target Vampire you control."
+    },
+    {
+      "key": "Strongbox Raider#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eRaid\u003c/i\u003e \u0026mdash; When {this} enters, if you attacked this turn, exile the top two cards of your library. Choose one of them. Until the end of your next turn, you may play that card."
+    },
+    {
+      "key": "Sun-Blessed Healer#0",
+      "type": "Triggered",
+      "text": "When {this} enters, if it was kicked, return target nonland permanent card with mana value 2 or less from your graveyard to the battlefield."
+    },
+    {
+      "key": "Swiftfoot Boots#0",
+      "type": "Activated",
+      "text": "Equip {1} \u003ci\u003e({1}: Attach to target creature you control. Equip only as a sorcery.)\u003c/i\u003e"
+    },
+    {
+      "key": "Swiftwater Cliffs#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you gain 1 life."
+    },
+    {
+      "key": "Sylvan Scavenging#0",
+      "type": "Triggered",
+      "text": "At the beginning of your end step, choose one \u0026mdash;\u003cbr\u003e\u0026bull Put a +1/+1 counter on target creature you control.\u003cbr\u003e\u0026bull Create a 3/3 green Raccoon creature token if you control a creature with power 4 or greater.\u003cbr\u003e"
+    },
+    {
+      "key": "Tatyova, Benthic Druid#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eLandfall\u003c/i\u003e \u0026mdash; Whenever a land you control enters, you gain 1 life and draw a card."
+    },
+    {
+      "key": "Thornwood Falls#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you gain 1 life."
+    },
+    {
+      "key": "Thousand-Year Storm#0",
+      "type": "Triggered",
+      "text": "Whenever you cast an instant or sorcery spell, copy it for each other instant and sorcery spell you\u0027ve cast before it this turn. You may choose new targets for the copies."
+    },
+    {
+      "key": "Tinybones, Bauble Burglar#0",
+      "type": "Triggered",
+      "text": "Whenever an opponent discards a card, exile it from their graveyard with a stash counter on it."
+    },
+    {
+      "key": "Tinybones, Bauble Burglar#1",
+      "type": "Activated",
+      "text": "{3}{B}, {T}: Each opponent discards a card. Activate only as a sorcery."
+    },
+    {
+      "key": "Tolarian Terror#0",
+      "type": "Triggered",
+      "text": "ward {2} \u003ci\u003e(Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\u003c/i\u003e"
+    },
+    {
+      "key": "Tragic Banshee#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eMorbid\u003c/i\u003e \u0026mdash; When {this} enters, target creature an opponent controls gets -1/-1 until end of turn. If a creature died this turn, that creature gets -13/-13 until end of turn instead."
+    },
+    {
+      "key": "Tranquil Cove#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you gain 1 life."
+    },
+    {
+      "key": "Treetop Snarespinner#0",
+      "type": "Activated",
+      "text": "{2}{G}: Put a +1/+1 counter on target creature you control. Activate only as a sorcery."
+    },
+    {
+      "key": "Valkyrie\u0027s Call#0",
+      "type": "Triggered",
+      "text": "Whenever a nontoken, non-Angel creature you control dies, return that card to the battlefield under its owner\u0027s control with a +1/+1 counter on it. It has flying and is an Angel in addition to its other types."
+    },
+    {
+      "key": "Vampire Gourmand#0",
+      "type": "Triggered",
+      "text": "Whenever {this} attacks, you may sacrifice another creature. If you do, draw a card and {this} can\u0027t be blocked this turn."
+    },
+    {
+      "key": "Vampire Soulcaller#0",
+      "type": "Triggered",
+      "text": "When {this} enters, return target creature card from your graveyard to your hand."
+    },
+    {
+      "key": "Vanguard Seraph#0",
+      "type": "Triggered",
+      "text": "Whenever you gain life for the first time each turn, surveil 1. \u003ci\u003e(Look at the top card of your library. You may put that card into your graveyard.)\u003c/i\u003e"
+    },
+    {
+      "key": "Vengeful Bloodwitch#0",
+      "type": "Triggered",
+      "text": "Whenever {this} or another creature you control dies, target opponent loses 1 life and you gain 1 life."
+    },
+    {
+      "key": "Vivien Reid#0",
+      "type": "Activated",
+      "text": "+1: Look at the top four cards of your library. You may reveal a creature or land card from among them and put it into your hand. Put the rest on the bottom of your library in a random order."
+    },
+    {
+      "key": "Vivien Reid#1",
+      "type": "Activated",
+      "text": "-3: Destroy target artifact, enchantment, or creature with flying."
+    },
+    {
+      "key": "Vivien Reid#2",
+      "type": "Activated",
+      "text": "-8: You get an emblem with \"Creatures you control get +2/+2 and have vigilance, trample, and indestructible.\""
+    },
+    {
+      "key": "Wardens of the Cycle#0",
+      "type": "Triggered",
+      "text": "\u003ci\u003eMorbid\u003c/i\u003e \u0026mdash; At the beginning of your end step, if a creature died this turn, choose one \u0026mdash;\u003cbr\u003e\u0026bull You gain 2 life.\u003cbr\u003e\u0026bull You draw a card and you lose 1 life.\u003cbr\u003e"
+    },
+    {
+      "key": "Wary Thespian#0",
+      "type": "Triggered",
+      "text": "When {this} enters or dies, surveil 1. \u003ci\u003e(Look at the top card of your library. You may put that card into your graveyard.)\u003c/i\u003e"
+    },
+    {
+      "key": "Wildwood Scourge#0",
+      "type": "Triggered",
+      "text": "Whenever one or more +1/+1 counters are put on another non-Hydra creature you control, put a +1/+1 counter on {this}."
+    },
+    {
+      "key": "Wind-Scarred Crag#0",
+      "type": "Triggered",
+      "text": "When {this} enters, you gain 1 life."
+    },
+    {
+      "key": "Youthful Valkyrie#0",
+      "type": "Triggered",
+      "text": "Whenever another Angel you control enters, put a +1/+1 counter on {this}."
+    },
+    {
+      "key": "Zimone, Paradox Sculptor#0",
+      "type": "Triggered",
+      "text": "At the beginning of combat on your turn, put a +1/+1 counter on each of up to two target creatures you control."
+    },
+    {
+      "key": "Zimone, Paradox Sculptor#1",
+      "type": "Activated",
+      "text": "{G}{U}, {T}: Double the number of each kind of counter on up to two target creatures and/or artifacts you control."
+    },
+    {
+      "key": "Zul Ashur, Lich Lord#0",
+      "type": "Triggered",
+      "text": "ward\u0026mdash;Pay 2 life. \u003ci\u003e(Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays 2 life.)\u003c/i\u003e"
+    },
+    {
+      "key": "Zul Ashur, Lich Lord#1",
+      "type": "Activated",
+      "text": "{T}: You may cast target Zombie creature card from your graveyard this turn."
+    },
+    {
+      "key": "Abrade#mode0",
+      "type": "Mode",
+      "text": "{this} deals 3 damage to target creature."
+    },
+    {
+      "key": "Abrade#mode1",
+      "type": "Mode",
+      "text": "destroy target artifact."
+    },
+    {
+      "key": "Apothecary Stomper#mode0",
+      "type": "Mode",
+      "text": "put two +1/+1 counters on target creature you control."
+    },
+    {
+      "key": "Apothecary Stomper#mode1",
+      "type": "Mode",
+      "text": "you gain 4 life."
+    },
+    {
+      "key": "Blasphemous Edict#alt:AlternativeCostSourceAbility",
+      "type": "AlternativeCost",
+      "text": "if there are thirteen or more creatures on the battlefield, you may pay {B} rather than pay this spell\u0027s mana cost."
+    },
+    {
+      "key": "Bushwhack#mode0",
+      "type": "Mode",
+      "text": "search your library for a basic land card, reveal it, put it into your hand, then shuffle."
+    },
+    {
+      "key": "Bushwhack#mode1",
+      "type": "Mode",
+      "text": "target creature you control fights target creature you don\u0027t control. \u003ci\u003e(Each deals damage equal to its power to the other.)\u003c/i\u003e"
+    },
+    {
+      "key": "Goblin Surprise#mode0",
+      "type": "Mode",
+      "text": "creatures you control get +2/+0 until end of turn."
+    },
+    {
+      "key": "Goblin Surprise#mode1",
+      "type": "Mode",
+      "text": "create two 1/1 red Goblin creature tokens."
+    },
+    {
+      "key": "Kykar, Zephyr Awakener#mode0",
+      "type": "Mode",
+      "text": "exile another target creature you control. Return that card to the battlefield under its owner\u0027s control at the beginning of the next end step."
+    },
+    {
+      "key": "Kykar, Zephyr Awakener#mode1",
+      "type": "Mode",
+      "text": "create a 1/1 white Spirit creature token with flying."
+    },
+    {
+      "key": "Seeker\u0027s Folly#mode0",
+      "type": "Mode",
+      "text": "target opponent discards two cards."
+    },
+    {
+      "key": "Seeker\u0027s Folly#mode1",
+      "type": "Mode",
+      "text": "creatures your opponents control get -1/-1 until end of turn."
+    },
+    {
+      "key": "Slagstorm#mode0",
+      "type": "Mode",
+      "text": "{this} deals 3 damage to each creature."
+    },
+    {
+      "key": "Slagstorm#mode1",
+      "type": "Mode",
+      "text": "{this} deals 3 damage to each player."
+    },
+    {
+      "key": "Sylvan Scavenging#mode0",
+      "type": "Mode",
+      "text": "put a +1/+1 counter on target creature you control."
+    },
+    {
+      "key": "Sylvan Scavenging#mode1",
+      "type": "Mode",
+      "text": "create a 3/3 green Raccoon creature token if you control a creature with power 4 or greater."
+    },
+    {
+      "key": "Wardens of the Cycle#mode0",
+      "type": "Mode",
+      "text": "you gain 2 life."
+    },
+    {
+      "key": "Wardens of the Cycle#mode1",
+      "type": "Mode",
+      "text": "you draw a card and you lose 1 life."
+    }
+  ]
+}

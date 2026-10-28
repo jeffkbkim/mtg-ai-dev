@@ -32,7 +32,14 @@ from pathlib import Path
 import torch
 from torch import Tensor
 
-VOCAB_PATH = Path(__file__).parent / "vocab" / "dsk_vocab.json"
+VOCAB_DIR = Path(__file__).parent / "vocab"
+VOCAB_PATH = VOCAB_DIR / "dsk_vocab.json"  # default; another set's file: vocab_path("FDN")
+
+
+def vocab_path(set_code: str) -> Path:
+    """engine/vocab/<set>_vocab.json, written by engine/xmage VocabDump with -Dmtg.set=<SET>."""
+    return VOCAB_DIR / f"{set_code.lower()}_vocab.json"
+
 
 PAD = 0
 FACE_DOWN = 1  # card id for a card whose identity this seat may not know

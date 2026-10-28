@@ -1,6 +1,6 @@
-"""DSK card coverage soak: many random-bot games through XMage to find cards that break or misbehave.
+"""Card coverage soak for one set (DSK, FDN): many random-bot games through XMage to find cards that break or misbehave.
 
-Builds two-colour decks that rotate through every DSK card (least-used cards first), plays each pair of decks
+Builds two-colour decks that rotate through every card of the set (least-used cards first), plays each pair of decks
 with SeatSpike (our random seat vs XMage's AI), and records per run: results, the seat's counters (leaks,
 unmapped abilities and choices, rejected moves), JVM exceptions and hangs. Per card it counts how often the card
 was in a deck and how often it reached the battlefield or the stack, so a card with no problems but no exposure
@@ -33,9 +33,18 @@ def land_colors(c):
     return None if "any color" in text or not made else made  # no mana symbols: fetches or chooses a colour
 
 
-def load_pool():
-    cards = json.loads((REPO / "engine/vocab/dsk_card_text.json").read_text())
-    numbers = json.loads((HERE / "dsk_numbers.json").read_text())
+def load_numbers(set_code):
+    """{card name: collector number, or "SPG:n" for a Special Guest}. DSK: dsk_numbers.json (SoakNumbers);
+    other sets: engine/vocab/<set>_numbers.tsv (engine/xmage SetNumbers)."""
+    if set_code == "DSK":
+        return json.loads((HERE / "dsk_numbers.json").read_text())
+    rows = (REPO / f"engine/vocab/{set_code.lower()}_numbers.tsv").read_text().splitlines()
+    return {name: num for num, name in (r.split("\t", 1) for r in rows)}
+
+
+def load_pool(set_code="DSK"):
+    cards = json.loads((REPO / f"engine/vocab/{set_code.lower()}_card_text.json").read_text())
+    numbers = load_numbers(set_code)
     spells, lands = {}, {}
     for c in cards:
         if c["name"] in BASICS.values():
@@ -50,8 +59,9 @@ def load_pool():
 class DeckBuilder:
     """Two-colour 40-card decks, 23 spells + 17 lands, always picking the cards used least so far."""
 
-    def __init__(self, seed):
-        self.spells, self.lands, self.numbers = load_pool()
+    def __init__(self, seed, set_code="DSK"):
+        self.set_code = set_code
+        self.spells, self.lands, self.numbers = load_pool(set_code)
         self.used = collections.Counter()
         self.rng = random.Random(seed)
         # every two-colour pair, plus the colours of each card that needs three or more
@@ -61,7 +71,7 @@ class DeckBuilder:
     def code(self, n):
         """Deck-file set code and number: "DSK:14", or "SPG:71" for a Special Guest."""
         v = self.numbers[n]
-        return v if ":" in v else f"DSK:{v}"
+        return v if ":" in v else f"{self.set_code}:{v}"
 
     def build(self, i):
         pair = self.pairs[i % len(self.pairs)]
@@ -191,11 +201,12 @@ def main():
     ap.add_argument("--runtime", default=os.path.expanduser("~/xmage/xmage/mage-server"))
     ap.add_argument("--classes", default="/tmp/xmage-cls")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--set", default="DSK", help="card set to rotate through (engine/vocab/<set>_card_text.json)")
     args = ap.parse_args()
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, cwd=REPO).stdout.strip()
     (out / "config.json").write_text(json.dumps({**vars(args), "commit": commit, "started": time.strftime("%Y-%m-%dT%H:%M:%S")}, indent=1))
-    builder = DeckBuilder(args.seed)
+    builder = DeckBuilder(args.seed, args.set)
     plans = [(r, builder.build(2 * r), builder.build(2 * r + 1)) for r in range(args.runs)]
     done = 0
     with ThreadPoolExecutor(args.jobs) as pool, (out / "runs.jsonl").open("a") as summary:

@@ -1,0 +1,3258 @@
+[
+  {
+    "name": "Abrade",
+    "cost": "{1}{R}",
+    "mana_value": 2,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Choose one -&bull {this} deals 3 damage to target creature.&bull Destroy target artifact."
+    ]
+  },
+  {
+    "name": "Abyssal Harvester",
+    "cost": "{1}{B}{B}",
+    "mana_value": 3,
+    "types": "[Creature] - [Demon, Warlock]",
+    "rarity": "Rare",
+    "pt": "3/2",
+    "rules": [
+      "{T}: Exile target creature card from a graveyard that was put there this turn. Create a token that's a copy of it, except it's a Nightmare in addition to its other types. Then exile all other Nightmare tokens you control."
+    ]
+  },
+  {
+    "name": "Adventuring Gear",
+    "cost": "{1}",
+    "mana_value": 1,
+    "types": "[Artifact] - [Equipment]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Landfall - Whenever a land you control enters, equipped creature gets +2/+2 until end of turn.",
+      "Equip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)"
+    ]
+  },
+  {
+    "name": "Aegis Turtle",
+    "cost": "{U}",
+    "mana_value": 1,
+    "types": "[Creature] - [Turtle]",
+    "rarity": "Common",
+    "pt": "0/5",
+    "rules": []
+  },
+  {
+    "name": "Aetherize",
+    "cost": "{3}{U}",
+    "mana_value": 4,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Return all attacking creatures to their owner's hand."
+    ]
+  },
+  {
+    "name": "Affectionate Indrik",
+    "cost": "{5}{G}",
+    "mana_value": 6,
+    "types": "[Creature] - [Beast]",
+    "rarity": "Uncommon",
+    "pt": "4/4",
+    "rules": [
+      "When {this} enters, you may have it fight target creature you don't control. (Each deals damage equal to its power to the other.)"
+    ]
+  },
+  {
+    "name": "Ajani's Pridemate",
+    "cost": "{1}{W}",
+    "mana_value": 2,
+    "types": "[Creature] - [Cat, Soldier]",
+    "rarity": "Uncommon",
+    "pt": "2/2",
+    "rules": [
+      "Whenever you gain life, put a +1/+1 counter on {this}."
+    ]
+  },
+  {
+    "name": "Ajani, Caller of the Pride",
+    "cost": "{1}{W}{W}",
+    "mana_value": 3,
+    "types": "[Planeswalker] - [Ajani]",
+    "rarity": "Mythic",
+    "rules": [
+      "+1: Put a +1/+1 counter on up to one target creature.",
+      "-3: Target creature gains flying and double strike until end of turn.",
+      "-8: Create X 2/2 white Cat creature tokens, where X is your life total."
+    ]
+  },
+  {
+    "name": "Akroma's Memorial",
+    "cost": "{7}",
+    "mana_value": 7,
+    "types": "[Artifact]",
+    "rarity": "Mythic",
+    "rules": [
+      "Creatures you control have flying, first strike, vigilance, trample, haste, and protection from black and from red."
+    ]
+  },
+  {
+    "name": "Alesha, Who Laughs at Fate",
+    "cost": "{1}{B}{R}",
+    "mana_value": 3,
+    "types": "[Creature] - [Human, Warrior]",
+    "rarity": "Rare",
+    "pt": "2/2",
+    "rules": [
+      "First strike",
+      "Whenever {this} attacks, put a +1/+1 counter on it.",
+      "Raid - At the beginning of your end step, if you attacked this turn, return target creature card with mana value less than or equal to {this}'s power from your graveyard to the battlefield."
+    ]
+  },
+  {
+    "name": "Ambush Wolf",
+    "cost": "{2}{G}",
+    "mana_value": 3,
+    "types": "[Creature] - [Wolf]",
+    "rarity": "Common",
+    "pt": "4/2",
+    "rules": [
+      "Flash",
+      "When {this} enters, exile up to one target card from a graveyard."
+    ]
+  },
+  {
+    "name": "An Offer You Can't Refuse",
+    "cost": "{U}",
+    "mana_value": 1,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Counter target noncreature spell. Its controller creates two Treasure tokens."
+    ]
+  },
+  {
+    "name": "Angel of Finality",
+    "cost": "{3}{W}",
+    "mana_value": 4,
+    "types": "[Creature] - [Angel]",
+    "rarity": "Uncommon",
+    "pt": "3/4",
+    "rules": [
+      "Flying",
+      "When {this} enters, exile target player's graveyard."
+    ]
+  },
+  {
+    "name": "Anthem of Champions",
+    "cost": "{G}{W}",
+    "mana_value": 2,
+    "types": "[Enchantment]",
+    "rarity": "Rare",
+    "rules": [
+      "Creatures you control get +1/+1."
+    ]
+  },
+  {
+    "name": "Apothecary Stomper",
+    "cost": "{4}{G}{G}",
+    "mana_value": 6,
+    "types": "[Creature] - [Elephant]",
+    "rarity": "Common",
+    "pt": "4/4",
+    "rules": [
+      "Vigilance",
+      "When {this} enters, choose one -&bull Put two +1/+1 counters on target creature you control.&bull You gain 4 life."
+    ]
+  },
+  {
+    "name": "Arahbo, the First Fang",
+    "cost": "{2}{W}",
+    "mana_value": 3,
+    "types": "[Creature] - [Cat, Avatar]",
+    "rarity": "Rare",
+    "pt": "2/2",
+    "rules": [
+      "Other Cats you control get +1/+1.",
+      "Whenever {this} or another nontoken Cat you control enters, create a 1/1 white Cat creature token."
+    ]
+  },
+  {
+    "name": "Arbiter of Woe",
+    "cost": "{4}{B}{B}",
+    "mana_value": 6,
+    "types": "[Creature] - [Demon]",
+    "rarity": "Uncommon",
+    "pt": "5/4",
+    "rules": [
+      "As an additional cost to cast this spell, sacrifice a creature.",
+      "Flying",
+      "When {this} enters, each opponent discards a card and loses 2 life. You draw a card and gain 2 life."
+    ]
+  },
+  {
+    "name": "Arcane Epiphany",
+    "cost": "{3}{U}{U}",
+    "mana_value": 5,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "This spell costs {1} less to cast if you control a Wizard.",
+      "Draw three cards."
+    ]
+  },
+  {
+    "name": "Archmage of Runes",
+    "cost": "{3}{U}{U}",
+    "mana_value": 5,
+    "types": "[Creature] - [Giant, Wizard]",
+    "rarity": "Rare",
+    "pt": "3/6",
+    "rules": [
+      "Instant and sorcery spells you cast cost {1} less to cast.",
+      "Whenever you cast an instant or sorcery spell, draw a card."
+    ]
+  },
+  {
+    "name": "Armasaur Guide",
+    "cost": "{4}{W}",
+    "mana_value": 5,
+    "types": "[Creature] - [Dinosaur]",
+    "rarity": "Common",
+    "pt": "4/4",
+    "rules": [
+      "Vigilance",
+      "Whenever you attack with three or more creatures, put a +1/+1 counter on target creature you control."
+    ]
+  },
+  {
+    "name": "Ashroot Animist",
+    "cost": "{2}{R}{G}",
+    "mana_value": 4,
+    "types": "[Creature] - [Lizard, Druid]",
+    "rarity": "Rare",
+    "pt": "4/4",
+    "rules": [
+      "Trample",
+      "Whenever {this} attacks, another target creature you control gains trample and gets +X/+X until end of turn, where X is this creature's power."
+    ]
+  },
+  {
+    "name": "Authority of the Consuls",
+    "cost": "{W}",
+    "mana_value": 1,
+    "types": "[Enchantment]",
+    "rarity": "Rare",
+    "rules": [
+      "Creatures your opponents control enter tapped.",
+      "Whenever a creature an opponent controls enters, you gain 1 life."
+    ]
+  },
+  {
+    "name": "Axgard Cavalry",
+    "cost": "{1}{R}",
+    "mana_value": 2,
+    "types": "[Creature] - [Dwarf, Berserker]",
+    "rarity": "Common",
+    "pt": "2/2",
+    "rules": [
+      "{T}: Target creature gains haste until end of turn."
+    ]
+  },
+  {
+    "name": "Bake into a Pie",
+    "cost": "{2}{B}{B}",
+    "mana_value": 4,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Destroy target creature. Create a Food token."
+    ]
+  },
+  {
+    "name": "Balmor, Battlemage Captain",
+    "cost": "{U}{R}",
+    "mana_value": 2,
+    "types": "[Creature] - [Bird, Wizard]",
+    "rarity": "Uncommon",
+    "pt": "1/3",
+    "rules": [
+      "Flying",
+      "Whenever you cast an instant or sorcery spell, creatures you control get +1/+0 and gain trample until end of turn."
+    ]
+  },
+  {
+    "name": "Banishing Light",
+    "cost": "{2}{W}",
+    "mana_value": 3,
+    "types": "[Enchantment]",
+    "rarity": "Common",
+    "rules": [
+      "When {this} enters, exile target nonland permanent an opponent controls until {this} leaves the battlefield."
+    ]
+  },
+  {
+    "name": "Banner of Kinship",
+    "cost": "{5}",
+    "mana_value": 5,
+    "types": "[Artifact]",
+    "rarity": "Rare",
+    "rules": [
+      "As {this} enters, choose a creature type. This artifact enters with a fellowship counter on it for each creature you control of the chosen type.",
+      "Creatures you control of the chosen type get +1/+1 for each fellowship counter on this artifact."
+    ]
+  },
+  {
+    "name": "Battlesong Berserker",
+    "cost": "{3}{R}",
+    "mana_value": 4,
+    "types": "[Creature] - [Human, Berserker]",
+    "rarity": "Uncommon",
+    "pt": "3/4",
+    "rules": [
+      "Whenever you attack, target creature you control gets +1/+0 and gains menace until end of turn."
+    ]
+  },
+  {
+    "name": "Beast-Kin Ranger",
+    "cost": "{2}{G}",
+    "mana_value": 3,
+    "types": "[Creature] - [Elf, Ranger]",
+    "rarity": "Common",
+    "pt": "3/3",
+    "rules": [
+      "Trample",
+      "Whenever another creature you control enters, {this} gets +1/+0 until end of turn."
+    ]
+  },
+  {
+    "name": "Bigfin Bouncer",
+    "cost": "{3}{U}",
+    "mana_value": 4,
+    "types": "[Creature] - [Shark, Pirate]",
+    "rarity": "Common",
+    "pt": "3/2",
+    "rules": [
+      "When {this} enters, return target creature an opponent controls to its owner's hand."
+    ]
+  },
+  {
+    "name": "Billowing Shriekmass",
+    "cost": "{3}{B}",
+    "mana_value": 4,
+    "types": "[Creature] - [Spirit]",
+    "rarity": "Uncommon",
+    "pt": "2/3",
+    "rules": [
+      "Flying",
+      "When {this} enters, mill three cards.",
+      "Threshold - This creature gets +2/+1 as long as there are seven or more cards in your graveyard."
+    ]
+  },
+  {
+    "name": "Bite Down",
+    "cost": "{1}{G}",
+    "mana_value": 2,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Target creature you control deals damage equal to its power to target creature or planeswalker you don't control."
+    ]
+  },
+  {
+    "name": "Blanchwood Armor",
+    "cost": "{2}{G}",
+    "mana_value": 3,
+    "types": "[Enchantment] - [Aura]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Enchant creature",
+      "Enchanted creature gets +1/+1 for each Forest you control."
+    ]
+  },
+  {
+    "name": "Blasphemous Edict",
+    "cost": "{3}{B}{B}",
+    "mana_value": 5,
+    "types": "[Sorcery]",
+    "rarity": "Rare",
+    "rules": [
+      "If there are thirteen or more creatures on the battlefield, you may pay {B} rather than pay this spell's mana cost.",
+      "Each player sacrifices thirteen creatures of their choice."
+    ]
+  },
+  {
+    "name": "Bloodfell Caves",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Common",
+    "rules": [
+      "{this} enters tapped.",
+      "When {this} enters, you gain 1 life.",
+      "{T}: Add {B}.",
+      "{T}: Add {R}."
+    ]
+  },
+  {
+    "name": "Bloodthirsty Conqueror",
+    "cost": "{3}{B}{B}",
+    "mana_value": 5,
+    "types": "[Creature] - [Vampire, Knight]",
+    "rarity": "Mythic",
+    "pt": "5/5",
+    "rules": [
+      "Flying",
+      "Deathtouch",
+      "Whenever an opponent loses life, you gain that much life."
+    ]
+  },
+  {
+    "name": "Bloom Tender",
+    "cost": "{1}{G}",
+    "mana_value": 2,
+    "types": "[Creature] - [Elf, Druid]",
+    "rarity": "Mythic",
+    "pt": "1/1",
+    "rules": [
+      "Vivid - {T}: For each color among permanents you control, add one mana of that color."
+    ]
+  },
+  {
+    "name": "Blossoming Sands",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Common",
+    "rules": [
+      "{this} enters tapped.",
+      "When {this} enters, you gain 1 life.",
+      "{T}: Add {G}.",
+      "{T}: Add {W}."
+    ]
+  },
+  {
+    "name": "Boltwave",
+    "cost": "{R}",
+    "mana_value": 1,
+    "types": "[Sorcery]",
+    "rarity": "Uncommon",
+    "rules": [
+      "{this} deals 3 damage to each opponent."
+    ]
+  },
+  {
+    "name": "Brass's Bounty",
+    "cost": "{6}{R}",
+    "mana_value": 7,
+    "types": "[Sorcery]",
+    "rarity": "Rare",
+    "rules": [
+      "For each land you control, create a Treasure token."
+    ]
+  },
+  {
+    "name": "Brazen Scourge",
+    "cost": "{1}{R}{R}",
+    "mana_value": 3,
+    "types": "[Creature] - [Gremlin]",
+    "rarity": "Uncommon",
+    "pt": "3/3",
+    "rules": [
+      "Haste"
+    ]
+  },
+  {
+    "name": "Brineborn Cutthroat",
+    "cost": "{1}{U}",
+    "mana_value": 2,
+    "types": "[Creature] - [Merfolk, Pirate]",
+    "rarity": "Uncommon",
+    "pt": "2/1",
+    "rules": [
+      "Flash",
+      "Whenever you cast a spell during an opponent's turn, put a +1/+1 counter on {this}."
+    ]
+  },
+  {
+    "name": "Broken Wings",
+    "cost": "{2}{G}",
+    "mana_value": 3,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Destroy target artifact, enchantment, or creature with flying."
+    ]
+  },
+  {
+    "name": "Bulk Up",
+    "cost": "{1}{R}",
+    "mana_value": 2,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Double target creature's power until end of turn.",
+      "Flashback {4}{R}{R} (You may cast this card from your graveyard for its flashback cost. Then exile it.)"
+    ]
+  },
+  {
+    "name": "Burglar Rat",
+    "cost": "{1}{B}",
+    "mana_value": 2,
+    "types": "[Creature] - [Rat]",
+    "rarity": "Common",
+    "pt": "1/1",
+    "rules": [
+      "When {this} enters, each opponent discards a card."
+    ]
+  },
+  {
+    "name": "Burnished Hart",
+    "cost": "{3}",
+    "mana_value": 3,
+    "types": "[Artifact, Creature] - [Elk]",
+    "rarity": "Uncommon",
+    "pt": "2/2",
+    "rules": [
+      "{3}, Sacrifice {this}: Search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle."
+    ]
+  },
+  {
+    "name": "Burst Lightning",
+    "cost": "{R}",
+    "mana_value": 1,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Kicker {4} (You may pay an additional {4} as you cast this spell.)",
+      "{this} deals 2 damage to any target. If this spell was kicked, it deals 4 damage instead."
+    ]
+  },
+  {
+    "name": "Bushwhack",
+    "cost": "{G}",
+    "mana_value": 1,
+    "types": "[Sorcery]",
+    "rarity": "Common",
+    "rules": [
+      "Choose one -&bull Search your library for a basic land card, reveal it, put it into your hand, then shuffle.&bull Target creature you control fights target creature you don't control. (Each deals damage equal to its power to the other.)"
+    ]
+  },
+  {
+    "name": "Cackling Prowler",
+    "cost": "{3}{G}",
+    "mana_value": 4,
+    "types": "[Creature] - [Hyena, Rogue]",
+    "rarity": "Common",
+    "pt": "4/3",
+    "rules": [
+      "Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)",
+      "Morbid - At the beginning of your end step, if a creature died this turn, put a +1/+1 counter on {this}."
+    ]
+  },
+  {
+    "name": "Campus Guide",
+    "cost": "{2}",
+    "mana_value": 2,
+    "types": "[Artifact, Creature] - [Golem]",
+    "rarity": "Common",
+    "pt": "2/1",
+    "rules": [
+      "When {this} enters, you may search your library for a basic land card, reveal it, then shuffle and put that card on top."
+    ]
+  },
+  {
+    "name": "Cat Collector",
+    "cost": "{2}{W}",
+    "mana_value": 3,
+    "types": "[Creature] - [Human, Citizen]",
+    "rarity": "Uncommon",
+    "pt": "3/2",
+    "rules": [
+      "When {this} enters, create a Food token.",
+      "Whenever you gain life for the first time during each of your turns, create a 1/1 white Cat creature token."
+    ]
+  },
+  {
+    "name": "Cathar Commando",
+    "cost": "{1}{W}",
+    "mana_value": 2,
+    "types": "[Creature] - [Human, Soldier]",
+    "rarity": "Common",
+    "pt": "3/1",
+    "rules": [
+      "Flash",
+      "{1}, Sacrifice {this}: Destroy target artifact or enchantment."
+    ]
+  },
+  {
+    "name": "Celestial Armor",
+    "cost": "{2}{W}",
+    "mana_value": 3,
+    "types": "[Artifact] - [Equipment]",
+    "rarity": "Rare",
+    "rules": [
+      "Flash",
+      "When {this} enters, attach it to target creature you control. That creature gains hexproof and indestructible until end of turn.",
+      "Equipped creature gets +2/+0 and has flying.",
+      "Equip {3}{W} ({3}{W}: Attach to target creature you control. Equip only as a sorcery.)"
+    ]
+  },
+  {
+    "name": "Cephalid Inkmage",
+    "cost": "{2}{U}",
+    "mana_value": 3,
+    "types": "[Creature] - [Octopus, Wizard]",
+    "rarity": "Uncommon",
+    "pt": "2/2",
+    "rules": [
+      "When {this} enters, surveil 3. (Look at the top three cards of your library, then put any number of them into your graveyard and the rest on top in any order.)",
+      "Threshold - This creature can't be blocked as long as there are seven or more cards in your graveyard."
+    ]
+  },
+  {
+    "name": "Chandra, Flameshaper",
+    "cost": "{5}{R}{R}",
+    "mana_value": 7,
+    "types": "[Planeswalker] - [Chandra]",
+    "rarity": "Mythic",
+    "rules": [
+      "+2: Add {R}{R}{R}. Exile the top three cards of your library. Choose one of them. You may play that card this turn.",
+      "+1: Create a token that's a copy of target creature you control, except it has haste and \"At the beginning of the end step, sacrifice this token.\"",
+      "-4: {this} deals 8 damage divided as you choose among any number of target creatures and/or planeswalkers."
+    ]
+  },
+  {
+    "name": "Claws Out",
+    "cost": "{3}{W}{W}",
+    "mana_value": 5,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Creatures you control get +2/+2 until end of turn.",
+      "This spell costs {1} less to cast for each Cat you control."
+    ]
+  },
+  {
+    "name": "Clinquant Skymage",
+    "cost": "{3}{U}",
+    "mana_value": 4,
+    "types": "[Creature] - [Bird, Wizard]",
+    "rarity": "Uncommon",
+    "pt": "1/1",
+    "rules": [
+      "Flying",
+      "Whenever you draw a card, put a +1/+1 counter on {this}."
+    ]
+  },
+  {
+    "name": "Condemn",
+    "cost": "{W}",
+    "mana_value": 1,
+    "types": "[Instant]",
+    "rarity": "Mythic",
+    "rules": [
+      "Put target attacking creature on the bottom of its owner's library. Its controller gains life equal to its toughness."
+    ]
+  },
+  {
+    "name": "Consuming Aberration",
+    "cost": "{3}{U}{B}",
+    "mana_value": 5,
+    "types": "[Creature] - [Horror]",
+    "rarity": "Rare",
+    "pt": "0/0",
+    "rules": [
+      "{this}'s power and toughness are each equal to the number of cards in your opponents' graveyards.",
+      "Whenever you cast a spell, each opponent reveals cards from the top of their library until they reveal a land card, then puts those cards into their graveyard."
+    ]
+  },
+  {
+    "name": "Courageous Goblin",
+    "cost": "{1}{R}",
+    "mana_value": 2,
+    "types": "[Creature] - [Goblin]",
+    "rarity": "Common",
+    "pt": "2/2",
+    "rules": [
+      "Whenever {this} attacks while you control a creature with power 4 or greater, it gets +1/+0 and gains menace until end of turn."
+    ]
+  },
+  {
+    "name": "Crackling Cyclops",
+    "cost": "{2}{R}",
+    "mana_value": 3,
+    "types": "[Creature] - [Cyclops, Wizard]",
+    "rarity": "Common",
+    "pt": "0/4",
+    "rules": [
+      "Whenever you cast a noncreature spell, {this} gets +3/+0 until end of turn."
+    ]
+  },
+  {
+    "name": "Crypt Feaster",
+    "cost": "{3}{B}",
+    "mana_value": 4,
+    "types": "[Creature] - [Zombie]",
+    "rarity": "Common",
+    "pt": "3/4",
+    "rules": [
+      "Menace (This creature can't be blocked except by two or more creatures.)",
+      "Threshold - Whenever {this} attacks, if seven or more cards are in your graveyard, {this} gets +2/+0 until end of turn."
+    ]
+  },
+  {
+    "name": "Crystal Barricade",
+    "cost": "{1}{W}",
+    "mana_value": 2,
+    "types": "[Artifact, Creature] - [Wall]",
+    "rarity": "Rare",
+    "pt": "0/4",
+    "rules": [
+      "Defender",
+      "You have hexproof.",
+      "Prevent all noncombat damage that would be dealt to other creatures you control."
+    ]
+  },
+  {
+    "name": "Curator of Destinies",
+    "cost": "{4}{U}{U}",
+    "mana_value": 6,
+    "types": "[Creature] - [Sphinx]",
+    "rarity": "Rare",
+    "pt": "5/5",
+    "rules": [
+      "This spell can't be countered.",
+      "Flying",
+      "When {this} enters, look at the top five cards of your library and separate them into a face-down pile and a face-up pile. An opponent chooses one of those piles. Put that pile into your hand and the other into your graveyard."
+    ]
+  },
+  {
+    "name": "Dauntless Veteran",
+    "cost": "{1}{W}{W}",
+    "mana_value": 3,
+    "types": "[Creature] - [Human, Soldier]",
+    "rarity": "Uncommon",
+    "pt": "2/2",
+    "rules": [
+      "Whenever {this} attacks, creatures you control get +1/+1 until end of turn."
+    ]
+  },
+  {
+    "name": "Day of Judgment",
+    "cost": "{2}{W}{W}",
+    "mana_value": 4,
+    "types": "[Sorcery]",
+    "rarity": "Rare",
+    "rules": [
+      "Destroy all creatures."
+    ]
+  },
+  {
+    "name": "Dazzling Angel",
+    "cost": "{2}{W}",
+    "mana_value": 3,
+    "types": "[Creature] - [Angel]",
+    "rarity": "Common",
+    "pt": "2/3",
+    "rules": [
+      "Flying",
+      "Whenever another creature you control enters, you gain 1 life."
+    ]
+  },
+  {
+    "name": "Diregraf Ghoul",
+    "cost": "{B}",
+    "mana_value": 1,
+    "types": "[Creature] - [Zombie]",
+    "rarity": "Uncommon",
+    "pt": "2/2",
+    "rules": [
+      "{this} enters tapped."
+    ]
+  },
+  {
+    "name": "Dismal Backwater",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Common",
+    "rules": [
+      "{this} enters tapped.",
+      "When {this} enters, you gain 1 life.",
+      "{T}: Add {U}.",
+      "{T}: Add {B}."
+    ]
+  },
+  {
+    "name": "Divine Resilience",
+    "cost": "{W}",
+    "mana_value": 1,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Kicker {2}{W} (You may pay an additional {2}{W} as you cast this spell.)",
+      "Target creature you control gains indestructible until end of turn. If this spell was kicked, instead any number of target creatures you control gain indestructible until end of turn."
+    ]
+  },
+  {
+    "name": "Doubling Season",
+    "cost": "{4}{G}",
+    "mana_value": 5,
+    "types": "[Enchantment]",
+    "rarity": "Mythic",
+    "rules": [
+      "If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.",
+      "If an effect would put one or more counters on a permanent you control, it puts twice that many of those counters on that permanent instead."
+    ]
+  },
+  {
+    "name": "Dragon Trainer",
+    "cost": "{3}{R}{R}",
+    "mana_value": 5,
+    "types": "[Creature] - [Human]",
+    "rarity": "Uncommon",
+    "pt": "1/1",
+    "rules": [
+      "When {this} enters, create a 4/4 red Dragon creature token with flying."
+    ]
+  },
+  {
+    "name": "Drake Hatcher",
+    "cost": "{1}{U}",
+    "mana_value": 2,
+    "types": "[Creature] - [Human, Wizard]",
+    "rarity": "Rare",
+    "pt": "1/3",
+    "rules": [
+      "Vigilance",
+      "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+      "Whenever this creature deals combat damage to a player, put that many incubation counters on it.",
+      "Remove three incubation counters from {this}: Create a 2/2 blue Drake creature token with flying."
+    ]
+  },
+  {
+    "name": "Drakuseth, Maw of Flames",
+    "cost": "{4}{R}{R}{R}",
+    "mana_value": 7,
+    "types": "[Creature] - [Dragon]",
+    "rarity": "Rare",
+    "pt": "7/7",
+    "rules": [
+      "Flying",
+      "Whenever {this} attacks, it deals 4 damage to any target and 3 damage to each of up to two other targets."
+    ]
+  },
+  {
+    "name": "Dreadwing Scavenger",
+    "cost": "{1}{U}{B}",
+    "mana_value": 3,
+    "types": "[Creature] - [Nightmare, Bird]",
+    "rarity": "Uncommon",
+    "pt": "2/2",
+    "rules": [
+      "Flying",
+      "Whenever {this} enters or attacks, draw a card, then discard a card.",
+      "Threshold - This creature gets +1/+1 and has deathtouch as long as there are seven or more cards in your graveyard."
+    ]
+  },
+  {
+    "name": "Dwynen's Elite",
+    "cost": "{1}{G}",
+    "mana_value": 2,
+    "types": "[Creature] - [Elf, Warrior]",
+    "rarity": "Common",
+    "pt": "2/2",
+    "rules": [
+      "When {this} enters, if you control another Elf, create a 1/1 green Elf Warrior creature token."
+    ]
+  },
+  {
+    "name": "Dwynen, Gilt-Leaf Daen",
+    "cost": "{2}{G}{G}",
+    "mana_value": 4,
+    "types": "[Creature] - [Elf, Warrior]",
+    "rarity": "Uncommon",
+    "pt": "3/4",
+    "rules": [
+      "Reach",
+      "Other Elf creatures you control get +1/+1.",
+      "Whenever {this} attacks, you gain 1 life for each attacking Elf you control."
+    ]
+  },
+  {
+    "name": "Eager Trufflesnout",
+    "cost": "{2}{G}",
+    "mana_value": 3,
+    "types": "[Creature] - [Boar]",
+    "rarity": "Uncommon",
+    "pt": "4/2",
+    "rules": [
+      "Trample",
+      "Whenever {this} deals combat damage to a player, create a Food token."
+    ]
+  },
+  {
+    "name": "Eaten Alive",
+    "cost": "{B}",
+    "mana_value": 1,
+    "types": "[Sorcery]",
+    "rarity": "Common",
+    "rules": [
+      "As an additional cost to cast this spell, sacrifice a creature or pay {3}{B}.",
+      "Exile target creature or planeswalker."
+    ]
+  },
+  {
+    "name": "Electroduplicate",
+    "cost": "{2}{R}",
+    "mana_value": 3,
+    "types": "[Sorcery]",
+    "rarity": "Rare",
+    "rules": [
+      "Create a token that's a copy of target creature you control, except it has haste and \"At the beginning of the end step, sacrifice this token.\"",
+      "Flashback {2}{R}{R} (You may cast this card from your graveyard for its flashback cost. Then exile it.)"
+    ]
+  },
+  {
+    "name": "Elementalist Adept",
+    "cost": "{1}{U}",
+    "mana_value": 2,
+    "types": "[Creature] - [Human, Wizard]",
+    "rarity": "Common",
+    "pt": "2/1",
+    "rules": [
+      "Flash",
+      "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)"
+    ]
+  },
+  {
+    "name": "Elenda, Saint of Dusk",
+    "cost": "{2}{W}{B}",
+    "mana_value": 4,
+    "types": "[Creature] - [Vampire, Knight]",
+    "rarity": "Rare",
+    "pt": "4/4",
+    "rules": [
+      "Lifelink",
+      "Hexproof from instants",
+      "As long as your life total is greater than your starting life total, {this} gets +1/+1 and has menace. {this} gets an additional +5/+5 as long as your life total is at least 10 greater than your starting life total."
+    ]
+  },
+  {
+    "name": "Elfsworn Giant",
+    "cost": "{3}{G}{G}",
+    "mana_value": 5,
+    "types": "[Creature] - [Giant]",
+    "rarity": "Common",
+    "pt": "5/3",
+    "rules": [
+      "Reach",
+      "Landfall - Whenever a land you control enters, create a 1/1 green Elf Warrior creature token."
+    ]
+  },
+  {
+    "name": "Elvish Archdruid",
+    "cost": "{1}{G}{G}",
+    "mana_value": 3,
+    "types": "[Creature] - [Elf, Druid]",
+    "rarity": "Rare",
+    "pt": "2/2",
+    "rules": [
+      "Other Elf creatures you control get +1/+1.",
+      "{T}: Add {G} for each Elf you control."
+    ]
+  },
+  {
+    "name": "Elvish Regrower",
+    "cost": "{2}{G}{G}",
+    "mana_value": 4,
+    "types": "[Creature] - [Elf, Druid]",
+    "rarity": "Uncommon",
+    "pt": "4/3",
+    "rules": [
+      "When {this} enters, return target permanent card from your graveyard to your hand."
+    ]
+  },
+  {
+    "name": "Embercleave",
+    "cost": "{4}{R}{R}",
+    "mana_value": 6,
+    "types": "[Artifact] - [Equipment]",
+    "rarity": "Mythic",
+    "rules": [
+      "Flash",
+      "This spell costs {1} less to cast for each attacking creature you control.",
+      "When {this} enters, attach it to target creature you control.",
+      "Equipped creature gets +1/+1 and has double strike and trample.",
+      "Equip {3}"
+    ]
+  },
+  {
+    "name": "Empyrean Eagle",
+    "cost": "{1}{W}{U}",
+    "mana_value": 3,
+    "types": "[Creature] - [Bird, Spirit]",
+    "rarity": "Uncommon",
+    "pt": "2/3",
+    "rules": [
+      "Flying",
+      "Other creatures you control with flying get +1/+1."
+    ]
+  },
+  {
+    "name": "Erudite Wizard",
+    "cost": "{2}{U}",
+    "mana_value": 3,
+    "types": "[Creature] - [Human, Wizard]",
+    "rarity": "Common",
+    "pt": "2/3",
+    "rules": [
+      "Whenever you draw your second card each turn, put a +1/+1 counter on {this}."
+    ]
+  },
+  {
+    "name": "Essence Scatter",
+    "cost": "{1}{U}",
+    "mana_value": 2,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Counter target creature spell."
+    ]
+  },
+  {
+    "name": "Etali, Primal Storm",
+    "cost": "{4}{R}{R}",
+    "mana_value": 6,
+    "types": "[Creature] - [Elder, Dinosaur]",
+    "rarity": "Rare",
+    "pt": "6/6",
+    "rules": [
+      "Whenever {this} attacks, exile the top card of each player's library, then you may cast any number of spells from among those cards without paying their mana costs."
+    ]
+  },
+  {
+    "name": "Evolving Wilds",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Common",
+    "rules": [
+      "{T}, Sacrifice {this}: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle."
+    ]
+  },
+  {
+    "name": "Exemplar of Light",
+    "cost": "{2}{W}{W}",
+    "mana_value": 4,
+    "types": "[Creature] - [Angel]",
+    "rarity": "Rare",
+    "pt": "3/3",
+    "rules": [
+      "Flying",
+      "Whenever you gain life, put a +1/+1 counter on {this}.",
+      "Whenever you put one or more +1/+1 counters on this creature, draw a card. This ability triggers only once each turn."
+    ]
+  },
+  {
+    "name": "Exsanguinate",
+    "cost": "{X}{B}{B}",
+    "mana_value": 2,
+    "types": "[Sorcery]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Each opponent loses X life. You gain life equal to the life lost this way."
+    ]
+  },
+  {
+    "name": "Extravagant Replication",
+    "cost": "{4}{U}{U}",
+    "mana_value": 6,
+    "types": "[Enchantment]",
+    "rarity": "Rare",
+    "rules": [
+      "At the beginning of your upkeep, create a token that's a copy of another target nonland permanent you control."
+    ]
+  },
+  {
+    "name": "Faebloom Trick",
+    "cost": "{2}{U}",
+    "mana_value": 3,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Create two 1/1 blue Faerie creature tokens with flying. When you do, tap target creature an opponent controls."
+    ]
+  },
+  {
+    "name": "Fake Your Own Death",
+    "cost": "{1}{B}",
+    "mana_value": 2,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Until end of turn, target creature gets +2/+0 and gains \"When this creature dies, return it to the battlefield tapped under its owner's control and you create a Treasure token.\""
+    ]
+  },
+  {
+    "name": "Fanatical Firebrand",
+    "cost": "{R}",
+    "mana_value": 1,
+    "types": "[Creature] - [Goblin, Pirate]",
+    "rarity": "Common",
+    "pt": "1/1",
+    "rules": [
+      "Haste",
+      "{T}, Sacrifice {this}: It deals 1 damage to any target."
+    ]
+  },
+  {
+    "name": "Felidar Savior",
+    "cost": "{3}{W}",
+    "mana_value": 4,
+    "types": "[Creature] - [Cat, Beast]",
+    "rarity": "Common",
+    "pt": "2/3",
+    "rules": [
+      "Lifelink",
+      "When {this} enters, put a +1/+1 counter on each of up to two target other creatures you control."
+    ]
+  },
+  {
+    "name": "Felling Blow",
+    "cost": "{2}{G}",
+    "mana_value": 3,
+    "types": "[Sorcery]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Put a +1/+1 counter on target creature you control. Then that creature deals damage equal to its power to target creature an opponent controls."
+    ]
+  },
+  {
+    "name": "Fiend Artisan",
+    "cost": "{B/G}{B/G}",
+    "mana_value": 2,
+    "types": "[Creature] - [Nightmare]",
+    "rarity": "Mythic",
+    "pt": "1/1",
+    "rules": [
+      "{this} gets +1/+1 for each creature card in your graveyard.",
+      "{X}{B/G}, {T}, Sacrifice another creature: Search your library for a creature card with mana value X or less, put it onto the battlefield, then shuffle. Activate only as a sorcery."
+    ]
+  },
+  {
+    "name": "Fiendish Panda",
+    "cost": "{2}{W}{B}",
+    "mana_value": 4,
+    "types": "[Creature] - [Bear, Demon]",
+    "rarity": "Uncommon",
+    "pt": "3/2",
+    "rules": [
+      "Whenever you gain life, put a +1/+1 counter on {this}.",
+      "When {this} dies, return another target non-Bear creature card with mana value less than or equal to this creature's power from your graveyard to the battlefield."
+    ]
+  },
+  {
+    "name": "Fiery Annihilation",
+    "cost": "{2}{R}",
+    "mana_value": 3,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "{this} deals 5 damage to target creature. Exile up to one target Equipment attached to that creature. If that creature would die this turn, exile it instead."
+    ]
+  },
+  {
+    "name": "Firebrand Archer",
+    "cost": "{1}{R}",
+    "mana_value": 2,
+    "types": "[Creature] - [Human, Archer]",
+    "rarity": "Common",
+    "pt": "2/1",
+    "rules": [
+      "Whenever you cast a noncreature spell, {this} deals 1 damage to each opponent."
+    ]
+  },
+  {
+    "name": "Firespitter Whelp",
+    "cost": "{2}{R}",
+    "mana_value": 3,
+    "types": "[Creature] - [Dragon]",
+    "rarity": "Uncommon",
+    "pt": "2/2",
+    "rules": [
+      "Flying",
+      "Whenever you cast a noncreature or Dragon spell, {this} deals 1 damage to each opponent."
+    ]
+  },
+  {
+    "name": "Fishing Pole",
+    "cost": "{1}",
+    "mana_value": 1,
+    "types": "[Artifact] - [Equipment]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Equipped creature has \"{1}, {T}, Tap {this}: Put a bait counter on {this}.\"",
+      "Whenever equipped creature becomes untapped, remove a bait counter from this Equipment. If you do, create a 1/1 blue Fish creature token.",
+      "Equip {2} ({2}: Attach to target creature you control. Equip only as a sorcery.)"
+    ]
+  },
+  {
+    "name": "Flamewake Phoenix",
+    "cost": "{1}{R}{R}",
+    "mana_value": 3,
+    "types": "[Creature] - [Phoenix]",
+    "rarity": "Rare",
+    "pt": "2/2",
+    "rules": [
+      "Flying",
+      "Haste",
+      "{this} attacks each combat if able.",
+      "Ferocious - At the beginning of combat on your turn, if you control a creature with power 4 or greater, you may pay {R}. If you do, return this card from your graveyard to the battlefield."
+    ]
+  },
+  {
+    "name": "Fleeting Distraction",
+    "cost": "{U}",
+    "mana_value": 1,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Target creature gets -1/-0 until end of turn. Draw a card."
+    ]
+  },
+  {
+    "name": "Fleeting Flight",
+    "cost": "{W}",
+    "mana_value": 1,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Put a +1/+1 counter on target creature. It gains flying until end of turn. Prevent all combat damage that would be dealt to it this turn."
+    ]
+  },
+  {
+    "name": "Forest",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land] - [Forest]",
+    "rarity": "Land",
+    "rules": [
+      "{T}: Add {G}."
+    ]
+  },
+  {
+    "name": "Frenzied Goblin",
+    "cost": "{R}",
+    "mana_value": 1,
+    "types": "[Creature] - [Goblin, Berserker]",
+    "rarity": "Uncommon",
+    "pt": "1/1",
+    "rules": [
+      "Whenever {this} attacks, you may pay {R}. If you do, target creature can't block this turn."
+    ]
+  },
+  {
+    "name": "Garruk's Uprising",
+    "cost": "{2}{G}",
+    "mana_value": 3,
+    "types": "[Enchantment]",
+    "rarity": "Uncommon",
+    "rules": [
+      "When {this} enters, if you control a creature with power 4 or greater, draw a card.",
+      "Creatures you control have trample.",
+      "Whenever a creature you control with power 4 or greater enters, draw a card."
+    ]
+  },
+  {
+    "name": "Genesis Wave",
+    "cost": "{X}{G}{G}{G}",
+    "mana_value": 3,
+    "types": "[Sorcery]",
+    "rarity": "Rare",
+    "rules": [
+      "Reveal the top X cards of your library. You may put any number of permanent cards with mana value X or less from among them onto the battlefield. Then put all cards revealed this way that weren't put onto the battlefield into your graveyard."
+    ]
+  },
+  {
+    "name": "Ghalta, Primal Hunger",
+    "cost": "{10}{G}{G}",
+    "mana_value": 12,
+    "types": "[Creature] - [Elder, Dinosaur]",
+    "rarity": "Rare",
+    "pt": "12/12",
+    "rules": [
+      "This spell costs {X} less to cast, where X is the total power of creatures you control.",
+      "Trample"
+    ]
+  },
+  {
+    "name": "Giada, Font of Hope",
+    "cost": "{1}{W}",
+    "mana_value": 2,
+    "types": "[Creature] - [Angel]",
+    "rarity": "Rare",
+    "pt": "2/2",
+    "rules": [
+      "Flying",
+      "Vigilance",
+      "Each other Angel you control enters with an additional +1/+1 counter on it for each Angel you already control.",
+      "{T}: Add {W}. Spend this mana only to cast an Angel spell."
+    ]
+  },
+  {
+    "name": "Giant Growth",
+    "cost": "{G}",
+    "mana_value": 1,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Target creature gets +3/+3 until end of turn."
+    ]
+  },
+  {
+    "name": "Gleaming Barrier",
+    "cost": "{2}",
+    "mana_value": 2,
+    "types": "[Artifact, Creature] - [Wall]",
+    "rarity": "Common",
+    "pt": "0/4",
+    "rules": [
+      "Defender",
+      "When {this} dies, create a Treasure token."
+    ]
+  },
+  {
+    "name": "Gnarlid Colony",
+    "cost": "{1}{G}",
+    "mana_value": 2,
+    "types": "[Creature] - [Beast]",
+    "rarity": "Common",
+    "pt": "2/2",
+    "rules": [
+      "Kicker {2}{G} (You may pay an additional {2}{G} as you cast this spell.)",
+      "If {this} was kicked, it enters with two +1/+1 counters on it.",
+      "Each creature you control with a +1/+1 counter on it has trample."
+    ]
+  },
+  {
+    "name": "Goblin Boarders",
+    "cost": "{2}{R}",
+    "mana_value": 3,
+    "types": "[Creature] - [Goblin, Pirate]",
+    "rarity": "Common",
+    "pt": "3/2",
+    "rules": [
+      "Raid - {this} enters with a +1/+1 counter on it if you attacked this turn."
+    ]
+  },
+  {
+    "name": "Goblin Bushwhacker",
+    "cost": "{R}",
+    "mana_value": 1,
+    "types": "[Creature] - [Goblin, Warrior]",
+    "rarity": "Mythic",
+    "pt": "1/1",
+    "rules": [
+      "Kicker {R} (You may pay an additional {R} as you cast this spell.)",
+      "When {this} enters, if it was kicked, creatures you control get +1/+0 and gain haste until end of turn."
+    ]
+  },
+  {
+    "name": "Goblin Negotiation",
+    "cost": "{X}{R}{R}",
+    "mana_value": 2,
+    "types": "[Sorcery]",
+    "rarity": "Uncommon",
+    "rules": [
+      "{this} deals X damage to target creature. Create a number of 1/1 red Goblin creature tokens equal to the amount of excess damage dealt to that creature this way."
+    ]
+  },
+  {
+    "name": "Goblin Surprise",
+    "cost": "{2}{R}",
+    "mana_value": 3,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Choose one -&bull Creatures you control get +2/+0 until end of turn.&bull Create two 1/1 red Goblin creature tokens."
+    ]
+  },
+  {
+    "name": "Goldvein Pick",
+    "cost": "{2}",
+    "mana_value": 2,
+    "types": "[Artifact] - [Equipment]",
+    "rarity": "Common",
+    "rules": [
+      "Equipped creature gets +1/+1.",
+      "Whenever equipped creature deals combat damage to a player, create a Treasure token.",
+      "Equip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)"
+    ]
+  },
+  {
+    "name": "Good-Fortune Unicorn",
+    "cost": "{1}{G}{W}",
+    "mana_value": 3,
+    "types": "[Creature] - [Unicorn]",
+    "rarity": "Uncommon",
+    "pt": "2/2",
+    "rules": [
+      "Whenever another creature you control enters, put a +1/+1 counter on that creature."
+    ]
+  },
+  {
+    "name": "Gorehorn Raider",
+    "cost": "{4}{R}",
+    "mana_value": 5,
+    "types": "[Creature] - [Minotaur, Pirate]",
+    "rarity": "Common",
+    "pt": "4/4",
+    "rules": [
+      "Raid - When {this} enters, if you attacked this turn, {this} deals 2 damage to any target."
+    ]
+  },
+  {
+    "name": "Grappling Kraken",
+    "cost": "{4}{U}{U}",
+    "mana_value": 6,
+    "types": "[Creature] - [Kraken]",
+    "rarity": "Uncommon",
+    "pt": "5/6",
+    "rules": [
+      "Landfall - Whenever a land you control enters, tap target creature an opponent controls and put a stun counter on it."
+    ]
+  },
+  {
+    "name": "Grim Tutor",
+    "cost": "{1}{B}{B}",
+    "mana_value": 3,
+    "types": "[Sorcery]",
+    "rarity": "Mythic",
+    "rules": [
+      "Search your library for a card, put that card into your hand, then shuffle. You lose 3 life."
+    ]
+  },
+  {
+    "name": "Grow from the Ashes",
+    "cost": "{2}{G}",
+    "mana_value": 3,
+    "types": "[Sorcery]",
+    "rarity": "Common",
+    "rules": [
+      "Kicker {2} (You may pay an additional {2} as you cast this spell.)",
+      "Search your library for a basic land card, put it onto the battlefield, then shuffle. If this spell was kicked, instead search your library for two basic land cards, put them onto the battlefield, then shuffle."
+    ]
+  },
+  {
+    "name": "Guarded Heir",
+    "cost": "{5}{W}",
+    "mana_value": 6,
+    "types": "[Creature] - [Human, Noble]",
+    "rarity": "Uncommon",
+    "pt": "1/1",
+    "rules": [
+      "Lifelink",
+      "When {this} enters, create two 3/3 white Knight creature tokens."
+    ]
+  },
+  {
+    "name": "Gutless Plunderer",
+    "cost": "{2}{B}",
+    "mana_value": 3,
+    "types": "[Creature] - [Skeleton, Pirate]",
+    "rarity": "Common",
+    "pt": "2/2",
+    "rules": [
+      "Deathtouch",
+      "Raid - When {this} enters, if you attacked this turn, look at the top three cards of your library. Put up to one of them back on top of your library and the rest into your graveyard."
+    ]
+  },
+  {
+    "name": "Hare Apparent",
+    "cost": "{1}{W}",
+    "mana_value": 2,
+    "types": "[Creature] - [Rabbit, Noble]",
+    "rarity": "Common",
+    "pt": "2/2",
+    "rules": [
+      "A deck can have any number of cards named Hare Apparent.",
+      "When {this} enters, create a number of 1/1 white Rabbit creature tokens equal to the number of other creatures you control named Hare Apparent."
+    ]
+  },
+  {
+    "name": "Healer's Hawk",
+    "cost": "{W}",
+    "mana_value": 1,
+    "types": "[Creature] - [Bird]",
+    "rarity": "Common",
+    "pt": "1/1",
+    "rules": [
+      "Flying",
+      "Lifelink"
+    ]
+  },
+  {
+    "name": "Heartfire Immolator",
+    "cost": "{1}{R}",
+    "mana_value": 2,
+    "types": "[Creature] - [Human, Wizard]",
+    "rarity": "Uncommon",
+    "pt": "2/2",
+    "rules": [
+      "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+      "{R}, Sacrifice {this}: It deals damage equal to its power to target creature or planeswalker."
+    ]
+  },
+  {
+    "name": "Helpful Hunter",
+    "cost": "{1}{W}",
+    "mana_value": 2,
+    "types": "[Creature] - [Cat]",
+    "rarity": "Common",
+    "pt": "1/1",
+    "rules": [
+      "When {this} enters, draw a card."
+    ]
+  },
+  {
+    "name": "Herald of Eternal Dawn",
+    "cost": "{4}{W}{W}{W}",
+    "mana_value": 7,
+    "types": "[Creature] - [Angel]",
+    "rarity": "Mythic",
+    "pt": "6/6",
+    "rules": [
+      "Flash",
+      "Flying",
+      "You can't lose the game and your opponents can't win the game."
+    ]
+  },
+  {
+    "name": "Heraldic Banner",
+    "cost": "{3}",
+    "mana_value": 3,
+    "types": "[Artifact]",
+    "rarity": "Uncommon",
+    "rules": [
+      "As {this} enters, choose a color.",
+      "Creatures you control of the chosen color get +1/+0.",
+      "{T}: Add one mana of the chosen color."
+    ]
+  },
+  {
+    "name": "Hero's Downfall",
+    "cost": "{1}{B}{B}",
+    "mana_value": 3,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Destroy target creature or planeswalker."
+    ]
+  },
+  {
+    "name": "Heroic Reinforcements",
+    "cost": "{2}{R}{W}",
+    "mana_value": 4,
+    "types": "[Sorcery]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Create two 1/1 white Soldier creature tokens. Until end of turn, creatures you control get +1/+1 and gain haste."
+    ]
+  },
+  {
+    "name": "Hidetsugu's Second Rite",
+    "cost": "{3}{R}",
+    "mana_value": 4,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "If target player has exactly 10 life, {this} deals 10 damage to that player."
+    ]
+  },
+  {
+    "name": "High Fae Trickster",
+    "cost": "{3}{U}",
+    "mana_value": 4,
+    "types": "[Creature] - [Faerie, Wizard]",
+    "rarity": "Rare",
+    "pt": "4/2",
+    "rules": [
+      "Flash",
+      "Flying",
+      "You may cast spells as though they had flash."
+    ]
+  },
+  {
+    "name": "High-Society Hunter",
+    "cost": "{3}{B}{B}",
+    "mana_value": 5,
+    "types": "[Creature] - [Vampire, Noble]",
+    "rarity": "Rare",
+    "pt": "5/3",
+    "rules": [
+      "Flying",
+      "Whenever {this} attacks, you may sacrifice another creature. If you do, put a +1/+1 counter on {this}.",
+      "Whenever another nontoken creature dies, draw a card."
+    ]
+  },
+  {
+    "name": "Homunculus Horde",
+    "cost": "{3}{U}",
+    "mana_value": 4,
+    "types": "[Creature] - [Homunculus]",
+    "rarity": "Rare",
+    "pt": "2/2",
+    "rules": [
+      "Whenever you draw your second card each turn, create a token that's a copy of {this}."
+    ]
+  },
+  {
+    "name": "Hungry Ghoul",
+    "cost": "{1}{B}",
+    "mana_value": 2,
+    "types": "[Creature] - [Zombie]",
+    "rarity": "Common",
+    "pt": "2/2",
+    "rules": [
+      "{1}, Sacrifice another creature: Put a +1/+1 counter on {this}."
+    ]
+  },
+  {
+    "name": "Icewind Elemental",
+    "cost": "{4}{U}",
+    "mana_value": 5,
+    "types": "[Creature] - [Elemental]",
+    "rarity": "Common",
+    "pt": "3/4",
+    "rules": [
+      "Flying",
+      "When {this} enters, draw a card, then discard a card."
+    ]
+  },
+  {
+    "name": "Imprisoned in the Moon",
+    "cost": "{2}{U}",
+    "mana_value": 3,
+    "types": "[Enchantment] - [Aura]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Enchant creature, land, or planeswalker",
+      "Enchanted permanent is a colorless land with \"{T}: Add {C}\" and loses all other card types and abilities."
+    ]
+  },
+  {
+    "name": "Incinerating Blast",
+    "cost": "{4}{R}",
+    "mana_value": 5,
+    "types": "[Sorcery]",
+    "rarity": "Common",
+    "rules": [
+      "{this} deals 6 damage to target creature. You may discard a card. If you do, draw a card."
+    ]
+  },
+  {
+    "name": "Infernal Vessel",
+    "cost": "{2}{B}",
+    "mana_value": 3,
+    "types": "[Creature] - [Human, Cleric]",
+    "rarity": "Uncommon",
+    "pt": "2/1",
+    "rules": [
+      "When {this} dies, if it wasn't a Demon, return it to the battlefield under its owner's control with two +1/+1 counters on it. It's a Demon in addition to its other types."
+    ]
+  },
+  {
+    "name": "Infestation Sage",
+    "cost": "{B}",
+    "mana_value": 1,
+    "types": "[Creature] - [Elf, Warlock]",
+    "rarity": "Common",
+    "pt": "1/1",
+    "rules": [
+      "When {this} dies, create a 1/1 black and green Insect creature token with flying."
+    ]
+  },
+  {
+    "name": "Inspiration from Beyond",
+    "cost": "{2}{U}",
+    "mana_value": 3,
+    "types": "[Sorcery]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Mill three cards, then return an instant or sorcery card from your graveyard to your hand.",
+      "Flashback {5}{U}{U} (You may cast this card from your graveyard for its flashback cost. Then exile it.)"
+    ]
+  },
+  {
+    "name": "Inspiring Call",
+    "cost": "{2}{G}",
+    "mana_value": 3,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Draw a card for each creature you control with a +1/+1 counter on it. Those creatures gain indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy them.)"
+    ]
+  },
+  {
+    "name": "Inspiring Paladin",
+    "cost": "{2}{W}",
+    "mana_value": 3,
+    "types": "[Creature] - [Human, Knight]",
+    "rarity": "Common",
+    "pt": "3/3",
+    "rules": [
+      "During your turn, this creature has first strike.",
+      "During your turn, creatures you control with +1/+1 counters on them have first strike."
+    ]
+  },
+  {
+    "name": "Involuntary Employment",
+    "cost": "{3}{R}",
+    "mana_value": 4,
+    "types": "[Sorcery]",
+    "rarity": "Common",
+    "rules": [
+      "Gain control of target creature until end of turn. Untap that creature. It gains haste until end of turn. Create a Treasure token."
+    ]
+  },
+  {
+    "name": "Island",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land] - [Island]",
+    "rarity": "Land",
+    "rules": [
+      "{T}: Add {U}."
+    ]
+  },
+  {
+    "name": "Joust Through",
+    "cost": "{W}",
+    "mana_value": 1,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "{this} deals 3 damage to target attacking or blocking creature. You gain 1 life."
+    ]
+  },
+  {
+    "name": "Juggernaut",
+    "cost": "{4}",
+    "mana_value": 4,
+    "types": "[Artifact, Creature] - [Juggernaut]",
+    "rarity": "Uncommon",
+    "pt": "5/3",
+    "rules": [
+      "{this} attacks each combat if able.",
+      "{this} can't be blocked by Walls."
+    ]
+  },
+  {
+    "name": "Jungle Hollow",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Common",
+    "rules": [
+      "{this} enters tapped.",
+      "When {this} enters, you gain 1 life.",
+      "{T}: Add {B}.",
+      "{T}: Add {G}."
+    ]
+  },
+  {
+    "name": "Kaito, Cunning Infiltrator",
+    "cost": "{1}{U}{U}",
+    "mana_value": 3,
+    "types": "[Planeswalker] - [Kaito]",
+    "rarity": "Mythic",
+    "rules": [
+      "Whenever a creature you control deals combat damage to a player, put a loyalty counter on {this}.",
+      "+1: Up to one target creature you control can't be blocked this turn. Draw a card, then discard a card.",
+      "-2: Create a 2/1 blue Ninja creature token.",
+      "-9: You get an emblem with \"Whenever a player casts a spell, you create a 2/1 blue Ninja creature token.\""
+    ]
+  },
+  {
+    "name": "Kellan, Planar Trailblazer",
+    "cost": "{R}",
+    "mana_value": 1,
+    "types": "[Creature] - [Human, Faerie, Scout]",
+    "rarity": "Rare",
+    "pt": "2/1",
+    "rules": [
+      "{1}{R}: If {this} is a Scout, it becomes a Human Faerie Detective and gains \"Whenever {this} deals combat damage to a player, exile the top card of your library. You may play that card this turn.\"",
+      "{2}{R}: If {this} is a Detective, it becomes a 3/2 Human Faerie Rogue and gains double strike."
+    ]
+  },
+  {
+    "name": "Kiora, the Rising Tide",
+    "cost": "{2}{U}",
+    "mana_value": 3,
+    "types": "[Creature] - [Merfolk, Noble]",
+    "rarity": "Rare",
+    "pt": "3/2",
+    "rules": [
+      "When {this} enters, draw two cards, then discard two cards.",
+      "Threshold - Whenever {this} attacks, if seven or more cards are in your graveyard, you may create Scion of the Deep, a legendary 8/8 blue Octopus creature token."
+    ]
+  },
+  {
+    "name": "Koma, World-Eater",
+    "cost": "{3}{G}{G}{U}{U}",
+    "mana_value": 7,
+    "types": "[Creature] - [Serpent]",
+    "rarity": "Rare",
+    "pt": "8/12",
+    "rules": [
+      "This spell can't be countered.",
+      "Trample",
+      "Ward {4}",
+      "Whenever {this} deals combat damage to a player, create four 3/3 blue Serpent creature tokens named Koma's Coil."
+    ]
+  },
+  {
+    "name": "Krenko, Mob Boss",
+    "cost": "{2}{R}{R}",
+    "mana_value": 4,
+    "types": "[Creature] - [Goblin, Warrior]",
+    "rarity": "Rare",
+    "pt": "3/3",
+    "rules": [
+      "{T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control."
+    ]
+  },
+  {
+    "name": "Kykar, Zephyr Awakener",
+    "cost": "{2}{W}{U}",
+    "mana_value": 4,
+    "types": "[Creature] - [Bird, Wizard]",
+    "rarity": "Rare",
+    "pt": "3/4",
+    "rules": [
+      "Flying",
+      "Whenever you cast a noncreature spell, choose one -&bull Exile another target creature you control. Return that card to the battlefield under its owner's control at the beginning of the next end step.&bull Create a 1/1 white Spirit creature token with flying."
+    ]
+  },
+  {
+    "name": "Lathril, Blade of the Elves",
+    "cost": "{2}{B}{G}",
+    "mana_value": 4,
+    "types": "[Creature] - [Elf, Noble]",
+    "rarity": "Rare",
+    "pt": "2/3",
+    "rules": [
+      "Menace",
+      "Whenever {this} deals combat damage to a player, create that many 1/1 green Elf Warrior creature tokens.",
+      "{T}, Tap ten untapped Elves you control: Each opponent loses 10 life and you gain 10 life."
+    ]
+  },
+  {
+    "name": "Leyline Axe",
+    "cost": "{4}",
+    "mana_value": 4,
+    "types": "[Artifact] - [Equipment]",
+    "rarity": "Rare",
+    "rules": [
+      "If this card is in your opening hand, you may begin the game with it on the battlefield.",
+      "Equipped creature gets +1/+1 and has double strike and trample.",
+      "Equip {3} ({3}: Attach to target creature you control. Equip only as a sorcery.)"
+    ]
+  },
+  {
+    "name": "Lightshell Duo",
+    "cost": "{3}{U}",
+    "mana_value": 4,
+    "types": "[Creature] - [Rat, Otter]",
+    "rarity": "Common",
+    "pt": "3/4",
+    "rules": [
+      "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+      "When {this} enters, surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top in any order.)"
+    ]
+  },
+  {
+    "name": "Liliana, Dreadhorde General",
+    "cost": "{4}{B}{B}",
+    "mana_value": 6,
+    "types": "[Planeswalker] - [Liliana]",
+    "rarity": "Mythic",
+    "rules": [
+      "Whenever a creature you control dies, draw a card.",
+      "+1: Create a 2/2 black Zombie creature token.",
+      "-4: Each player sacrifices two creatures of their choice.",
+      "-9: Each opponent chooses a permanent they control of each permanent type and sacrifices the rest."
+    ]
+  },
+  {
+    "name": "Llanowar Elves",
+    "cost": "{G}",
+    "mana_value": 1,
+    "types": "[Creature] - [Elf, Druid]",
+    "rarity": "Common",
+    "pt": "1/1",
+    "rules": [
+      "{T}: Add {G}."
+    ]
+  },
+  {
+    "name": "Loot, Exuberant Explorer",
+    "cost": "{2}{G}",
+    "mana_value": 3,
+    "types": "[Creature] - [Beast, Noble]",
+    "rarity": "Rare",
+    "pt": "1/4",
+    "rules": [
+      "You may play an additional land on each of your turns.",
+      "{4}{G}{G}, {T}: Look at the top six cards of your library. You may put a creature card with mana value less than or equal to the number of lands you control from among them onto the battlefield. Put the rest on the bottom of your library in a random order."
+    ]
+  },
+  {
+    "name": "Luminous Rebuke",
+    "cost": "{4}{W}",
+    "mana_value": 5,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "This spell costs {3} less to cast if it targets a tapped creature.",
+      "Destroy target creature."
+    ]
+  },
+  {
+    "name": "Lunar Insight",
+    "cost": "{2}{U}",
+    "mana_value": 3,
+    "types": "[Sorcery]",
+    "rarity": "Rare",
+    "rules": [
+      "Draw a card for each different mana value among nonland permanents you control."
+    ]
+  },
+  {
+    "name": "Macabre Waltz",
+    "cost": "{1}{B}",
+    "mana_value": 2,
+    "types": "[Sorcery]",
+    "rarity": "Common",
+    "rules": [
+      "Return up to two target creature cards from your graveyard to your hand, then discard a card."
+    ]
+  },
+  {
+    "name": "Make Your Move",
+    "cost": "{2}{W}",
+    "mana_value": 3,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Destroy target artifact, enchantment, or creature with power 4 or greater."
+    ]
+  },
+  {
+    "name": "Marauding Blight-Priest",
+    "cost": "{2}{B}",
+    "mana_value": 3,
+    "types": "[Creature] - [Vampire, Cleric]",
+    "rarity": "Common",
+    "pt": "3/2",
+    "rules": [
+      "Whenever you gain life, each opponent loses 1 life."
+    ]
+  },
+  {
+    "name": "Meteor Golem",
+    "cost": "{7}",
+    "mana_value": 7,
+    "types": "[Artifact, Creature] - [Golem]",
+    "rarity": "Uncommon",
+    "pt": "3/3",
+    "rules": [
+      "When {this} enters, destroy target nonland permanent an opponent controls."
+    ]
+  },
+  {
+    "name": "Micromancer",
+    "cost": "{3}{U}",
+    "mana_value": 4,
+    "types": "[Creature] - [Human, Wizard]",
+    "rarity": "Uncommon",
+    "pt": "3/3",
+    "rules": [
+      "When {this} enters, you may search your library for an instant or sorcery card with mana value 1, reveal it, put it into your hand, then shuffle."
+    ]
+  },
+  {
+    "name": "Midnight Snack",
+    "cost": "{2}{B}",
+    "mana_value": 3,
+    "types": "[Enchantment]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Raid - At the beginning of your end step, if you attacked this turn, create a Food token.",
+      "{2}{B}, Sacrifice {this}: Target opponent loses X life, where X is the amount of life you gained this turn."
+    ]
+  },
+  {
+    "name": "Mild-Mannered Librarian",
+    "cost": "{G}",
+    "mana_value": 1,
+    "types": "[Creature] - [Human]",
+    "rarity": "Uncommon",
+    "pt": "1/1",
+    "rules": [
+      "{3}{G}: {this} becomes a Werewolf. Put two +1/+1 counters on it and you draw a card. Activate only once."
+    ]
+  },
+  {
+    "name": "Mischievous Mystic",
+    "cost": "{1}{U}",
+    "mana_value": 2,
+    "types": "[Creature] - [Human, Wizard]",
+    "rarity": "Uncommon",
+    "pt": "2/1",
+    "rules": [
+      "Flying",
+      "Whenever you draw your second card each turn, create a 1/1 blue Faerie creature token with flying."
+    ]
+  },
+  {
+    "name": "Mischievous Pup",
+    "cost": "{2}{W}",
+    "mana_value": 3,
+    "types": "[Creature] - [Dog]",
+    "rarity": "Uncommon",
+    "pt": "3/1",
+    "rules": [
+      "Flash",
+      "When {this} enters, return up to one other target permanent you control to its owner's hand."
+    ]
+  },
+  {
+    "name": "Mocking Sprite",
+    "cost": "{2}{U}",
+    "mana_value": 3,
+    "types": "[Creature] - [Faerie, Rogue]",
+    "rarity": "Common",
+    "pt": "2/1",
+    "rules": [
+      "Flying",
+      "Instant and sorcery spells you cast cost {1} less to cast."
+    ]
+  },
+  {
+    "name": "Mossborn Hydra",
+    "cost": "{2}{G}",
+    "mana_value": 3,
+    "types": "[Creature] - [Elemental, Hydra]",
+    "rarity": "Rare",
+    "pt": "0/0",
+    "rules": [
+      "Trample",
+      "{this} enters with a +1/+1 counter on it.",
+      "Landfall - Whenever a land you control enters, double the number of +1/+1 counters on {this}."
+    ]
+  },
+  {
+    "name": "Mountain",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land] - [Mountain]",
+    "rarity": "Land",
+    "rules": [
+      "{T}: Add {R}."
+    ]
+  },
+  {
+    "name": "Muldrotha, the Gravetide",
+    "cost": "{3}{B}{G}{U}",
+    "mana_value": 6,
+    "types": "[Creature] - [Elemental, Avatar]",
+    "rarity": "Mythic",
+    "pt": "6/6",
+    "rules": [
+      "During each of your turns, you may play a land and cast a permanent spell of each permanent type from your graveyard. (If a card has multiple permanent types, choose one as you play it.)"
+    ]
+  },
+  {
+    "name": "Needletooth Pack",
+    "cost": "{3}{G}{G}",
+    "mana_value": 5,
+    "types": "[Creature] - [Dinosaur]",
+    "rarity": "Uncommon",
+    "pt": "4/5",
+    "rules": [
+      "Morbid - At the beginning of your end step, if a creature died this turn, put two +1/+1 counters on target creature you control."
+    ]
+  },
+  {
+    "name": "Nessian Hornbeetle",
+    "cost": "{1}{G}",
+    "mana_value": 2,
+    "types": "[Creature] - [Insect]",
+    "rarity": "Uncommon",
+    "pt": "2/2",
+    "rules": [
+      "At the beginning of combat on your turn, if you control another creature with power 4 or greater, put a +1/+1 counter on {this}."
+    ]
+  },
+  {
+    "name": "Nine-Lives Familiar",
+    "cost": "{1}{B}{B}",
+    "mana_value": 3,
+    "types": "[Creature] - [Cat]",
+    "rarity": "Rare",
+    "pt": "1/1",
+    "rules": [
+      "{this} enters with eight revival counters on it if you cast it.",
+      "When {this} dies, if it had a revival counter on it, return it to the battlefield with one fewer revival counter on it at the beginning of the next end step."
+    ]
+  },
+  {
+    "name": "Niv-Mizzet, Visionary",
+    "cost": "{4}{U}{R}",
+    "mana_value": 6,
+    "types": "[Creature] - [Dragon, Wizard]",
+    "rarity": "Mythic",
+    "pt": "5/5",
+    "rules": [
+      "Flying",
+      "You have no maximum hand size.",
+      "Whenever a source you control deals noncombat damage to an opponent, you draw that many cards."
+    ]
+  },
+  {
+    "name": "Omniscience",
+    "cost": "{7}{U}{U}{U}",
+    "mana_value": 10,
+    "types": "[Enchantment]",
+    "rarity": "Mythic",
+    "rules": [
+      "You may cast nonland cards from your hand without paying their mana costs."
+    ]
+  },
+  {
+    "name": "Overrun",
+    "cost": "{2}{G}{G}{G}",
+    "mana_value": 5,
+    "types": "[Sorcery]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Creatures you control get +3/+3 and gain trample until end of turn."
+    ]
+  },
+  {
+    "name": "Painful Quandary",
+    "cost": "{3}{B}{B}",
+    "mana_value": 5,
+    "types": "[Enchantment]",
+    "rarity": "Rare",
+    "rules": [
+      "Whenever an opponent casts a spell, that player loses 5 life unless they discard a card."
+    ]
+  },
+  {
+    "name": "Paradise Druid",
+    "cost": "{1}{G}",
+    "mana_value": 2,
+    "types": "[Creature] - [Elf, Druid]",
+    "rarity": "Mythic",
+    "pt": "2/1",
+    "rules": [
+      "{this} has hexproof as long as it's untapped.",
+      "{T}: Add one mana of any color."
+    ]
+  },
+  {
+    "name": "Perforating Artist",
+    "cost": "{1}{B}{R}",
+    "mana_value": 3,
+    "types": "[Creature] - [Devil]",
+    "rarity": "Uncommon",
+    "pt": "3/2",
+    "rules": [
+      "Deathtouch",
+      "Raid - At the beginning of your end step, if you attacked this turn, each opponent loses 3 life unless that player sacrifices a nonland permanent of their choice or discards a card."
+    ]
+  },
+  {
+    "name": "Phyrexian Arena",
+    "cost": "{1}{B}{B}",
+    "mana_value": 3,
+    "types": "[Enchantment]",
+    "rarity": "Rare",
+    "rules": [
+      "At the beginning of your upkeep, you draw a card and you lose 1 life."
+    ]
+  },
+  {
+    "name": "Pilfer",
+    "cost": "{1}{B}",
+    "mana_value": 2,
+    "types": "[Sorcery]",
+    "rarity": "Common",
+    "rules": [
+      "Target opponent reveals their hand. You choose a nonland card from it. That player discards that card."
+    ]
+  },
+  {
+    "name": "Plains",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land] - [Plains]",
+    "rarity": "Land",
+    "rules": [
+      "{T}: Add {W}."
+    ]
+  },
+  {
+    "name": "Preposterous Proportions",
+    "cost": "{5}{G}{G}",
+    "mana_value": 7,
+    "types": "[Sorcery]",
+    "rarity": "Rare",
+    "rules": [
+      "Creatures you control get +10/+10 and gain vigilance until end of turn."
+    ]
+  },
+  {
+    "name": "Prideful Parent",
+    "cost": "{2}{W}",
+    "mana_value": 3,
+    "types": "[Creature] - [Cat]",
+    "rarity": "Common",
+    "pt": "2/2",
+    "rules": [
+      "Vigilance",
+      "When {this} enters, create a 1/1 white Cat creature token."
+    ]
+  },
+  {
+    "name": "Progenitus",
+    "cost": "{W}{W}{U}{U}{B}{B}{R}{R}{G}{G}",
+    "mana_value": 10,
+    "types": "[Creature] - [Hydra, Avatar]",
+    "rarity": "Mythic",
+    "pt": "10/10",
+    "rules": [
+      "Protection from everything",
+      "If {this} would be put into a graveyard from anywhere, reveal {this} and shuffle it into its owner's library instead."
+    ]
+  },
+  {
+    "name": "Quakestrider Ceratops",
+    "cost": "{3}{G}{G}{G}",
+    "mana_value": 6,
+    "types": "[Creature] - [Dinosaur]",
+    "rarity": "Uncommon",
+    "pt": "12/8",
+    "rules": []
+  },
+  {
+    "name": "Quick-Draw Katana",
+    "cost": "{2}",
+    "mana_value": 2,
+    "types": "[Artifact] - [Equipment]",
+    "rarity": "Common",
+    "rules": [
+      "During your turn, equipped creature gets +2/+0 and has first strike.",
+      "Equip {2} ({2}: Attach to target creature you control. Equip only as a sorcery.)"
+    ]
+  },
+  {
+    "name": "Quilled Greatwurm",
+    "cost": "{4}{G}{G}",
+    "mana_value": 6,
+    "types": "[Creature] - [Wurm]",
+    "rarity": "Mythic",
+    "pt": "7/7",
+    "rules": [
+      "Trample",
+      "Whenever a creature you control deals combat damage during your turn, put that many +1/+1 counters on that creature.",
+      "You may cast this card from your graveyard by removing six counters from among creatures you control in addition to paying its other costs."
+    ]
+  },
+  {
+    "name": "Raise the Past",
+    "cost": "{2}{W}{W}",
+    "mana_value": 4,
+    "types": "[Sorcery]",
+    "rarity": "Rare",
+    "rules": [
+      "Return all creature cards with mana value 2 or less from your graveyard to the battlefield."
+    ]
+  },
+  {
+    "name": "Ravenous Amulet",
+    "cost": "{2}",
+    "mana_value": 2,
+    "types": "[Artifact]",
+    "rarity": "Uncommon",
+    "rules": [
+      "{1}, {T}, Sacrifice a creature: Draw a card and put a soul counter on {this}. Activate only as a sorcery.",
+      "{4}, {T}, Sacrifice {this}: Each opponent loses 1 life for each soul counter on {this}."
+    ]
+  },
+  {
+    "name": "Reassembling Skeleton",
+    "cost": "{1}{B}",
+    "mana_value": 2,
+    "types": "[Creature] - [Skeleton, Warrior]",
+    "rarity": "Uncommon",
+    "pt": "1/1",
+    "rules": [
+      "{1}{B}: Return this card from your graveyard to the battlefield tapped."
+    ]
+  },
+  {
+    "name": "Reclamation Sage",
+    "cost": "{2}{G}",
+    "mana_value": 3,
+    "types": "[Creature] - [Elf, Shaman]",
+    "rarity": "Uncommon",
+    "pt": "2/1",
+    "rules": [
+      "When {this} enters, you may destroy target artifact or enchantment."
+    ]
+  },
+  {
+    "name": "Refute",
+    "cost": "{1}{U}{U}",
+    "mana_value": 3,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Counter target spell. Draw a card, then discard a card."
+    ]
+  },
+  {
+    "name": "Resolute Reinforcements",
+    "cost": "{1}{W}",
+    "mana_value": 2,
+    "types": "[Creature] - [Human, Soldier]",
+    "rarity": "Uncommon",
+    "pt": "1/1",
+    "rules": [
+      "Flash",
+      "When {this} enters, create a 1/1 white Soldier creature token."
+    ]
+  },
+  {
+    "name": "Revenge of the Rats",
+    "cost": "{2}{B}{B}",
+    "mana_value": 4,
+    "types": "[Sorcery]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Create a tapped 1/1 black Rat creature token for each creature card in your graveyard.",
+      "Flashback {2}{B}{B} (You may cast this card from your graveyard for its flashback cost. Then exile it.)"
+    ]
+  },
+  {
+    "name": "Rise of the Dark Realms",
+    "cost": "{7}{B}{B}",
+    "mana_value": 9,
+    "types": "[Sorcery]",
+    "rarity": "Mythic",
+    "rules": [
+      "Put all creature cards from all graveyards onto the battlefield under your control."
+    ]
+  },
+  {
+    "name": "Rite of the Dragoncaller",
+    "cost": "{4}{R}{R}",
+    "mana_value": 6,
+    "types": "[Enchantment]",
+    "rarity": "Mythic",
+    "rules": [
+      "Whenever you cast an instant or sorcery spell, create a 5/5 red Dragon creature token with flying."
+    ]
+  },
+  {
+    "name": "Rogue's Passage",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Uncommon",
+    "rules": [
+      "{T}: Add {C}.",
+      "{4}, {T}: Target creature can't be blocked this turn."
+    ]
+  },
+  {
+    "name": "Ruby, Daring Tracker",
+    "cost": "{R}{G}",
+    "mana_value": 2,
+    "types": "[Creature] - [Human, Scout]",
+    "rarity": "Uncommon",
+    "pt": "1/2",
+    "rules": [
+      "Haste",
+      "Whenever {this} attacks while you control a creature with power 4 or greater, it gets +2/+2 until end of turn.",
+      "{T}: Add {R}.",
+      "{T}: Add {G}."
+    ]
+  },
+  {
+    "name": "Rugged Highlands",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Common",
+    "rules": [
+      "{this} enters tapped.",
+      "When {this} enters, you gain 1 life.",
+      "{T}: Add {R}.",
+      "{T}: Add {G}."
+    ]
+  },
+  {
+    "name": "Run Away Together",
+    "cost": "{1}{U}",
+    "mana_value": 2,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Choose two target creatures controlled by different players. Return those creatures to their owners' hands."
+    ]
+  },
+  {
+    "name": "Rune-Scarred Demon",
+    "cost": "{5}{B}{B}",
+    "mana_value": 7,
+    "types": "[Creature] - [Demon]",
+    "rarity": "Rare",
+    "pt": "6/6",
+    "rules": [
+      "Flying",
+      "When {this} enters, search your library for a card, put it into your hand, then shuffle."
+    ]
+  },
+  {
+    "name": "Rune-Sealed Wall",
+    "cost": "{2}{U}",
+    "mana_value": 3,
+    "types": "[Artifact, Creature] - [Wall]",
+    "rarity": "Uncommon",
+    "pt": "0/6",
+    "rules": [
+      "Defender",
+      "{T}: Surveil 1. (Look at the top card of your library. You may put that card into your graveyard.)"
+    ]
+  },
+  {
+    "name": "Sanguine Syphoner",
+    "cost": "{1}{B}",
+    "mana_value": 2,
+    "types": "[Creature] - [Vampire, Warlock]",
+    "rarity": "Common",
+    "pt": "1/3",
+    "rules": [
+      "Whenever {this} attacks, each opponent loses 1 life and you gain 1 life."
+    ]
+  },
+  {
+    "name": "Savannah Lions",
+    "cost": "{W}",
+    "mana_value": 1,
+    "types": "[Creature] - [Cat]",
+    "rarity": "Uncommon",
+    "pt": "2/1",
+    "rules": []
+  },
+  {
+    "name": "Scavenging Ooze",
+    "cost": "{1}{G}",
+    "mana_value": 2,
+    "types": "[Creature] - [Ooze]",
+    "rarity": "Rare",
+    "pt": "2/2",
+    "rules": [
+      "{G}: Exile target card from a graveyard. If it was a creature card, put a +1/+1 counter on {this} and you gain 1 life."
+    ]
+  },
+  {
+    "name": "Scoured Barrens",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Common",
+    "rules": [
+      "{this} enters tapped.",
+      "When {this} enters, you gain 1 life.",
+      "{T}: Add {W}.",
+      "{T}: Add {B}."
+    ]
+  },
+  {
+    "name": "Scrawling Crawler",
+    "cost": "{3}",
+    "mana_value": 3,
+    "types": "[Artifact, Creature] - [Phyrexian, Construct]",
+    "rarity": "Rare",
+    "pt": "3/2",
+    "rules": [
+      "At the beginning of your upkeep, each player draws a card.",
+      "Whenever an opponent draws a card, that player loses 1 life."
+    ]
+  },
+  {
+    "name": "Searslicer Goblin",
+    "cost": "{1}{R}",
+    "mana_value": 2,
+    "types": "[Creature] - [Goblin, Warrior]",
+    "rarity": "Rare",
+    "pt": "2/1",
+    "rules": [
+      "Raid - At the beginning of your end step, if you attacked this turn, create a 1/1 red Goblin creature token."
+    ]
+  },
+  {
+    "name": "Secluded Courtyard",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Uncommon",
+    "rules": [
+      "As {this} enters, choose a creature type.",
+      "{T}: Add {C}.",
+      "{T}: Add one mana of any color. Spend this mana only to cast a creature spell of the chosen type or activate an ability of a creature source of the chosen type."
+    ]
+  },
+  {
+    "name": "Seeker's Folly",
+    "cost": "{2}{B}",
+    "mana_value": 3,
+    "types": "[Sorcery]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Choose one -&bull Target opponent discards two cards.&bull Creatures your opponents control get -1/-1 until end of turn."
+    ]
+  },
+  {
+    "name": "Seismic Rupture",
+    "cost": "{2}{R}",
+    "mana_value": 3,
+    "types": "[Sorcery]",
+    "rarity": "Uncommon",
+    "rules": [
+      "{this} deals 2 damage to each creature without flying."
+    ]
+  },
+  {
+    "name": "Self-Reflection",
+    "cost": "{4}{U}{U}",
+    "mana_value": 6,
+    "types": "[Sorcery]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Create a token that's a copy of target creature you control.",
+      "Flashback {3}{U} (You may cast this card from your graveyard for its flashback cost. Then exile it.)"
+    ]
+  },
+  {
+    "name": "Serra Angel",
+    "cost": "{3}{W}{W}",
+    "mana_value": 5,
+    "types": "[Creature] - [Angel]",
+    "rarity": "Uncommon",
+    "pt": "4/4",
+    "rules": [
+      "Flying",
+      "Vigilance"
+    ]
+  },
+  {
+    "name": "Shivan Dragon",
+    "cost": "{4}{R}{R}",
+    "mana_value": 6,
+    "types": "[Creature] - [Dragon]",
+    "rarity": "Uncommon",
+    "pt": "5/5",
+    "rules": [
+      "Flying",
+      "{R}: {this} gets +1/+0 until end of turn."
+    ]
+  },
+  {
+    "name": "Sire of Seven Deaths",
+    "cost": "{7}",
+    "mana_value": 7,
+    "types": "[Creature] - [Eldrazi]",
+    "rarity": "Mythic",
+    "pt": "7/7",
+    "rules": [
+      "First strike",
+      "Vigilance",
+      "Menace",
+      "Trample",
+      "Reach",
+      "Lifelink",
+      "Ward-Pay 7 life."
+    ]
+  },
+  {
+    "name": "Skyknight Squire",
+    "cost": "{1}{W}",
+    "mana_value": 2,
+    "types": "[Creature] - [Cat, Scout]",
+    "rarity": "Rare",
+    "pt": "1/1",
+    "rules": [
+      "Whenever another creature you control enters, put a +1/+1 counter on {this}.",
+      "As long as this creature has three or more +1/+1 counters on it, it has flying and is a Knight in addition to its other types."
+    ]
+  },
+  {
+    "name": "Skyship Buccaneer",
+    "cost": "{3}{U}{U}",
+    "mana_value": 5,
+    "types": "[Creature] - [Human, Pirate]",
+    "rarity": "Uncommon",
+    "pt": "4/3",
+    "rules": [
+      "Flying",
+      "Raid - When {this} enters, if you attacked this turn, draw a card."
+    ]
+  },
+  {
+    "name": "Slagstorm",
+    "cost": "{1}{R}{R}",
+    "mana_value": 3,
+    "types": "[Sorcery]",
+    "rarity": "Rare",
+    "rules": [
+      "Choose one -&bull {this} deals 3 damage to each creature.&bull {this} deals 3 damage to each player."
+    ]
+  },
+  {
+    "name": "Slumbering Cerberus",
+    "cost": "{1}{R}",
+    "mana_value": 2,
+    "types": "[Creature] - [Dog]",
+    "rarity": "Uncommon",
+    "pt": "4/2",
+    "rules": [
+      "{this} doesn't untap during your untap step.",
+      "Morbid - At the beginning of each end step, if a creature died this turn, untap {this}."
+    ]
+  },
+  {
+    "name": "Snakeskin Veil",
+    "cost": "{G}",
+    "mana_value": 1,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Put a +1/+1 counter on target creature you control. It gains hexproof until end of turn."
+    ]
+  },
+  {
+    "name": "Solemn Simulacrum",
+    "cost": "{4}",
+    "mana_value": 4,
+    "types": "[Artifact, Creature] - [Golem]",
+    "rarity": "Rare",
+    "pt": "2/2",
+    "rules": [
+      "When {this} enters, you may search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+      "When {this} dies, you may draw a card."
+    ]
+  },
+  {
+    "name": "Soul-Shackled Zombie",
+    "cost": "{3}{B}",
+    "mana_value": 4,
+    "types": "[Creature] - [Zombie]",
+    "rarity": "Common",
+    "pt": "4/2",
+    "rules": [
+      "When {this} enters, exile up to two target cards from a single graveyard. If at least one creature card was exiled this way, each opponent loses 2 life and you gain 2 life."
+    ]
+  },
+  {
+    "name": "Soulstone Sanctuary",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Rare",
+    "rules": [
+      "{T}: Add {C}.",
+      "{4}: This land becomes a 3/3 creature with vigilance and all creature types. It's still a land."
+    ]
+  },
+  {
+    "name": "Sower of Chaos",
+    "cost": "{3}{R}",
+    "mana_value": 4,
+    "types": "[Creature] - [Devil]",
+    "rarity": "Common",
+    "pt": "4/3",
+    "rules": [
+      "{2}{R}: Target creature can't block this turn."
+    ]
+  },
+  {
+    "name": "Spectral Sailor",
+    "cost": "{U}",
+    "mana_value": 1,
+    "types": "[Creature] - [Spirit, Pirate]",
+    "rarity": "Uncommon",
+    "pt": "1/1",
+    "rules": [
+      "Flash",
+      "Flying",
+      "{3}{U}: Draw a card."
+    ]
+  },
+  {
+    "name": "Sphinx of Forgotten Lore",
+    "cost": "{2}{U}{U}",
+    "mana_value": 4,
+    "types": "[Creature] - [Sphinx]",
+    "rarity": "Mythic",
+    "pt": "3/3",
+    "rules": [
+      "Flash",
+      "Flying",
+      "Whenever {this} attacks, target instant or sorcery card in your graveyard gains flashback until end of turn. The flashback cost is equal to that card's mana cost."
+    ]
+  },
+  {
+    "name": "Sphinx's Tutelage",
+    "cost": "{2}{U}",
+    "mana_value": 3,
+    "types": "[Enchantment]",
+    "rarity": "Mythic",
+    "rules": [
+      "Whenever you draw a card, target opponent mills two cards. If two nonland cards that share a color were milled this way, repeat this process.",
+      "{5}{U}: Draw a card, then discard a card."
+    ]
+  },
+  {
+    "name": "Spinner of Souls",
+    "cost": "{2}{G}",
+    "mana_value": 3,
+    "types": "[Creature] - [Spider, Spirit]",
+    "rarity": "Rare",
+    "pt": "4/3",
+    "rules": [
+      "Reach",
+      "Whenever another nontoken creature you control dies, you may reveal cards from the top of your library until you reveal a creature card. Put that card into your hand and the rest on the bottom of your library in a random order."
+    ]
+  },
+  {
+    "name": "Spitfire Lagac",
+    "cost": "{3}{R}",
+    "mana_value": 4,
+    "types": "[Creature] - [Lizard]",
+    "rarity": "Common",
+    "pt": "3/4",
+    "rules": [
+      "Landfall - Whenever a land you control enters, {this} deals 1 damage to each opponent."
+    ]
+  },
+  {
+    "name": "Squad Rallier",
+    "cost": "{3}{W}",
+    "mana_value": 4,
+    "types": "[Creature] - [Human, Scout]",
+    "rarity": "Common",
+    "pt": "3/4",
+    "rules": [
+      "{2}{W}: Look at the top four cards of your library. You may reveal a creature card with power 2 or less from among them and put it into your hand. Put the rest on the bottom of your library in a random order."
+    ]
+  },
+  {
+    "name": "Stab",
+    "cost": "{B}",
+    "mana_value": 1,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Target creature gets -2/-2 until end of turn."
+    ]
+  },
+  {
+    "name": "Strix Lookout",
+    "cost": "{1}{U}",
+    "mana_value": 2,
+    "types": "[Creature] - [Bird]",
+    "rarity": "Common",
+    "pt": "1/2",
+    "rules": [
+      "Flying",
+      "Vigilance",
+      "{1}{U}, {T}: Draw a card, then discard a card."
+    ]
+  },
+  {
+    "name": "Stroke of Midnight",
+    "cost": "{2}{W}",
+    "mana_value": 3,
+    "types": "[Instant]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Destroy target nonland permanent. Its controller creates a 1/1 white Human creature token."
+    ]
+  },
+  {
+    "name": "Stromkirk Bloodthief",
+    "cost": "{2}{B}",
+    "mana_value": 3,
+    "types": "[Creature] - [Vampire, Rogue]",
+    "rarity": "Uncommon",
+    "pt": "2/2",
+    "rules": [
+      "At the beginning of your end step, if an opponent lost life this turn, put a +1/+1 counter on target Vampire you control."
+    ]
+  },
+  {
+    "name": "Strongbox Raider",
+    "cost": "{2}{R}{R}",
+    "mana_value": 4,
+    "types": "[Creature] - [Orc, Pirate]",
+    "rarity": "Uncommon",
+    "pt": "5/2",
+    "rules": [
+      "Raid - When {this} enters, if you attacked this turn, exile the top two cards of your library. Choose one of them. Until the end of your next turn, you may play that card."
+    ]
+  },
+  {
+    "name": "Sun-Blessed Healer",
+    "cost": "{1}{W}",
+    "mana_value": 2,
+    "types": "[Creature] - [Human, Cleric]",
+    "rarity": "Uncommon",
+    "pt": "3/1",
+    "rules": [
+      "Kicker {1}{W} (You may pay an additional {1}{W} as you cast this spell.)",
+      "Lifelink",
+      "When {this} enters, if it was kicked, return target nonland permanent card with mana value 2 or less from your graveyard to the battlefield."
+    ]
+  },
+  {
+    "name": "Sure Strike",
+    "cost": "{1}{R}",
+    "mana_value": 2,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Target creature gets +3/+0 and gains first strike until end of turn."
+    ]
+  },
+  {
+    "name": "Swamp",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land] - [Swamp]",
+    "rarity": "Land",
+    "rules": [
+      "{T}: Add {B}."
+    ]
+  },
+  {
+    "name": "Swiftblade Vindicator",
+    "cost": "{R}{W}",
+    "mana_value": 2,
+    "types": "[Creature] - [Human, Soldier]",
+    "rarity": "Rare",
+    "pt": "1/1",
+    "rules": [
+      "Double strike",
+      "Vigilance",
+      "Trample"
+    ]
+  },
+  {
+    "name": "Swiftfoot Boots",
+    "cost": "{2}",
+    "mana_value": 2,
+    "types": "[Artifact] - [Equipment]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Equipped creature has hexproof and haste.",
+      "Equip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)"
+    ]
+  },
+  {
+    "name": "Swiftwater Cliffs",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Common",
+    "rules": [
+      "{this} enters tapped.",
+      "When {this} enters, you gain 1 life.",
+      "{T}: Add {U}.",
+      "{T}: Add {R}."
+    ]
+  },
+  {
+    "name": "Sylvan Scavenging",
+    "cost": "{1}{G}{G}",
+    "mana_value": 3,
+    "types": "[Enchantment]",
+    "rarity": "Rare",
+    "rules": [
+      "At the beginning of your end step, choose one -&bull Put a +1/+1 counter on target creature you control.&bull Create a 3/3 green Raccoon creature token if you control a creature with power 4 or greater."
+    ]
+  },
+  {
+    "name": "Tatyova, Benthic Druid",
+    "cost": "{3}{G}{U}",
+    "mana_value": 5,
+    "types": "[Creature] - [Merfolk, Druid]",
+    "rarity": "Uncommon",
+    "pt": "3/3",
+    "rules": [
+      "Landfall - Whenever a land you control enters, you gain 1 life and draw a card."
+    ]
+  },
+  {
+    "name": "Temporal Manipulation",
+    "cost": "{3}{U}{U}",
+    "mana_value": 5,
+    "types": "[Sorcery]",
+    "rarity": "Mythic",
+    "rules": [
+      "Take an extra turn after this one."
+    ]
+  },
+  {
+    "name": "Think Twice",
+    "cost": "{1}{U}",
+    "mana_value": 2,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Draw a card.",
+      "Flashback {2}{U} (You may cast this card from your graveyard for its flashback cost. Then exile it.)"
+    ]
+  },
+  {
+    "name": "Thornwood Falls",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Common",
+    "rules": [
+      "{this} enters tapped.",
+      "When {this} enters, you gain 1 life.",
+      "{T}: Add {G}.",
+      "{T}: Add {U}."
+    ]
+  },
+  {
+    "name": "Thousand-Year Storm",
+    "cost": "{4}{U}{R}",
+    "mana_value": 6,
+    "types": "[Enchantment]",
+    "rarity": "Rare",
+    "rules": [
+      "Whenever you cast an instant or sorcery spell, copy it for each other instant and sorcery spell you've cast before it this turn. You may choose new targets for the copies."
+    ]
+  },
+  {
+    "name": "Thrill of Possibility",
+    "cost": "{1}{R}",
+    "mana_value": 2,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "As an additional cost to cast this spell, discard a card.",
+      "Draw two cards."
+    ]
+  },
+  {
+    "name": "Time Stop",
+    "cost": "{4}{U}{U}",
+    "mana_value": 6,
+    "types": "[Instant]",
+    "rarity": "Rare",
+    "rules": [
+      "End the turn. (Exile all spells and abilities from the stack, including this card. The player whose turn it is discards down to their maximum hand size. Damage wears off, and \"this turn\" and \"until end of turn\" effects end.)"
+    ]
+  },
+  {
+    "name": "Tinybones, Bauble Burglar",
+    "cost": "{1}{B}",
+    "mana_value": 2,
+    "types": "[Creature] - [Skeleton, Rogue]",
+    "rarity": "Rare",
+    "pt": "1/3",
+    "rules": [
+      "Whenever an opponent discards a card, exile it from their graveyard with a stash counter on it.",
+      "During your turn, you may play cards you don't own with stash counters on them from exile, and mana of any type can be spent to cast those spells.",
+      "{3}{B}, {T}: Each opponent discards a card. Activate only as a sorcery."
+    ]
+  },
+  {
+    "name": "Tolarian Terror",
+    "cost": "{6}{U}",
+    "mana_value": 7,
+    "types": "[Creature] - [Serpent]",
+    "rarity": "Common",
+    "pt": "5/5",
+    "rules": [
+      "This spell costs {1} less to cast for each instant and sorcery card in your graveyard.",
+      "Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)"
+    ]
+  },
+  {
+    "name": "Tragic Banshee",
+    "cost": "{4}{B}",
+    "mana_value": 5,
+    "types": "[Creature] - [Spirit]",
+    "rarity": "Uncommon",
+    "pt": "5/3",
+    "rules": [
+      "Morbid - When {this} enters, target creature an opponent controls gets -1/-1 until end of turn. If a creature died this turn, that creature gets -13/-13 until end of turn instead."
+    ]
+  },
+  {
+    "name": "Tranquil Cove",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Common",
+    "rules": [
+      "{this} enters tapped.",
+      "When {this} enters, you gain 1 life.",
+      "{T}: Add {W}.",
+      "{T}: Add {U}."
+    ]
+  },
+  {
+    "name": "Treetop Snarespinner",
+    "cost": "{3}{G}",
+    "mana_value": 4,
+    "types": "[Creature] - [Spider]",
+    "rarity": "Common",
+    "pt": "1/4",
+    "rules": [
+      "Reach",
+      "Deathtouch",
+      "{2}{G}: Put a +1/+1 counter on target creature you control. Activate only as a sorcery."
+    ]
+  },
+  {
+    "name": "Twinblade Blessing",
+    "cost": "{1}{W}{W}",
+    "mana_value": 3,
+    "types": "[Enchantment] - [Aura]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Flash",
+      "Enchant creature",
+      "Enchanted creature has double strike."
+    ]
+  },
+  {
+    "name": "Twinflame Tyrant",
+    "cost": "{3}{R}{R}",
+    "mana_value": 5,
+    "types": "[Creature] - [Dragon]",
+    "rarity": "Mythic",
+    "pt": "3/5",
+    "rules": [
+      "Flying",
+      "If a source you control would deal damage to an opponent or a permanent an opponent controls, it deals double that damage instead."
+    ]
+  },
+  {
+    "name": "Uncharted Voyage",
+    "cost": "{3}{U}",
+    "mana_value": 4,
+    "types": "[Instant]",
+    "rarity": "Common",
+    "rules": [
+      "Target creature's owner puts it on their choice of the top or bottom of their library. Surveil 1. (Look at the top card of your library. You may put that card into your graveyard.)"
+    ]
+  },
+  {
+    "name": "Valkyrie's Call",
+    "cost": "{3}{W}{W}",
+    "mana_value": 5,
+    "types": "[Enchantment]",
+    "rarity": "Mythic",
+    "rules": [
+      "Whenever a nontoken, non-Angel creature you control dies, return that card to the battlefield under its owner's control with a +1/+1 counter on it. It has flying and is an Angel in addition to its other types."
+    ]
+  },
+  {
+    "name": "Vampire Gourmand",
+    "cost": "{1}{B}",
+    "mana_value": 2,
+    "types": "[Creature] - [Vampire]",
+    "rarity": "Uncommon",
+    "pt": "2/2",
+    "rules": [
+      "Whenever {this} attacks, you may sacrifice another creature. If you do, draw a card and {this} can't be blocked this turn."
+    ]
+  },
+  {
+    "name": "Vampire Nighthawk",
+    "cost": "{1}{B}{B}",
+    "mana_value": 3,
+    "types": "[Creature] - [Vampire, Shaman]",
+    "rarity": "Uncommon",
+    "pt": "2/3",
+    "rules": [
+      "Flying",
+      "Deathtouch",
+      "Lifelink"
+    ]
+  },
+  {
+    "name": "Vampire Soulcaller",
+    "cost": "{4}{B}",
+    "mana_value": 5,
+    "types": "[Creature] - [Vampire, Warlock]",
+    "rarity": "Common",
+    "pt": "3/2",
+    "rules": [
+      "Flying",
+      "{this} can't block.",
+      "When {this} enters, return target creature card from your graveyard to your hand."
+    ]
+  },
+  {
+    "name": "Vanguard Seraph",
+    "cost": "{3}{W}",
+    "mana_value": 4,
+    "types": "[Creature] - [Angel, Warrior]",
+    "rarity": "Common",
+    "pt": "3/3",
+    "rules": [
+      "Flying",
+      "Whenever you gain life for the first time each turn, surveil 1. (Look at the top card of your library. You may put that card into your graveyard.)"
+    ]
+  },
+  {
+    "name": "Vengeful Bloodwitch",
+    "cost": "{1}{B}",
+    "mana_value": 2,
+    "types": "[Creature] - [Vampire, Warlock]",
+    "rarity": "Uncommon",
+    "pt": "1/1",
+    "rules": [
+      "Whenever {this} or another creature you control dies, target opponent loses 1 life and you gain 1 life."
+    ]
+  },
+  {
+    "name": "Vivien Reid",
+    "cost": "{3}{G}{G}",
+    "mana_value": 5,
+    "types": "[Planeswalker] - [Vivien]",
+    "rarity": "Mythic",
+    "rules": [
+      "+1: Look at the top four cards of your library. You may reveal a creature or land card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+      "-3: Destroy target artifact, enchantment, or creature with flying.",
+      "-8: You get an emblem with \"Creatures you control get +2/+2 and have vigilance, trample, and indestructible.\""
+    ]
+  },
+  {
+    "name": "Wardens of the Cycle",
+    "cost": "{1}{B}{G}{G}",
+    "mana_value": 4,
+    "types": "[Creature] - [Elf, Warlock]",
+    "rarity": "Uncommon",
+    "pt": "3/4",
+    "rules": [
+      "Morbid - At the beginning of your end step, if a creature died this turn, choose one -&bull You gain 2 life.&bull You draw a card and you lose 1 life."
+    ]
+  },
+  {
+    "name": "Wary Thespian",
+    "cost": "{1}{G}",
+    "mana_value": 2,
+    "types": "[Creature] - [Cat, Druid]",
+    "rarity": "Common",
+    "pt": "3/1",
+    "rules": [
+      "When {this} enters or dies, surveil 1. (Look at the top card of your library. You may put that card into your graveyard.)"
+    ]
+  },
+  {
+    "name": "Wildwood Scourge",
+    "cost": "{X}{G}",
+    "mana_value": 1,
+    "types": "[Creature] - [Hydra]",
+    "rarity": "Uncommon",
+    "pt": "0/0",
+    "rules": [
+      "{this} enters with X +1/+1 counters on it.",
+      "Whenever one or more +1/+1 counters are put on another non-Hydra creature you control, put a +1/+1 counter on {this}."
+    ]
+  },
+  {
+    "name": "Wind-Scarred Crag",
+    "cost": "",
+    "mana_value": 0,
+    "types": "[Land]",
+    "rarity": "Common",
+    "rules": [
+      "{this} enters tapped.",
+      "When {this} enters, you gain 1 life.",
+      "{T}: Add {R}.",
+      "{T}: Add {W}."
+    ]
+  },
+  {
+    "name": "Witness Protection",
+    "cost": "{U}",
+    "mana_value": 1,
+    "types": "[Enchantment] - [Aura]",
+    "rarity": "Common",
+    "rules": [
+      "Enchant creature",
+      "Enchanted creature loses all abilities and is a green and white Citizen creature with base power and toughness 1/1 named Legitimate Businessperson."
+    ]
+  },
+  {
+    "name": "Youthful Valkyrie",
+    "cost": "{1}{W}",
+    "mana_value": 2,
+    "types": "[Creature] - [Angel]",
+    "rarity": "Uncommon",
+    "pt": "1/3",
+    "rules": [
+      "Flying",
+      "Whenever another Angel you control enters, put a +1/+1 counter on {this}."
+    ]
+  },
+  {
+    "name": "Zimone, Paradox Sculptor",
+    "cost": "{2}{G}{U}",
+    "mana_value": 4,
+    "types": "[Creature] - [Human, Wizard]",
+    "rarity": "Mythic",
+    "pt": "1/4",
+    "rules": [
+      "At the beginning of combat on your turn, put a +1/+1 counter on each of up to two target creatures you control.",
+      "{G}{U}, {T}: Double the number of each kind of counter on up to two target creatures and/or artifacts you control."
+    ]
+  },
+  {
+    "name": "Zombify",
+    "cost": "{3}{B}",
+    "mana_value": 4,
+    "types": "[Sorcery]",
+    "rarity": "Uncommon",
+    "rules": [
+      "Return target creature card from your graveyard to the battlefield."
+    ]
+  },
+  {
+    "name": "Zul Ashur, Lich Lord",
+    "cost": "{1}{B}",
+    "mana_value": 2,
+    "types": "[Creature] - [Zombie, Warlock]",
+    "rarity": "Rare",
+    "pt": "2/2",
+    "rules": [
+      "Ward-Pay 2 life. (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays 2 life.)",
+      "{T}: You may cast target Zombie creature card from your graveyard this turn."
+    ]
+  }
+]
