@@ -1,0 +1,697 @@
+diff --git a/Mage.Web.Client/src/app/decks/Collection.tsx b/Mage.Web.Client/src/app/decks/Collection.tsx
+index b02af08d8b..79d8f567f8 100644
+--- a/Mage.Web.Client/src/app/decks/Collection.tsx
++++ b/Mage.Web.Client/src/app/decks/Collection.tsx
+@@ -25,10 +25,11 @@ const EMPTY_FILTERS: CollectionFilters = { text: '', anyText: false, colors: [],
+ 
+ const PAGE = 60;
+ 
+-// mtg-ai: only Duskmourn: House of Horror (DSK), the set our Limited decks are drafted from; remembered per browser.
+-// Its Special Guests (SPG 74-83) aren't in XMage's DSK boosters, so they stay out
+-const DSK_SET = 'DSK';
++// mtg-ai: only one of the sets our Limited decks are drafted from: Duskmourn: House of Horror (DSK) or Foundations
++// (FDN); remembered per browser ('' = off). Their Special Guests (SPG) are filed under another set, so they stay out
++const DRAFT_SET_NAMES: Record<string, string> = { DSK: 'Duskmourn: House of Horror', FDN: 'Foundations' };
+ const DSK_ONLY_KEY = 'playmat.collection.dskOnly';
++const DRAFT_ONLY_KEY = 'playmat.collection.draftSet';
+ 
+ const COLORS: { key: string; symbol: string; label: string }[] = [
+   { key: 'white', symbol: 'w', label: 'White' },
+@@ -62,7 +63,7 @@ const RARITIES: { value: Rarity | ''; label: string }[] = [
+ /** Sets most players don't build with: joke sets, unofficial sets, and Arena-only digital cards. */
+ const SIDELINED_SET_TYPES = new Set(['JOKE_SET', 'CUSTOM_SET', 'MAGIC_ARENA']);
+ 
+-function toCriteria(filters: CollectionFilters, format: string, start: number, ignoreSets: string[], dskOnly: boolean): CardCriteria {
++function toCriteria(filters: CollectionFilters, format: string, start: number, ignoreSets: string[], draftOnly: string): CardCriteria {
+   const text = filters.text.trim();
+   return {
+     ignoreSetCodes: ignoreSets,
+@@ -74,7 +75,7 @@ function toCriteria(filters: CollectionFilters, format: string, start: number, i
+     webColors: filters.colors,
+     colorMatch: 'any',
+     types: filters.type ? [filters.type] : [],
+-    setCodes: dskOnly ? [DSK_SET] : filters.set ? [filters.set] : undefined,
++    setCodes: draftOnly ? [draftOnly] : filters.set ? [filters.set] : undefined,
+     rarities: filters.rarity ? [filters.rarity] : [],
+     manaValue: filters.manaValue ?? undefined,
+     manaValueOperator: filters.manaValue === 7 ? 'gte' : filters.manaValue !== null ? 'eq' : undefined,
+@@ -109,10 +110,11 @@ export function Collection({ format, identity, counts, limitOf, onAdd, onRemove,
+ }) {
+   const [filters, setFilters] = useState<CollectionFilters>(EMPTY_FILTERS);
+   const [allSets, setAllSets] = useState(false);
+-  const [dskOnly, setDskOnlyState] = useState(() => readJson(DSK_ONLY_KEY, false));
+-  const setDskOnly = (on: boolean) => {
+-    setDskOnlyState(on);
+-    writeJson(DSK_ONLY_KEY, on);
++  // the old "DSK only" checkbox's choice carries over
++  const [draftOnly, setDraftOnlyState] = useState<string>(() => readJson<string | null>(DRAFT_ONLY_KEY, null) ?? (readJson(DSK_ONLY_KEY, false) ? 'DSK' : ''));
++  const setDraftOnly = (code: string) => {
++    setDraftOnlyState(code);
++    writeJson(DRAFT_ONLY_KEY, code);
+   };
+   // a commander deck shows what its commander allows, unless the player asks for everything
+   const [anyIdentity, setAnyIdentity] = useState(false);
+@@ -125,8 +127,8 @@ export function Collection({ format, identity, counts, limitOf, onAdd, onRemove,
+     [allSets, sets.data],
+   );
+   const results = useInfiniteQuery({
+-    queryKey: ['collection', query, format, ignoreSets, colorIdentity, dskOnly],
+-    queryFn: ({ pageParam }) => api.searchCards(toCriteria(query, format, pageParam, ignoreSets, dskOnly), colorIdentity === null ? null : { colorIdentity }),
++    queryKey: ['collection', query, format, ignoreSets, colorIdentity, draftOnly],
++    queryFn: ({ pageParam }) => api.searchCards(toCriteria(query, format, pageParam, ignoreSets, draftOnly), colorIdentity === null ? null : { colorIdentity }),
+     // wait for the set list so the first page already leaves the sidelined sets out
+     enabled: allSets || !sets.isPending,
+     initialPageParam: 0,
+@@ -186,10 +188,11 @@ export function Collection({ format, identity, counts, limitOf, onAdd, onRemove,
+               : identity.map((letter) => <i key={letter} className={`ms ms-cost ms-${letter.toLowerCase()}`} aria-hidden="true" />)}
+           </label>
+         )}
+-        <label className={styles.toggle} title="Only Duskmourn: House of Horror cards (DSK)">
+-          <input type="checkbox" checked={dskOnly} onChange={(event) => setDskOnly(event.target.checked)} />
+-          DSK only
+-        </label>
++        <select className={styles.select} value={draftOnly} onChange={(event) => setDraftOnly(event.target.value)} aria-label="Draft set"
++          title="Only the cards of one draft set: Duskmourn: House of Horror (DSK) or Foundations (FDN)">
++          <option value="">All cards</option>
++          {Object.keys(DRAFT_SET_NAMES).map((code) => <option key={code} value={code}>{code} only</option>)}
++        </select>
+         <label className={styles.toggle} title="Joke sets, unofficial sets and Arena-only cards">
+           <input type="checkbox" checked={allSets} onChange={(event) => setAllSets(event.target.checked)} />
+           Joke &amp; digital sets
+@@ -235,7 +238,7 @@ export function Collection({ format, identity, counts, limitOf, onAdd, onRemove,
+         <select className={styles.select} value={filters.rarity} onChange={(event) => set({ rarity: event.target.value as Rarity | '' })} aria-label="Rarity">
+           {RARITIES.map((rarity) => <option key={rarity.value} value={rarity.value}>{rarity.label}</option>)}
+         </select>
+-        <select className={[styles.select, styles.setSelect].join(' ')} value={dskOnly ? DSK_SET : filters.set} disabled={dskOnly} onChange={(event) => set({ set: event.target.value })} aria-label="Set">
++        <select className={[styles.select, styles.setSelect].join(' ')} value={draftOnly || filters.set} disabled={!!draftOnly} onChange={(event) => set({ set: event.target.value })} aria-label="Set">
+           <option value="">All sets</option>
+           {setOptions.map((item) => <option key={item.setCode} value={item.setCode}>{item.name} ({item.setCode})</option>)}
+         </select>
+diff --git a/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx b/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx
+index f22d6eec74..f6bac8078d 100644
+--- a/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx
++++ b/Mage.Web.Client/src/app/decks/DeckBuilderScreen.tsx
+@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
+ import type { CardView } from '../../protocol/generated/views';
+ import { BASIC_FOR, MANA_LETTERS, suggestLands, type ManaLetter } from '../../core/decks/analysis';
+ import { canCommand, commanderIdentity, formatMenu, formatRules, withinIdentity, type FormatRules } from '../../core/decks/formats';
+-import { builderDskLabel, DSK_DRAFT_SIZE } from '../../core/decks/dskDraft';
++import { builderDraftLabel, DSK_DRAFT_SIZE } from '../../core/decks/dskDraft';
+ import { appendDeckCardLists } from '../../core/decks/merge';
+ import { deckStorage } from '../../core/decks/DeckStorageService';
+ import type { DeckCardInfo, DeckCardLists } from '../../core/decks/types';
+@@ -289,8 +289,9 @@ function DeckPanel({ deck, zone, view, onView, info, formats, rules, identity, s
+   const [plansOpen, setPlansOpen] = useState(false);
+   const commandZone = rules.commandZone;
+   const listed = formats.some((group) => group.types.includes(format));
+-  // mtg-ai: a Freeform deck of DSK cards is a DSK Draft (40) deck: named so here, still Freeform for the server
+-  const dskLabel = builderDskLabel(deck);
++  // mtg-ai: a Freeform deck of one draft set's cards (DSK, FDN) is that set's Draft (40) deck: named so here, still
++  // Freeform for the server
++  const dskLabel = builderDraftLabel(deck);
+   const optionLabel = (type: string) => (dskLabel && type === format ? `${dskLabel} (Freeform)` : formatRules(type).label);
+   // a commander deck counts its command zone; other decks count the main deck only
+   const total = commandZone ? mainCount + sideCount : mainCount;
+@@ -329,7 +330,7 @@ function DeckPanel({ deck, zone, view, onView, info, formats, rules, identity, s
+             onChange((current) => ({ ...current, format: value }));
+           }}
+           aria-label="Format"
+-          title={dskLabel ? 'DSK Draft (40): 40 cards of DSK; tables take it as Freeform' : undefined}
++          title={dskLabel ? `${dskLabel}: 40 cards of that set; tables take it as Freeform` : undefined}
+         >
+           {!listed && <option value={format}>{optionLabel(format)}</option>}
+           {formats.map((group) => (
+diff --git a/Mage.Web.Client/src/app/decks/DeckSetTabs.tsx b/Mage.Web.Client/src/app/decks/DeckSetTabs.tsx
+index 09d4811c5e..94d5affea5 100644
+--- a/Mage.Web.Client/src/app/decks/DeckSetTabs.tsx
++++ b/Mage.Web.Client/src/app/decks/DeckSetTabs.tsx
+@@ -1,22 +1,27 @@
+-// mtg-ai: "DSK Draft" or "All" over the deck lists (Home and Decks; stores/decks.ts, inDeckSet)
++// mtg-ai: "DSK Draft", "FDN Draft" or "All" over the deck lists (Home and Decks; stores/decks.ts, inDeckSet)
+ import { useT } from '../i18n';
+-import { useDeckSet, useDecks, type DeckSet } from '../stores/decks';
++import { useShallow } from 'zustand/react/shallow';
++import { DRAFT_SETS, starterDraftSet } from '../../core/decks/dskDraft';
++import { draftSetOf, useDeckSet, useDecks, type DeckSet } from '../stores/decks';
+ import styles from './DeckSetTabs.module.css';
+ 
+-const SETS: { id: DeckSet; key: 'decks.set.dsk' | 'decks.set.all' }[] = [
++const SETS: { id: DeckSet; key: 'decks.set.dsk' | 'decks.set.fdn' | 'decks.set.all' }[] = [
+   { id: 'dsk', key: 'decks.set.dsk' },
++  { id: 'fdn', key: 'decks.set.fdn' },
+   { id: 'all', key: 'decks.set.all' },
+ ];
+ 
+-/** Shown only while there are DSK decks (our dsk-* starters, or a saved DSK deck). */
++/** Shown only while there are draft-set decks (our DSK or FDN starters, or a saved one); a set's tab only while it has decks. */
+ export function DeckSetTabs() {
+   const t = useT();
+-  const shown = useDecks((state) => state.starters.some((starter) => starter.file.startsWith('dsk-')) || state.saved.some((deck) => deck.dskDraft));
++  const present = useDecks(useShallow((state) => DRAFT_SETS.filter((s) => state.starters.some((starter) => starterDraftSet(starter.file) === s)
++    || state.saved.some((deck) => (deck.draftSet ?? (deck.dskDraft ? 'DSK' : null)) === s))));
+   const { set, choose } = useDeckSet();
+-  if (!shown) return null;
++  if (present.length === 0) return null;
++  const shownSets = SETS.filter((item) => item.id === 'all' || present.includes(draftSetOf(item.id)!));
+   return (
+     <span className={styles.tabs} role="radiogroup" aria-label={t('decks.set.label')} title={t('decks.set.detail')}>
+-      {SETS.map((item) => (
++      {shownSets.map((item) => (
+         <button
+           key={item.id}
+           type="button"
+diff --git a/Mage.Web.Client/src/app/i18n/en/core.ts b/Mage.Web.Client/src/app/i18n/en/core.ts
+index 205a2c68fd..ffe942cb93 100644
+--- a/Mage.Web.Client/src/app/i18n/en/core.ts
++++ b/Mage.Web.Client/src/app/i18n/en/core.ts
+@@ -259,8 +259,9 @@ export default {
+   'decks.sync.shared.failed': "Couldn't reach the server: kept in this browser (tap to retry)",
+   'decks.sync.shared.saved': 'Saved on the server (shared)',
+   'decks.set.label': 'Deck set',
+-  'decks.set.detail': 'DSK Draft (40): our DSK starters and every 40-card deck of DSK cards; All: every deck',
++  'decks.set.detail': 'DSK Draft (40) / FDN Draft (40): our starters of that set and every 40-card deck of its cards; All: every deck',
+   'decks.set.dsk': 'DSK Draft',
++  'decks.set.fdn': 'FDN Draft',
+   'decks.set.all': 'All',
+ 
+   // shared UI kit
+diff --git a/Mage.Web.Client/src/app/i18n/es.ts b/Mage.Web.Client/src/app/i18n/es.ts
+index 20f996973f..4d28bba9fc 100644
+--- a/Mage.Web.Client/src/app/i18n/es.ts
++++ b/Mage.Web.Client/src/app/i18n/es.ts
+@@ -278,8 +278,9 @@ const es: Catalog = {
+   'decks.sync.shared.failed': 'No se pudo conectar con el servidor: guardado en este navegador (toca para reintentar)',
+   'decks.sync.shared.saved': 'Guardado en el servidor (compartido)',
+   'decks.set.label': 'Conjunto de mazos',
+-  'decks.set.detail': 'DSK Draft (40): nuestros mazos iniciales de DSK y cada mazo de 40 cartas de DSK; Todos: todos los mazos',
++  'decks.set.detail': 'DSK Draft (40) / FDN Draft (40): nuestros mazos iniciales de ese set y cada mazo de 40 cartas de sus cartas; Todos: todos los mazos',
+   'decks.set.dsk': 'DSK Draft',
++  'decks.set.fdn': 'FDN Draft',
+   'decks.set.all': 'Todos',
+ 
+   // "What's new"
+diff --git a/Mage.Web.Client/src/app/match/Piles.tsx b/Mage.Web.Client/src/app/match/Piles.tsx
+index b55bfd2b77..ed07a16c8b 100644
+--- a/Mage.Web.Client/src/app/match/Piles.tsx
++++ b/Mage.Web.Client/src/app/match/Piles.tsx
+@@ -55,7 +55,7 @@ export function Piles({ player, sleeve, isMe, commanders = [], clickable, onCast
+         <span className={styles.label}>Library</span>
+       </button>
+ 
+-      <PileOfCards title={`${name} graveyard`} label="Graveyard" cards={graveyard} below={!isMe} pile={`graveyard:${player.playerId}`} badge={<DeliriumCount playerId={player.playerId ?? ''} />} sleeve={sleeve} onOpen={() => openViewer({ title: `${name} graveyard`, cards: [...graveyard].reverse() })} />
++      <PileOfCards title={`${name} graveyard`} label="Graveyard" cards={graveyard} below={!isMe} pile={`graveyard:${player.playerId}`} badge={<GraveyardCount playerId={player.playerId ?? ''} />} sleeve={sleeve} onOpen={() => openViewer({ title: `${name} graveyard`, cards: [...graveyard].reverse() })} />
+       {exile.length > 0 && (
+         <PileOfCards title={`${name} exile`} label="Exile" cards={exile} below={!isMe} sleeve={sleeve} onOpen={() => openViewer({ title: `${name} exile`, cards: exile })} />
+       )}
+@@ -218,12 +218,27 @@ function MiniButton({ icon, count, label, onOpen }: { icon: ReactNode; count: nu
+ }
+ 
+ /**
+- * mtg-ai: how far a player's graveyard is toward delirium ("Delirium 2/4"), always shown for both players (Jeff
+- * 2026-10-26); faded below four card types, lit at four. Hover lists the types counted.
++ * mtg-ai: how far a player's graveyard is toward its set's graveyard condition, always shown for both players (Jeff
++ * 2026-10-26): delirium ("Delirium 2/4", four card types) in Duskmourn, threshold ("Threshold 5/7", seven cards) in
++ * Foundations (2026-10-28). Faded until it is on, lit then. Hover says what is counted.
+  */
+-function DeliriumCount({ playerId }: { playerId: string }) {
++function GraveyardCount({ playerId }: { playerId: string }) {
+   const board = useContext(ConditionContext);
+-  const types = board.graveyards.get(playerId)?.types ?? [];
++  const graveyard = board.graveyards.get(playerId);
++  if (board.set === 'FDN') {
++    const size = graveyard?.size ?? 0;
++    const on = size >= 7;
++    return (
++      <span
++        className={[styles.delirium, on ? styles.deliriumOn : ''].join(' ')}
++        title={`Threshold ${on ? 'is on' : 'needs seven cards in the graveyard'}: ${size} ${size === 1 ? 'card' : 'cards'}`}
++        aria-label={`Threshold ${Math.min(size, 7)} of 7`}
++      >
++        Threshold {Math.min(size, 7)}/7
++      </span>
++    );
++  }
++  const types = graveyard?.types ?? [];
+   const on = types.length >= 4;
+   const listed = types.length > 0 ? types.map((type) => type.toLowerCase()).join(', ') : 'no card types yet';
+   return (
+diff --git a/Mage.Web.Client/src/app/stores/decks.ts b/Mage.Web.Client/src/app/stores/decks.ts
+index 3f4fef857f..a255f3df8f 100644
+--- a/Mage.Web.Client/src/app/stores/decks.ts
++++ b/Mage.Web.Client/src/app/stores/decks.ts
+@@ -8,7 +8,7 @@ import { pickMetaDeck, type MetaDeck, type MetaDeckIndex } from '../../core/deck
+ import { readJson, writeJson } from './persist';
+ import { knownStrengths, type DeckStrength, type StrengthEntry } from '../../core/decks/deckStrength';
+ import { copyLabel, copyOf, looksLikeStarterName, planStarterSync, sortByStanding, standingOf, type Standing } from '../../core/decks/starterCopies';
+-import { DSK_DRAFT_LABEL, isDskStarterFile } from '../../core/decks/dskDraft';
++import { draftLabel, isGoodStarterFile, starterDraftSet, strengthDraftSet, type DraftSet } from '../../core/decks/dskDraft';
+ import { notify } from './toasts';
+ import { RANDOM_SLEEVE, randomSleeveFor } from '../ui/sleeveArt';
+ 
+@@ -45,6 +45,8 @@ export interface RosterDeck {
+   standing?: Standing;
+   /** mtg-ai: one of the DSK Draft (40) set: a dsk-* starter, a copy of one, or a 40-card deck of DSK cards (dskDraft.ts) */
+   dskDraft?: boolean;
++  /** mtg-ai: the draft set (DSK, FDN) whose list the deck is in: our starter of that set, a copy, or a 40-card deck of its cards */
++  draftSet?: DraftSet | null;
+ }
+ 
+ const SELECTED_KEY = 'playmat.selectedDeck';
+@@ -69,18 +71,21 @@ function summaryToRoster(deck: DeckSummary, starters: StarterDeck[] = [], streng
+   const copy = copyOf(deck.sig, starters, strengths);
+   // mtg-ai: a 40-card DSK deck the player built is in the DSK Draft (40) set, with its review once the deck folder's
+   // reviewer rated it (play/review_decks.py on the mini's deck folder), else "unrated"
+-  const dskDraft = !!copy || !!deck.dskDraft;
++  const copySet = copy ? (copy.kind === 'starter' ? starterDraftSet(copy.starter.file) : strengthDraftSet(copy.entry)) ?? 'DSK' : null;
++  const draftSet: DraftSet | null = copySet ?? deck.draftSet ?? (deck.dskDraft ? 'DSK' : null);
++  const dskDraft = draftSet === 'DSK';
+   const rated = !copy && deck.sig ? ownRatings.find((entry) => entry.sig === deck.sig && entry.strength) : undefined;
+-  const note = dskDraft
+-    ? `${DSK_DRAFT_LABEL} · ${rated?.strength?.rating != null ? `review ${rated.strength.rating}/5` : 'unrated'} · ${size}`
++  const note = draftSet
++    ? `${draftLabel(draftSet)} · ${rated?.strength?.rating != null ? `review ${rated.strength.rating}/5` : 'unrated'} · ${size}`
+     : deck.format ? `${formatRules(deck.format).label} · ${size}` : size;
+   const name = deck.name || 'Untitled deck';
+   return {
+     id: deck.id,
+     name,
+-    note: copyLabel(copy, size) ?? (looksLikeStarterName(name) && !dskDraft ? `${note} · unrated` : note),
++    note: copyLabel(copy, size) ?? (looksLikeStarterName(name) && !draftSet ? `${note} · unrated` : note),
+     copy: copy?.kind,
+     dskDraft,
++    draftSet,
+     standing: copy?.kind === 'starter' ? standingOf(copy.starter.strength) : copy ? standingOf(copy.entry.strength, true) : standingOf(rated?.strength),
+     cardCount: deck.cardCount ?? 0,
+     cover: deck.coverCard ?? null,
+@@ -92,13 +97,14 @@ function summaryToRoster(deck: DeckSummary, starters: StarterDeck[] = [], streng
+ }
+ 
+ function starterToRoster(starter: StarterDeck): RosterDeck {
+-  const dskDraft = isDskStarterFile(starter.file); // mtg-ai: our DSK starters are the DSK Draft (40) set's
++  const draftSet = starterDraftSet(starter.file); // mtg-ai: our dsk-*/fdn-* starters are that set's Draft (40) list's
+   return {
+     id: STARTER_PREFIX + starter.file,
+     name: starter.name,
+-    dskDraft,
+-    note: dskDraft
+-      ? `${DSK_DRAFT_LABEL} · starter · ${starter.cards} cards`
++    dskDraft: draftSet === 'DSK',
++    draftSet,
++    note: draftSet
++      ? `${draftLabel(draftSet)} · starter · ${starter.cards} cards`
+       : `${isCommanderFormat(starter.format) ? 'Commander starter' : 'Starter deck'} · ${starter.cards} cards`,
+     cardCount: starter.cards,
+     cover: starter.cover,
+@@ -354,14 +360,14 @@ export const useGoodStartersOnly = create<{ on: boolean; set(on: boolean): void
+ }));
+ 
+ export function hasGoodStarters(starters: StarterDeck[]): boolean {
+-  return starters.some((starter) => starter.file.startsWith('dsk-good-'));
++  return starters.some((starter) => isGoodStarterFile(starter.file));
+ }
+ 
+ /** The roster the player picks from: the other DSK starters left out while "Good only" is on. */
+ export function pickableRoster(roster: RosterDeck[], starters: StarterDeck[], goodOnly: boolean): RosterDeck[] {
+   if (!goodOnly || !hasGoodStarters(starters)) return roster;
+   // mtg-ai: saved copies of retired decks are left out too
+-  return roster.filter((deck) => (!deck.starter || !deck.starter.file.startsWith('dsk-') || deck.starter.file.startsWith('dsk-good-')) && !deck.standing?.retired);
++  return roster.filter((deck) => (!deck.starter || !starterDraftSet(deck.starter.file) || isGoodStarterFile(deck.starter.file)) && !deck.standing?.retired);
+ }
+ 
+ /**
+@@ -384,22 +390,30 @@ export function sortByStrength(roster: RosterDeck[], starters: StarterDeck[], st
+   return sortByStanding(roster, (deck) => rosterStanding(deck, starters, strengths));
+ }
+ 
+-// mtg-ai: the deck lists show the DSK Draft (40) set, or every deck; remembered per browser, DSK Draft by default
++// mtg-ai: the deck lists show one draft set's Draft (40) list (DSK, FDN), or every deck; remembered per browser, DSK
++// Draft by default
+ const DECK_SET_KEY = 'mtgai.deckSet';
+-export type DeckSet = 'dsk' | 'all';
++export type DeckSet = 'dsk' | 'fdn' | 'all';
++const DECK_SETS: readonly DeckSet[] = ['dsk', 'fdn', 'all'];
+ 
+ export const useDeckSet = create<{ set: DeckSet; choose(set: DeckSet): void }>((set) => ({
+-  set: readJson<DeckSet>(DECK_SET_KEY, 'dsk') === 'all' ? 'all' : 'dsk',
++  set: DECK_SETS.find((s) => s === readJson<DeckSet>(DECK_SET_KEY, 'dsk')) ?? 'dsk',
+   choose(choice) {
+     writeJson(DECK_SET_KEY, choice);
+     set({ set: choice });
+   },
+ }));
+ 
+-/** mtg-ai: the roster in the chosen set; DSK Draft shows everything while there is no DSK deck at all. */
++/** mtg-ai: the draft set a deck-set choice stands for (null: every deck). */
++export function draftSetOf(set: DeckSet): DraftSet | null {
++  return set === 'all' ? null : set === 'fdn' ? 'FDN' : 'DSK';
++}
++
++/** mtg-ai: the roster in the chosen set; a draft set shows everything while there is no deck of it at all. */
+ export function inDeckSet(roster: RosterDeck[], set: DeckSet): RosterDeck[] {
+-  if (set === 'all' || !roster.some((deck) => deck.dskDraft)) return roster;
+-  return roster.filter((deck) => deck.dskDraft);
++  const draft = draftSetOf(set);
++  if (!draft || !roster.some((deck) => (deck.draftSet ?? (deck.dskDraft ? 'DSK' : null)) === draft)) return roster;
++  return roster.filter((deck) => (deck.draftSet ?? (deck.dskDraft ? 'DSK' : null)) === draft);
+ }
+ 
+ export function sleeveFor(sleeves: Record<string, string>, deck: RosterDeck | null | undefined): string {
+diff --git a/Mage.Web.Client/src/app/stores/play.ts b/Mage.Web.Client/src/app/stores/play.ts
+index 40b04eae3c..27384a295a 100644
+--- a/Mage.Web.Client/src/app/stores/play.ts
++++ b/Mage.Web.Client/src/app/stores/play.ts
+@@ -1,6 +1,7 @@
+ import { create } from 'zustand';
+ import { api } from '../connection';
+-import { useDecks, META_PREFIX, RANDOM_META_PREFIX, STARTER_PREFIX } from './decks';
++import { draftSetOf, useDecks, useDeckSet, META_PREFIX, RANDOM_META_PREFIX, STARTER_PREFIX } from './decks';
++import { draftSetOfCards, isGoodStarterFile, starterDraftSet, type DraftSet } from '../../core/decks/dskDraft';
+ import { useEvents } from './events';
+ import { warmCards } from '../ui/imageCache';
+ import { useSession } from './session';
+@@ -125,10 +126,11 @@ const metaDeck = (file: string, name: string) => deckFile(`/meta-decks/${encodeU
+  * random starter decks of the same kind (commander or not). Never the same deck twice while there are others. `good`
+  * (mtg-ai, the Claude AI): random decks come from the good DSK pool (dsk-good-*), whatever the rules. `match` (mtg-ai,
+  * a person against the AI): random decks are DSK decks of about the strength of the player's (matchingStarters), and
+- * each dealt deck's name says how it was matched.
++ * each dealt deck's name says how it was matched. `draftSet` (mtg-ai): our decks come from that set's starters
++ * (dsk-*, fdn-*), DSK when not given.
+  */
+ export async function aiDecks(chosenId: string | null, count: number, commander: boolean, format: string | null = null, avoid: string | null = null, good = false,
+-  match: { strength: DeckStrength; how: string; sig: string } | null = null): Promise<DeckCardLists[]> {
++  match: { strength: DeckStrength; how: string; sig: string } | null = null, draftSet: DraftSet | null = null): Promise<DeckCardLists[]> {
+   const decks: DeckCardLists[] = [];
+   if (chosenId && !chosenId.startsWith(STARTER_PREFIX) && !chosenId.startsWith(META_PREFIX)) {
+     const saved = await deckStorage.loadDeck(chosenId);
+@@ -143,9 +145,12 @@ export async function aiDecks(chosenId: string | null, count: number, commander:
+     decks.push(await metaDeck(chosenMeta.file, chosenMeta.name));
+   }
+   const matching = starters.filter((starter) => isCommanderFormat(starter.format) === commander);
+-  // mtg-ai: a server with DSK decks (dsk-*.dck) deals the AI one of them
+-  const dsk = matching.filter((starter) => starter.file.startsWith(good && matching.some((s) => s.file.startsWith('dsk-good-')) ? 'dsk-good-' : 'dsk-'));
+-  const matched = match && !commander ? matchingStarters(matching.filter((starter) => starter.file.startsWith('dsk-')), match.strength, match.sig) : null;
++  // mtg-ai: a server with our decks of the game's draft set (dsk-*.dck, fdn-*.dck) deals the AI one of them
++  const set = draftSet ?? 'DSK';
++  const ours = matching.filter((starter) => starterDraftSet(starter.file) === set);
++  const hasGood = ours.some((starter) => isGoodStarterFile(starter.file, set));
++  const dsk = ours.filter((starter) => !good || !hasGood || isGoodStarterFile(starter.file, set));
++  const matched = match && !commander ? matchingStarters(ours, match.strength, match.sig) : null;
+   const fitting = matched && matched.pool.length > 0 ? matched.pool : !commander && dsk.length > 0 ? dsk : matching;
+   const describe = (s: DeckStrength) => `${s.tier === 2 ? '★★ ' : s.tier === 1 ? '★ ' : ''}review ${s.rating ?? '?'}/5`;
+   const label = (starter: { name: string; strength?: DeckStrength }) => (matched && match
+@@ -257,11 +262,13 @@ export const usePlay = create<PlayState>((set, get) => ({
+       const format = options.rules === 'deck' ? deckType : null;
+       // mtg-ai: the Claude AI's random deck is always a good-pool DSK deck
+       const claudeRival = !watch && seatableAiType(options.aiType, queryClient.getQueryData<ServerState>(['serverState'])?.playerTypes) === 'COMPUTER_CLAUDE';
++      // mtg-ai: the AI's deck comes from the draft set of the player's deck (DSK, FDN), else the deck list's chosen set
++      const draftSet = draftSetOfCards(deck.cards) ?? draftSetOf(useDeckSet.getState().set);
+       // mtg-ai: a person against any AI gets a DSK deck of about their own deck's strength (watching: any deck)
+       const match = !practice && !guided && !watch && !commander ? strengthOf(deck.cards, [...useDecks.getState().starters, ...useDecks.getState().ownRatings, ...await knownStrengths()]) : null;
+       const rivalDecks: WireDeck[] = practice
+         ? [toWire(goldfishDeck(commander))]
+-        : [...(sourced ? [sourced] : []), ...(await aiDecks(source.kind === 'roster' ? source.id : null, opponents - (sourced ? 1 : 0), commander, format, meta?.file ?? null, claudeRival, match)).map(toWire)];
++        : [...(sourced ? [sourced] : []), ...(await aiDecks(source.kind === 'roster' ? source.id : null, opponents - (sourced ? 1 : 0), commander, format, meta?.file ?? null, claudeRival, match, draftSet)).map(toWire)];
+       // adaptive: the AI plays at the skill the player's recent results call for
+       const adaptiveFormat = !practice && options.adaptive ? adaptiveFormatFor(commander) : null;
+       const skill = adaptiveFormat ? adaptiveSkill((await api.soloAdaptive(adaptiveFormat).catch(() => null))?.skill, options.skill) : options.skill;
+diff --git a/Mage.Web.Client/src/core/decks/DeckStorageService.ts b/Mage.Web.Client/src/core/decks/DeckStorageService.ts
+index 80fca55027..2906428dca 100644
+--- a/Mage.Web.Client/src/core/decks/DeckStorageService.ts
++++ b/Mage.Web.Client/src/core/decks/DeckStorageService.ts
+@@ -1,5 +1,5 @@
+ import { deckSig } from "./deckStrength.js"; // mtg-ai
+-import { isDskDraftDeck } from "./dskDraft.js"; // mtg-ai
++import { draftSetOfDeck, isDskDraftDeck, type DraftSet } from "./dskDraft.js"; // mtg-ai
+ import type { DeckCardLists, DeckImportSource } from "./types.js";
+ import { DeckSerializer } from "./DeckSerializer.js";
+ import { newId } from "../util/uuid.js";
+@@ -32,6 +32,8 @@ export interface DeckSummary {
+     playerNamed?: boolean;
+     /** mtg-ai: a deck of the DSK Draft (40) set (core/decks/dskDraft.ts) */
+     dskDraft?: boolean;
++    /** mtg-ai: the draft set (DSK, FDN) whose "<SET> Draft (40)" list the deck is in, or null */
++    draftSet?: DraftSet | null;
+ }
+ 
+ export interface IDeckStorage {
+@@ -81,6 +83,8 @@ interface DeckMeta {
+     playerNamed?: boolean;
+     /** mtg-ai: a deck of the DSK Draft (40) set (core/decks/dskDraft.ts) */
+     dskDraft?: boolean;
++    /** mtg-ai: the draft set (DSK, FDN) whose "<SET> Draft (40)" list the deck is in, or null */
++    draftSet?: DraftSet | null;
+ }
+ 
+ export class LocalDeckStorage implements IDeckStorage {
+@@ -140,6 +144,7 @@ export class LocalDeckStorage implements IDeckStorage {
+             sig: deckSig(deck.cards), // mtg-ai
+             playerNamed: deck.playerNamed, // mtg-ai
+             dskDraft: isDskDraftDeck(deck), // mtg-ai
++            draftSet: draftSetOfDeck(deck), // mtg-ai
+         };
+         const newMeta = meta.filter(m => m.id !== deck.id);
+         newMeta.push(newMetaItem);
+@@ -242,6 +247,7 @@ export class LocalDeckStorage implements IDeckStorage {
+             sig: m.sig ?? this.storedSig(m.id),
+             playerNamed: m.playerNamed, // mtg-ai
+             dskDraft: m.dskDraft ?? this.storedDskDraft(m.id, m.format), // mtg-ai
++            draftSet: m.draftSet !== undefined ? m.draftSet : this.storedDraftSet(m.id, m.format), // mtg-ai
+         })).sort((a, b) => b.updatedAt - a.updatedAt);
+     }
+ 
+@@ -257,6 +263,12 @@ export class LocalDeckStorage implements IDeckStorage {
+         return !!cards && isDskDraftDeck({ format, cards });
+     }
+ 
++    /** mtg-ai: the draft set of a deck saved before it was kept in its summary */
++    private storedDraftSet(id: string, format: string | undefined): DraftSet | null {
++        const cards = this.storedCards(id);
++        return cards ? draftSetOfDeck({ format, cards }) : null;
++    }
++
+     /** mtg-ai: a stored deck's main cards (JSON or legacy .dck text) */
+     private storedCards(id: string): DeckCardLists["cards"] | undefined {
+         const content = localStorage.getItem(STORAGE_PREFIX + id);
+diff --git a/Mage.Web.Client/src/core/decks/dskDraft.test.ts b/Mage.Web.Client/src/core/decks/dskDraft.test.ts
+index 721c9567b0..4ecd7f9453 100644
+--- a/Mage.Web.Client/src/core/decks/dskDraft.test.ts
++++ b/Mage.Web.Client/src/core/decks/dskDraft.test.ts
+@@ -1,5 +1,5 @@
+ import { describe, expect, it } from 'vitest';
+-import { builderDskLabel, isDskDraftDeck, isDskStarterFile, playsAsFreeform } from './dskDraft';
++import { builderDskLabel, draftSetOfCards, isDskDraftDeck, isDskStarterFile, isGoodStarterFile, playsAsFreeform, starterDraftSet, strengthDraftSet } from './dskDraft';
+ 
+ const dsk = (n: number, extra: { cardName: string; setCode?: string; amount: number }[] = []) => [
+   { cardName: 'Plains', setCode: 'M21', cardNumber: '260', amount: 17 },
+@@ -35,3 +35,24 @@ describe('DSK Draft (40) (mtg-ai)', () => {
+     expect(isDskStarterFile('red.dck')).toBe(false);
+   });
+ });
++
++describe('draft sets (mtg-ai: DSK and FDN)', () => {
++  const card = (cardName: string, setCode: string) => ({ cardName, setCode, cardNumber: '1', amount: 1 });
++
++  it('reads one draft set from the nonbasic cards, Special Guests aside', () => {
++    expect(draftSetOfCards([card('Plains', 'FDN'), card('Burst Lightning', 'FDN'), card('Condemn', 'SPG')])).toBe('FDN');
++    expect(draftSetOfCards([card('Burst Lightning', 'FDN'), card('Overlord of the Mistmoors', 'DSK')])).toBeNull();
++    expect(draftSetOfCards([card('Lightning Bolt', 'M10')])).toBeNull();
++  });
++
++  it('reads the set of our starter files and strength entries', () => {
++    expect(starterDraftSet('fdn-good-08.dck')).toBe('FDN');
++    expect(starterDraftSet('dsk-good-v2-03.dck')).toBe('DSK');
++    expect(starterDraftSet('Mono Red.dck')).toBeNull();
++    expect(isGoodStarterFile('fdn-good-08.dck', 'FDN')).toBe(true);
++    expect(isGoodStarterFile('fdn-good-08.dck', 'DSK')).toBe(false);
++    expect(isGoodStarterFile('fdn-goodx-08.dck')).toBe(false);
++    expect(strengthDraftSet({ name: 'fdn_08' })).toBe('FDN');
++    expect(strengthDraftSet({ name: 'v2_03' })).toBeNull();
++  });
++});
+diff --git a/Mage.Web.Client/src/core/decks/dskDraft.ts b/Mage.Web.Client/src/core/decks/dskDraft.ts
+index e46ad80f6e..7ced5723f9 100644
+--- a/Mage.Web.Client/src/core/decks/dskDraft.ts
++++ b/Mage.Web.Client/src/core/decks/dskDraft.ts
+@@ -43,3 +43,58 @@ export function isDskDraftDeck(deck: { format?: string | null; cards: readonly D
+ export function isDskStarterFile(file: string): boolean {
+   return file.startsWith('dsk-');
+ }
++
++/**
++ * mtg-ai: the draft sets we have decks for: DSK (Duskmourn) and FDN (Foundations). A deck of one of them is in that
++ * set's "<SET> Draft (40)" list. Special Guests (SPG) ride along with either set; basics count for any.
++ */
++export const DRAFT_SETS = ['DSK', 'FDN'] as const;
++export type DraftSet = (typeof DRAFT_SETS)[number];
++const SPECIAL_GUESTS = 'SPG';
++
++export function draftLabel(set: DraftSet): string {
++  return `${set} Draft (${DSK_DRAFT_SIZE})`;
++}
++
++/** The one draft set every card is a printing of (basics and Special Guests aside), or null; an empty list is null. */
++export function draftSetOfCards(cards: readonly DeckCardInfo[]): DraftSet | null {
++  let found: DraftSet | null = null;
++  for (const card of cards) {
++    if (BASICS.has(card.cardName)) continue;
++    const code = (card.setCode ?? '').toUpperCase();
++    if (code === SPECIAL_GUESTS) continue;
++    if (!(DRAFT_SETS as readonly string[]).includes(code) || (found && found !== code)) return null;
++    found = code as DraftSet;
++  }
++  return found;
++}
++
++/** The draft set of a Freeform deck of 40+ main cards from one draft set, else null. */
++export function draftSetOfDeck(deck: { format?: string | null; cards: readonly DeckCardInfo[] }): DraftSet | null {
++  if (!playsAsFreeform(deck.format) || deck.cards.reduce((total, card) => total + card.amount, 0) < DSK_DRAFT_SIZE) return null;
++  return draftSetOfCards(deck.cards);
++}
++
++/** The builder's name for a Freeform deck of one draft set's cards so far; DSK for a new, empty deck. */
++export function builderDraftLabel(deck: { format?: string | null; cards: readonly DeckCardInfo[] }): string | null {
++  if (!playsAsFreeform(deck.format)) return null;
++  if (onlyDskCards(deck.cards)) return DSK_DRAFT_LABEL;
++  const set = draftSetOfCards(deck.cards);
++  return set ? draftLabel(set) : null;
++}
++
++/** The draft set of one of our starter files (dsk_starters.py: dsk-*.dck, fdn-*.dck), else null. */
++export function starterDraftSet(file: string): DraftSet | null {
++  return DRAFT_SETS.find((set) => file.startsWith(`${set.toLowerCase()}-`)) ?? null;
++}
++
++/** The draft set of a strengths.json entry (no file there, only its name: "fdn_08", "v2_03", "good_03", ...). */
++export function strengthDraftSet(entry: { file?: string; name?: string }): DraftSet | null {
++  if (entry.file) return starterDraftSet(entry.file);
++  return entry.name?.startsWith('fdn_') ? 'FDN' : null;
++}
++
++/** One of our good-pool starters (dsk-good-*, fdn-good-*; the unstarred ones are *-goodx-*). */
++export function isGoodStarterFile(file: string, set: DraftSet | null = null): boolean {
++  return (set ? [set] : DRAFT_SETS).some((s) => file.startsWith(`${s.toLowerCase()}-good-`));
++}
+diff --git a/Mage.Web.Client/src/core/game/conditions.test.ts b/Mage.Web.Client/src/core/game/conditions.test.ts
+index 26a1868e11..7493c4ee5d 100644
+--- a/Mage.Web.Client/src/core/game/conditions.test.ts
++++ b/Mage.Web.Client/src/core/game/conditions.test.ts
+@@ -1,6 +1,6 @@
+ import { describe, expect, it } from 'vitest';
+ import type { CardView, GameView } from '../../protocol/generated/views';
+-import { activeConditions, conditionBoard, deliriumTypes } from './conditions';
++import { activeConditions, conditionBoard, deliriumTypes, gameSet } from './conditions';
+ 
+ const grave = (...types: string[][]): Record<string, CardView> => Object.fromEntries(types.map((cardTypes, i) => [`g${i}`, { id: `g${i}`, cardTypes } as CardView]));
+ const board = (graveyard: Record<string, CardView>, extra: Partial<GameView> = {}) => conditionBoard({ players: [{ playerId: 'me', graveyard }], activePlayerId: 'me', step: 'DECLARE_ATTACKERS', ...extra } as GameView);
+@@ -22,6 +22,32 @@ describe('activeConditions', () => {
+   });
+ });
+ 
++describe('Foundations conditions', () => {
++  const raider: CardView = { id: 'r', name: 'Gorehorn Raider', rules: ['<i>Raid</i> &mdash; When this creature enters, if you attacked this turn, it deals 2 damage to any target.'] };
++  const hinted = (icon: string) => ({ ...raider, rules: [...raider.rules!, `<br/><hintstart/>${icon}<font color=#00ff00>You attacked this turn</font>`] });
++
++  it('turns raid on from the server\'s good hint only', () => {
++    expect(activeConditions(raider, 'me', board({}))).toEqual([]);
++    expect(activeConditions(hinted('ICON_BAD'), 'me', board({}))).toEqual([]);
++    expect(activeConditions(hinted('ICON_GOOD'), 'me', board({})).map((c) => c.name)).toEqual(['Raid']);
++  });
++
++  it('turns threshold on at seven cards', () => {
++    const feaster: CardView = { id: 'f', name: 'Crypt Feaster', rules: ['<i>Threshold</i> &mdash; Whenever this creature attacks, if seven or more cards are in your graveyard, it gets +2/+0 until end of turn.'] };
++    const cards = (n: number) => grave(...Array.from({ length: n }, () => ['LAND']));
++    expect(activeConditions(feaster, 'me', board(cards(6)))).toEqual([]);
++    expect(activeConditions(feaster, 'me', board(cards(7))).map((c) => c.name)).toEqual(['Threshold']);
++  });
++
++  it('reads the game\'s set from the cards in sight', () => {
++    const card = (expansionSetCode: string) => ({ expansionSetCode } as CardView);
++    expect(gameSet(null)).toBeNull();
++    expect(gameSet({ players: [{ graveyard: { a: card('FDN') }, battlefield: { b: card('FDN'), c: card('DSK') } }] } as unknown as GameView)).toBe('FDN');
++    expect(gameSet({ players: [], myHand: { a: card('DSK') } } as unknown as GameView)).toBe('DSK');
++    expect(conditionBoard({ players: [], myHand: { a: card('FDN') } } as unknown as GameView).set).toBe('FDN');
++  });
++});
++
+ describe('deliriumTypes', () => {
+   it('counts each card type once, both types of a dual-type card, and lands', () => {
+     const cards = [
+diff --git a/Mage.Web.Client/src/core/game/conditions.ts b/Mage.Web.Client/src/core/game/conditions.ts
+index 1be9871de6..c7bad6654b 100644
+--- a/Mage.Web.Client/src/core/game/conditions.ts
++++ b/Mage.Web.Client/src/core/game/conditions.ts
+@@ -1,5 +1,6 @@
+ import type { CardView, GameView, PermanentView } from '../../protocol/generated/views';
+ import { roomDoors } from './cards';
++import { splitRules } from './glossary';
+ 
+ /**
+  * mtg-ai: a card's conditional ability that is on right now, Arena style: the card glows and names it. Read from the
+@@ -29,9 +30,43 @@ export function deliriumTypes(cards: readonly CardView[]): string[] {
+   return [...types].sort();
+ }
+ 
++/** The draft sets our decks come from: a game's set says which graveyard count to show (delirium or threshold). */
++export type GameSet = 'DSK' | 'FDN';
++
++/**
++ * Conditions XMage reports as a live hint on the card (good icon: true), for the ability words whose state the
++ * board doesn't show: Raid (you attacked this turn), Morbid (a creature died this turn), Ferocious (power 4+).
++ */
++const HINTED: { name: string; hint: string; detail: string }[] = [
++  { name: 'Raid', hint: 'You attacked this turn', detail: 'Raid is on: you attacked this turn' },
++  { name: 'Morbid', hint: 'A creature died this turn', detail: 'Morbid is on: a creature died this turn' },
++  { name: 'Ferocious', hint: 'You control a creature with power 4+', detail: 'Ferocious is on: you control a creature with power 4 or greater' },
++];
++
++/** The game's set, from the set codes of every card in sight (battlefield, graveyards, exile, your hand): the more
++ * common of DSK and FDN, or null when neither is seen. Basics count too: our decks use their own set's basics. */
++export function gameSet(view: GameView | null | undefined): GameSet | null {
++  const counts: Record<GameSet, number> = { DSK: 0, FDN: 0 };
++  const count = (cards: Record<string, CardView> | undefined) => {
++    for (const card of Object.values(cards ?? {})) {
++      if (card.expansionSetCode === 'DSK' || card.expansionSetCode === 'FDN') counts[card.expansionSetCode] += 1;
++    }
++  };
++  for (const player of view?.players ?? []) {
++    count(player.battlefield);
++    count(player.graveyard);
++    count(player.exile);
++  }
++  count(view?.myHand);
++  if (counts.DSK === 0 && counts.FDN === 0) return null;
++  return counts.FDN > counts.DSK ? 'FDN' : 'DSK';
++}
++
+ export interface ConditionBoard {
+   /** per player: the card types in their graveyard (delirium), and how many cards it holds (threshold) */
+   graveyards: Map<string, { types: string[]; size: number }>;
++  /** the game's draft set (gameSet), null before any card is seen */
++  set: GameSet | null;
+   activePlayerId: string | null;
+   step: string | null;
+   /** the viewer: the owner of the cards in their hand */
+@@ -45,7 +80,7 @@ export function conditionBoard(view: GameView | null | undefined): ConditionBoar
+     const cards = Object.values(player.graveyard ?? {});
+     graveyards.set(id, { types: deliriumTypes(cards), size: cards.length });
+   }
+-  return { graveyards, activePlayerId: view?.activePlayerId ?? null, step: view?.step ?? null, me: view?.myPlayerId ?? null };
++  return { graveyards, set: gameSet(view), activePlayerId: view?.activePlayerId ?? null, step: view?.step ?? null, me: view?.myPlayerId ?? null };
+ }
+ 
+ function rulesText(card: CardView): string {
+@@ -66,6 +101,14 @@ export function activeConditions(card: CardView | PermanentView, controllerId: s
+   if (/\bThreshold\b/.test(text) && graveyard && graveyard.size >= 7) {
+     found.push({ name: 'Threshold', detail: `Threshold is on: ${graveyard.size} cards in the graveyard` });
+   }
++  if (HINTED.some((entry) => text.includes(entry.name))) {
++    const hints = splitRules(card).hints;
++    for (const entry of HINTED) {
++      if (new RegExp(`\\b${entry.name}\\b`).test(text) && hints.some((hint) => hint.tone === 'good' && hint.text.startsWith(entry.hint))) {
++        found.push({ name: entry.name, detail: entry.detail });
++      }
++    }
++  }
+   const permanent = card as PermanentView;
+   if (/\bSurvival\b/.test(text) && permanent.tapped && owner === board.activePlayerId && board.step && BEFORE_SECOND_MAIN.has(board.step)) {
+     found.push({ name: 'Survival', detail: 'Survival will trigger: tapped at the beginning of your second main phase' });

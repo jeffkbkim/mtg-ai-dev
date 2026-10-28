@@ -1,10 +1,11 @@
-"""Adds our real drafted DSK decks to a Playmat checkout's starter decks, so they can be picked to play and the AI is dealt
+"""Adds our real drafted DSK and FDN decks to a Playmat checkout's starter decks, so they can be picked to play and the AI is dealt
 one (the patched client deals the Claude AI a dsk-good-* starter, other AIs any dsk-* starter).
 
   python3 engine/playmat/dsk_starters.py <playmat checkout>
 
-Listed pools: engine/xmage/decks/17lands-good-v2 (100 reviewed decks, 10 per colour pair, files dsk-good-v2-NN.dck) and
-engine/xmage/decks/17lands-r2 (160 decks, dsk-typical_NN / dsk-trophy_NN). The first good pool (17lands-good, 70 decks)
+Listed pools: engine/xmage/decks/17lands-good-v2 (100 reviewed decks, 10 per colour pair, files dsk-good-v2-NN.dck),
+engine/xmage/decks/17lands-r2 (160 decks, dsk-typical_NN / dsk-trophy_NN) and, for Foundations,
+engine/xmage/decks/17lands-fdn-good (98 reviewed decks, files fdn-good-NN.dck, names "★★ fdn_08 · ..."). The first good pool (17lands-good, 70 decks)
 is retired since 2026-10-25: not listed, but rated in strengths.json so saved copies of its decks still get a matched
 opponent. A good-pool name gives its tier, the review's archetype and rating, e.g.
 "★★ v2_08 · WU eerie enchantments/tempo · review 4/5" (★★: tier 2, the review's rating 4+); an older deck's name
@@ -82,7 +83,8 @@ def deck_sig(text):
 def main():
     playmat = Path(sys.argv[1])
     decks = ROOT / "engine/xmage/decks"
-    texts = {c["name"]: c for c in json.loads((ROOT / "engine/vocab/dsk_card_text.json").read_text())}
+    # card text of every set we have decks of (DSK, FDN; no shared names but basics)
+    texts = {c["name"]: c for s in ("dsk", "fdn") for c in json.loads((ROOT / f"engine/vocab/{s}_card_text.json").read_text())}
     out = playmat / "Mage.Web.Client/public/starter-decks"
     # Jeff 2026-10-24: only our DSK Limited decks are listed; Playmat's own 60-card and Commander starters are left out
     # (their files stay)
@@ -90,9 +92,12 @@ def main():
     ours, skipped, known = [], {}, []
     # Jeff 2026-10-25: the v2 pool (10 per colour pair) is the starred pool; the first good pool is no longer listed
     # (retired: its files stay, and strengths.json still rates saved copies of its decks)
+    # 2026-10-28: Foundations (FDN) too, its reviewed pool as fdn-good-NN (Jeff: add FDN alongside DSK); the web client
+    # keeps each set's decks apart (deck set tabs, the AI's deck from the player's deck's set)
     for pool, prefix, star, listed, label in (("17lands-good-v2", "dsk-good-v2-", "★ ", True, "v2_"),
                                               ("17lands-good", "dsk-good-", "★ ", False, None),
-                                              ("17lands-r2", "dsk-", "", True, None)):
+                                              ("17lands-r2", "dsk-", "", True, None),
+                                              ("17lands-fdn-good", "fdn-good-", "★ ", True, "fdn_")):
         manifest = {d["file"]: d for d in json.loads((decks / pool / "manifest.json").read_text())["decks"]}
         for deck in sorted((decks / pool).glob("*.dck")):
             m = manifest[deck.name]
@@ -142,7 +147,7 @@ def main():
     ours.sort(key=lambda e: e[1])
     (out / "strengths.json").write_text(json.dumps(known, indent=1, ensure_ascii=False) + "\n")
     (out / "index.json").write_text(json.dumps([e for e, _ in ours] + index, indent=2, ensure_ascii=False) + "\n")
-    print(f"{len(ours)} DSK decks added to {out}; left out by the colour rule: {skipped}")
+    print(f"{len(ours)} DSK and FDN decks added to {out}; left out by the colour rule: {skipped}")
 
 
 if __name__ == "__main__":

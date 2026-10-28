@@ -32,6 +32,11 @@ public final class SetCards {
 
     /** Name -> card info for one set, sorted by name. */
     public static Map<String, CardInfo> byName(String set) {
+        return byName(set, true);
+    }
+
+    /** strict: a Special Guest missing from XMage's SPG set is an error (vocabulary dumps); otherwise it is left out. */
+    static Map<String, CardInfo> byName(String set, boolean strict) {
         Map<String, CardInfo> out = new TreeMap<>();
         Integer max = MAX_BOOSTER_NUMBER.get(set);
         List<CardInfo> cards = new ArrayList<>(CardRepository.instance.findCards(new CardCriteria().setCodes(set)));
@@ -42,16 +47,18 @@ public final class SetCards {
         }
         for (String n : SPECIAL_GUESTS.get(set)) {
             List<CardInfo> found = CardRepository.instance.findCards(new CardCriteria().setCodes("SPG").name(n));
+            if (found.isEmpty() && !strict) continue;
             if (found.isEmpty()) throw new IllegalStateException("Special Guest missing from XMage's SPG set: " + n);
             out.putIfAbsent(n, found.get(0));
         }
         return out;
     }
 
-    /** Name -> card info over every supported set (for checks that must know all card names, like the leak checker). */
+    /** Name -> card info over every supported set (for checks that must know all card names, like the leak checker).
+     *  Lenient: a card this XMage build lacks is left out, never an error (the Playmat server runs another build). */
     public static Map<String, CardInfo> allSets() {
         Map<String, CardInfo> out = new TreeMap<>();
-        for (String s : new TreeSet<>(SPECIAL_GUESTS.keySet())) byName(s).forEach(out::putIfAbsent);
+        for (String s : new TreeSet<>(SPECIAL_GUESTS.keySet())) byName(s, false).forEach(out::putIfAbsent);
         return out;
     }
 

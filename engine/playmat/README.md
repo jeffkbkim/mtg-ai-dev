@@ -137,6 +137,11 @@ with the earlier recording's 40 cards (the short one kept as `deck-X.partial.dck
 - `patches/0016`: tapped permanents are dimmed as well as turned; land piles show open lands first and "N / M open".
 - `patches/0017`: the launcher also accepts the origins in `$PLAYMAT_EXTRA_ORIGINS` (run.sh: https://play.devpick.sh, the
   Cloudflare tunnel behind Cloudflare Access).
+- `patches/0025`: Foundations (FDN) alongside DSK: decks of 40+ FDN cards form an "FDN Draft (40)" set (deck set tabs,
+  builder label, the collection's "FDN only" filter); the AI against you is dealt a starter of your deck's set; the
+  graveyard badge counts threshold ("Threshold 5/7") in FDN games and delirium in DSK games (set read from the cards in
+  sight); Raid, Morbid and Ferocious glow on a card when XMage's live hint says they are on. The server still reviews
+  only DSK decks in the shared deck folder.
 - `patches/0007`: blocks: attackers that must be blocked if able are marked, blocks that leave one unblocked are held
   back once with a message, and the server's messages to the player (why a block was refused) are shown.
 - Our two XMage rule fixes (`engine/xmage/BecomesFaceDownCreatureEffect.java`, `VeteranSurvivor.java`) are copied over
@@ -147,7 +152,7 @@ with the earlier recording's 40 cards (the short one kept as `deck-X.partial.dck
   their decisions recorded through `java/Shadow.java` (PySeat's options, built before the decision).
 - `java/GameRecorder.java`: the game folder, decks, game log, result, the merge into `game0.jsonl` and the take-back
   marks; `fix_resumed_recordings.py` does the same for older folders.
-- `dsk_starters.py`: our DSK decks as Playmat starter decks.
+- `dsk_starters.py`: our DSK and FDN decks as Playmat starter decks.
 - `run.sh`: Playmat's desktop launcher, headless (server, web client on 17170, its own data in `~/playmat-run/data`,
   accounts off), and the Claude service, both in the background.
 

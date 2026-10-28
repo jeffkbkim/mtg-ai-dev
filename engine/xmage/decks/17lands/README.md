@@ -1,7 +1,7 @@
 # Real drafted DSK decks from 17lands
 
 Built by `play/deck_pool.py` from 17lands' public `game_data_public.DSK.PremierDraft.csv.gz` (seed 7), with collector
-numbers from XMage's card database (`engine/vocab/dsk_numbers.tsv`, dumped by `engine/xmage/DskNumbers.java`).
+numbers from XMage's card database (`engine/vocab/dsk_numbers.tsv`, dumped by `engine/xmage/SetNumbers.java`).
 
 - `typical_NN.dck`: 20 drafts sampled uniformly from drafts that played at least 3 games, so archetypes appear about as
   often as 17lands users draft them.
