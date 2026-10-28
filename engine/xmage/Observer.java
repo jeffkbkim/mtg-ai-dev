@@ -506,10 +506,30 @@ public final class Observer {
         for (Map.Entry<String, String> s : secret.entrySet()) {
             String name = s.getKey();
             if (name.isEmpty() || visible.contains(name) || isBasic(name)) continue;
-            boolean hit = rulesWords().contains(name) ? containsAsValue(text, name) : containsName(text, name);
+            // a card named like a creature type (Juggernaut) is one of the options of "Choose a creature type"
+            String scanned = creatureTypes().contains(name) ? withoutTypeOption(text, name) : text;
+            boolean hit = rulesWords().contains(name) ? containsAsValue(scanned, name) : containsName(scanned, name);
             if (hit) hits.add(s.getValue() + " name in message: " + name);
         }
         return hits;
+    }
+
+    private static Set<String> creatureTypes;
+
+    /** Every creature type's name, as a creature-type choice lists it. */
+    private static synchronized Set<String> creatureTypes() {
+        if (creatureTypes == null) {
+            Set<String> types = new HashSet<>();
+            for (mage.constants.SubType t : mage.constants.SubType.getCreatureTypes()) types.add(t.getDescription());
+            creatureTypes = types;
+        }
+        return creatureTypes;
+    }
+
+    /** The text without this creature type as a choice option ("label":"Juggernaut", "choice:Juggernaut"). */
+    static String withoutTypeOption(String text, String type) {
+        String quoted = java.util.regex.Pattern.quote(type);
+        return text.replaceAll("\"label\"\\s*:\\s*\"" + quoted + "\"", "").replaceAll("\"choice:" + quoted + "\"", "");
     }
 
     private static Set<String> rulesWords;
