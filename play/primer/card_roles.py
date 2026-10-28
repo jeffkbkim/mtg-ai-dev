@@ -3,13 +3,14 @@
 Rule-based from engine/vocab/dsk_card_text.json (types, cost, P/T, rules text), then hand corrections in OVERRIDES
 for cards the rules misread. Re-run after changing the rules: python play/primer/card_roles.py
 """
-import json, re, sys
+import json, os, re, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from render import BASICS, clean, load_card_text
+from render import BASICS, card_text_path, clean, load_card_text
 
-OUT = Path(__file__).resolve().parent / "dsk_card_roles.json"
+SET = os.environ.get("MTG_SET", "DSK").upper()  # MTG_SET=FDN for Foundations
+OUT = Path(__file__).resolve().parent / f"{SET.lower()}_card_roles.json"
 KEYWORDS = ("Flying", "Flash", "Deathtouch", "Lifelink", "Trample", "Menace", "First strike", "Double strike",
             "Vigilance", "Reach", "Haste", "Ward", "Defender")
 
@@ -158,10 +159,51 @@ OVERRIDES = {
     "Hallowed Haunting": "enchantment payoff",
 }
 
+# Foundations: its ability words and payoffs as tags, and hand corrections (checked against engine/vocab/fdn_card_text.json)
+FDN_TAGS = (("Raid", "raid (attack first)"), ("Morbid", "morbid (a creature died this turn)"),
+            ("Threshold", "threshold (7+ cards in your graveyard)"), ("Landfall", "landfall"),
+            ("Whenever you gain life", "lifegain payoff"), ("draw your second card", "second-card-each-turn payoff"),
+            ("power 4 or greater", "power-4 payoff"), ("Prowess", "prowess"), ("noncreature spell", "spells payoff"))
+FDN_OVERRIDES = {
+    "Empyrean Eagle": "WU flier lord: your other fliers +1/+1",
+    "Dreadwing Scavenger": "UB flier that loots on enter and attack; deathtouch at threshold",
+    "Fiendish Panda": "WB lifegain payoff; returns a creature when it dies",
+    "Perforating Artist": "BR raid: opponent loses 3 or sacs/discards each end step you attacked; deathtouch",
+    "Wardens of the Cycle": "BG morbid engine: life or a card each end step a creature died",
+    "Ruby, Daring Tracker": "RG mana dork with haste; +2/+2 attacking beside power 4+",
+    "Tatyova, Benthic Druid": "UG landfall engine: life and a card per land",
+    "Heroic Reinforcements": "finisher: two 1/1s, team +1/+1 and haste",
+    "Balmor, Battlemage Captain": "UR flier: team +1/+0 trample per instant/sorcery",
+    "Good-Fortune Unicorn": "GW: every creature after it enters with a +1/+1 counter",
+    "Luminous Rebuke": "removal: destroy a creature, {1}{W} if it is tapped",
+    "Eaten Alive": "removal: exile a creature, sacrifice a creature or pay {3}{B} more",
+    "Bite Down": "removal: instant, your creature deals its power to theirs",
+    "Felling Blow": "removal: +1/+1 counter, then your creature deals its power to theirs",
+    "Bushwhack": "fight removal or fetch a basic land",
+    "Uncharted Voyage": "removal: instant tuck to top or bottom of library",
+    "Involuntary Employment": "threaten: steal a creature for a turn (sacrifice it after)",
+    "Mischievous Mystic": "flier that makes 1/1 fliers when you draw a second card",
+    "Micromancer": "3/3 that tutors a 1-mana instant/sorcery",
+    "Tragic Banshee": "removal on a body: -13/-13 if a creature died this turn, else -1/-1",
+    "Infernal Vessel": "comes back once as a 4/3 Demon when it dies",
+    "Cat Collector": "Food on enter; a Cat token the first time you gain life each turn",
+    "Vampire Gourmand": "sac another creature on attack: draw and unblockable",
+    "Squad Rallier": "card advantage engine: {2}{W} digs for a small creature",
+    "Treetop Snarespinner": "reach deathtouch wall; {2}{G} +1/+1 counters",
+    "Faebloom Trick": "instant: two 1/1 fliers and taps a creature",
+    "Gorehorn Raider": "finisher; raid: 2 damage to any target",
+    "Liliana, Dreadhorde General": "bomb planeswalker: draws on deaths, edicts, zombies",
+    "Hare Apparent": "each copy makes more Rabbits",
+    "Burst Lightning": "removal: instant 2 damage to any target (4 kicked)",
+    "Joust Through": "removal: instant 3 damage to an attacker or blocker",
+    "Make Your Move": "removal: instant, destroy a power 4+ creature, artifact or enchantment",
+}
+
 
 def role(c):
-    if c["name"] in OVERRIDES:
-        return OVERRIDES[c["name"]]
+    overrides = FDN_OVERRIDES if SET == "FDN" else OVERRIDES
+    if c["name"] in overrides:
+        return overrides[c["name"]]
     types, cost = c["types"], c["cost"]
     if "left" in c:
         doors = []
@@ -188,7 +230,7 @@ def role(c):
             extra.append("card advantage")
         if "manifest dread" in rules.lower():
             extra.append("manifests")
-        extra += [tag for word, tag in TAGS if word in rules]
+        extra += [tag for word, tag in TAGS + (FDN_TAGS if SET == "FDN" else ()) if word in rules]
         return what + ("; " + "; ".join(extra) if extra else "")  # P/T and keywords are in the card text
     if "Counter target" in rules:
         return f"counterspell, {speed} {cost}"
@@ -212,7 +254,7 @@ def role(c):
 
 
 def main():
-    texts = load_card_text()
+    texts = load_card_text(card_text_path(SET))
     roles = {n: role(c) for n, c in sorted(texts.items()) if n not in BASICS and "Land" not in c["types"]}
     OUT.write_text(json.dumps(roles, indent=0, ensure_ascii=False) + "\n")
     print(len(roles), "roles ->", OUT)

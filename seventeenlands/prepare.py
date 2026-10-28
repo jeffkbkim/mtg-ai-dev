@@ -1,24 +1,25 @@
-"""17lands DSK Premier Draft data: convert to Parquet, audit it, and freeze a train/validation/test split by draft.
+"""17lands Premier Draft data of one set (DSK by default, MTG_SET=FDN for Foundations): convert to Parquet, audit it, and freeze a train/validation/test split by draft.
 
     uv run --group data python seventeenlands/prepare.py convert   # csv.gz -> parquet (once)
     uv run --group data python seventeenlands/prepare.py audit     # writes audit.json and prints a summary
     uv run --group data python seventeenlands/prepare.py split     # writes splits.parquet (draft_id -> split)
 
-Data lives outside Git, in ~/mtg-data/17lands/DSK (see scripts/download_17lands.sh). Card names are checked
-against XMage's DSK list (engine/vocab/dsk_card_text.json); cards XMage lacks are listed, never replaced.
+Data lives outside Git, in ~/mtg-data/17lands/<SET> (see scripts/download_17lands.sh). Card names are checked
+against XMage's list for the set (engine/vocab/<set>_card_text.json); cards XMage lacks are listed, never replaced.
 """
-import gzip, hashlib, json, re, shutil, sys, tempfile
+import gzip, hashlib, json, os, re, shutil, sys, tempfile
 from pathlib import Path
 
 import polars as pl
 
-DATA = Path.home() / "mtg-data/17lands/DSK"
+SET = os.environ.get("MTG_SET", "DSK").upper()
+DATA = Path.home() / f"mtg-data/17lands/{SET}"
 REPO = Path(__file__).resolve().parent.parent
-FILES = {k: f"{k}_public.DSK.PremierDraft.csv.gz" for k in ("game_data", "draft_data", "replay_data")}
+FILES = {k: f"{k}_public.{SET}.PremierDraft.csv.gz" for k in ("game_data", "draft_data", "replay_data")}
 # card-count columns are small integers; replay turn columns hold "|"-joined 17lands card ids
 COUNT_PREFIXES = ("deck_", "sideboard_", "opening_hand_", "drawn_", "tutored_", "pack_card_", "pool_")
 GAME_KEY = ["draft_id", "build_index", "match_number", "game_number"]
-SPLIT_SALT = "mtg-ai-dsk-split-v1"  # changing this reshuffles every draft: bump the version instead
+SPLIT_SALT = f"mtg-ai-{SET.lower()}-split-v1"  # changing this reshuffles every draft: bump the version instead
 
 
 def header(path):
@@ -58,7 +59,7 @@ def card_names(cols, prefix):
 
 def audit():
     p = DATA / "parquet"
-    xmage = {c["name"] for c in json.loads((REPO / "engine/vocab/dsk_card_text.json").read_text())}
+    xmage = {c["name"] for c in json.loads((REPO / f"engine/vocab/{SET.lower()}_card_text.json").read_text())}
     report = {}
     games = pl.scan_parquet(p / "game_data.parquet")
     replays = pl.scan_parquet(p / "replay_data.parquet")
@@ -82,7 +83,7 @@ def audit():
     # card names
     names17 = card_names(gcols, "deck_")
     missing = sorted(set(names17) - xmage)
-    report["cards"] = {"17lands_columns": len(names17), "xmage_dsk": len(xmage),
+    report["cards"] = {"17lands_columns": len(names17), "xmage_cards": len(xmage),
                        "in_17lands_not_xmage": missing, "in_xmage_not_17lands": sorted(xmage - set(names17))}
     if missing:
         use = games.select([(pl.col(f"deck_{n}") > 0).sum().alias(n) for n in missing]).collect().row(0, named=True)

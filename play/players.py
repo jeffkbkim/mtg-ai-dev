@@ -109,6 +109,19 @@ def card_roles(path=PRIMER_DIR / "dsk_card_roles.json"):
     return json.loads(Path(path).read_text())
 
 
+SET_NAMES = {"DSK": "Duskmourn", "FDN": "Foundations"}
+
+
+def deck_set(deck_path):
+    """The set a .dck file is from: the set code its cards are listed under ("4 [FDN:276] Swamp"), Special Guests
+    (SPG) aside. DSK when nothing else is found."""
+    codes = re.findall(r"^\d+ \[(\w+):", Path(deck_path).read_text(), re.M)
+    sets = {c for c in codes if c in SET_NAMES}
+    if len(sets) > 1:
+        raise ValueError(f"deck mixes sets {sorted(sets)}: {deck_path}")
+    return sets.pop() if sets else "DSK"
+
+
 def system_prompt(deck_path, texts, lessons=None, plan=False, facts=False, primer="v1"):
     """lessons: text of a lessons file (play/primer/lessons_v*.md) placed right after the rules, or None.
     plan: ask for a plan that is updated in every reply (PLAN_RULES). facts: explain the "Facts:" block (FACTS_RULES).
@@ -117,16 +130,20 @@ def system_prompt(deck_path, texts, lessons=None, plan=False, facts=False, prime
     if primer not in PRIMERS:
         raise ValueError(f"primer must be one of {PRIMERS}, not {primer!r}")
     deck = read_deck(deck_path)
+    s = deck_set(deck_path)
+    rules = RULES.replace("Duskmourn (DSK)", f"{SET_NAMES[s]} ({s})")
+    if s != "DSK" and primer != "v2":
+        raise ValueError(f"{s} has only primer v2 (play/primer/{s.lower()}_meta_v2.md), not {primer!r}")
     if primer == "v2":
-        roles = card_roles()
+        roles = card_roles(PRIMER_DIR / f"{s.lower()}_card_roles.json")
         # reminder text in parentheses is dropped: the primer explains the set's mechanics
         deck_lines = [f"{n}x {re.sub(r' ?[(][^()]*[)]', '', card_text(texts[name])) if name in texts else name}"
                       + (f" -- role: {roles[name]}" if name in roles else "") for n, name in deck]
-        return "\n\n".join([RULES] + ([PLAN_RULES] if plan else []) + ([FACTS_RULES] if facts else []) + ([lessons] if lessons else [])
-                            + [(PRIMER_DIR / "dsk_meta_v2.md").read_text().strip(),
+        return "\n\n".join([rules] + ([PLAN_RULES] if plan else []) + ([FACTS_RULES] if facts else []) + ([lessons] if lessons else [])
+                            + [(PRIMER_DIR / f"{s.lower()}_meta_v2.md").read_text().strip(),
                                "Your deck (the opponent's deck is unknown to you):\n" + "\n".join(deck_lines)])
     deck_lines = [f"{n}x {card_text(texts[name])}" if name in texts else f"{n}x {name}" for n, name in deck]
-    return "\n\n".join([RULES] + ([PLAN_RULES] if plan else []) + ([FACTS_RULES] if facts else []) + ([lessons] if lessons else []) + [(PRIMER_DIR / "dsk_meta.md").read_text(), gih_table(),
+    return "\n\n".join([rules] + ([PLAN_RULES] if plan else []) + ([FACTS_RULES] if facts else []) + ([lessons] if lessons else []) + [(PRIMER_DIR / "dsk_meta.md").read_text(), gih_table(),
                         "Your deck (the opponent's deck is unknown to you):\n" + "\n".join(deck_lines)])
 
 

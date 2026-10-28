@@ -1,11 +1,11 @@
-"""Proposal: a strong DSK deck pool chosen by build quality and the drafter's long-run win rate, not by record or GIH score.
+"""Proposal: a strong deck pool of one set (DSK by default, MTG_SET=FDN for Foundations) chosen by build quality and the drafter's long-run win rate, not by record or GIH score.
 
   python3 play/good_deck_pool_v2.py [--data <game_data csv.gz>] [--out engine/xmage/decks/17lands-good-v2]
       [--thresholds 0.64 0.62 0.60 0.58] [--min-build-games 3] [--shortlist-per-pair 15] [--per-pair 10]
       [--no-review] [--model claude-opus-5-5] [--effort medium] [--parallel 5]
 
 1. Candidates. Eligibility is deck_pool.py's: a draft's deck is its most-played build, 40 cards, every card in
-   engine/vocab/dsk_numbers.tsv, never substituted. No win requirement; the build must have been played >= --min-build-games
+   engine/vocab/<set>_numbers.tsv, never substituted. No win requirement; the build must have been played >= --min-build-games
    games, and the drafter's user_n_games_bucket must be >= --min-user-games (100). Colours (main/splash) are 17lands' for that build's rows. Then:
    - Jeff's colour rule: engine/playmat/dsk_starters.py two_colors() (2 main colours, at most one splash colour in
      <= 3 nonland cards with >= 3 lands making it), plus every nonland card's coloured pips within main+splash;
@@ -70,7 +70,7 @@ def parse(path, numbers):
         if sum(bd["deck"].values()) != 40:
             skipped["not 40 cards"] += 1; continue
         if any(c not in numbers for c in bd["deck"]):
-            skipped["card not in XMage DSK"] += 1; continue
+            skipped[f"card not in XMage {rd.SET}"] += 1; continue
         info.update(build_index=b, build_games=bd["games"], build_wins=bd["wins"], losses=info["games"] - info["wins"],
                     deck=bd["deck"], main_colors=bd["main_colors"], splash_colors=bd["splash_colors"])
         ok.append(info)
@@ -149,10 +149,14 @@ def tie(d):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--data", default=str(Path.home() / "mtg-data/17lands/DSK/game_data_public.DSK.PremierDraft.csv.gz"))
-    p.add_argument("--numbers", default=str(ROOT / "engine/vocab/dsk_numbers.tsv"))
-    p.add_argument("--out", default=str(ROOT / "engine/xmage/decks/17lands-good-v2"))
-    p.add_argument("--current", default=str(ROOT / "engine/xmage/decks/17lands-good"))
+    s = rd.SET  # MTG_SET, default DSK
+    p.add_argument("--data", default=str(Path.home() / f"mtg-data/17lands/{s}/game_data_public.{s}.PremierDraft.csv.gz"))
+    p.add_argument("--numbers", default=str(ROOT / f"engine/vocab/{s.lower()}_numbers.tsv"))
+    p.add_argument("--out", default=str(ROOT / ("engine/xmage/decks/17lands-good-v2" if s == "DSK" else f"engine/xmage/decks/17lands-{s.lower()}-good")))
+    p.add_argument("--current", default=str(ROOT / "engine/xmage/decks/17lands-good") if s == "DSK" else None,
+                   help="earlier pool: its gih_wr.json, review cache and manifest (none for a new set)")
+    p.add_argument("--color-ratings", default=str(rd.RATINGS / f"{s.lower()}_color_ratings.json"),
+                   help="17lands colour ratings (combine_splash), or play/color_ratings_17lands.py's from game data")
     p.add_argument("--parse-cache", help="json.gz of parsed eligible drafts (made if missing; keep it outside Git)")
     p.add_argument("--thresholds", type=float, nargs="+", default=[0.66, 0.64, 0.62, 0.60])
     p.add_argument("--min-user-games", type=int, default=100, help="user_n_games_bucket floor: the WR bucket of a drafter with few games is noise")
@@ -179,9 +183,10 @@ def main():
         if pc:
             pc.write_bytes(gzip.compress(json.dumps([n_drafts, skipped, ok]).encode()))
     texts = rd.load_card_text()
-    cr = json.loads((rd.RATINGS / "dsk_color_ratings.json").read_text())
+    cr = json.loads(Path(args.color_ratings).read_text())
     color_wr = {r["short_name"]: r["wins"] / r["games"] for r in cr if not r["is_summary"] and r["games"]}
-    gih = json.loads((Path(args.current) / "gih_wr.json").read_text())
+    cur = Path(args.current) if args.current else None
+    gih = json.loads((cur / "gih_wr.json").read_text()) if cur and (cur / "gih_wr.json").exists() else None
     bucket = lambda d: float(d["user_win_rate_bucket"] or 0)
 
     pairs = args.pairs
@@ -234,8 +239,8 @@ def main():
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     cache_path = out / "review_cache.json"
     cache = json.loads(cache_path.read_text()) if cache_path.exists() else {}
-    old = Path(args.current) / "review_cache.json"
-    old_cache = json.loads(old.read_text()) if old.exists() else {}
+    old = cur / "review_cache.json" if cur else None
+    old_cache = json.loads(old.read_text()) if old and old.exists() else {}
     todo = []
     for d in shortlist:
         d["_prompt"] = rd.prompt(d, d["stats"], texts)
@@ -263,7 +268,7 @@ def main():
         d["archetype_flag"] = next((f for f in flags if f.startswith("weak archetype")), None)
         d["tier"] = 2 if d["review"]["rating"] >= args.min_rating and not d["stats"]["red_flags"] else 1
         d["deck_score_gih"] = round(sum(n * gih[c]["wr"] for c, n in d["deck"].items() if not gih[c]["land"])
-                                    / sum(n for c, n in d["deck"].items() if not gih[c]["land"]), 5)
+                                    / sum(n for c, n in d["deck"].items() if not gih[c]["land"]), 5) if gih else None
     order = lambda d: (-d["tier"], -d["review"]["rating"], -d["mana_score"], -bucket(d), tie(d))
     kept = []
     for x in pairs:
@@ -273,7 +278,7 @@ def main():
 
     for f in out.glob("good_*.dck"):
         f.unlink()
-    current = json.loads((Path(args.current) / "manifest.json").read_text())["decks"]
+    current = json.loads((cur / "manifest.json").read_text())["decks"] if cur else []
     cur_ids = {c["draft_id"]: c["file"] for c in current}
     decks = []
     for k, d in enumerate(kept):
@@ -282,7 +287,7 @@ def main():
         arch = re.sub(r"^[WUBRGwubrg]{2,5}(\+[WUBRGwubrg])?\s+", "", arch)  # the reviewer's own colour prefix
         colors = d["main_colors"] + (f"+{d['splash_colors'].lower()}" if d["splash_colors"] else "")
         title = f"{'★★' if d['tier'] == 2 else '★'} {name} · {colors} {arch} · review {d['review']['rating']}/5"
-        lines = [f"NAME:{title}"] + [f"{n} [{numbers[c] if ':' in numbers[c] else 'DSK:' + numbers[c]}] {c}"
+        lines = [f"NAME:{title}"] + [f"{n} [{numbers[c] if ':' in numbers[c] else rd.SET + ':' + numbers[c]}] {c}"
                                      for c, n in sorted(d["deck"].items(), key=lambda kv: (-kv[1], kv[0]))]
         (out / f"{name}.dck").write_text("\n".join(lines) + "\n")
         decks.append({"file": f"{name}.dck", "rank": k, "playmat_name": title, "tier": d["tier"],

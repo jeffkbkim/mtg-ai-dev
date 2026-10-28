@@ -1,8 +1,8 @@
-"""Decision tables from 17lands DSK replays, for the decisions a replay records exactly.
+"""Decision tables from 17lands replays of one set (DSK by default, MTG_SET=FDN for Foundations), for the decisions a replay records exactly.
 
     uv run --group data python seventeenlands/decisions.py [--limit N]
 
-Writes three Parquet tables to ~/mtg-data/17lands/DSK/decisions/ (outside Git), one row per decision, each carrying
+Writes three Parquet tables to ~/mtg-data/17lands/<SET>/decisions/ (outside Git), one row per decision, each carrying
 the game's split from splits.parquet (by draft, see prepare.py):
 
   mulligans.parquet   one row per hand seen: keep or mulligan, and for a kept hand after mulligans, the cards put
@@ -21,12 +21,13 @@ Context that the replay doesn't record exactly is flagged, never filled in:
     whether every attacker was in it.
 Games with a card outside our 276-card DSK list (Special Guests) are kept and flagged with has_special_guest.
 """
-import argparse, json
+import argparse, json, os
 from pathlib import Path
 
 import polars as pl
 
-DATA = Path.home() / "mtg-data/17lands/DSK"
+SET = os.environ.get("MTG_SET", "DSK").upper()
+DATA = Path.home() / f"mtg-data/17lands/{SET}"
 REPO = Path(__file__).resolve().parent.parent
 KEY = ["draft_id", "build_index", "match_number", "game_number"]
 MAX_TURN = 30
@@ -41,7 +42,7 @@ def main():
     name = {i: full.get(n, n) for i, n in raw.items()}   # a split card / Room's halves count as the whole card
     is_land = {n: "Land" in (t or "") for n, t in zip(cards["name"], cards["types"])}
     is_land.update({full[h]: is_land.get(full[h], False) or is_land.get(h, False) for h in full})
-    dsk = {c["name"] for c in json.loads((REPO / "engine/vocab/dsk_card_text.json").read_text())}
+    dsk = {c["name"] for c in json.loads((REPO / f"engine/vocab/{SET.lower()}_card_text.json").read_text())}
 
     def names(v):
         return [] if v in (None, "") else [name.get(int(x), x) for x in str(v).split("|") if x]

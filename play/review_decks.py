@@ -29,6 +29,8 @@ from render import card_text, clean, load_card_text
 
 ROOT = Path(__file__).resolve().parent.parent
 RATINGS = Path.home() / "mtg-data/17lands/ratings"
+SET = os.environ.get("MTG_SET", "DSK").upper()  # MTG_SET=FDN reviews Foundations decks
+SET_NAMES = {"DSK": "Duskmourn", "FDN": "Foundations"}
 WUBRG = "WUBRG"
 
 SYSTEM = """You are a strong Magic: The Gathering Limited player reviewing a 40-card Duskmourn (DSK) Premier Draft deck.
@@ -46,8 +48,11 @@ BODIES_RULE = """
 Bodies: count creature cards plus the cards that put creatures onto the battlefield: manifest dread (each puts a
 face-down 2/2 creature onto the battlefield), creature tokens and creature recursion. A deck with enough bodies has
 enough creatures even with fewer creature cards; the counts line gives the body count when it differs."""
+SYSTEM = SYSTEM.replace("Duskmourn (DSK)", f"{SET_NAMES[SET]} ({SET})").replace("for DSK Limited", f"for {SET} Limited")
 SYSTEMS = {"v1": SYSTEM, "v2": SYSTEM.replace("Do not guess the deck's results.", "Do not guess the deck's results." + BODIES_RULE)}
 SYSTEM = SYSTEMS[os.environ.get("REVIEW_SYSTEM", "v2")]  # v2 from 2026-10-26; REVIEW_SYSTEM=v1 for the earlier ratings
+if SET != "DSK":  # manifest dread is a Duskmourn mechanic
+    SYSTEM = SYSTEM.replace("manifest dread (each puts a\nface-down 2/2 creature onto the battlefield), ", "")
 SYSTEM_SHA = hashlib.sha256(SYSTEM.encode()).hexdigest()[:12]
 
 HARD = [r"destroy (?:target|all|up to one target)[\w ,-]*?(creature|permanent)", r"exile (?:target|up to one target)[\w ,-]*?(creature|permanent)",
@@ -146,7 +151,7 @@ def prompt(d, s, texts):
     colors = d["main_colors"] + (f" splashing {d['splash_colors']}" if d["splash_colors"] else "")
     out = [f"Main colors {colors}. Curve of nonland cards by mana value 1/2/3/4/5/6+: {'/'.join(map(str, s['curve']))}"
            + (f" (plus {s['zero_drops']} at 0)" if s["zero_drops"] else "") + f". {s['creatures']} creatures"
-           + (f" ({s['bodies']} bodies counting {s['body_makers']} token makers, manifest dread and creature recursion)" if s.get('body_makers') else "")
+           + (f" ({s['bodies']} bodies counting {s['body_makers']} token makers{', manifest dread' if SET == 'DSK' else ''} and creature recursion)" if s.get('body_makers') else "")
            + ", "
            f"{s['noncreature_spells']} other spells, {s['lands']} lands ({s['fixing_lands']} fixing). Removal by a "
            f"rough text tag: {s['removal']} hard, {s['soft_removal']} soft.", "", "Nonland cards:"]

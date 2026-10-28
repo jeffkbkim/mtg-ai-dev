@@ -1,12 +1,19 @@
 """Turn one seat's decision message (observation + options) into text a language model can read.
 
 Only fields of the seat's own observation are used, so the text carries no more than the seat may know.
-Card rules text comes from engine/vocab/dsk_card_text.json (public card text, as XMage implements it).
+Card rules text comes from engine/vocab/<set>_card_text.json (public card text, as XMage implements it), every set
+we support merged (DSK, FDN: no shared names except basics).
 """
 import html, json, re
 from pathlib import Path
 
-CARD_TEXT_PATH = Path(__file__).resolve().parent.parent / "engine" / "vocab" / "dsk_card_text.json"
+VOCAB_DIR = Path(__file__).resolve().parent.parent / "engine" / "vocab"
+CARD_TEXT_PATH = VOCAB_DIR / "dsk_card_text.json"
+SETS = ("DSK", "FDN")
+
+
+def card_text_path(set_code):
+    return VOCAB_DIR / f"{set_code.lower()}_card_text.json"
 
 
 def clean(text):
@@ -17,8 +24,10 @@ def clean(text):
     return re.sub(r"ICON_BAD(.*)$", r"[currently false: \1]", text)
 
 
-def load_card_text(path=CARD_TEXT_PATH):
-    return {c["name"]: c for c in json.loads(Path(path).read_text())}
+def load_card_text(path=None):
+    """Name -> card text. path: one set's file; default every set's file merged."""
+    paths = [path] if path else [card_text_path(s) for s in SETS]
+    return {c["name"]: c for p in paths for c in json.loads(Path(p).read_text())}
 
 
 def card_text(c):
