@@ -225,6 +225,9 @@ public final class Observer {
             g.addProperty(who + "_graveyard", p.getGraveyard().size());
         }
         g.addProperty("stack_size", view.getStack().size());
+        // lands the active player has played this turn (land drops, not lands put onto the battlefield by effects)
+        mage.players.Player active = game.getPlayer(game.getActivePlayerId());  // none yet during mulligans
+        g.addProperty("lands_played", active == null ? 0 : active.getLandsPlayed());
         obs.add(null, g);
 
         // combat status, read from the view

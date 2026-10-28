@@ -14,7 +14,8 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   the same card object stays in that hand (XMage forgets reveals at every priority and update event, so Observer
   remembers them per game and seat, and forgets them when the card changes zone, the game ends or the turn is rolled
   back). A modal spell or ability on the stack lists its chosen modes as `"modes": ["<card name>#mode<i>", ...]`
-  (modes are announced, so this is public).
+  (modes are announced, so this is public). The global entry has `"lands_played"`: land drops the active player
+  has made this turn (0 during mulligans).
 - `AbilityKeys.java`: stable ability keys `"<card name>#<i>"` (printed) and `"<card name>#g<i>"` (granted to
   another object or put on a token), and named choices: `alt_cost:none` / `alt_cost:ImpendingAbility` for an
   alternative-cost prompt, `"<card name>#mode<i>"` for a mode of a modal card (printed order), `choice:<text>`

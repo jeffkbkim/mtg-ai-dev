@@ -5,8 +5,8 @@ from pathlib import Path
 import pytest
 import torch
 
-from engine.encode import (ACTION_TYPES, EDGE_TYPES, EMPTY_IDX, FACE_DOWN, PAD, Unmapped, Vocab, collate,
-                           encode_decision, encode_file)
+from engine.encode import (ACTION_TYPES, EDGE_TYPES, EMPTY_IDX, FACE_DOWN, PAD, Unmapped, Vocab, add_lands_played,
+                           collate, encode_decision, encode_file)
 from engine.batch_config import BatchConfig
 from synthetic.fake_batch import validate_batch
 
@@ -20,7 +20,10 @@ def vocab():
 
 @pytest.fixture(scope="module")
 def decisions():
-    return [json.loads(line) for line in FIXTURE.read_text().splitlines()]
+    lines = [json.loads(line) for line in FIXTURE.read_text().splitlines()]
+    for d in lines:  # single decisions cut from older games: their land count is unknown, 0 stands in
+        d["obs"]["entries"][0].setdefault("lands_played", 0)
+    return lines
 
 
 @pytest.fixture(scope="module")
@@ -148,6 +151,30 @@ def test_keywords_and_counters(vocab, decisions):
     entries[-1]["counters"] = {"oil": 1}
     with pytest.raises(Unmapped, match="counter"):
         encode_decision(d, vocab)
+
+
+def _decision(turn, my_turn, action, seat):
+    g = {"kind": "global", "turn": turn, "my_turn": my_turn}
+    return {"seat": seat, "obs": {"entries": [g]}, "options": [{"action": "PASS"}, {"action": action}], "choice": 1}
+
+
+def test_add_lands_played():
+    """Old recordings: land drops are rebuilt from earlier PLAY_LAND choices in the same turn and game."""
+    both = [_decision(1, True, "PLAY_LAND", "A"), _decision(1, False, "BLOCK", "B"), _decision(1, True, "CAST", "A"),
+            _decision(2, True, "CAST", "B"), _decision(2, False, "PASS", "A"),
+            _decision(1, True, "CAST", "A")]  # a second game in the same file
+    add_lands_played(both)
+    assert [d["obs"]["entries"][0]["lands_played"] for d in both] == [0, 1, 1, 0, 0, 0]
+
+    one_seat = [_decision(1, True, "PLAY_LAND", "A"), _decision(2, False, "PASS", "A")]
+    add_lands_played(one_seat)
+    assert one_seat[0]["obs"]["entries"][0]["lands_played"] == 0
+    assert "lands_played" not in one_seat[1]["obs"]["entries"][0]  # the opponent's turn: their land drops weren't recorded
+
+    new = [_decision(3, True, "CAST", "A")]
+    new[0]["obs"]["entries"][0]["lands_played"] = 1  # sent by the seat: kept as is
+    add_lands_played(new)
+    assert new[0]["obs"]["entries"][0]["lands_played"] == 1
 
 
 def test_edges_follow_entries(decisions, examples):

@@ -81,8 +81,8 @@ ABILITY_FEATURES = ["mine", "triggered", "activated"]
 GLOBAL_FEATURES = (
     ["my_turn"] + [f"step_{s}" for s in STEPS] + [f"decision_{k.lower()}" for k in DECISION_KINDS]
     + ["my_life/20", "opp_life/20", "my_hand/7", "opp_hand/7", "my_library/40", "opp_library/40",
-       "my_graveyard/20", "opp_graveyard/20", "stack_size/5"]
-)
+       "my_graveyard/20", "opp_graveyard/20", "stack_size/5", "turn/20", "lands_played"]
+)  # turn: the game's turn number (both players' turns count); lands_played: by the active player this turn
 
 
 class Unmapped(Exception):
@@ -224,7 +224,36 @@ def _global_features(g: dict, kind: str) -> list[float]:
             + [1.0 if kind == k else 0.0 for k in DECISION_KINDS]
             + [g["my_life"] / 20, g["opp_life"] / 20, g["my_hand"] / 7, g["opp_hand"] / 7,
                g["my_library"] / 40, g["opp_library"] / 40, g["my_graveyard"] / 20, g["opp_graveyard"] / 20,
-               g["stack_size"] / 5])
+               g["stack_size"] / 5, g["turn"] / 20, float(_lands_played(g))])
+
+
+def _lands_played(g: dict) -> int:
+    if "lands_played" not in g:
+        raise Unmapped("no lands_played in the global entry (recorded before the seat sent it; see add_lands_played)")
+    return g["lands_played"]
+
+
+def add_lands_played(decisions: list[dict]) -> None:
+    """Fill the global entry's lands_played for recordings made before the seat sent it, in place.
+
+    Rebuilt from the game's own decisions, in order: a land drop is a chosen PLAY_LAND option, and only the active
+    player can make one. That needs every land drop to be in the list, so it only fills a decision when the seat
+    whose turn it is was recorded (both seats of a Claude-vs-Claude game; only one seat's turns in a Playmat game).
+    """
+    recorded = {d.get("seat") for d in decisions}
+    played: dict[int, int] = {}  # turn -> land drops so far
+    last_turn = 0
+    for d in decisions:
+        g = d["obs"]["entries"][0]
+        turn = g.get("turn") or 0
+        if turn < last_turn:  # the next game in a file of several
+            played = {}
+        last_turn = turn
+        if "lands_played" not in g and (len(recorded) == 2 or g.get("my_turn")):
+            g["lands_played"] = played.get(turn, 0)
+        choice = d.get("choice", -1)
+        if 0 <= choice < len(d.get("options", [])) and d["options"][choice].get("action") == "PLAY_LAND":
+            played[turn] = played.get(turn, 0) + 1
 
 
 @dataclass
@@ -410,10 +439,10 @@ def collate(examples: list[Example]) -> dict[str, Tensor]:
 def encode_file(path: Path, vocab: Vocab) -> tuple[list[Example], dict[str, int]]:
     """Encode every decision in a JSON-lines file. Returns examples and a report of unmapped items (by message)."""
     examples, problems = [], {}
-    for line in Path(path).read_text().splitlines():
-        d = json.loads(line)
-        if d.get("type", "decision") != "decision":
-            continue
+    decisions = [d for d in map(json.loads, Path(path).read_text().splitlines())
+                 if d.get("type", "decision") == "decision"]
+    add_lands_played(decisions)
+    for d in decisions:
         if d.get("choice", 0) < 0:  # no label: an unmapped answer, or blocks the engine refused (Playmat records)
             key = f"no label: choice -1 ({d.get('mapping', '?')})"
             problems[key] = problems.get(key, 0) + 1
