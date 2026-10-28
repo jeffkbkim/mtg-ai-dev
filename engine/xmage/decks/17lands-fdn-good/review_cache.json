@@ -1,0 +1,2669 @@
+{
+ "34c12bbbff5b8885": {
+  "review": {
+   "archetype": "WU lifegain cats",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "card quality",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A coherent low-curve WU lifegain deck. Cat Collector x3, Hawks, Pridemate, Dazzling Angel and Felidar Savior work together well, but it has little hard removal, several filler tricks and no real finishers."
+  },
+  "reply": "{\"archetype\": \"WU lifegain cats\", \"coherent\": true, \"concerns\": [\"removal\", \"card quality\", \"top end\"], \"rating\": 3, \"verdict\": \"A coherent low-curve WU lifegain deck. Cat Collector x3, Hawks, Pridemate, Dazzling Angel and Felidar Savior work together well, but it has little hard removal, several filler tricks and no real finishers.\"}",
+  "cost_usd": 0.04954,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "952abac9a90d0d55": {
+  "review": {
+   "archetype": "WU fliers (B splash)",
+   "coherent": true,
+   "concerns": [
+    "greedy splash",
+    "low power",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A solid WU fliers shell with Dazzling Angels, Empyrean Eagle, Trickster and decent removal. Some 1-drops (Hawks, Fleeting Flight) are filler, and splashing Liliana's BB on 2 Swamps plus 3 Wilds is greedy, so it's a fine but unexceptional deck."
+  },
+  "reply": "{\"archetype\": \"WU fliers (B splash)\", \"coherent\": true, \"concerns\": [\"greedy splash\", \"low power\", \"top end\"], \"rating\": 3, \"verdict\": \"A solid WU fliers shell with Dazzling Angels, Empyrean Eagle, Trickster and decent removal. Some 1-drops (Hawks, Fleeting Flight) are filler, and splashing Liliana's BB on 2 Swamps plus 3 Wilds is greedy, so it's a fine but unexceptional deck.\"}",
+  "cost_usd": 0.04974,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "0f073590937cec6f": {
+  "review": {
+   "archetype": "UW tempo/fliers splashing B",
+   "coherent": true,
+   "concerns": [
+    "splash value",
+    "filler",
+    "removal"
+   ],
+   "rating": 3,
+   "verdict": "A solid UW base with real fliers, Kykar and Curator up top, and clean removal in 2x Banishing Light and Uncharted Voyage, but the black splash adds little (Macabre Waltz is weak) and the cheap cantrips are filler, so this is a fine but unexceptional deck."
+  },
+  "reply": "{\"archetype\": \"UW tempo/fliers splashing B\", \"coherent\": true, \"concerns\": [\"splash value\", \"filler\", \"removal\"], \"rating\": 3, \"verdict\": \"A solid UW base with real fliers, Kykar and Curator up top, and clean removal in 2x Banishing Light and Uncharted Voyage, but the black splash adds little (Macabre Waltz is weak) and the cheap cantrips are filler, so this is a fine but unexceptional deck.\"}",
+  "cost_usd": 0.052,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "d32728d896c11b92": {
+  "review": {
+   "archetype": "WU fliers tempo",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "filler"
+   ],
+   "rating": 4,
+   "verdict": "Ten fliers boosted by three Empyrean Eagles and Kykar, backed by real interaction (Banishing Light, two Uncharted Voyage, Witness Protection, two Bigfin Bouncer). A focused, aggressive tempo deck; held back by low-impact filler (Goldvein Pick, Think Twice, Fleeting Distraction, Run Away Together) and no late-game threats, and with a curve that tops out at 4 it could cut to 16 lands."
+  },
+  "reply": "{\"archetype\": \"WU fliers tempo\", \"coherent\": true, \"concerns\": [\"top end\", \"filler\"], \"rating\": 4, \"verdict\": \"Ten fliers boosted by three Empyrean Eagles and Kykar, backed by real interaction (Banishing Light, two Uncharted Voyage, Witness Protection, two Bigfin Bouncer). A focused, aggressive tempo deck; held back by low-impact filler (Goldvein Pick, Think Twice, Fleeting Distraction, Run Away Together) and no late-game threats, and with a curve that tops out at 4 it could cut to 16 lands.\"}",
+  "cost_usd": 0.05309,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "3b09d06d8356f4f9": {
+  "review": {
+   "archetype": "WU cats go-wide",
+   "coherent": true,
+   "concerns": [
+    "blue filler",
+    "off-color duals",
+    "removal"
+   ],
+   "rating": 3,
+   "verdict": "A solid white cat shell: Arahbo, three Prideful Parent, Cat Collector, Felidar Savior and Claws Out, plus Banishing Light and two Luminous Rebuke. The blue half is thin, with two Think Twice as filler, and Blossoming Sands and Thornwood Falls are off-color taplands that each make only one useful color, so it is a fine deck rather than a strong one."
+  },
+  "reply": "{\"archetype\": \"WU cats go-wide\", \"coherent\": true, \"concerns\": [\"blue filler\", \"off-color duals\", \"removal\"], \"rating\": 3, \"verdict\": \"A solid white cat shell: Arahbo, three Prideful Parent, Cat Collector, Felidar Savior and Claws Out, plus Banishing Light and two Luminous Rebuke. The blue half is thin, with two Think Twice as filler, and Blossoming Sands and Thornwood Falls are off-color taplands that each make only one useful color, so it is a fine deck rather than a strong one.\"}",
+  "cost_usd": 0.05215,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "3c47966f814fdac5": {
+  "review": {
+   "archetype": "UW fliers/spells tempo",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "Day of Judgment",
+    "mixed plan"
+   ],
+   "rating": 3,
+   "verdict": "Solid removal suite and decent fliers with Eagle and Terrors, but Think Twice, double Refute, and a Wrath in a creature tempo deck pull it between plans and dilute card quality; a fine but unexceptional deck."
+  },
+  "reply": "{\"archetype\": \"UW fliers/spells tempo\", \"coherent\": true, \"concerns\": [\"filler\", \"Day of Judgment\", \"mixed plan\"], \"rating\": 3, \"verdict\": \"Solid removal suite and decent fliers with Eagle and Terrors, but Think Twice, double Refute, and a Wrath in a creature tempo deck pull it between plans and dilute card quality; a fine but unexceptional deck.\"}",
+  "cost_usd": 0.04963,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "3f16d818616216ee": {
+  "review": {
+   "archetype": "WU tempo fliers",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "filler spells",
+    "weak threats"
+   ],
+   "rating": 2,
+   "verdict": "A playable WU fliers/tempo shell with a few good cards (Dazzling Angel, Arahbo, Guarded Heir, Bigfin Bouncers), but it has no real removal: only bounce and taps. Low-impact filler like Fleeting Distraction, Think Twice, Run Away Together and Heraldic Banner leaves it short on power."
+  },
+  "reply": "{\"archetype\": \"WU tempo fliers\", \"coherent\": true, \"concerns\": [\"removal\", \"filler spells\", \"weak threats\"], \"rating\": 2, \"verdict\": \"A playable WU fliers/tempo shell with a few good cards (Dazzling Angel, Arahbo, Guarded Heir, Bigfin Bouncers), but it has no real removal: only bounce and taps. Low-impact filler like Fleeting Distraction, Think Twice, Run Away Together and Heraldic Banner leaves it short on power.\"}",
+  "cost_usd": 0.05073,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "b92f0857fee949b9": {
+  "review": {
+   "archetype": "UW flash tempo",
+   "coherent": true,
+   "concerns": [
+    "filler 2-drops",
+    "few fliers"
+   ],
+   "rating": 3,
+   "verdict": "Solid UW deck with good removal (2 Banishing Light, Rebuke, Make Your Move, Witness Protection, Voyage), a strong top end in Curator and Guarded Heir, and clean mana. The 2-drops are low-impact (3 Elementalist Adept), and there aren't enough fliers to make full use of Empyrean Eagle."
+  },
+  "reply": "{\"archetype\": \"UW flash tempo\", \"coherent\": true, \"concerns\": [\"filler 2-drops\", \"few fliers\"], \"rating\": 3, \"verdict\": \"Solid UW deck with good removal (2 Banishing Light, Rebuke, Make Your Move, Witness Protection, Voyage), a strong top end in Curator and Guarded Heir, and clean mana. The 2-drops are low-impact (3 Elementalist Adept), and there aren't enough fliers to make full use of Empyrean Eagle.\"}",
+  "cost_usd": 0.04993,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "3b4bc477e3039365": {
+  "review": {
+   "archetype": "UW tempo/flash control",
+   "coherent": true,
+   "concerns": [
+    "unfocused",
+    "filler",
+    "threat density"
+   ],
+   "rating": 3,
+   "verdict": "Solid blue-white shell with good top end (Curator, Exemplar, Icewind, Tolarian Terror fed by about 9 instants) and decent interaction, but the walls, cantrip filler and thin lifegain payoffs leave it short on pressure. It's a fine deck, not a strong one."
+  },
+  "reply": "{\"archetype\": \"UW tempo/flash control\", \"coherent\": true, \"concerns\": [\"unfocused\", \"filler\", \"threat density\"], \"rating\": 3, \"verdict\": \"Solid blue-white shell with good top end (Curator, Exemplar, Icewind, Tolarian Terror fed by about 9 instants) and decent interaction, but the walls, cantrip filler and thin lifegain payoffs leave it short on pressure. It's a fine deck, not a strong one.\"}",
+  "cost_usd": 0.0504,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "c6b647f6d7b63bc1": {
+  "review": {
+   "archetype": "WU lifegain fliers",
+   "coherent": false,
+   "concerns": [
+    "removal",
+    "card quality",
+    "Day of Judgment",
+    "small bodies"
+   ],
+   "rating": 2,
+   "verdict": "A low-powered WU pile: four Healer's Hawks and two Pridemates hint at lifegain with no real payoffs, Make Your Move is conditional, Day of Judgment fights its own go-wide board, and only Banishing Light, Kraken and Trickster stand out."
+  },
+  "reply": "{\"archetype\": \"WU lifegain fliers\", \"coherent\": false, \"concerns\": [\"removal\", \"card quality\", \"Day of Judgment\", \"small bodies\"], \"rating\": 2, \"verdict\": \"A low-powered WU pile: four Healer's Hawks and two Pridemates hint at lifegain with no real payoffs, Make Your Move is conditional, Day of Judgment fights its own go-wide board, and only Banishing Light, Kraken and Trickster stand out.\"}",
+  "cost_usd": 0.04822,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "cfd86a45e8dedb5d": {
+  "review": {
+   "archetype": "WU fliers/lifegain",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Clean, well-curved white-heavy flier deck with strong commons (3 Dazzling Angel, 2 Empyrean Eagle, Guarded Heir), but only Uncharted Voyage as removal leaves it racing bombs it cannot answer."
+  },
+  "reply": "{\"archetype\": \"WU fliers/lifegain\", \"coherent\": true, \"concerns\": [\"removal\", \"top end\"], \"rating\": 3, \"verdict\": \"Clean, well-curved white-heavy flier deck with strong commons (3 Dazzling Angel, 2 Empyrean Eagle, Guarded Heir), but only Uncharted Voyage as removal leaves it racing bombs it cannot answer.\"}",
+  "cost_usd": 0.04727,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "8063fec8d71e13ed": {
+  "review": {
+   "archetype": "UW tempo-control",
+   "coherent": true,
+   "concerns": [
+    "threat density",
+    "filler",
+    "few creatures"
+   ],
+   "rating": 3,
+   "verdict": "Strong top end and interaction (2 Curator, 2 Banishing Light, 2 Bigfin, Trickster, Aetherize), but walls, Think Twice, Goldvein Pick and Self-Reflection make it short on real threats to close games."
+  },
+  "reply": "{\"archetype\": \"UW tempo-control\", \"coherent\": true, \"concerns\": [\"threat density\", \"filler\", \"few creatures\"], \"rating\": 3, \"verdict\": \"Strong top end and interaction (2 Curator, 2 Banishing Light, 2 Bigfin, Trickster, Aetherize), but walls, Think Twice, Goldvein Pick and Self-Reflection make it short on real threats to close games.\"}",
+  "cost_usd": 0.04944,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "789b466db14d3931": {
+  "review": {
+   "archetype": "WU tempo fliers",
+   "coherent": true,
+   "concerns": [
+    "low power",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Solid WU tempo deck with a good curve, three Skyship Buccaneers, Kaito and a removal suite of Banishing Light, Bigfin Bouncer and Uncharted Voyage. Several weak 2-drops (Skyknight Squire, Brineborn Cutthroat, Think Twice) and few real bombs make it a fine deck, not a great one."
+  },
+  "reply": "{\"archetype\": \"WU tempo fliers\", \"coherent\": true, \"concerns\": [\"low power\", \"top end\"], \"rating\": 3, \"verdict\": \"Solid WU tempo deck with a good curve, three Skyship Buccaneers, Kaito and a removal suite of Banishing Light, Bigfin Bouncer and Uncharted Voyage. Several weak 2-drops (Skyknight Squire, Brineborn Cutthroat, Think Twice) and few real bombs make it a fine deck, not a great one.\"}",
+  "cost_usd": 0.04711,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "3aa08ec303cb44f6": {
+  "review": {
+   "archetype": "WU fliers/tempo",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "Coherent WU flier tempo deck with a smooth curve, strong uncommons (Dazzling Angel, Exemplar, Empyrean Eagle, Giada) and good instant-speed tricks, but removal is thin beyond two Luminous Rebuke and Witness Protection, and Goldvein Pick and Scrawling Crawler are filler."
+  },
+  "reply": "{\"archetype\": \"WU fliers/tempo\", \"coherent\": true, \"concerns\": [\"removal\", \"filler\"], \"rating\": 3, \"verdict\": \"Coherent WU flier tempo deck with a smooth curve, strong uncommons (Dazzling Angel, Exemplar, Empyrean Eagle, Giada) and good instant-speed tricks, but removal is thin beyond two Luminous Rebuke and Witness Protection, and Goldvein Pick and Scrawling Crawler are filler.\"}",
+  "cost_usd": 0.05429,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "bcf565ac64378ff6": {
+  "review": {
+   "archetype": "WU tempo",
+   "coherent": true,
+   "concerns": [
+    "card quality",
+    "top end",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "A playable low-curve WU tempo deck with decent interaction (Joust Through, Witness Protection, bounce, Voyage) and a few strong cards in Exemplar, Eagle and Archmage, but filler like Aegis Turtle, two Fleeting Distraction and Goldvein Pick plus little late-game power cap it at average."
+  },
+  "reply": "{\"archetype\": \"WU tempo\", \"coherent\": true, \"concerns\": [\"card quality\", \"top end\", \"filler\"], \"rating\": 3, \"verdict\": \"A playable low-curve WU tempo deck with decent interaction (Joust Through, Witness Protection, bounce, Voyage) and a few strong cards in Exemplar, Eagle and Archmage, but filler like Aegis Turtle, two Fleeting Distraction and Goldvein Pick plus little late-game power cap it at average.\"}",
+  "cost_usd": 0.05228,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "5086868d460b2b74": {
+  "review": {
+   "archetype": "UB sacrifice/aggro",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "power level",
+    "card advantage"
+   ],
+   "rating": 3,
+   "verdict": "A low-curve UB sacrifice deck: Infernal Vessel, Infestation Sage, Fake Your Own Death and Gourmand/Eaten Alive fit together, Dreadwing Scavengers and Downfall/Banshee/Bouncer give real quality, but filler 1-drops like Diregraf Ghoul and a thin late game cap it at a solid, unspectacular deck."
+  },
+  "reply": "{\"archetype\": \"UB sacrifice/aggro\", \"coherent\": true, \"concerns\": [\"top end\", \"power level\", \"card advantage\"], \"rating\": 3, \"verdict\": \"A low-curve UB sacrifice deck: Infernal Vessel, Infestation Sage, Fake Your Own Death and Gourmand/Eaten Alive fit together, Dreadwing Scavengers and Downfall/Banshee/Bouncer give real quality, but filler 1-drops like Diregraf Ghoul and a thin late game cap it at a solid, unspectacular deck.\"}",
+  "cost_usd": 0.05018,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "22e2a7e00e0357a5": {
+  "review": {
+   "archetype": "UB tempo/control",
+   "coherent": false,
+   "concerns": [
+    "card quality",
+    "threats",
+    "discard filler",
+    "removal"
+   ],
+   "rating": 2,
+   "verdict": "Has a few good blue cards (Kiora, Skyship Buccaneer, Icewind Elemental, Micromancer), but filler like two Fleeting Distraction, two Refute, Pilfer, Seeker's Folly and Burglar Rat replaces real threats. Its removal is mostly tempo, and small creatures leave it with no clear way to win."
+  },
+  "reply": "{\"archetype\": \"UB tempo/control\", \"coherent\": false, \"concerns\": [\"card quality\", \"threats\", \"discard filler\", \"removal\"], \"rating\": 2, \"verdict\": \"Has a few good blue cards (Kiora, Skyship Buccaneer, Icewind Elemental, Micromancer), but filler like two Fleeting Distraction, two Refute, Pilfer, Seeker's Folly and Burglar Rat replaces real threats. Its removal is mostly tempo, and small creatures leave it with no clear way to win.\"}",
+  "cost_usd": 0.05297,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "ac4b8da0cb8f70ee": {
+  "review": {
+   "archetype": "UB value/sacrifice tempo",
+   "coherent": true,
+   "concerns": [
+    "low power",
+    "counterspells",
+    "weak finishers"
+   ],
+   "rating": 3,
+   "verdict": "Solid UB with real synergy (Micromancer fetching Stab or Witness Protection, Infernal Vessel feeding Arbiter of Woe, Bake into a Pie and Bigfin Bouncer as removal), but two Refutes, Think Twice and Hungry Ghoul are filler and the deck lacks a bomb to close games."
+  },
+  "reply": "{\"archetype\": \"UB value/sacrifice tempo\", \"coherent\": true, \"concerns\": [\"low power\", \"counterspells\", \"weak finishers\"], \"rating\": 3, \"verdict\": \"Solid UB with real synergy (Micromancer fetching Stab or Witness Protection, Infernal Vessel feeding Arbiter of Woe, Bake into a Pie and Bigfin Bouncer as removal), but two Refutes, Think Twice and Hungry Ghoul are filler and the deck lacks a bomb to close games.\"}",
+  "cost_usd": 0.05072,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "2a44bc4e1dc34dff": {
+  "review": {
+   "archetype": "UB tempo spells",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "card quality",
+    "threats",
+    "Think Twice"
+   ],
+   "rating": 2,
+   "verdict": "Four Bigfin Bouncers and Tolarian Terror give it a tempo plan, but there is little real removal (Stab, Witness Protection), the threats are small and weak, and three Think Twice plus a lot of filler leave it short on power."
+  },
+  "reply": "{\"archetype\": \"UB tempo spells\", \"coherent\": true, \"concerns\": [\"removal\", \"card quality\", \"threats\", \"Think Twice\"], \"rating\": 2, \"verdict\": \"Four Bigfin Bouncers and Tolarian Terror give it a tempo plan, but there is little real removal (Stab, Witness Protection), the threats are small and weak, and three Think Twice plus a lot of filler leave it short on power.\"}",
+  "cost_usd": 0.04908,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "bcf39a1d9918bc91": {
+  "review": {
+   "archetype": "UB control",
+   "coherent": true,
+   "concerns": [
+    "splash",
+    "mana",
+    "few creatures"
+   ],
+   "rating": 3,
+   "verdict": "Strong black removal (3 Bake into a Pie, Hero's Downfall, Eaten Alive) plus blue card draw and tempo makes a solid UB control deck, but the red splash only buys Balmor, a gold 2-drop. Its 2 Mountains plus Cliffs leave just 8 blue sources, which strains the BB/UU costs. Cut the splash for an Island and a creature."
+  },
+  "reply": "{\"archetype\": \"UB control\", \"coherent\": true, \"concerns\": [\"splash\", \"mana\", \"few creatures\"], \"rating\": 3, \"verdict\": \"Strong black removal (3 Bake into a Pie, Hero's Downfall, Eaten Alive) plus blue card draw and tempo makes a solid UB control deck, but the red splash only buys Balmor, a gold 2-drop. Its 2 Mountains plus Cliffs leave just 8 blue sources, which strains the BB/UU costs. Cut the splash for an Island and a creature.\"}",
+  "cost_usd": 0.05229,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "0ca72dfa71a8a77c": {
+  "review": {
+   "archetype": "UB spells/control splash W",
+   "coherent": true,
+   "concerns": [
+    "splash",
+    "creature quality",
+    "Terror density"
+   ],
+   "rating": 3,
+   "verdict": "Solid UB tempo-control with good cheap removal (3 Stab, Downfall, Banshee) and Micromancer-Stab value, but only 9 instants and sorceries for two Tolarian Terrors, a thin early board, and a three-card white splash (Felidar Savior isn't worth splashing) make it a fine deck rather than a strong one."
+  },
+  "reply": "{\"archetype\": \"UB spells/control splash W\", \"coherent\": true, \"concerns\": [\"splash\", \"creature quality\", \"Terror density\"], \"rating\": 3, \"verdict\": \"Solid UB tempo-control with good cheap removal (3 Stab, Downfall, Banshee) and Micromancer-Stab value, but only 9 instants and sorceries for two Tolarian Terrors, a thin early board, and a three-card white splash (Felidar Savior isn't worth splashing) make it a fine deck rather than a strong one.\"}",
+  "cost_usd": 0.05272,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "2acb5052aa3aace0": {
+  "review": {
+   "archetype": "UB midrange with red splash",
+   "coherent": false,
+   "concerns": [
+    "splash",
+    "3-drops",
+    "card quality",
+    "filler"
+   ],
+   "rating": 2,
+   "verdict": "Curator, Arbiter, Banshees and the splashed burn are real, but low-impact filler (Diregraf Ghoul, Burglar Rat, Pilfer, double Macabre Waltz, Think Twice), no 3-drop creatures and a two-card red splash on only 3 sources leave a weak, unfocused deck."
+  },
+  "reply": "{\"archetype\": \"UB midrange with red splash\", \"coherent\": false, \"concerns\": [\"splash\", \"3-drops\", \"card quality\", \"filler\"], \"rating\": 2, \"verdict\": \"Curator, Arbiter, Banshees and the splashed burn are real, but low-impact filler (Diregraf Ghoul, Burglar Rat, Pilfer, double Macabre Waltz, Think Twice), no 3-drop creatures and a two-card red splash on only 3 sources leave a weak, unfocused deck.\"}",
+  "cost_usd": 0.05652,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "5a6d93839534daf9": {
+  "review": {
+   "archetype": "UB tempo/draw-two",
+   "coherent": true,
+   "concerns": [
+    "threat quality",
+    "few creatures",
+    "low power",
+    "top end"
+   ],
+   "rating": 2,
+   "verdict": "Curator, two Bake into a Pie and some bounce help, but four Burglar Rats and many small 2-drops leave too few real threats, so the draw-two payoffs and counterspells mostly trade cards without a way to close games."
+  },
+  "reply": "{\"archetype\": \"UB tempo/draw-two\", \"coherent\": true, \"concerns\": [\"threat quality\", \"few creatures\", \"low power\", \"top end\"], \"rating\": 2, \"verdict\": \"Curator, two Bake into a Pie and some bounce help, but four Burglar Rats and many small 2-drops leave too few real threats, so the draw-two payoffs and counterspells mostly trade cards without a way to close games.\"}",
+  "cost_usd": 0.04686,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "bf5f13614b9bb1da": {
+  "review": {
+   "archetype": "UB tempo/control fliers",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "filler spells",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Solid UB shell with three Bake into a Pie, Bloodthirsty Conqueror and good flyers, but only 13 creatures and filler like Macabre Waltz, Think Twice and Run Away Together dilute it; two Tolarian Terrors are fine with about 10 instants and sorceries."
+  },
+  "reply": "{\"archetype\": \"UB tempo/control fliers\", \"coherent\": true, \"concerns\": [\"few creatures\", \"filler spells\", \"top end\"], \"rating\": 3, \"verdict\": \"Solid UB shell with three Bake into a Pie, Bloodthirsty Conqueror and good flyers, but only 13 creatures and filler like Macabre Waltz, Think Twice and Run Away Together dilute it; two Tolarian Terrors are fine with about 10 instants and sorceries.\"}",
+  "cost_usd": 0.05217,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "828ae2a9ff3d1b46": {
+  "review": {
+   "archetype": "UB spells control",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "splash",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "Solid UB tempo-control shell with real power (3 Dreadwing Scavenger, Kaito, Archmage, 2 Tolarian Terror fed by about 10 instants and sorceries) and plenty of interaction including two wraths, but the body count is thin, Turtle and Campus Guide are filler, and splashing red on 3 sources for a single Fiery Annihilation adds little for the mana risk."
+  },
+  "reply": "{\"archetype\": \"UB spells control\", \"coherent\": true, \"concerns\": [\"few creatures\", \"splash\", \"filler\"], \"rating\": 3, \"verdict\": \"Solid UB tempo-control shell with real power (3 Dreadwing Scavenger, Kaito, Archmage, 2 Tolarian Terror fed by about 10 instants and sorceries) and plenty of interaction including two wraths, but the body count is thin, Turtle and Campus Guide are filler, and splashing red on 3 sources for a single Fiery Annihilation adds little for the mana risk.\"}",
+  "cost_usd": 0.05583,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "f7369724ccbfdeb5": {
+  "review": {
+   "archetype": "UB tempo/card draw",
+   "coherent": true,
+   "concerns": [
+    "threat density",
+    "removal",
+    "weak bodies",
+    "too many counters"
+   ],
+   "rating": 2,
+   "verdict": "Low-curve UB deck with lots of cheap 1-2 power bodies, filler card draw (2 Think Twice) and 3 Refute, but only 2 Bake into a Pie as real removal and almost no threats that can close a game or survive combat. It will struggle to pressure or stabilize against FDN's bigger creatures."
+  },
+  "reply": "{\"archetype\": \"UB tempo/card draw\", \"coherent\": true, \"concerns\": [\"threat density\", \"removal\", \"weak bodies\", \"too many counters\"], \"rating\": 2, \"verdict\": \"Low-curve UB deck with lots of cheap 1-2 power bodies, filler card draw (2 Think Twice) and 3 Refute, but only 2 Bake into a Pie as real removal and almost no threats that can close a game or survive combat. It will struggle to pressure or stabilize against FDN's bigger creatures.\"}",
+  "cost_usd": 0.04677,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "b268c4ff52b3cfc0": {
+  "review": {
+   "archetype": "UB sacrifice/spells midrange",
+   "coherent": true,
+   "concerns": [
+    "card quality",
+    "removal",
+    "thin 3-4 drops",
+    "filler cantrips"
+   ],
+   "rating": 2,
+   "verdict": "Some real pieces (High-Society Hunter, Infernal Vessel, Soulcaller, Tolarian Terror, Eaten Alive with sac fodder), but it is padded with low-impact cantrips like Fleeting Distraction x2, Think Twice and Pilfer, has only a handful of real removal spells, and has a hollow middle of the curve, so it is a below-average UB deck."
+  },
+  "reply": "{\"archetype\": \"UB sacrifice/spells midrange\", \"coherent\": true, \"concerns\": [\"card quality\", \"removal\", \"thin 3-4 drops\", \"filler cantrips\"], \"rating\": 2, \"verdict\": \"Some real pieces (High-Society Hunter, Infernal Vessel, Soulcaller, Tolarian Terror, Eaten Alive with sac fodder), but it is padded with low-impact cantrips like Fleeting Distraction x2, Think Twice and Pilfer, has only a handful of real removal spells, and has a hollow middle of the curve, so it is a below-average UB deck.\"}",
+  "cost_usd": 0.05411,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "9c2c2c402e4796a2": {
+  "review": {
+   "archetype": "UB threshold tempo",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "low power",
+    "few spells"
+   ],
+   "rating": 3,
+   "verdict": "Solid UB shell with good top end (Arbiter of Woe, Dreadwing Scavengers, Skyship Buccaneer) and decent sac fodder, but only about three real removal spells, several weak 1/1s, and just six instants/sorceries, so the Tolarian Terrors often cost too much. Playable, middling deck."
+  },
+  "reply": "{\"archetype\": \"UB threshold tempo\", \"coherent\": true, \"concerns\": [\"removal\", \"low power\", \"few spells\"], \"rating\": 3, \"verdict\": \"Solid UB shell with good top end (Arbiter of Woe, Dreadwing Scavengers, Skyship Buccaneer) and decent sac fodder, but only about three real removal spells, several weak 1/1s, and just six instants/sorceries, so the Tolarian Terrors often cost too much. Playable, middling deck.\"}",
+  "cost_usd": 0.05322,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "eb8545e4f7c29dc1": {
+  "review": {
+   "archetype": "UB sacrifice/value midrange",
+   "coherent": true,
+   "concerns": [
+    "filler quality",
+    "counterspells",
+    "weak 2-drops"
+   ],
+   "rating": 3,
+   "verdict": "Solid UB value deck with real bombs and finishers (High-Society Hunter, Rune-Scarred Demon, Tragic Banshee) and good removal (Bake into a Pie, Eaten Alive, Meteor Golem), but the low end is padded with weak cards like Hungry Ghoul, Fleeting Distraction, Think Twice and reactive counters, which caps its power."
+  },
+  "reply": "{\"archetype\": \"UB sacrifice/value midrange\", \"coherent\": true, \"concerns\": [\"filler quality\", \"counterspells\", \"weak 2-drops\"], \"rating\": 3, \"verdict\": \"Solid UB value deck with real bombs and finishers (High-Society Hunter, Rune-Scarred Demon, Tragic Banshee) and good removal (Bake into a Pie, Eaten Alive, Meteor Golem), but the low end is padded with weak cards like Hungry Ghoul, Fleeting Distraction, Think Twice and reactive counters, which caps its power.\"}",
+  "cost_usd": 0.05097,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "2d4194af455a54d3": {
+  "review": {
+   "archetype": "UB tempo/control",
+   "coherent": false,
+   "concerns": [
+    "removal",
+    "weak creatures",
+    "filler",
+    "threats"
+   ],
+   "rating": 2,
+   "verdict": "Kaito, Phyrexian Arena, Dreadwing Scavenger and the Terrors are real cards, but the deck has thin interaction (two Eaten Alive, an awkward Blasphemous Edict, Refute). Low-impact filler like Burglar Rats, Pilfer and Fleeting Distraction leaves it with a small, weak board that struggles to pressure or stabilize."
+  },
+  "reply": "{\"archetype\": \"UB tempo/control\", \"coherent\": false, \"concerns\": [\"removal\", \"weak creatures\", \"filler\", \"threats\"], \"rating\": 2, \"verdict\": \"Kaito, Phyrexian Arena, Dreadwing Scavenger and the Terrors are real cards, but the deck has thin interaction (two Eaten Alive, an awkward Blasphemous Edict, Refute). Low-impact filler like Burglar Rats, Pilfer and Fleeting Distraction leaves it with a small, weak board that struggles to pressure or stabilize.\"}",
+  "cost_usd": 0.05314,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "0b172742685e1c2e": {
+  "review": {
+   "archetype": "BR aggro-sacrifice",
+   "coherent": true,
+   "concerns": [
+    "thin top-end",
+    "small creatures",
+    "17 lands low curve"
+   ],
+   "rating": 4,
+   "verdict": "A low, aggressive BR deck. It has plenty of cheap removal (Burst Lightning, Abrade, Eaten Alive, Stab, Immolators) and strong payoffs in Krenko and Perforating Artist. Its few 1/1 bodies and light top-end could run out of gas, and it might want 16 lands."
+  },
+  "reply": "{\"archetype\": \"BR aggro-sacrifice\", \"coherent\": true, \"concerns\": [\"thin top-end\", \"small creatures\", \"17 lands low curve\"], \"rating\": 4, \"verdict\": \"A low, aggressive BR deck. It has plenty of cheap removal (Burst Lightning, Abrade, Eaten Alive, Stab, Immolators) and strong payoffs in Krenko and Perforating Artist. Its few 1/1 bodies and light top-end could run out of gas, and it might want 16 lands.\"}",
+  "cost_usd": 0.04937,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "872657d4f280e7c3": {
+  "review": {
+   "archetype": "BR sacrifice aggro",
+   "coherent": true,
+   "concerns": [
+    "card quality",
+    "top end",
+    "Blasphemous Edict",
+    "light red"
+   ],
+   "rating": 2,
+   "verdict": "A low-curve black sacrifice shell with good cheap removal (3 Burst Lightning, Eaten Alive, Stab), but the bodies are mostly weak 1–2 drops, there are few real payoffs or threats, red is a thin splash-like layer, and Blasphemous Edict fights its own creature-based plan."
+  },
+  "reply": "{\"archetype\": \"BR sacrifice aggro\", \"coherent\": true, \"concerns\": [\"card quality\", \"top end\", \"Blasphemous Edict\", \"light red\"], \"rating\": 2, \"verdict\": \"A low-curve black sacrifice shell with good cheap removal (3 Burst Lightning, Eaten Alive, Stab), but the bodies are mostly weak 1–2 drops, there are few real payoffs or threats, red is a thin splash-like layer, and Blasphemous Edict fights its own creature-based plan.\"}",
+  "cost_usd": 0.05164,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "8696e6d7b10f0b82": {
+  "review": {
+   "archetype": "BR aggro-sacrifice",
+   "coherent": true,
+   "concerns": [
+    "filler two-drops",
+    "thin top end"
+   ],
+   "rating": 3,
+   "verdict": "A solid, coherent BR raid/sacrifice deck with real removal (Bake into a Pie x2, Eaten Alive x2, Burst Lightning) and strong payoffs in Perforating Artist, High-Society Hunter and Arbiter of Woe, but many low-impact 2/2s for two cap its power at a fine deck rather than a great one."
+  },
+  "reply": "{\"archetype\": \"BR aggro-sacrifice\", \"coherent\": true, \"concerns\": [\"filler two-drops\", \"thin top end\"], \"rating\": 3, \"verdict\": \"A solid, coherent BR raid/sacrifice deck with real removal (Bake into a Pie x2, Eaten Alive x2, Burst Lightning) and strong payoffs in Perforating Artist, High-Society Hunter and Arbiter of Woe, but many low-impact 2/2s for two cap its power at a fine deck rather than a great one.\"}",
+  "cost_usd": 0.0508,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "bff9a1e7b4865b80": {
+  "review": {
+   "archetype": "BR raid aggro",
+   "coherent": true,
+   "concerns": [
+    "splash",
+    "Second Rite"
+   ],
+   "rating": 4,
+   "verdict": "Strong BR raid deck with lots of removal (Heartfire x3, Downfall, Eaten Alive, Burst, Gorehorn x2) and good top end in Dragon Trainers and Arbiter; the green splash for only Bite Down and the near-blank Hidetsugu's Second Rite are needless slots, so cut both for BR playables and run a straight two-color base."
+  },
+  "reply": "{\"archetype\": \"BR raid aggro\", \"coherent\": true, \"concerns\": [\"splash\", \"Second Rite\"], \"rating\": 4, \"verdict\": \"Strong BR raid deck with lots of removal (Heartfire x3, Downfall, Eaten Alive, Burst, Gorehorn x2) and good top end in Dragon Trainers and Arbiter; the green splash for only Bite Down and the near-blank Hidetsugu's Second Rite are needless slots, so cut both for BR playables and run a straight two-color base.\"}",
+  "cost_usd": 0.0515,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "025adbd21701cd39": {
+  "review": {
+   "archetype": "BR goblins aggro",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "anti-synergy",
+    "colors",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "Two Krenkos and a low curve of Goblins give a real aggro plan, but real removal is thin (Burst Lightning, Goblin Negotiation and two Firebrand pings). The two Blasphemous Edicts fight the go-wide token plan. The light black cards, which include three BB costs on 8 Swamps plus filler like Pilfer, would be better as more red removal or bodies."
+  },
+  "reply": "{\"archetype\": \"BR goblins aggro\", \"coherent\": true, \"concerns\": [\"removal\", \"anti-synergy\", \"colors\", \"filler\"], \"rating\": 3, \"verdict\": \"Two Krenkos and a low curve of Goblins give a real aggro plan, but real removal is thin (Burst Lightning, Goblin Negotiation and two Firebrand pings). The two Blasphemous Edicts fight the go-wide token plan. The light black cards, which include three BB costs on 8 Swamps plus filler like Pilfer, would be better as more red removal or bodies.\"}",
+  "cost_usd": 0.05048,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "4ad37cd40ee07ee8": {
+  "review": {
+   "archetype": "BR sacrifice aristocrats",
+   "coherent": true,
+   "concerns": [
+    "small bodies",
+    "top end",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "A coherent BR sacrifice deck with good removal (two Abrade, Hero's Downfall, two Bake into a Pie) and four Vengeful Bloodwitch, but the bodies are mostly tiny 1/1s and 2/2s, three Fake Your Own Death is too many, and the top end is thin, so it can stall against bigger boards."
+  },
+  "reply": "{\"archetype\": \"BR sacrifice aristocrats\", \"coherent\": true, \"concerns\": [\"small bodies\", \"top end\", \"filler\"], \"rating\": 3, \"verdict\": \"A coherent BR sacrifice deck with good removal (two Abrade, Hero's Downfall, two Bake into a Pie) and four Vengeful Bloodwitch, but the bodies are mostly tiny 1/1s and 2/2s, three Fake Your Own Death is too many, and the top end is thin, so it can stall against bigger boards.\"}",
+  "cost_usd": 0.04841,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "28aaac0ce7c7ea04": {
+  "review": {
+   "archetype": "BR raid aggro",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "small bodies",
+    "discard subtheme"
+   ],
+   "rating": 3,
+   "verdict": "Solid BR raid shell with real removal (2 Eaten Alive, Fiery Annihilation, 2 Tragic Banshee) and strong gold cards (Perforating Artist x2, Alesha); held back by many weak 1/1s and discard filler like Pilfer, Tinybones and Axgard Cavalry. A fine deck, not a great one."
+  },
+  "reply": "{\"archetype\": \"BR raid aggro\", \"coherent\": true, \"concerns\": [\"filler\", \"small bodies\", \"discard subtheme\"], \"rating\": 3, \"verdict\": \"Solid BR raid shell with real removal (2 Eaten Alive, Fiery Annihilation, 2 Tragic Banshee) and strong gold cards (Perforating Artist x2, Alesha); held back by many weak 1/1s and discard filler like Pilfer, Tinybones and Axgard Cavalry. A fine deck, not a great one.\"}",
+  "cost_usd": 0.05239,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "f94e07792afd8908": {
+  "review": {
+   "archetype": "RB aggro (mostly red)",
+   "coherent": true,
+   "concerns": [
+    "mana split",
+    "top end",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "A low-curve red aggro deck with real removal (4 Heartfire Immolator, Fiery Annihilation, Stab, Firebrands), but black is only five mediocre cards on 7 Swamps against heavy red needs, and it runs out of power after turn 4."
+  },
+  "reply": "{\"archetype\": \"RB aggro (mostly red)\", \"coherent\": true, \"concerns\": [\"mana split\", \"top end\", \"filler\"], \"rating\": 3, \"verdict\": \"A low-curve red aggro deck with real removal (4 Heartfire Immolator, Fiery Annihilation, Stab, Firebrands), but black is only five mediocre cards on 7 Swamps against heavy red needs, and it runs out of power after turn 4.\"}",
+  "cost_usd": 0.05026,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "6c963d6010024c95": {
+  "review": {
+   "archetype": "BR sacrifice midrange",
+   "coherent": true,
+   "concerns": [
+    "3-drop gap",
+    "top-heavy",
+    "filler",
+    "light removal"
+   ],
+   "rating": 3,
+   "verdict": "Real payoffs carry a playable BR sacrifice deck: two Arbiter of Woe, Etali, Gorehorn Raiders and Tragic Banshee, with sticky fodder (Infernal Vessel, Infestation Sage). But it has one 3-drop and six cards at 5+, plus filler like Pilfer, Thrill and three Hungry Ghoul, and only Burst Lightning and Stab as cheap interaction, so it's fine but not great."
+  },
+  "reply": "{\"archetype\": \"BR sacrifice midrange\", \"coherent\": true, \"concerns\": [\"3-drop gap\", \"top-heavy\", \"filler\", \"light removal\"], \"rating\": 3, \"verdict\": \"Real payoffs carry a playable BR sacrifice deck: two Arbiter of Woe, Etali, Gorehorn Raiders and Tragic Banshee, with sticky fodder (Infernal Vessel, Infestation Sage). But it has one 3-drop and six cards at 5+, plus filler like Pilfer, Thrill and three Hungry Ghoul, and only Burst Lightning and Stab as cheap interaction, so it's fine but not great.\"}",
+  "cost_usd": 0.05098,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "d1024495c8eb8ac3": {
+  "review": {
+   "archetype": "BR aggro sacrifice",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "card quality",
+    "weak one-drops"
+   ],
+   "rating": 2,
+   "verdict": "The low-curve BR raid and sacrifice plan hangs together, and Perforating Artist and Chandra are strong, but there is almost no real removal and too many filler one-drops (Diregraf Ghoul, Infestation Sage), so it folds to bigger boards and fliers."
+  },
+  "reply": "{\"archetype\": \"BR aggro sacrifice\", \"coherent\": true, \"concerns\": [\"removal\", \"card quality\", \"weak one-drops\"], \"rating\": 2, \"verdict\": \"The low-curve BR raid and sacrifice plan hangs together, and Perforating Artist and Chandra are strong, but there is almost no real removal and too many filler one-drops (Diregraf Ghoul, Infestation Sage), so it folds to bigger boards and fliers.\"}",
+  "cost_usd": 0.05008,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "57ad3a84ea89e898": {
+  "review": {
+   "archetype": "BR aggro sacrifice",
+   "coherent": true,
+   "concerns": [
+    "card quality",
+    "top end",
+    "mana split",
+    "flood"
+   ],
+   "rating": 3,
+   "verdict": "A coherent low-curve BR raid and sacrifice deck. Perforating Artist, Alesha and cheap removal carry it, but the four Infestation Sages and filler like Axgard Cavalry, Tinybones and Thrill leave it light on power and late-game threats. The black-heavy cards also want more Swamps than an even 8/8 split, and with this curve 16 lands would be enough."
+  },
+  "reply": "{\"archetype\": \"BR aggro sacrifice\", \"coherent\": true, \"concerns\": [\"card quality\", \"top end\", \"mana split\", \"flood\"], \"rating\": 3, \"verdict\": \"A coherent low-curve BR raid and sacrifice deck. Perforating Artist, Alesha and cheap removal carry it, but the four Infestation Sages and filler like Axgard Cavalry, Tinybones and Thrill leave it light on power and late-game threats. The black-heavy cards also want more Swamps than an even 8/8 split, and with this curve 16 lands would be enough.\"}",
+  "cost_usd": 0.05146,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "925446786119503f": {
+  "review": {
+   "archetype": "BR sacrifice",
+   "coherent": true,
+   "concerns": [
+    "creature quality",
+    "3-drops",
+    "17 lands"
+   ],
+   "rating": 3,
+   "verdict": "A coherent BR sacrifice deck with lots of cheap removal and threaten-plus-sac synergy, but its bodies are small and fragile, it has only two 3-drops, and 17 lands is a lot for this low curve."
+  },
+  "reply": "{\"archetype\": \"BR sacrifice\", \"coherent\": true, \"concerns\": [\"creature quality\", \"3-drops\", \"17 lands\"], \"rating\": 3, \"verdict\": \"A coherent BR sacrifice deck with lots of cheap removal and threaten-plus-sac synergy, but its bodies are small and fragile, it has only two 3-drops, and 17 lands is a lot for this low curve.\"}",
+  "cost_usd": 0.05071,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "ea0162b674173a91": {
+  "review": {
+   "archetype": "BR aggro/sacrifice",
+   "coherent": true,
+   "concerns": [
+    "weak one-drops",
+    "low threat density",
+    "flood risk"
+   ],
+   "rating": 3,
+   "verdict": "Plenty of cheap removal and real bombs (Krenko, Twinflame Tyrant, Nighthawk), but eleven one-drops, mostly 1/1s like Infestation Sage and Frenzied Goblin, make the body quality thin. With a curve this low, 17 lands is one too many; a solid but unspectacular deck."
+  },
+  "reply": "{\"archetype\": \"BR aggro/sacrifice\", \"coherent\": true, \"concerns\": [\"weak one-drops\", \"low threat density\", \"flood risk\"], \"rating\": 3, \"verdict\": \"Plenty of cheap removal and real bombs (Krenko, Twinflame Tyrant, Nighthawk), but eleven one-drops, mostly 1/1s like Infestation Sage and Frenzied Goblin, make the body quality thin. With a curve this low, 17 lands is one too many; a solid but unspectacular deck.\"}",
+  "cost_usd": 0.04955,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "81b4d01a50929adf": {
+  "review": {
+   "archetype": "BR aggro-sacrifice",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "RR/BB costs"
+   ],
+   "rating": 4,
+   "verdict": "Strong BR deck with a bomb in Liliana, plenty of efficient removal (2 Hero's Downfall, Burst Lightning, Eaten Alive, Immolators, Tragic Banshee) and a good curve. Three Brazen Scourge and High-Society Hunter give it real pressure. It loses some points for low-impact filler (Frenzied Goblin, Axgard Cavalry, Pilfer, Macabre Waltz) and for mana costs that are heavy in both colors on 8/7 lands."
+  },
+  "reply": "{\"archetype\": \"BR aggro-sacrifice\", \"coherent\": true, \"concerns\": [\"filler\", \"RR/BB costs\"], \"rating\": 4, \"verdict\": \"Strong BR deck with a bomb in Liliana, plenty of efficient removal (2 Hero's Downfall, Burst Lightning, Eaten Alive, Immolators, Tragic Banshee) and a good curve. Three Brazen Scourge and High-Society Hunter give it real pressure. It loses some points for low-impact filler (Frenzied Goblin, Axgard Cavalry, Pilfer, Macabre Waltz) and for mana costs that are heavy in both colors on 8/7 lands.\"}",
+  "cost_usd": 0.05102,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "b7f954323bbd5b6c": {
+  "review": {
+   "archetype": "BR dragons midrange",
+   "coherent": true,
+   "concerns": [
+    "3-drops",
+    "Soulstone Sanctuary"
+   ],
+   "rating": 4,
+   "verdict": "Strong BR deck: deep, cheap removal (Burst Lightning x2, Abrade, Stab, Hero's Downfall, Incinerating Blast, plus three Heartfire Immolators) backs a real top end of three Dragon Trainers and the Drakuseth bomb. The main weak spots are a thin 3-drop slot, a slightly weak filler 1-2 drop (Burglar Rat, Fake Your Own Death), and the colorless Soulstone Sanctuary straining BB and RRR costs."
+  },
+  "reply": "{\"archetype\": \"BR dragons midrange\", \"coherent\": true, \"concerns\": [\"3-drops\", \"Soulstone Sanctuary\"], \"rating\": 4, \"verdict\": \"Strong BR deck: deep, cheap removal (Burst Lightning x2, Abrade, Stab, Hero's Downfall, Incinerating Blast, plus three Heartfire Immolators) backs a real top end of three Dragon Trainers and the Drakuseth bomb. The main weak spots are a thin 3-drop slot, a slightly weak filler 1-2 drop (Burglar Rat, Fake Your Own Death), and the colorless Soulstone Sanctuary straining BB and RRR costs.\"}",
+  "cost_usd": 0.0514,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "38cb880ae2a3cdc8": {
+  "review": {
+   "archetype": "RG power-4 aggro",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "top end",
+    "card advantage"
+   ],
+   "rating": 3,
+   "verdict": "A focused, well-curved RG power-4 aggro deck. Ramp from Elves and Ruby feeds strong cards like Ashroot Animist and Sylvan Scavenging, but it has only about four real removal spells, almost no late game or card advantage, and filler like Courageous Goblin and two Giant Growths, so it is solid but not exceptional."
+  },
+  "reply": "{\"archetype\": \"RG power-4 aggro\", \"coherent\": true, \"concerns\": [\"removal\", \"top end\", \"card advantage\"], \"rating\": 3, \"verdict\": \"A focused, well-curved RG power-4 aggro deck. Ramp from Elves and Ruby feeds strong cards like Ashroot Animist and Sylvan Scavenging, but it has only about four real removal spells, almost no late game or card advantage, and filler like Courageous Goblin and two Giant Growths, so it is solid but not exceptional.\"}",
+  "cost_usd": 0.04957,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "782e0542803de688": {
+  "review": {
+   "archetype": "RG ramp",
+   "coherent": true,
+   "concerns": [
+    "light removal",
+    "weak bodies",
+    "flood"
+   ],
+   "rating": 3,
+   "verdict": "Five mana dorks plus two Loot ramp into strong top end: Etali, Ghalta, Dragon Trainer, Needletooth and two Gorehorn Raiders. Only Abrade, Bushwhack and Heartfire are real removal, and the many 1/1 dorks are weak on their own, so the deck is solid but not exceptional."
+  },
+  "reply": "{\"archetype\": \"RG ramp\",\n \"coherent\": true,\n \"concerns\": [\"light removal\", \"weak bodies\", \"flood\"],\n \"rating\": 3,\n \"verdict\": \"Five mana dorks plus two Loot ramp into strong top end: Etali, Ghalta, Dragon Trainer, Needletooth and two Gorehorn Raiders. Only Abrade, Bushwhack and Heartfire are real removal, and the many 1/1 dorks are weak on their own, so the deck is solid but not exceptional.\"}",
+  "cost_usd": 0.05108,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "3905cc160efe0c0e": {
+  "review": {
+   "archetype": "RG power-4 aggro",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "power-4 density",
+    "card advantage"
+   ],
+   "rating": 3,
+   "verdict": "Lean, well-built RG aggro deck: low curve, 15 lands are fine with four mana creatures, and plenty of cheap fight/burn removal. But only about six creatures turn on the power-4 payoffs (Ruby, Hornbeetle, Goblin), and there are no bombs and little card advantage to win long games."
+  },
+  "reply": "{\"archetype\": \"RG power-4 aggro\", \"coherent\": true, \"concerns\": [\"top end\", \"power-4 density\", \"card advantage\"], \"rating\": 3, \"verdict\": \"Lean, well-built RG aggro deck: low curve, 15 lands are fine with four mana creatures, and plenty of cheap fight/burn removal. But only about six creatures turn on the power-4 payoffs (Ruby, Hornbeetle, Goblin), and there are no bombs and little card advantage to win long games.\"}",
+  "cost_usd": 0.05144,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "4225f7adcc248346": {
+  "review": {
+   "archetype": "RG aggro/stompy",
+   "coherent": true,
+   "concerns": [
+    "thin removal",
+    "no 4-drops",
+    "filler 2s"
+   ],
+   "rating": 3,
+   "verdict": "A coherent, low-curve RG beatdown deck with good mana (elves plus two Rubys on 16 lands) and real finishers in Overrun, Quilled Greatwurm and Chandra; it is held back by only four removal spells, an empty 4-slot and some low-impact 2-drops like Courageous Goblin and Wary Thespian."
+  },
+  "reply": "{\"archetype\": \"RG aggro/stompy\", \"coherent\": true, \"concerns\": [\"thin removal\", \"no 4-drops\", \"filler 2s\"], \"rating\": 3, \"verdict\": \"A coherent, low-curve RG beatdown deck with good mana (elves plus two Rubys on 16 lands) and real finishers in Overrun, Quilled Greatwurm and Chandra; it is held back by only four removal spells, an empty 4-slot and some low-impact 2-drops like Courageous Goblin and Wary Thespian.\"}",
+  "cost_usd": 0.0508,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "64844010b79ee2a2": {
+  "review": {
+   "archetype": "RG power-4 aggro",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "top-end",
+    "Snarespinner glut"
+   ],
+   "rating": 3,
+   "verdict": "Coherent RG ferocious curve with good synergy (Garruk's Uprising, Goblins, Ruby, Hornbeetle) and solid mana, but light removal and three defensive Snarespinners dilute the aggro plan; a fine, unexceptional deck."
+  },
+  "reply": "{\"archetype\": \"RG power-4 aggro\", \"coherent\": true, \"concerns\": [\"removal\", \"top-end\", \"Snarespinner glut\"], \"rating\": 3, \"verdict\": \"Coherent RG ferocious curve with good synergy (Garruk's Uprising, Goblins, Ruby, Hornbeetle) and solid mana, but light removal and three defensive Snarespinners dilute the aggro plan; a fine, unexceptional deck.\"}",
+  "cost_usd": 0.04557,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "4a2394ef0c21ba17": {
+  "review": {
+   "archetype": "RG power-4 aggro, light W splash",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "creature count"
+   ],
+   "rating": 4,
+   "verdict": "Solid Gruul deck. It has real removal (Fiery Annihilation, Burst Lightning, two Bushwhack, Heartfire Immolator, plus splashed Banishing Light), top-end threats in Etali, Vivien and two Dragon Trainers, and a cheap splash on 4 white sources. It is held back slightly by filler like Reclamation Sage, Goldvein Pick and Thrill, and by a modest 14 bodies for the power-4 payoffs."
+  },
+  "reply": "{\"archetype\": \"RG power-4 aggro, light W splash\", \"coherent\": true, \"concerns\": [\"filler\", \"creature count\"], \"rating\": 4, \"verdict\": \"Solid Gruul deck. It has real removal (Fiery Annihilation, Burst Lightning, two Bushwhack, Heartfire Immolator, plus splashed Banishing Light), top-end threats in Etali, Vivien and two Dragon Trainers, and a cheap splash on 4 white sources. It is held back slightly by filler like Reclamation Sage, Goldvein Pick and Thrill, and by a modest 14 bodies for the power-4 payoffs.\"}",
+  "cost_usd": 0.05565,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "7a387664f9943f92": {
+  "review": {
+   "archetype": "RG power-4 aggro",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "A lean, coherent RG beatdown deck with real removal (Burst Lightning, Felling Blow, Bushwhack, 2x Gorehorn Raider), Krenko and good power-4 payoffs. It runs well on 16 lands plus mana dorks, but filler like Axgard Cavalry, Bulk Up and Snakeskin Veil and a thin late game cap it at solid rather than strong."
+  },
+  "reply": "{\"archetype\": \"RG power-4 aggro\", \"coherent\": true, \"concerns\": [\"top end\", \"filler\"], \"rating\": 3, \"verdict\": \"A lean, coherent RG beatdown deck with real removal (Burst Lightning, Felling Blow, Bushwhack, 2x Gorehorn Raider), Krenko and good power-4 payoffs. It runs well on 16 lands plus mana dorks, but filler like Axgard Cavalry, Bulk Up and Snakeskin Veil and a thin late game cap it at solid rather than strong.\"}",
+  "cost_usd": 0.05098,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "ebc9300dcb0243d1": {
+  "review": {
+   "archetype": "G-heavy RG stompy (4-power beaters + fight removal)",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "card quality",
+    "light red"
+   ],
+   "rating": 3,
+   "verdict": "Lean, consistent green beatdown deck: lots of 4-power bodies power the fight spells, Uprising and Courageous Goblin. Low curve suits 16 lands, but it has no bombs or real top end and the red is a thin splash of mediocre cards, so it's fine rather than strong."
+  },
+  "reply": "{\"archetype\": \"G-heavy RG stompy (4-power beaters + fight removal)\", \"coherent\": true, \"concerns\": [\"top end\", \"card quality\", \"light red\"], \"rating\": 3, \"verdict\": \"Lean, consistent green beatdown deck: lots of 4-power bodies power the fight spells, Uprising and Courageous Goblin. Low curve suits 16 lands, but it has no bombs or real top end and the red is a thin splash of mediocre cards, so it's fine rather than strong.\"}",
+  "cost_usd": 0.04958,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "49f4c352338e0d10": {
+  "review": {
+   "archetype": "RG power-4 aggro",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "card advantage"
+   ],
+   "rating": 4,
+   "verdict": "Tight RG power-matters deck with a low curve, 18 bodies, many power-4 enablers and strong fight/burn removal plus Drakuseth as a bomb finisher; a bit light on late game and card flow but very solid."
+  },
+  "reply": "{\"archetype\": \"RG power-4 aggro\", \"coherent\": true, \"concerns\": [\"top end\", \"card advantage\"], \"rating\": 4, \"verdict\": \"Tight RG power-matters deck with a low curve, 18 bodies, many power-4 enablers and strong fight/burn removal plus Drakuseth as a bomb finisher; a bit light on late game and card flow but very solid.\"}",
+  "cost_usd": 0.04536,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "be414d993f16af31": {
+  "review": {
+   "archetype": "RG ferocious aggro",
+   "coherent": true,
+   "concerns": [
+    "power-4 density",
+    "removal light"
+   ],
+   "rating": 4,
+   "verdict": "Strong, well-curved RG beatdown with premium uncommons (Krenko, Ashroot x2, Ruby x2, Vivien, Phoenix) and solid removal; the ferocious payoffs lean on only about six power-4 creatures, and Goldvein Picks are filler, but this is a clearly good deck."
+  },
+  "reply": "{\"archetype\": \"RG ferocious aggro\", \"coherent\": true, \"concerns\": [\"power-4 density\", \"removal light\"], \"rating\": 4, \"verdict\": \"Strong, well-curved RG beatdown with premium uncommons (Krenko, Ashroot x2, Ruby x2, Vivien, Phoenix) and solid removal; the ferocious payoffs lean on only about six power-4 creatures, and Goldvein Picks are filler, but this is a clearly good deck.\"}",
+  "cost_usd": 0.0471,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "3d24741171a9b61e": {
+  "review": {
+   "archetype": "RG aggro",
+   "coherent": true,
+   "concerns": [
+    "thin top",
+    "card quality"
+   ],
+   "rating": 3,
+   "verdict": "A low-curve RG beatdown deck with solid fight-based removal and Burst Lightning, plus a Chandra bomb on top; its weaker 2-drops and pump tricks keep it from being more than a fine deck."
+  },
+  "reply": "{\"archetype\": \"RG aggro\", \"coherent\": true, \"concerns\": [\"thin top\", \"card quality\"], \"rating\": 3, \"verdict\": \"A low-curve RG beatdown deck with solid fight-based removal and Burst Lightning, plus a Chandra bomb on top; its weaker 2-drops and pump tricks keep it from being more than a fine deck.\"}",
+  "cost_usd": 0.04883,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "668b4b1f6d307652": {
+  "review": {
+   "archetype": "RG aggro/stompy",
+   "coherent": true,
+   "concerns": [
+    "top-end thin",
+    "fliers"
+   ],
+   "rating": 4,
+   "verdict": "Solid RG beatdown with a low curve, good removal (Burst Lightning, Fiery Annihilation, Bite Down, Felling Blow, Immolator), Overrun and Garruk's Uprising payoffs, and Sire as a bomb top end; a well-built, consistent deck."
+  },
+  "reply": "{\"archetype\": \"RG aggro/stompy\", \"coherent\": true, \"concerns\": [\"top-end thin\", \"fliers\"], \"rating\": 4, \"verdict\": \"Solid RG beatdown with a low curve, good removal (Burst Lightning, Fiery Annihilation, Bite Down, Felling Blow, Immolator), Overrun and Garruk's Uprising payoffs, and Sire as a bomb top end; a well-built, consistent deck.\"}",
+  "cost_usd": 0.0473,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "b9143d467a43dd65": {
+  "review": {
+   "archetype": "RG aggro-midrange",
+   "coherent": true,
+   "concerns": [
+    "thin 4-drops",
+    "creature quality"
+   ],
+   "rating": 4,
+   "verdict": "A low curve backed by plenty of cheap removal (Burst Lightning x2, Bite Down x2, Abrade, Fiery Annihilation) and strong top-end in Greatwurm and Sire makes this a solid, well-built RG deck. Only a thin middle and some filler bodies keep it from being great."
+  },
+  "reply": "{\"archetype\": \"RG aggro-midrange\", \"coherent\": true, \"concerns\": [\"thin 4-drops\", \"creature quality\"], \"rating\": 4, \"verdict\": \"A low curve backed by plenty of cheap removal (Burst Lightning x2, Bite Down x2, Abrade, Fiery Annihilation) and strong top-end in Greatwurm and Sire makes this a solid, well-built RG deck. Only a thin middle and some filler bodies keep it from being great.\"}",
+  "cost_usd": 0.05077,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "247dcdb3f4e1b880": {
+  "review": {
+   "archetype": "RG ferocious aggro",
+   "coherent": true,
+   "concerns": [
+    "light removal",
+    "filler",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A coherent, low-curve RG power-4 deck: Ashroot Animist x2, Krenko, Flamewake Phoenix and Mossborn Hydra give it real punch, but removal is mostly Burst Lightning, Abrade and Bite Down, and filler like Axgard Cavalry and Snakeskin Veil keeps it a solid deck rather than a great one."
+  },
+  "reply": "```json\n{\"archetype\": \"RG ferocious aggro\", \"coherent\": true, \"concerns\": [\"light removal\", \"filler\", \"top end\"], \"rating\": 3, \"verdict\": \"A coherent, low-curve RG power-4 deck: Ashroot Animist x2, Krenko, Flamewake Phoenix and Mossborn Hydra give it real punch, but removal is mostly Burst Lightning, Abrade and Bite Down, and filler like Axgard Cavalry and Snakeskin Veil keeps it a solid deck rather than a great one.\"}\n```",
+  "cost_usd": 0.05432,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "41302e433102c335": {
+  "review": {
+   "archetype": "WG go-wide angels/cats",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "top end"
+   ],
+   "rating": 4,
+   "verdict": "Solid WG creature deck with strong white commons (3x Dazzling Angel, Serra Angel, Vanguard Seraph, 2x Prideful Parent), good removal in Banishing Light, 2x Luminous Rebuke and Bite Down, plus Anthem and Leyline Axe to push damage; a good curve and clean two-color mana, only slightly thin on cheap interaction."
+  },
+  "reply": "{\"archetype\": \"WG go-wide angels/cats\", \"coherent\": true, \"concerns\": [\"removal\", \"top end\"], \"rating\": 4, \"verdict\": \"Solid WG creature deck with strong white commons (3x Dazzling Angel, Serra Angel, Vanguard Seraph, 2x Prideful Parent), good removal in Banishing Light, 2x Luminous Rebuke and Bite Down, plus Anthem and Leyline Axe to push damage; a good curve and clean two-color mana, only slightly thin on cheap interaction.\"}",
+  "cost_usd": 0.04598,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "2195ae14d93e5297": {
+  "review": {
+   "archetype": "RG power-4 aggro",
+   "coherent": true,
+   "concerns": [
+    "few 4-power enablers",
+    "top-end"
+   ],
+   "rating": 4,
+   "verdict": "Lean, aggressive RG deck with excellent removal (3 Burst Lightning, 2 Fiery Annihilation, fight spells) and a Drakuseth bomb. It is held back slightly because its payoffs (Hornbeetle, Ruby, Courageous Goblin) rely on only about six 4-power creatures."
+  },
+  "reply": "{\"archetype\": \"RG power-4 aggro\", \"coherent\": true, \"concerns\": [\"few 4-power enablers\", \"top-end\"], \"rating\": 4, \"verdict\": \"Lean, aggressive RG deck with excellent removal (3 Burst Lightning, 2 Fiery Annihilation, fight spells) and a Drakuseth bomb. It is held back slightly because its payoffs (Hornbeetle, Ruby, Courageous Goblin) rely on only about six 4-power creatures.\"}",
+  "cost_usd": 0.05034,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "1cd18ffc6f4b796b": {
+  "review": {
+   "archetype": "WG go-wide aggro",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "filler",
+    "top-end"
+   ],
+   "rating": 3,
+   "verdict": "A coherent WG go-wide deck: three Hare Apparent, Beast-Kin Rangers and Overrun as the finisher, on a low curve that suits 16 lands. Removal is thin (Banishing Light, Bite Down, Joust Through), and Divine Resilience, Snakeskin Veil and two Librarians are filler, so it's a fine deck but not a strong one."
+  },
+  "reply": "{\"archetype\": \"WG go-wide aggro\", \"coherent\": true, \"concerns\": [\"removal\", \"filler\", \"top-end\"], \"rating\": 3, \"verdict\": \"A coherent WG go-wide deck: three Hare Apparent, Beast-Kin Rangers and Overrun as the finisher, on a low curve that suits 16 lands. Removal is thin (Banishing Light, Bite Down, Joust Through), and Divine Resilience, Snakeskin Veil and two Librarians are filler, so it's a fine deck but not a strong one.\"}",
+  "cost_usd": 0.05063,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "fefa1ed43b37309f": {
+  "review": {
+   "archetype": "WG go-wide anthems",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "top end",
+    "flood"
+   ],
+   "rating": 3,
+   "verdict": "A coherent, low-curve WG creature deck: two Anthems over 17 bodies plus Beast-Kin Rangers, Dazzling Angels and Unicorn give it real pressure, but with only three removal spells, almost nothing above 4 mana and 17 lands for a curve topping at 5, it is a solid but unspectacular aggro deck."
+  },
+  "reply": "{\"archetype\": \"WG go-wide anthems\", \"coherent\": true, \"concerns\": [\"removal\", \"top end\", \"flood\"], \"rating\": 3, \"verdict\": \"A coherent, low-curve WG creature deck: two Anthems over 17 bodies plus Beast-Kin Rangers, Dazzling Angels and Unicorn give it real pressure, but with only three removal spells, almost nothing above 4 mana and 17 lands for a curve topping at 5, it is a solid but unspectacular aggro deck.\"}",
+  "cost_usd": 0.04897,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "78265e0edad04506": {
+  "review": {
+   "archetype": "WG go-wide aggro",
+   "coherent": true,
+   "concerns": [
+    "card quality",
+    "few fliers"
+   ],
+   "rating": 4,
+   "verdict": "A low, focused WG beatdown curve with three Banishing Light, two fight/bite spells, and Anthem plus Overrun as finishers; some filler like Librarian and the many x/1s keeps it short of exceptional."
+  },
+  "reply": "{\"archetype\": \"WG go-wide aggro\", \"coherent\": true, \"concerns\": [\"card quality\", \"few fliers\"], \"rating\": 4, \"verdict\": \"A low, focused WG beatdown curve with three Banishing Light, two fight/bite spells, and Anthem plus Overrun as finishers; some filler like Librarian and the many x/1s keeps it short of exceptional.\"}",
+  "cost_usd": 0.0518,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "eb043bc10bd05010": {
+  "review": {
+   "archetype": "WG midrange",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "low power"
+   ],
+   "rating": 3,
+   "verdict": "A solid WG deck with a clean curve and six real removal spells, mostly fight effects backed by sturdy bodies. It has light lifegain synergy through Cat Collector, Dazzling Angel and Felidar Savior, but no bombs and a thin top end beyond Herald, so it is fine rather than strong."
+  },
+  "reply": "{\"archetype\": \"WG midrange\", \"coherent\": true, \"concerns\": [\"top end\", \"low power\"], \"rating\": 3, \"verdict\": \"A solid WG deck with a clean curve and six real removal spells, mostly fight effects backed by sturdy bodies. It has light lifegain synergy through Cat Collector, Dazzling Angel and Felidar Savior, but no bombs and a thin top end beyond Herald, so it is fine rather than strong.\"}",
+  "cost_usd": 0.05035,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "598a72585b7c9cf8": {
+  "review": {
+   "archetype": "WG cats/counters midrange",
+   "coherent": true,
+   "concerns": [
+    "fight-based removal",
+    "few fliers"
+   ],
+   "rating": 4,
+   "verdict": "Strong, well-curved WG deck. Two Arahbo, Serra Angel, Good-Fortune Unicorn and the token makers give a real cats/counters engine, and two Banishing Light plus four fight/bite spells handle threats. The only knocks are removal that depends on board presence and little reach in the air."
+  },
+  "reply": "{\"archetype\": \"WG cats/counters midrange\", \"coherent\": true, \"concerns\": [\"fight-based removal\", \"few fliers\"], \"rating\": 4, \"verdict\": \"Strong, well-curved WG deck. Two Arahbo, Serra Angel, Good-Fortune Unicorn and the token makers give a real cats/counters engine, and two Banishing Light plus four fight/bite spells handle threats. The only knocks are removal that depends on board presence and little reach in the air.\"}",
+  "cost_usd": 0.04946,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "60838f8fa22ef9d5": {
+  "review": {
+   "archetype": "GW go-wide creatures",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "tribal split",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "A solid, low-curve GW creature deck: four Beast-Kin Rangers, token makers and two Preposterous Proportions give it a real go-wide finish. But Bushwhack is the only removal, Grow from the Ashes is filler, and the Elf and Cat synergies are each too thin to pay off reliably."
+  },
+  "reply": "{\"archetype\": \"GW go-wide creatures\", \"coherent\": true, \"concerns\": [\"removal\", \"tribal split\", \"filler\"], \"rating\": 3, \"verdict\": \"A solid, low-curve GW creature deck: four Beast-Kin Rangers, token makers and two Preposterous Proportions give it a real go-wide finish. But Bushwhack is the only removal, Grow from the Ashes is filler, and the Elf and Cat synergies are each too thin to pay off reliably.\"}",
+  "cost_usd": 0.04937,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "6c714398e508df9d": {
+  "review": {
+   "archetype": "WG go-wide cats/counters",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "filler"
+   ],
+   "rating": 4,
+   "verdict": "A synergistic go-wide WG build: Arahbo, Prideful Parents, Unicorns and Felidar Savior make a wide board, and Overrun turns it into a finisher. The low curve fits 16 lands plus Elves, but removal is light (two Banishing Light plus fights) and a few slots like Fleeting Flight and Healer's Hawk are filler."
+  },
+  "reply": "{\"archetype\": \"WG go-wide cats/counters\", \"coherent\": true, \"concerns\": [\"removal\", \"filler\"], \"rating\": 4, \"verdict\": \"A synergistic go-wide WG build: Arahbo, Prideful Parents, Unicorns and Felidar Savior make a wide board, and Overrun turns it into a finisher. The low curve fits 16 lands plus Elves, but removal is light (two Banishing Light plus fights) and a few slots like Fleeting Flight and Healer's Hawk are filler.\"}",
+  "cost_usd": 0.05497,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "3ebd186b12c3f4c5": {
+  "review": {
+   "archetype": "WG counters/go-wide",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "splash"
+   ],
+   "rating": 3,
+   "verdict": "A solid, synergistic WG counters and cats deck with a good 3-drop core and two Claws Out finishers; it has only two Banishing Lights for interaction, and splashing for a lone Lathril adds mana risk for little gain."
+  },
+  "reply": "{\"archetype\": \"WG counters/go-wide\", \"coherent\": true, \"concerns\": [\"removal\", \"splash\"], \"rating\": 3, \"verdict\": \"A solid, synergistic WG counters and cats deck with a good 3-drop core and two Claws Out finishers; it has only two Banishing Lights for interaction, and splashing for a lone Lathril adds mana risk for little gain.\"}",
+  "cost_usd": 0.04924,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "65a002f625f52836": {
+  "review": {
+   "archetype": "WG go-wide midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "card quality"
+   ],
+   "rating": 3,
+   "verdict": "Solid WG creature deck: elves ramp into Stomper and Ceratops, Overrun and Claws Out as finishers, Felidar Saviors as anthem-on-a-body; light on removal (Banishing Light plus 2 Bite Down), and Katana and Giant Growth are filler."
+  },
+  "reply": "{\"archetype\": \"WG go-wide midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"card quality\"], \"rating\": 3, \"verdict\": \"Solid WG creature deck: elves ramp into Stomper and Ceratops, Overrun and Claws Out as finishers, Felidar Saviors as anthem-on-a-body; light on removal (Banishing Light plus 2 Bite Down), and Katana and Giant Growth are filler.\"}",
+  "cost_usd": 0.0503,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "2182ff166ecd5910": {
+  "review": {
+   "archetype": "WG +1/+1 counters midrange",
+   "coherent": true,
+   "concerns": [
+    "few 2-drops",
+    "Giada without angels",
+    "top-end fights"
+   ],
+   "rating": 4,
+   "verdict": "A solid WG counters deck: Ajani, Good-Fortune Unicorn, Inspiring Paladin and Wildwood Scourge pay off a real counter theme, and Banishing Light, two Luminous Rebuke and the fight spells give it plenty of interaction; mana and curve are clean, though Giada is just a 2/2 flier here and the six-drop Indriks make the top end a bit clunky."
+  },
+  "reply": "{\"archetype\": \"WG +1/+1 counters midrange\", \"coherent\": true, \"concerns\": [\"few 2-drops\", \"Giada without angels\", \"top-end fights\"], \"rating\": 4, \"verdict\": \"A solid WG counters deck: Ajani, Good-Fortune Unicorn, Inspiring Paladin and Wildwood Scourge pay off a real counter theme, and Banishing Light, two Luminous Rebuke and the fight spells give it plenty of interaction; mana and curve are clean, though Giada is just a 2/2 flier here and the six-drop Indriks make the top end a bit clunky.\"}",
+  "cost_usd": 0.0538,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "e3440ce862a079af": {
+  "review": {
+   "archetype": "GW counters ramp",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "top end",
+    "weak one-drops"
+   ],
+   "rating": 3,
+   "verdict": "A coherent, low-curve GW creature deck with good Unicorns, Exemplar and Greatwurm, but it has little interaction beyond two fight spells and the spiders, and four Elves feed a very thin top end."
+  },
+  "reply": "{\"archetype\": \"GW counters ramp\", \"coherent\": true, \"concerns\": [\"removal\", \"top end\", \"weak one-drops\"], \"rating\": 3, \"verdict\": \"A coherent, low-curve GW creature deck with good Unicorns, Exemplar and Greatwurm, but it has little interaction beyond two fight spells and the spiders, and four Elves feed a very thin top end.\"}",
+  "cost_usd": 0.04955,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "45aed6dfd2be634a": {
+  "review": {
+   "archetype": "WG counters aggro",
+   "coherent": true,
+   "concerns": [
+    "thin top-end",
+    "weak 1-drops"
+   ],
+   "rating": 3,
+   "verdict": "Solid, coherent WG curve deck with good interaction (2 Banishing Light, Bite Down, Bushwhack, Rebuke) and Ajani. The 1-drop filler and many fragile 4/2s cap its power below top tier."
+  },
+  "reply": "{\"archetype\": \"WG counters aggro\", \"coherent\": true, \"concerns\": [\"thin top-end\", \"weak 1-drops\"], \"rating\": 3, \"verdict\": \"Solid, coherent WG curve deck with good interaction (2 Banishing Light, Bite Down, Bushwhack, Rebuke) and Ajani. The 1-drop filler and many fragile 4/2s cap its power below top tier.\"}",
+  "cost_usd": 0.05181,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "cbe41a64044288c9": {
+  "review": {
+   "archetype": "GW go-wide aggro",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "fliers",
+    "card quality"
+   ],
+   "rating": 3,
+   "verdict": "A coherent, low-curve green aggro deck with a light white splash, 14 two-drops and Vivien Reid on top. Removal is thin (only Bite Down, plus Vivien's -3 against fliers), and many bodies are filler 2/2s and 3/1s, so it can stall against bigger boards or lose to evasion; it could also run 16 lands."
+  },
+  "reply": "{\"archetype\": \"GW go-wide aggro\", \"coherent\": true, \"concerns\": [\"removal\", \"fliers\", \"card quality\"], \"rating\": 3, \"verdict\": \"A coherent, low-curve green aggro deck with a light white splash, 14 two-drops and Vivien Reid on top. Removal is thin (only Bite Down, plus Vivien's -3 against fliers), and many bodies are filler 2/2s and 3/1s, so it can stall against bigger boards or lose to evasion; it could also run 16 lands.\"}",
+  "cost_usd": 0.05092,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "f3b9431f913e5b74": {
+  "review": {
+   "archetype": "GW counters/stompy",
+   "coherent": true,
+   "concerns": [
+    "thin 4-drops",
+    "pointless splash",
+    "no reach"
+   ],
+   "rating": 3,
+   "verdict": "Solid green-heavy counters deck: Greatwurm, Good-Fortune Unicorns and five fight effects give it a real plan, and ramp plus Gnarlid kickers smooth the light 4-slot. The Tatyova splash on 3 blue sources adds little, and the deck has nothing against fliers."
+  },
+  "reply": "{\"archetype\": \"GW counters/stompy\", \"coherent\": true, \"concerns\": [\"thin 4-drops\", \"pointless splash\", \"no reach\"], \"rating\": 3, \"verdict\": \"Solid green-heavy counters deck: Greatwurm, Good-Fortune Unicorns and five fight effects give it a real plan, and ramp plus Gnarlid kickers smooth the light 4-slot. The Tatyova splash on 3 blue sources adds little, and the deck has nothing against fliers.\"}",
+  "cost_usd": 0.05212,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "3daef32f136aadd7": {
+  "review": {
+   "archetype": "WB sacrifice/cats aggro",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "Blasphemous Edict"
+   ],
+   "rating": 4,
+   "verdict": "A low-curve WB go-wide deck with strong removal (3 Eaten Alive fed by Infestation Sage and cat tokens, Bake into a Pie, Nighthawk) and good synergy; it is light on late-game power, and Blasphemous Edict is a clunky fit for a creature-heavy plan."
+  },
+  "reply": "{\"archetype\": \"WB sacrifice/cats aggro\", \"coherent\": true, \"concerns\": [\"top end\", \"Blasphemous Edict\"], \"rating\": 4, \"verdict\": \"A low-curve WB go-wide deck with strong removal (3 Eaten Alive fed by Infestation Sage and cat tokens, Bake into a Pie, Nighthawk) and good synergy; it is light on late-game power, and Blasphemous Edict is a clunky fit for a creature-heavy plan.\"}",
+  "cost_usd": 0.05062,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "e2b2a7d24a2b6fa1": {
+  "review": {
+   "archetype": "WB lifegain aggro",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "card quality",
+    "Day of Judgment"
+   ],
+   "rating": 3,
+   "verdict": "A playable low-curve WB deck with real payoffs in Nighthawk, Blight-Priest, Arena, Angel and Guarded Heir, but many weak 1-drops and only two Bake into a Pie for spot removal; Day of Judgment fights its own go-wide plan, and Pilfer and Waltz are filler."
+  },
+  "reply": "{\"archetype\": \"WB lifegain aggro\", \"coherent\": true, \"concerns\": [\"removal\", \"card quality\", \"Day of Judgment\"], \"rating\": 3, \"verdict\": \"A playable low-curve WB deck with real payoffs in Nighthawk, Blight-Priest, Arena, Angel and Guarded Heir, but many weak 1-drops and only two Bake into a Pie for spot removal; Day of Judgment fights its own go-wide plan, and Pilfer and Waltz are filler.\"}",
+  "cost_usd": 0.05157,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "95b6857b21dbef50": {
+  "review": {
+   "archetype": "WB sacrifice/lifegain vampires",
+   "coherent": true,
+   "concerns": [
+    "off-color duals",
+    "white sources"
+   ],
+   "rating": 4,
+   "verdict": "Deep black removal suite (Downfall, Bake, Banishing Light, Eaten Alive, Banshee) plus two Nighthawks and two Elendas on a clean sac/drain curve; strong deck, only the odd off-color gain lands slightly weaken the mana."
+  },
+  "reply": "{\"archetype\": \"WB sacrifice/lifegain vampires\", \"coherent\": true, \"concerns\": [\"off-color duals\", \"white sources\"], \"rating\": 4, \"verdict\": \"Deep black removal suite (Downfall, Bake, Banishing Light, Eaten Alive, Banshee) plus two Nighthawks and two Elendas on a clean sac/drain curve; strong deck, only the odd off-color gain lands slightly weaken the mana.\"}",
+  "cost_usd": 0.05234,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "e098bc096a61c49b": {
+  "review": {
+   "archetype": "WB sacrifice/value",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "weak spells",
+    "small bodies"
+   ],
+   "rating": 3,
+   "verdict": "A playable WB value deck with good recursion and decent fliers, but it has only two clean removal spells, Blasphemous Edict clashes with its go-wide board, and the double Seeker's Folly is filler."
+  },
+  "reply": "{\"archetype\": \"WB sacrifice/value\", \"coherent\": true, \"concerns\": [\"removal\", \"weak spells\", \"small bodies\"], \"rating\": 3, \"verdict\": \"A playable WB value deck with good recursion and decent fliers, but it has only two clean removal spells, Blasphemous Edict clashes with its go-wide board, and the double Seeker's Folly is filler.\"}",
+  "cost_usd": 0.05027,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "eb263d6b26b68805": {
+  "review": {
+   "archetype": "WB midrange removal",
+   "coherent": true,
+   "concerns": [
+    "weak tricks",
+    "creature quality"
+   ],
+   "rating": 4,
+   "verdict": "Six solid removal spells plus Vampire Nighthawk, Arbiter of Woe and Guarded Heir on a clean two-color curve. Fleeting Flight, Fake Your Own Death and Goldvein Pick are filler, and a few creatures are thin, but this is a strong, well-built deck."
+  },
+  "reply": "{\"archetype\": \"WB midrange removal\", \"coherent\": true, \"concerns\": [\"weak tricks\", \"creature quality\"], \"rating\": 4, \"verdict\": \"Six solid removal spells plus Vampire Nighthawk, Arbiter of Woe and Guarded Heir on a clean two-color curve. Fleeting Flight, Fake Your Own Death and Goldvein Pick are filler, and a few creatures are thin, but this is a strong, well-built deck.\"}",
+  "cost_usd": 0.05303,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "5fac3cbeca9697fd": {
+  "review": {
+   "archetype": "WB lifegain midrange",
+   "coherent": true,
+   "concerns": [
+    "mana split",
+    "low power 1-drops"
+   ],
+   "rating": 3,
+   "verdict": "Solid WB deck with good removal (Downfall, Eaten Alive, Rebuke, Stab, Banshee), strong top end in Arbiter and High-Society Hunter, and a light lifegain package. White has twice as many cards as black, so 8/8 basics should lean toward Plains, and filler like Fleeting Flight and the Hawks keeps it from being more than fine."
+  },
+  "reply": "{\"archetype\": \"WB lifegain midrange\", \"coherent\": true, \"concerns\": [\"mana split\", \"low power 1-drops\"], \"rating\": 3, \"verdict\": \"Solid WB deck with good removal (Downfall, Eaten Alive, Rebuke, Stab, Banshee), strong top end in Arbiter and High-Society Hunter, and a light lifegain package. White has twice as many cards as black, so 8/8 basics should lean toward Plains, and filler like Fleeting Flight and the Hawks keeps it from being more than fine.\"}",
+  "cost_usd": 0.05397,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "a5912db1b5bdfaaa": {
+  "review": {
+   "archetype": "WB angels midrange",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "Day of Judgment",
+    "low power"
+   ],
+   "rating": 3,
+   "verdict": "Liliana, Serra Angel and a decent removal suite lift a deck padded with low-impact bodies (Burglar Rats, Hart, Banner, Fake Your Own Death), and Day of Judgment works against its own creature plan; fine but not strong."
+  },
+  "reply": "{\"archetype\": \"WB angels midrange\", \"coherent\": true, \"concerns\": [\"filler\", \"Day of Judgment\", \"low power\"], \"rating\": 3, \"verdict\": \"Liliana, Serra Angel and a decent removal suite lift a deck padded with low-impact bodies (Burglar Rats, Hart, Banner, Fake Your Own Death), and Day of Judgment works against its own creature plan; fine but not strong.\"}",
+  "cost_usd": 0.05037,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "7691fea498ea1754": {
+  "review": {
+   "archetype": "WB lifegain angels",
+   "coherent": true,
+   "concerns": [
+    "mana base",
+    "Pilfer"
+   ],
+   "rating": 4,
+   "verdict": "Strong WB lifegain shell: four Dazzling Angels, five hard removal spells and Elenda on a good 2-3-4 curve. The mana is off, though: 9 white and 9 black sources for a mostly white deck, with off-color gain lands used as filler, and Pilfer is a weak slot."
+  },
+  "reply": "{\"archetype\": \"WB lifegain angels\", \"coherent\": true, \"concerns\": [\"mana base\", \"Pilfer\"], \"rating\": 4, \"verdict\": \"Strong WB lifegain shell: four Dazzling Angels, five hard removal spells and Elenda on a good 2-3-4 curve. The mana is off, though: 9 white and 9 black sources for a mostly white deck, with off-color gain lands used as filler, and Pilfer is a weak slot.\"}",
+  "cost_usd": 0.05117,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "1019bc3f7baeae48": {
+  "review": {
+   "archetype": "WB go-wide lifegain aggro",
+   "coherent": true,
+   "concerns": [
+    "no bombs",
+    "light black"
+   ],
+   "rating": 3,
+   "verdict": "A low, clean white curve with 4 Hare Apparent, lifegain-token synergies, Nighthawk and 6 removal spells; solid and focused, but light on top-end power and card advantage."
+  },
+  "reply": "{\"archetype\": \"WB go-wide lifegain aggro\", \"coherent\": true, \"concerns\": [\"no bombs\", \"light black\"], \"rating\": 3, \"verdict\": \"A low, clean white curve with 4 Hare Apparent, lifegain-token synergies, Nighthawk and 6 removal spells; solid and focused, but light on top-end power and card advantage.\"}",
+  "cost_usd": 0.05002,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "b6911f048363af4e": {
+  "review": {
+   "archetype": "B-heavy sacrifice midrange, light W, R splash",
+   "coherent": true,
+   "concerns": [
+    "mana",
+    "splash",
+    "BB costs"
+   ],
+   "rating": 3,
+   "verdict": "Strong black core: Nighthawk, Arbiter, Banshee, 2 Eaten Alive, plus sac fodder from Sage and Ghoul, and white adds real removal. But the colors are off: 9 black sources for several BB cards against 6 Plains for 5 white cards, and a speculative red splash for a 3-drop and a threaten. Cut red and shift Plains to Swamps."
+  },
+  "reply": "{\"archetype\": \"B-heavy sacrifice midrange, light W, R splash\", \"coherent\": true, \"concerns\": [\"mana\", \"splash\", \"BB costs\"], \"rating\": 3, \"verdict\": \"Strong black core: Nighthawk, Arbiter, Banshee, 2 Eaten Alive, plus sac fodder from Sage and Ghoul, and white adds real removal. But the colors are off: 9 black sources for several BB cards against 6 Plains for 5 white cards, and a speculative red splash for a 3-drop and a threaten. Cut red and shift Plains to Swamps.\"}",
+  "cost_usd": 0.05426,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "f1b008f7f5b05f7f": {
+  "review": {
+   "archetype": "WB sacrifice/aristocrats",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "BB costs",
+    "removal"
+   ],
+   "rating": 3,
+   "verdict": "A solid WB sacrifice shell: Nighthawk, High-Society Hunter, two Arbiter of Woe and two Bake into a Pie give it real power, and Infestation Sage, Infernal Vessel and Prideful Parent feed the sacrifice payoffs well. Crystal Barricade, Pilfer, Fleeting Flight and Youthful Valkyrie are weak filler, and the many BB costs strain a near-even 9/8 mana base."
+  },
+  "reply": "{\"archetype\": \"WB sacrifice/aristocrats\", \"coherent\": true, \"concerns\": [\"filler\", \"BB costs\", \"removal\"], \"rating\": 3, \"verdict\": \"A solid WB sacrifice shell: Nighthawk, High-Society Hunter, two Arbiter of Woe and two Bake into a Pie give it real power, and Infestation Sage, Infernal Vessel and Prideful Parent feed the sacrifice payoffs well. Crystal Barricade, Pilfer, Fleeting Flight and Youthful Valkyrie are weak filler, and the many BB costs strain a near-even 9/8 mana base.\"}",
+  "cost_usd": 0.05154,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "287571654dfdcc50": {
+  "review": {
+   "archetype": "WB lifegain go-wide",
+   "coherent": true,
+   "concerns": [
+    "Amulet filler"
+   ],
+   "rating": 4,
+   "verdict": "Strong WB lifegain shell with a deep 2-3 drop curve, many token makers, premium removal (2 Bake, Banishing Light, 2 Rebuke, Eaten Alive) and Rune-Scarred Demon on top. Only Ravenous Amulet is weak; mana and curve are clean."
+  },
+  "reply": "{\"archetype\": \"WB lifegain go-wide\", \"coherent\": true, \"concerns\": [\"Amulet filler\"], \"rating\": 4, \"verdict\": \"Strong WB lifegain shell with a deep 2-3 drop curve, many token makers, premium removal (2 Bake, Banishing Light, 2 Rebuke, Eaten Alive) and Rune-Scarred Demon on top. Only Ravenous Amulet is weak; mana and curve are clean.\"}",
+  "cost_usd": 0.04586,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "10b1413b9ba0a7af": {
+  "review": {
+   "archetype": "BW sacrifice (heavy black)",
+   "coherent": true,
+   "concerns": [
+    "3-drop gap",
+    "weak bodies",
+    "light white"
+   ],
+   "rating": 3,
+   "verdict": "Seven pieces of real removal and good black payoffs (High-Society Hunter, Arbiter of Woe, Tragic Banshee) carry a sac shell. But the creatures are filler: three Hungry Ghouls and small 1-2 drops. There are almost no 3-drops, and the white is a thin splash-like layer of Felidar Saviors, so it is a solid but unspectacular deck."
+  },
+  "reply": "{\"archetype\": \"BW sacrifice (heavy black)\", \"coherent\": true, \"concerns\": [\"3-drop gap\", \"weak bodies\", \"light white\"], \"rating\": 3, \"verdict\": \"Seven pieces of real removal and good black payoffs (High-Society Hunter, Arbiter of Woe, Tragic Banshee) carry a sac shell. But the creatures are filler: three Hungry Ghouls and small 1-2 drops. There are almost no 3-drops, and the white is a thin splash-like layer of Felidar Saviors, so it is a solid but unspectacular deck.\"}",
+  "cost_usd": 0.05265,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "cc3c8d672339125a": {
+  "review": {
+   "archetype": "WB lifegain midrange",
+   "coherent": false,
+   "concerns": [
+    "filler spells",
+    "card quality",
+    "few creatures",
+    "thin lifegain",
+    "removal"
+   ],
+   "rating": 2,
+   "verdict": "Elenda, Squad Ralliers and 2x Eaten Alive are a real core, but two Macabre Waltz, Pilfer, Seeker's Folly and Goldvein Pick are weak filler. The deck has only 14 smallish creatures, few lifegain payoffs or enablers, and no top end, so it lacks power for 17 lands."
+  },
+  "reply": "{\"archetype\": \"WB lifegain midrange\", \"coherent\": false, \"concerns\": [\"filler spells\", \"card quality\", \"few creatures\", \"thin lifegain\", \"removal\"], \"rating\": 2, \"verdict\": \"Elenda, Squad Ralliers and 2x Eaten Alive are a real core, but two Macabre Waltz, Pilfer, Seeker's Folly and Goldvein Pick are weak filler. The deck has only 14 smallish creatures, few lifegain payoffs or enablers, and no top end, so it lacks power for 17 lands.\"}",
+  "cost_usd": 0.05167,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "bae47759e5be42b0": {
+  "review": {
+   "archetype": "UR spells/prowess",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "card draw filler",
+    "mana split"
+   ],
+   "rating": 3,
+   "verdict": "Coherent UR spells deck with good payoffs in Balmor x2, the prowess creatures, Kiora and Curator, and Micromancer finds Burst Lightning, but real removal is thin (2 Burst, Immolator, a bounce). Think Twice x2 and two Refutes make it reactive and durdly, and the deck is heavily blue on a 9/8 land split, so it plays fine but not great."
+  },
+  "reply": "{\"archetype\": \"UR spells/prowess\", \"coherent\": true, \"concerns\": [\"removal\", \"card draw filler\", \"mana split\"], \"rating\": 3, \"verdict\": \"Coherent UR spells deck with good payoffs in Balmor x2, the prowess creatures, Kiora and Curator, and Micromancer finds Burst Lightning, but real removal is thin (2 Burst, Immolator, a bounce). Think Twice x2 and two Refutes make it reactive and durdly, and the deck is heavily blue on a 9/8 land split, so it plays fine but not great.\"}",
+  "cost_usd": 0.05142,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "943c8512c9b31605": {
+  "review": {
+   "archetype": "WB sacrifice",
+   "coherent": true,
+   "concerns": [
+    "small bodies",
+    "filler",
+    "thin lifegain"
+   ],
+   "rating": 4,
+   "verdict": "A coherent WB sacrifice deck: Infestation Sage, Infernal Vessel, Gourmand and Arbiter of Woe feed each other, Elenda and Exemplar give it a real top end, and five pieces of removal back it up, but the 2-drops are small and Pilfer and Hungry Ghoul are filler."
+  },
+  "reply": "{\"archetype\": \"WB sacrifice\", \"coherent\": true, \"concerns\": [\"small bodies\", \"filler\", \"thin lifegain\"], \"rating\": 4, \"verdict\": \"A coherent WB sacrifice deck: Infestation Sage, Infernal Vessel, Gourmand and Arbiter of Woe feed each other, Elenda and Exemplar give it a real top end, and five pieces of removal back it up, but the 2-drops are small and Pilfer and Hungry Ghoul are filler.\"}",
+  "cost_usd": 0.05616,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "c58344ab9f496dd0": {
+  "review": {
+   "archetype": "UR spells/tempo",
+   "coherent": true,
+   "concerns": [
+    "threat quality",
+    "filler",
+    "removal"
+   ],
+   "rating": 2,
+   "verdict": "The UR spells plan holds together and the curve is low, but the deck has few real payoffs and leans on Think Twice, Fleeting Distraction and pump tricks over threats. With only 2 Abrade as real removal, it lacks the power to close games."
+  },
+  "reply": "{\"archetype\": \"UR spells/tempo\", \"coherent\": true, \"concerns\": [\"threat quality\", \"filler\", \"removal\"], \"rating\": 2, \"verdict\": \"The UR spells plan holds together and the curve is low, but the deck has few real payoffs and leans on Think Twice, Fleeting Distraction and pump tricks over threats. With only 2 Abrade as real removal, it lacks the power to close games.\"}",
+  "cost_usd": 0.04879,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "db495ed374d0a7cc": {
+  "review": {
+   "archetype": "UR spells/tempo",
+   "coherent": true,
+   "concerns": [
+    "few creatures",
+    "weak bodies",
+    "Slagstorm anti-synergy"
+   ],
+   "rating": 3,
+   "verdict": "Strong burn and tempo (3 Burst Lightning, Fiery Annihilation, Bigfin bounce) plus a Chandra bomb and Sphinx, but the thin, small creature base struggles to pressure or hold the board, and Slagstorm hits its own 2/1s."
+  },
+  "reply": "{\"archetype\": \"UR spells/tempo\", \"coherent\": true, \"concerns\": [\"few creatures\", \"weak bodies\", \"Slagstorm anti-synergy\"], \"rating\": 3, \"verdict\": \"Strong burn and tempo (3 Burst Lightning, Fiery Annihilation, Bigfin bounce) plus a Chandra bomb and Sphinx, but the thin, small creature base struggles to pressure or hold the board, and Slagstorm hits its own 2/1s.\"}",
+  "cost_usd": 0.05018,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "ec8d86cffb4a8263": {
+  "review": {
+   "archetype": "UR tempo aggro",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "card quality",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Low-curve red aggro with blue tempo and a solid 2-drop base. Removal is thin beyond Burst Lightning, Abrade and Imprisoned, and several filler cards (Thrill, Bulk Up, Cerberus) make it a fine but unspectacular deck; Etali is a strong top end."
+  },
+  "reply": "{\"archetype\": \"UR tempo aggro\", \"coherent\": true, \"concerns\": [\"removal\", \"card quality\", \"top end\"], \"rating\": 3, \"verdict\": \"Low-curve red aggro with blue tempo and a solid 2-drop base. Removal is thin beyond Burst Lightning, Abrade and Imprisoned, and several filler cards (Thrill, Bulk Up, Cerberus) make it a fine but unspectacular deck; Etali is a strong top end.\"}",
+  "cost_usd": 0.04804,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "964aff3c5b4b5878": {
+  "review": {
+   "archetype": "UR spells/prowess",
+   "coherent": true,
+   "concerns": [
+    "threat density",
+    "small bodies",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A low-curve UR spells deck: Abrade x3, Fiery Annihilation, Heartfire Immolator x3 and Firebrands give real removal and Balmor pays off spells, but the bodies are small and the only big threats are Dragon Trainer and Etali, so it can run out of pressure in long games."
+  },
+  "reply": "{\"archetype\": \"UR spells/prowess\", \"coherent\": true, \"concerns\": [\"threat density\", \"small bodies\", \"top end\"], \"rating\": 3, \"verdict\": \"A low-curve UR spells deck: Abrade x3, Fiery Annihilation, Heartfire Immolator x3 and Firebrands give real removal and Balmor pays off spells, but the bodies are small and the only big threats are Dragon Trainer and Etali, so it can run out of pressure in long games.\"}",
+  "cost_usd": 0.04917,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "4a0d39b9f13e991e": {
+  "review": {
+   "archetype": "UR spells/tempo",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "threat density",
+    "filler",
+    "top-end"
+   ],
+   "rating": 3,
+   "verdict": "A real UR spells shell with Balmor x2, three Whelps, Archmage and a Drakuseth bomb, but three Think Twice, Time Stop, Aegis Turtle and a pile of counterspells leave it short on threats and burn, so it plays too reactively to be more than fine."
+  },
+  "reply": "{\"archetype\": \"UR spells/tempo\", \"coherent\": true, \"concerns\": [\"removal\", \"threat density\", \"filler\", \"top-end\"], \"rating\": 3, \"verdict\": \"A real UR spells shell with Balmor x2, three Whelps, Archmage and a Drakuseth bomb, but three Think Twice, Time Stop, Aegis Turtle and a pile of counterspells leave it short on threats and burn, so it plays too reactively to be more than fine.\"}",
+  "cost_usd": 0.05179,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "e804e46b52199cee": {
+  "review": {
+   "archetype": "UR spells/tempo",
+   "coherent": true,
+   "concerns": [
+    "weak creatures",
+    "removal",
+    "filler",
+    "splash",
+    "top end"
+   ],
+   "rating": 2,
+   "verdict": "The UR spells plan is real, with Balmor, Cyclops, Mystic and 4 Goblin Surprise, but the creatures are thin and small. Actual removal is only 2 Burst Lightning plus Firebrand pings. Three Fleeting Distraction and Thrill are low-impact filler, and splashing a gold 4-drop Kykar on 3 white sources is shaky, so this is a below-average deck."
+  },
+  "reply": "{\"archetype\": \"UR spells/tempo\", \"coherent\": true, \"concerns\": [\"weak creatures\", \"removal\", \"filler\", \"splash\", \"top end\"], \"rating\": 2, \"verdict\": \"The UR spells plan is real, with Balmor, Cyclops, Mystic and 4 Goblin Surprise, but the creatures are thin and small. Actual removal is only 2 Burst Lightning plus Firebrand pings. Three Fleeting Distraction and Thrill are low-impact filler, and splashing a gold 4-drop Kykar on 3 white sources is shaky, so this is a below-average deck.\"}",
+  "cost_usd": 0.05186,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "5e8a7d10167def2d": {
+  "review": {
+   "archetype": "UR spells/tempo",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "Alesha splash",
+    "spell density"
+   ],
+   "rating": 3,
+   "verdict": "A functional UR spells deck with good blue card advantage (Kaito, Kiora, Icewind) and a sharp low curve, but it has thin removal, four Firebrand Archers for only nine noncreature spells, and a pointless single-card black splash for Alesha."
+  },
+  "reply": "{\"archetype\": \"UR spells/tempo\", \"coherent\": true, \"concerns\": [\"removal\", \"Alesha splash\", \"spell density\"], \"rating\": 3, \"verdict\": \"A functional UR spells deck with good blue card advantage (Kaito, Kiora, Icewind) and a sharp low curve, but it has thin removal, four Firebrand Archers for only nine noncreature spells, and a pointless single-card black splash for Alesha.\"}",
+  "cost_usd": 0.05286,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "0419b7ed7f409496": {
+  "review": {
+   "archetype": "UR tempo/spells (light B splash)",
+   "coherent": true,
+   "concerns": [
+    "splash",
+    "reactive",
+    "few threats"
+   ],
+   "rating": 3,
+   "verdict": "Solid UR tempo shell. 2 Burst Lightning, Bouncers, Buccaneers, Witness Protection and Uncharted Voyage give real interaction. But 3 counterspells make it reactive with thin, small threats, and splashing only Alesha (needs B and R) on 3 sources is a pointless risk when a blue or red playable should fill the slot."
+  },
+  "reply": "{\"archetype\": \"UR tempo/spells (light B splash)\", \"coherent\": true, \"concerns\": [\"splash\", \"reactive\", \"few threats\"], \"rating\": 3, \"verdict\": \"Solid UR tempo shell. 2 Burst Lightning, Bouncers, Buccaneers, Witness Protection and Uncharted Voyage give real interaction. But 3 counterspells make it reactive with thin, small threats, and splashing only Alesha (needs B and R) on 3 sources is a pointless risk when a blue or red playable should fill the slot.\"}",
+  "cost_usd": 0.05078,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "f67a837e4060ba07": {
+  "review": {
+   "archetype": "UR tempo fliers",
+   "coherent": true,
+   "concerns": [
+    "light removal",
+    "RR splash-ish",
+    "counterspells"
+   ],
+   "rating": 3,
+   "verdict": "Solid blue tempo shell with flying pressure, bounce, two Fiery Annihilations and an Embercleave payoff; it is held back by thin red removal, two clunky Refutes and an RR bomb on only 8 red sources."
+  },
+  "reply": "{\"archetype\": \"UR tempo fliers\", \"coherent\": true, \"concerns\": [\"light removal\", \"RR splash-ish\", \"counterspells\"], \"rating\": 3, \"verdict\": \"Solid blue tempo shell with flying pressure, bounce, two Fiery Annihilations and an Embercleave payoff; it is held back by thin red removal, two clunky Refutes and an RR bomb on only 8 red sources.\"}",
+  "cost_usd": 0.04873,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "e345f5b121ee9b70": {
+  "review": {
+   "archetype": "UR tempo/spells splash B",
+   "coherent": true,
+   "concerns": [
+    "splash mana",
+    "filler",
+    "weak two-drops"
+   ],
+   "rating": 3,
+   "verdict": "Solid removal and tempo (2 Fiery Annihilation, 2 Bigfin Bouncer, Witness Protection, Sphinx, Micromancers finding Stab or Distraction) but a thin body of 2/1 filler. The black splash is greedy: a gold three-drop on 4 black sources, while UU and RR costs also strain the base. It's a fine deck, not a great one."
+  },
+  "reply": "{\"archetype\": \"UR tempo/spells splash B\", \"coherent\": true, \"concerns\": [\"splash mana\", \"filler\", \"weak two-drops\"], \"rating\": 3, \"verdict\": \"Solid removal and tempo (2 Fiery Annihilation, 2 Bigfin Bouncer, Witness Protection, Sphinx, Micromancers finding Stab or Distraction) but a thin body of 2/1 filler. The black splash is greedy: a gold three-drop on 4 black sources, while UU and RR costs also strain the base. It's a fine deck, not a great one.\"}",
+  "cost_usd": 0.05597,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "03e3f330ee6accc9": {
+  "review": {
+   "archetype": "UR spells/tempo",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "small creatures",
+    "Sure Strike"
+   ],
+   "rating": 3,
+   "verdict": "A coherent UR spells deck. Krenko, Archmage of Runes, Balmor, Tolarian Terror and Skyship Buccaneer give it real power, and three Burst Lightning plus instant-speed tokens fit the plan. Removal is thin beyond Burst and Heartfire, the 2-drops are fragile, and the two Sure Strikes are filler, so it is fine but not exceptional."
+  },
+  "reply": "{\"archetype\": \"UR spells/tempo\", \"coherent\": true, \"concerns\": [\"removal\", \"small creatures\", \"Sure Strike\"], \"rating\": 3, \"verdict\": \"A coherent UR spells deck. Krenko, Archmage of Runes, Balmor, Tolarian Terror and Skyship Buccaneer give it real power, and three Burst Lightning plus instant-speed tokens fit the plan. Removal is thin beyond Burst and Heartfire, the 2-drops are fragile, and the two Sure Strikes are filler, so it is fine but not exceptional.\"}",
+  "cost_usd": 0.05119,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "cc53361d4380c17e": {
+  "review": {
+   "archetype": "UR spells/prowess",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "spell count",
+    "card quality"
+   ],
+   "rating": 3,
+   "verdict": "A real UR spells deck with strong payoffs (3 Balmor, 3 Tolarian Terror) and a good curve, but only 8 instants feed them, the cantrips are low-impact, and hard removal is thin (Burst Lightning, Gorehorn, bounce), so it can stall against bigger boards."
+  },
+  "reply": "{\"archetype\": \"UR spells/prowess\", \"coherent\": true, \"concerns\": [\"removal\", \"spell count\", \"card quality\"], \"rating\": 3, \"verdict\": \"A real UR spells deck with strong payoffs (3 Balmor, 3 Tolarian Terror) and a good curve, but only 8 instants feed them, the cantrips are low-impact, and hard removal is thin (Burst Lightning, Gorehorn, bounce), so it can stall against bigger boards.\"}",
+  "cost_usd": 0.05132,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "d69f78fb334a5946": {
+  "review": {
+   "archetype": "UR spells tempo",
+   "coherent": true,
+   "concerns": [
+    "creature quality",
+    "too many counters",
+    "few threats"
+   ],
+   "rating": 3,
+   "verdict": "A coherent UR spells deck with good cheap burn, Fiery Annihilation and Tolarian Terror, but four counterspells and a thin, fragile creature base leave it short on threats to close games."
+  },
+  "reply": "{\"archetype\": \"UR spells tempo\", \"coherent\": true, \"concerns\": [\"creature quality\", \"too many counters\", \"few threats\"], \"rating\": 3, \"verdict\": \"A coherent UR spells deck with good cheap burn, Fiery Annihilation and Tolarian Terror, but four counterspells and a thin, fragile creature base leave it short on threats to close games.\"}",
+  "cost_usd": 0.04927,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "fa75665fe908ec61": {
+  "review": {
+   "archetype": "UR spells/tempo",
+   "coherent": true,
+   "concerns": [
+    "thin removal",
+    "top-heavy",
+    "filler cantrips"
+   ],
+   "rating": 3,
+   "verdict": "A solid Izzet spells deck built on Archmage of Runes, Niv-Mizzet, Balmor and Micromancer fetching Burst Lightning. Removal past the three burn spells is thin, the six-plus slot is clunky, and Cerberus plus the cantrips are filler, so it lands as a fine 3."
+  },
+  "reply": "{\"archetype\": \"UR spells/tempo\", \"coherent\": true, \"concerns\": [\"thin removal\", \"top-heavy\", \"filler cantrips\"], \"rating\": 3, \"verdict\": \"A solid Izzet spells deck built on Archmage of Runes, Niv-Mizzet, Balmor and Micromancer fetching Burst Lightning. Removal past the three burn spells is thin, the six-plus slot is clunky, and Cerberus plus the cantrips are filler, so it lands as a fine 3.\"}",
+  "cost_usd": 0.05305,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "095a3376d8a442b6": {
+  "review": {
+   "archetype": "BG morbid midrange",
+   "coherent": true,
+   "concerns": [
+    "filler discard",
+    "GGG splash-like",
+    "few fliers"
+   ],
+   "rating": 3,
+   "verdict": "Solid BG deck with real removal (Downfall, Pie, two fight spells, two Banshees) and death synergies via Skeleton, Sage, Spinner and Needletooth, but Pilfer, Seeker's Folly and Burglar Rat are weak, and Quakestrider's GGG on 8 Forests is clunky."
+  },
+  "reply": "{\"archetype\": \"BG morbid midrange\", \"coherent\": true, \"concerns\": [\"filler discard\", \"GGG splash-like\", \"few fliers\"], \"rating\": 3, \"verdict\": \"Solid BG deck with real removal (Downfall, Pie, two fight spells, two Banshees) and death synergies via Skeleton, Sage, Spinner and Needletooth, but Pilfer, Seeker's Folly and Burglar Rat are weak, and Quakestrider's GGG on 8 Forests is clunky.\"}",
+  "cost_usd": 0.05051,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "d1ec805ab6e6c924": {
+  "review": {
+   "archetype": "BG aristocrats-lite",
+   "coherent": false,
+   "concerns": [
+    "card quality",
+    "top end",
+    "small creatures",
+    "fight removal"
+   ],
+   "rating": 2,
+   "verdict": "Low-power BG pile: four fight/bite spells sit on 1-power bodies like Sage, Rat, Skeleton and Librarian. It has nothing above four mana and few real threats beyond Lathril, Spinner and Shriekmass, so it gets out-sized in the midgame."
+  },
+  "reply": "{\"archetype\": \"BG aristocrats-lite\", \"coherent\": false, \"concerns\": [\"card quality\", \"top end\", \"small creatures\", \"fight removal\"], \"rating\": 2, \"verdict\": \"Low-power BG pile: four fight/bite spells sit on 1-power bodies like Sage, Rat, Skeleton and Librarian. It has nothing above four mana and few real threats beyond Lathril, Spinner and Shriekmass, so it gets out-sized in the midgame.\"}",
+  "cost_usd": 0.05116,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "8bc1b5e982b1cc0d": {
+  "review": {
+   "archetype": "BG sacrifice midrange",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "thin 4-drops"
+   ],
+   "rating": 3,
+   "verdict": "Solid BG sacrifice deck: Nighthawk, Conqueror, Arbiter, Banshee and two Felling Blows give it real power, and Skeleton and Infestation Sage feed the Ghouls and Gourmand. A low-impact filler slot (Tinybones, Folly, Veil, Fake Your Own Death) keeps it from being better than fine."
+  },
+  "reply": "{\"archetype\": \"BG sacrifice midrange\", \"coherent\": true, \"concerns\": [\"filler\", \"thin 4-drops\"], \"rating\": 3, \"verdict\": \"Solid BG sacrifice deck: Nighthawk, Conqueror, Arbiter, Banshee and two Felling Blows give it real power, and Skeleton and Infestation Sage feed the Ghouls and Gourmand. A low-impact filler slot (Tinybones, Folly, Veil, Fake Your Own Death) keeps it from being better than fine.\"}",
+  "cost_usd": 0.05334,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "9882584b6571679f": {
+  "review": {
+   "archetype": "BG elves",
+   "coherent": true,
+   "concerns": [
+    "fight removal",
+    "black splash depth"
+   ],
+   "rating": 4,
+   "verdict": "A focused, nearly mono-green elves deck. It has strong lords (Archdruid, Dwynen), Lathril, a Liliana bomb, Greatwurm and Overrun as finishers, and plenty of fight-based removal. The light black is backed by 6 sources plus mana elves. Its main weakness is that all the removal depends on having a board."
+  },
+  "reply": "{\"archetype\": \"BG elves\", \"coherent\": true, \"concerns\": [\"fight removal\", \"black splash depth\"], \"rating\": 4, \"verdict\": \"A focused, nearly mono-green elves deck. It has strong lords (Archdruid, Dwynen), Lathril, a Liliana bomb, Greatwurm and Overrun as finishers, and plenty of fight-based removal. The light black is backed by 6 sources plus mana elves. Its main weakness is that all the removal depends on having a board.\"}",
+  "cost_usd": 0.0513,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "124d5831168c7938": {
+  "review": {
+   "archetype": "BG midrange removal",
+   "coherent": true,
+   "concerns": [
+    "card advantage",
+    "weak 1-drops",
+    "Blasphemous Edict"
+   ],
+   "rating": 3,
+   "verdict": "Solid BG midrange with plenty of cheap interaction (3 Stab, 2 Hero's Downfall, Bite Down, Banshees) and a reasonable 15-creature curve. It lacks bombs and card advantage, Blasphemous Edict is a clunky 5-mana wipe in a creature deck, and the Librarians are low-impact."
+  },
+  "reply": "{\"archetype\": \"BG midrange removal\", \"coherent\": true, \"concerns\": [\"card advantage\", \"weak 1-drops\", \"Blasphemous Edict\"], \"rating\": 3, \"verdict\": \"Solid BG midrange with plenty of cheap interaction (3 Stab, 2 Hero's Downfall, Bite Down, Banshees) and a reasonable 15-creature curve. It lacks bombs and card advantage, Blasphemous Edict is a clunky 5-mana wipe in a creature deck, and the Librarians are low-impact.\"}",
+  "cost_usd": 0.05244,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "ae51bd0c8bb2e403": {
+  "review": {
+   "archetype": "BG graveyard midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "weak cards",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Playable BG midrange with a decent creature base. Removal is light (Stab, Bake into a Pie, Indrik fight), and filler like Goldvein Pick, Pilfer and two Zombifys with few big targets or self-mill makes it merely fine."
+  },
+  "reply": "{\"archetype\": \"BG graveyard midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"weak cards\", \"top end\"], \"rating\": 3, \"verdict\": \"Playable BG midrange with a decent creature base. Removal is light (Stab, Bake into a Pie, Indrik fight), and filler like Goldvein Pick, Pilfer and two Zombifys with few big targets or self-mill makes it merely fine.\"}",
+  "cost_usd": 0.05254,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "1f1733b5536d3624": {
+  "review": {
+   "archetype": "BG midrange/morbid",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "few interaction"
+   ],
+   "rating": 3,
+   "verdict": "Solid BG creature curve with good value (Wardens, Lathril, Vivien, Overrun, recursion), but only Stab and Vivien's -3 as removal leaves it weak to opposing bombs and fliers."
+  },
+  "reply": "{\"archetype\": \"BG midrange/morbid\", \"coherent\": true, \"concerns\": [\"removal\", \"few interaction\"], \"rating\": 3, \"verdict\": \"Solid BG creature curve with good value (Wardens, Lathril, Vivien, Overrun, recursion), but only Stab and Vivien's -3 as removal leaves it weak to opposing bombs and fliers.\"}",
+  "cost_usd": 0.04933,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "d5bcbeb9e7dad8f9": {
+  "review": {
+   "archetype": "BG midrange removal",
+   "coherent": true,
+   "concerns": [
+    "weak 1-drops",
+    "small threats"
+   ],
+   "rating": 3,
+   "verdict": "A solid BG deck with plenty of cheap removal (3 Stab, 2 Bite Down, Eaten Alive, Bushwhack, Banshee), good 4-power bodies for fight spells, and strong top end in High-Society Hunter and Arbiter of Woe. The light sacrifice package and several 1/1 filler creatures keep it from being more than fine."
+  },
+  "reply": "{\"archetype\": \"BG midrange removal\", \"coherent\": true, \"concerns\": [\"weak 1-drops\", \"small threats\"], \"rating\": 3, \"verdict\": \"A solid BG deck with plenty of cheap removal (3 Stab, 2 Bite Down, Eaten Alive, Bushwhack, Banshee), good 4-power bodies for fight spells, and strong top end in High-Society Hunter and Arbiter of Woe. The light sacrifice package and several 1/1 filler creatures keep it from being more than fine.\"}",
+  "cost_usd": 0.05202,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "6f5213f37dd7206f": {
+  "review": {
+   "archetype": "BG sacrifice",
+   "coherent": true,
+   "concerns": [
+    "small bodies",
+    "top-end"
+   ],
+   "rating": 3,
+   "verdict": "A coherent BG sacrifice deck with good removal (2 Bake into a Pie, Eaten Alive, 2 Stab, 2 Indrik fights) and real sacrifice synergy (Sage, Vessel, Nine-Lives, Gourmand, Wardens, Arbiter), but many 1/1s and three 6-drops make the board a bit weak; a fine, playable deck."
+  },
+  "reply": "{\"archetype\": \"BG sacrifice\", \"coherent\": true, \"concerns\": [\"small bodies\", \"top-end\"], \"rating\": 3, \"verdict\": \"A coherent BG sacrifice deck with good removal (2 Bake into a Pie, Eaten Alive, 2 Stab, 2 Indrik fights) and real sacrifice synergy (Sage, Vessel, Nine-Lives, Gourmand, Wardens, Arbiter), but many 1/1s and three 6-drops make the board a bit weak; a fine, playable deck.\"}",
+  "cost_usd": 0.0531,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "c6345c90b541c417": {
+  "review": {
+   "archetype": "BG midrange/recursion",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "discard filler",
+    "low power"
+   ],
+   "rating": 3,
+   "verdict": "Solid BG creature-recursion shell with real top end (Nighthawk, Arbiter, Soulcallers, Needletooth), but only two true removal spells, and Pilfer, Seeker's Folly and Burglar Rat spend slots on low-impact discard."
+  },
+  "reply": "{\"archetype\": \"BG midrange/recursion\", \"coherent\": true, \"concerns\": [\"removal\", \"discard filler\", \"low power\"], \"rating\": 3, \"verdict\": \"Solid BG creature-recursion shell with real top end (Nighthawk, Arbiter, Soulcallers, Needletooth), but only two true removal spells, and Pilfer, Seeker's Folly and Burglar Rat spend slots on low-impact discard.\"}",
+  "cost_usd": 0.05245,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "bc18f67032ef077f": {
+  "review": {
+   "archetype": "BG midrange",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "few fliers"
+   ],
+   "rating": 4,
+   "verdict": "Strong BG midrange with premium removal (2x Bake into a Pie, Hero's Downfall, Eaten Alive, Bite Down), Vivien Reid and a solid low curve of efficient green beaters; slightly light on late-game power but well built."
+  },
+  "reply": "{\"archetype\": \"BG midrange\", \"coherent\": true, \"concerns\": [\"top end\", \"few fliers\"], \"rating\": 4, \"verdict\": \"Strong BG midrange with premium removal (2x Bake into a Pie, Hero's Downfall, Eaten Alive, Bite Down), Vivien Reid and a solid low curve of efficient green beaters; slightly light on late-game power but well built.\"}",
+  "cost_usd": 0.04671,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "4aa44fc9c50b87a0": {
+  "review": {
+   "archetype": "BG sacrifice midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "card quality",
+    "low power"
+   ],
+   "rating": 3,
+   "verdict": "A playable BG sacrifice deck with a decent curve and some synergy (Sage, Gourmand, Amulet, Banshee morbid), but only four real removal spells and filler like Zul Ashur with no other Zombies, Macabre Waltz and Snakeskin Veil keep it average."
+  },
+  "reply": "{\"archetype\": \"BG sacrifice midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"card quality\", \"low power\"], \"rating\": 3, \"verdict\": \"A playable BG sacrifice deck with a decent curve and some synergy (Sage, Gourmand, Amulet, Banshee morbid), but only four real removal spells and filler like Zul Ashur with no other Zombies, Macabre Waltz and Snakeskin Veil keep it average.\"}",
+  "cost_usd": 0.05274,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "88c8555d765ff479": {
+  "review": {
+   "archetype": "BG elves/morbid midrange",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "light top end",
+    "discard spells"
+   ],
+   "rating": 3,
+   "verdict": "A solid BG creature deck with real removal (Bake, Bite Down, 2 Stab, Indrik) and strong cards in Nighthawk, Wardens and Needletooth, but Pilfer, Seeker's Folly and Goldvein Pick are weak slots and the elf synergy is too thin to add much."
+  },
+  "reply": "{\"archetype\": \"BG elves/morbid midrange\", \"coherent\": true, \"concerns\": [\"filler\", \"light top end\", \"discard spells\"], \"rating\": 3, \"verdict\": \"A solid BG creature deck with real removal (Bake, Bite Down, 2 Stab, Indrik) and strong cards in Nighthawk, Wardens and Needletooth, but Pilfer, Seeker's Folly and Goldvein Pick are weak slots and the elf synergy is too thin to add much.\"}",
+  "cost_usd": 0.04943,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "7a29079b394ae733": {
+  "review": {
+   "archetype": "BG sacrifice/elves",
+   "coherent": true,
+   "concerns": [
+    "pointless splash",
+    "weak 1-drops",
+    "few 2-drops"
+   ],
+   "rating": 3,
+   "verdict": "Solid BG deck with good removal (Bake into a Pie, Eaten Alive, Stab, Bushwhack) and strong top end (High-Society Hunter, Arbiter of Woe), and Infestation Sage gives it sacrifice fodder; but the Plains and white lands only splash Cat Collector, so cut them for a Forest, Swamp or another BG playable."
+  },
+  "reply": "{\"archetype\": \"BG sacrifice/elves\", \"coherent\": true, \"concerns\": [\"pointless splash\", \"weak 1-drops\", \"few 2-drops\"], \"rating\": 3, \"verdict\": \"Solid BG deck with good removal (Bake into a Pie, Eaten Alive, Stab, Bushwhack) and strong top end (High-Society Hunter, Arbiter of Woe), and Infestation Sage gives it sacrifice fodder; but the Plains and white lands only splash Cat Collector, so cut them for a Forest, Swamp or another BG playable.\"}",
+  "cost_usd": 0.05288,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "f4289846cd0b8cb6": {
+  "review": {
+   "archetype": "BG midrange ramp splash U",
+   "coherent": true,
+   "concerns": [
+    "splash UU",
+    "Koma"
+   ],
+   "rating": 4,
+   "verdict": "A strong BG removal-and-deathtouch midrange shell: Nighthawks, Downfall, Bake, Bite Down, Snarespinners, Lathril and Meteor Golem. Grow from the Ashes plus 5 fixing lands make the Tatyova and Koma splash workable, but Koma's UU will sometimes rot in hand."
+  },
+  "reply": "{\"archetype\": \"BG midrange ramp splash U\", \"coherent\": true, \"concerns\": [\"splash UU\", \"Koma\"], \"rating\": 4, \"verdict\": \"A strong BG removal-and-deathtouch midrange shell: Nighthawks, Downfall, Bake, Bite Down, Snarespinners, Lathril and Meteor Golem. Grow from the Ashes plus 5 fixing lands make the Tatyova and Koma splash workable, but Koma's UU will sometimes rot in hand.\"}",
+  "cost_usd": 0.05145,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "946e652c695505eb": {
+  "review": {
+   "archetype": "WR cats aggro",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "filler",
+    "removal"
+   ],
+   "rating": 3,
+   "verdict": "A low-curve WR go-wide deck with real Cat synergy (Arahbo, 3x Prideful Parent) and good burn, but filler like Axgard Cavalry and Courageous Goblin plus almost no top end make it a fine deck rather than a strong one; 17 lands is one too many for this curve."
+  },
+  "reply": "{\"archetype\": \"WR cats aggro\", \"coherent\": true, \"concerns\": [\"top end\", \"filler\", \"removal\"], \"rating\": 3, \"verdict\": \"A low-curve WR go-wide deck with real Cat synergy (Arahbo, 3x Prideful Parent) and good burn, but filler like Axgard Cavalry and Courageous Goblin plus almost no top end make it a fine deck rather than a strong one; 17 lands is one too many for this curve.\"}",
+  "cost_usd": 0.05027,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "063c1d3c8dc708d9": {
+  "review": {
+   "archetype": "RW aggro go-wide",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "card quality"
+   ],
+   "rating": 3,
+   "verdict": "A coherent, well-curved RW aggro deck with good top end (Serra, Guarded Heir, Sire, Gorehorn) and go-wide finishers, but it has very little removal and some filler 2-drops (Axgard Cavalry x2, Frenzied Goblin)."
+  },
+  "reply": "{\"archetype\": \"RW aggro go-wide\", \"coherent\": true, \"concerns\": [\"removal\", \"card quality\"], \"rating\": 3, \"verdict\": \"A coherent, well-curved RW aggro deck with good top end (Serra, Guarded Heir, Sire, Gorehorn) and go-wide finishers, but it has very little removal and some filler 2-drops (Axgard Cavalry x2, Frenzied Goblin).\"}",
+  "cost_usd": 0.04709,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "bcbbadf4c8247ce2": {
+  "review": {
+   "archetype": "WR aggro (light G splash)",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "splash",
+    "weak one-drops"
+   ],
+   "rating": 3,
+   "verdict": "A solid, low-curve WR go-wide deck. Dauntless Veteran, Heroic Reinforcements, the two Battlesong Berserkers, Strongbox Raider and Etali give it real punch. Removal is thin, though. The green splash for Unicorn and Bite Down strains a 17-land aggro mana base for little gain, so cutting it for another red or white playable would be cleaner."
+  },
+  "reply": "{\"archetype\": \"WR aggro (light G splash)\", \"coherent\": true, \"concerns\": [\"removal\", \"splash\", \"weak one-drops\"], \"rating\": 3, \"verdict\": \"A solid, low-curve WR go-wide deck. Dauntless Veteran, Heroic Reinforcements, the two Battlesong Berserkers, Strongbox Raider and Etali give it real punch. Removal is thin, though. The green splash for Unicorn and Bite Down strains a 17-land aggro mana base for little gain, so cutting it for another red or white playable would be cleaner.\"}",
+  "cost_usd": 0.0514,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "4950ff6cb762b9db": {
+  "review": {
+   "archetype": "WR aggro",
+   "coherent": false,
+   "concerns": [
+    "few creatures",
+    "filler",
+    "clunky top end"
+   ],
+   "rating": 2,
+   "verdict": "The red removal is solid (Burst Lightning, Abrade, Joust Through, Banishing Light), but an aggro deck with only 12–13 bodies is undermined by the slow non-creature cards: Hidetsugu's Second Rite, two 5-mana Valkyrie's Calls, and Claws Out with a single Cat."
+  },
+  "reply": "{\"archetype\": \"WR aggro\", \"coherent\": false, \"concerns\": [\"few creatures\", \"filler\", \"clunky top end\"], \"rating\": 2, \"verdict\": \"The red removal is solid (Burst Lightning, Abrade, Joust Through, Banishing Light), but an aggro deck with only 12–13 bodies is undermined by the slow non-creature cards: Hidetsugu's Second Rite, two 5-mana Valkyrie's Calls, and Claws Out with a single Cat.\"}",
+  "cost_usd": 0.05167,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "3e4956dab2682d9b": {
+  "review": {
+   "archetype": "WR aggro go-wide",
+   "coherent": true,
+   "concerns": [
+    "top-end clunk",
+    "few fliers"
+   ],
+   "rating": 4,
+   "verdict": "A focused WR aggro deck with eight two-drops and premium removal (4 Luminous Rebuke, Banishing Light, 2 Heartfire Immolator); Rebuke is cheap once attackers force blocks or taps, and the go-wide payoffs (Claws Out, Armasaur Guide, Felidar Savior) back the plan."
+  },
+  "reply": "{\"archetype\": \"WR aggro go-wide\", \"coherent\": true, \"concerns\": [\"top-end clunk\", \"few fliers\"], \"rating\": 4, \"verdict\": \"A focused WR aggro deck with eight two-drops and premium removal (4 Luminous Rebuke, Banishing Light, 2 Heartfire Immolator); Rebuke is cheap once attackers force blocks or taps, and the go-wide payoffs (Claws Out, Armasaur Guide, Felidar Savior) back the plan.\"}",
+  "cost_usd": 0.05201,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "95be0e42aea95aa6": {
+  "review": {
+   "archetype": "RW aggro",
+   "coherent": true,
+   "concerns": [
+    "card quality",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "Solid RW aggro deck with real removal (2 Fiery Annihilation, Banishing Light, Rebuke, Immolator, Gorehorn pings) and Shivan Dragon on top. Raid synergy and a good curve, but the filler is mediocre (Axgard Cavalry, Goldvein Pick, Healer's Hawk) and it has few strong rares, so it's a fine deck rather than a great one."
+  },
+  "reply": "{\"archetype\": \"RW aggro\", \"coherent\": true, \"concerns\": [\"card quality\", \"top end\"], \"rating\": 3, \"verdict\": \"Solid RW aggro deck with real removal (2 Fiery Annihilation, Banishing Light, Rebuke, Immolator, Gorehorn pings) and Shivan Dragon on top. Raid synergy and a good curve, but the filler is mediocre (Axgard Cavalry, Goldvein Pick, Healer's Hawk) and it has few strong rares, so it's a fine deck rather than a great one.\"}",
+  "cost_usd": 0.04707,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "18d04b960cf216c5": {
+  "review": {
+   "archetype": "WR cats aggro",
+   "coherent": true,
+   "concerns": [
+    "filler tricks",
+    "top end"
+   ],
+   "rating": 4,
+   "verdict": "A solid aggressive WR deck. Arahbo leads a real cat subtheme and the low curve backs it up. Two Abrade, Banishing Light and Heartfire Immolator give it good removal. Serra Angel, Dragon Trainer, Guarded Heir and Chandra give it a strong top end. Its only real weaknesses are the two Fleeting Flight and a slightly heavy 6+ slot for an aggro deck."
+  },
+  "reply": "{\"archetype\": \"WR cats aggro\", \"coherent\": true, \"concerns\": [\"filler tricks\", \"top end\"], \"rating\": 4, \"verdict\": \"A solid aggressive WR deck. Arahbo leads a real cat subtheme and the low curve backs it up. Two Abrade, Banishing Light and Heartfire Immolator give it good removal. Serra Angel, Dragon Trainer, Guarded Heir and Chandra give it a strong top end. Its only real weaknesses are the two Fleeting Flight and a slightly heavy 6+ slot for an aggro deck.\"}",
+  "cost_usd": 0.05151,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "39c672ecb585722d": {
+  "review": {
+   "archetype": "RW aggro",
+   "coherent": true,
+   "concerns": [
+    "thin 3-drops",
+    "filler creatures"
+   ],
+   "rating": 3,
+   "verdict": "Solid RW aggro with deep, cheap removal (Burst x2, Abrade, Banishing Light, Rebuke, Incinerating Blast) and good tops in Krenko, Dragon Trainer and Gorehorn Raider. Filler like Axgard Cavalry, Fanatical Firebrand and Goldvein Pick, plus only two 3-drops, keeps it a fine deck rather than a great one."
+  },
+  "reply": "{\"archetype\": \"RW aggro\", \"coherent\": true, \"concerns\": [\"thin 3-drops\", \"filler creatures\"], \"rating\": 3, \"verdict\": \"Solid RW aggro with deep, cheap removal (Burst x2, Abrade, Banishing Light, Rebuke, Incinerating Blast) and good tops in Krenko, Dragon Trainer and Gorehorn Raider. Filler like Axgard Cavalry, Fanatical Firebrand and Goldvein Pick, plus only two 3-drops, keeps it a fine deck rather than a great one.\"}",
+  "cost_usd": 0.05168,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "89810ddda2759baf": {
+  "review": {
+   "archetype": "WR aggro",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "card quality"
+   ],
+   "rating": 3,
+   "verdict": "Coherent WR aggro with a solid curve and real threats like Twinflame Tyrant, Brazen Scourge and Dauntless Veteran, but thin removal (Burst Lightning, Heartfire Immolator) and filler such as Axgard Cavalry and Angel of Finality keep it at a fine but unexceptional level."
+  },
+  "reply": "{\"archetype\": \"WR aggro\", \"coherent\": true, \"concerns\": [\"removal\", \"card quality\"], \"rating\": 3, \"verdict\": \"Coherent WR aggro with a solid curve and real threats like Twinflame Tyrant, Brazen Scourge and Dauntless Veteran, but thin removal (Burst Lightning, Heartfire Immolator) and filler such as Axgard Cavalry and Angel of Finality keep it at a fine but unexceptional level.\"}",
+  "cost_usd": 0.0474,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "dff3400e9d94838e": {
+  "review": {
+   "archetype": "WR midrange/go-wide",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "low power 1-2 drops",
+    "RRR Drakuseth"
+   ],
+   "rating": 3,
+   "verdict": "Solid WR deck. Drakuseth, two Dragon Trainers, Dazzling Angels and three Banishing Lights give it real power, but the cheap Hawks and Hunters are filler bodies, it has only four true removal spells, and Drakuseth's RRR is tight on 8 red sources."
+  },
+  "reply": "{\"archetype\": \"WR midrange/go-wide\", \"coherent\": true, \"concerns\": [\"removal\", \"low power 1-2 drops\", \"RRR Drakuseth\"], \"rating\": 3, \"verdict\": \"Solid WR deck. Drakuseth, two Dragon Trainers, Dazzling Angels and three Banishing Lights give it real power, but the cheap Hawks and Hunters are filler bodies, it has only four true removal spells, and Drakuseth's RRR is tight on 8 red sources.\"}",
+  "cost_usd": 0.05022,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "4c120ed6b8788752": {
+  "review": {
+   "archetype": "WR go-wide aggro",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "card quality",
+    "removal"
+   ],
+   "rating": 3,
+   "verdict": "A coherent, low-curve WR aggro deck with solid pieces: Dauntless Veteran x2, Heroic Reinforcements, triple Vanguard Seraph and three good removal spells. It is padded with weak filler (Divine Resilience, Bulk Up, Frenzied Goblins, and Courageous Goblins with few power-4 enablers), so it is a fine but unexceptional build."
+  },
+  "reply": "{\"archetype\": \"WR go-wide aggro\", \"coherent\": true, \"concerns\": [\"filler\", \"card quality\", \"removal\"], \"rating\": 3, \"verdict\": \"A coherent, low-curve WR aggro deck with solid pieces: Dauntless Veteran x2, Heroic Reinforcements, triple Vanguard Seraph and three good removal spells. It is padded with weak filler (Divine Resilience, Bulk Up, Frenzied Goblins, and Courageous Goblins with few power-4 enablers), so it is a fine but unexceptional build.\"}",
+  "cost_usd": 0.05057,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "be07ba50d7031ec5": {
+  "review": {
+   "archetype": "WR go-wide aggro",
+   "coherent": true,
+   "concerns": [
+    "card quality",
+    "top end"
+   ],
+   "rating": 3,
+   "verdict": "A coherent, low-curve WR aggro deck with real burn and enough bodies. Many filler 1-2 drops (Firebrands, Courageous Goblin) and little lifegain for Cat Collector or cats for Claws Out keep it a solid deck rather than a strong one."
+  },
+  "reply": "{\"archetype\": \"WR go-wide aggro\", \"coherent\": true, \"concerns\": [\"card quality\", \"top end\"], \"rating\": 3, \"verdict\": \"A coherent, low-curve WR aggro deck with real burn and enough bodies. Many filler 1-2 drops (Firebrands, Courageous Goblin) and little lifegain for Cat Collector or cats for Claws Out keep it a solid deck rather than a strong one.\"}",
+  "cost_usd": 0.05227,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "e03a1c02a7306809": {
+  "review": {
+   "archetype": "WR go-wide aggro",
+   "coherent": true,
+   "concerns": [
+    "top end",
+    "card quality"
+   ],
+   "rating": 3,
+   "verdict": "A clean, low-curve WR tokens/aggro deck with good cheap removal (Burst Lightning, 2 Abrade, Banishing Light, Immolator) and fine mana, but it has no real payoff or bomb, so it relies on filler-quality bodies and could stall against bigger boards."
+  },
+  "reply": "{\"archetype\": \"WR go-wide aggro\", \"coherent\": true, \"concerns\": [\"top end\", \"card quality\"], \"rating\": 3, \"verdict\": \"A clean, low-curve WR tokens/aggro deck with good cheap removal (Burst Lightning, 2 Abrade, Banishing Light, Immolator) and fine mana, but it has no real payoff or bomb, so it relies on filler-quality bodies and could stall against bigger boards.\"}",
+  "cost_usd": 0.05204,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "86e8a7e7b38670db": {
+  "review": {
+   "archetype": "UG tempo/midrange",
+   "coherent": true,
+   "concerns": [
+    "filler",
+    "few fliers",
+    "card quality"
+   ],
+   "rating": 3,
+   "verdict": "Functional UG midrange: Zimone, the Sire, fight spells (Bite Down, Felling Blow, Bushwhack) and Uncharted Voyage give real interaction and a good curve. But filler like Aegis Turtle, double Think Twice and Goldvein Pick, plus a weak elf subtheme, keep it at average."
+  },
+  "reply": "{\"archetype\": \"UG tempo/midrange\", \"coherent\": true, \"concerns\": [\"filler\", \"few fliers\", \"card quality\"], \"rating\": 3, \"verdict\": \"Functional UG midrange: Zimone, the Sire, fight spells (Bite Down, Felling Blow, Bushwhack) and Uncharted Voyage give real interaction and a good curve. But filler like Aegis Turtle, double Think Twice and Goldvein Pick, plus a weak elf subtheme, keep it at average.\"}",
+  "cost_usd": 0.04781,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "2f3ce68385916419": {
+  "review": {
+   "archetype": "WR go-wide aggro",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "top-end"
+   ],
+   "rating": 3,
+   "verdict": "A solid, well-curved WR aggro deck with good commons (Dazzling Angels, Dragon Trainers, Prideful Parents, Heroic Reinforcements) and a few cheap removal spells; it lacks premium bombs and has only light removal, so it's a fine deck but not a standout."
+  },
+  "reply": "{\"archetype\": \"WR go-wide aggro\", \"coherent\": true, \"concerns\": [\"removal\", \"top-end\"], \"rating\": 3, \"verdict\": \"A solid, well-curved WR aggro deck with good commons (Dazzling Angels, Dragon Trainers, Prideful Parents, Heroic Reinforcements) and a few cheap removal spells; it lacks premium bombs and has only light removal, so it's a fine deck but not a standout.\"}",
+  "cost_usd": 0.0517,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "44aca143edbd7b26": {
+  "review": {
+   "archetype": "WR go-wide aggro with lifegain/cats",
+   "coherent": true,
+   "concerns": [
+    "weak filler",
+    "thin top end"
+   ],
+   "rating": 3,
+   "verdict": "Solid WR aggro with good removal (3 Banishing Light, Burst Lightning, Rebuke, Raider) and a real Cat Collector/Healer's Hawk lifegain engine. Weak filler like Frenzied Goblin, Axgard Cavalry, Katana and Fleeting Flight, plus few bodies that hold up late, keep it a fine deck rather than a great one."
+  },
+  "reply": "{\"archetype\": \"WR go-wide aggro with lifegain/cats\",\n \"coherent\": true,\n \"concerns\": [\"weak filler\", \"thin top end\"],\n \"rating\": 3,\n \"verdict\": \"Solid WR aggro with good removal (3 Banishing Light, Burst Lightning, Rebuke, Raider) and a real Cat Collector/Healer's Hawk lifegain engine. Weak filler like Frenzied Goblin, Axgard Cavalry, Katana and Fleeting Flight, plus few bodies that hold up late, keep it a fine deck rather than a great one.\"}",
+  "cost_usd": 0.05377,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "6bd82c64d9dd81a1": {
+  "review": {
+   "archetype": "UG tempo/spells with Koma top end",
+   "coherent": false,
+   "concerns": [
+    "few creatures",
+    "filler",
+    "fight removal",
+    "weak bodies"
+   ],
+   "rating": 2,
+   "verdict": "Koma, Tatyova and Tolarian Terror give it real power, but only 12 mostly small creatures (1/1s, a 3/1) have to carry four fight/bite effects. Two Think Twice and two Snakeskin Veil are filler, so the deck often has removal it can't use and too few threats on the board."
+  },
+  "reply": "{\"archetype\": \"UG tempo/spells with Koma top end\", \"coherent\": false, \"concerns\": [\"few creatures\", \"filler\", \"fight removal\", \"weak bodies\"], \"rating\": 2, \"verdict\": \"Koma, Tatyova and Tolarian Terror give it real power, but only 12 mostly small creatures (1/1s, a 3/1) have to carry four fight/bite effects. Two Think Twice and two Snakeskin Veil are filler, so the deck often has removal it can't use and too few threats on the board.\"}",
+  "cost_usd": 0.05031,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "8fba13077c683b3d": {
+  "review": {
+   "archetype": "UG midrange tempo",
+   "coherent": true,
+   "concerns": [
+    "fight reliance",
+    "small bodies",
+    "counterspells"
+   ],
+   "rating": 3,
+   "verdict": "Solid UG deck. Three Bite Down, Bushwhack, Indrik, Bigfin Bouncer and Uncharted Voyage give real interaction, and Zimone plus two Skyship Buccaneers add quality. But several 1-2 power bodies make the fight and bite spells unreliable, and two Refutes are clunky filler, so it's a fine deck rather than a great one."
+  },
+  "reply": "{\"archetype\": \"UG midrange tempo\", \"coherent\": true, \"concerns\": [\"fight reliance\", \"small bodies\", \"counterspells\"], \"rating\": 3, \"verdict\": \"Solid UG deck. Three Bite Down, Bushwhack, Indrik, Bigfin Bouncer and Uncharted Voyage give real interaction, and Zimone plus two Skyship Buccaneers add quality. But several 1-2 power bodies make the fight and bite spells unreliable, and two Refutes are clunky filler, so it's a fine deck rather than a great one.\"}",
+  "cost_usd": 0.05393,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "81d1201ca5b10652": {
+  "review": {
+   "archetype": "UG tempo-midrange",
+   "coherent": true,
+   "concerns": [
+    "counterspells",
+    "filler"
+   ],
+   "rating": 4,
+   "verdict": "Solid UG deck: efficient 4-power green bodies power four fight and bite spells. Bigfin Bouncer, Uncharted Voyage and Witness Protection add interaction, and Curator and Sire give it a strong top end. Two counterspells and Fleeting Distraction are the soft spots."
+  },
+  "reply": "{\"archetype\": \"UG tempo-midrange\",\n \"coherent\": true,\n \"concerns\": [\"counterspells\", \"filler\"],\n \"rating\": 4,\n \"verdict\": \"Solid UG deck: efficient 4-power green bodies power four fight and bite spells. Bigfin Bouncer, Uncharted Voyage and Witness Protection add interaction, and Curator and Sire give it a strong top end. Two counterspells and Fleeting Distraction are the soft spots.\"}",
+  "cost_usd": 0.04964,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "ea5cdf1c3ed74aa9": {
+  "review": {
+   "archetype": "UG counters midrange",
+   "coherent": true,
+   "concerns": [
+    "filler creatures",
+    "low top-end",
+    "few fliers"
+   ],
+   "rating": 3,
+   "verdict": "Solid green-heavy deck. Four Bushwhacks give fight removal and smooth the 15-land mana, and Zimone, Curator, Bigfin Bouncer and Needletooth carry it, but three Librarians and several small 2-drops make the body quality mediocre."
+  },
+  "reply": "{\"archetype\": \"UG counters midrange\", \"coherent\": true, \"concerns\": [\"filler creatures\", \"low top-end\", \"few fliers\"], \"rating\": 3, \"verdict\": \"Solid green-heavy deck. Four Bushwhacks give fight removal and smooth the 15-land mana, and Zimone, Curator, Bigfin Bouncer and Needletooth carry it, but three Librarians and several small 2-drops make the body quality mediocre.\"}",
+  "cost_usd": 0.05065,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "1e4a232af297ef8b": {
+  "review": {
+   "archetype": "UG ramp/tempo",
+   "coherent": false,
+   "concerns": [
+    "threat quality",
+    "removal",
+    "filler",
+    "split plan"
+   ],
+   "rating": 2,
+   "verdict": "Playable UG shell with Elves, Overrun and solid fliers (Buccaneer, Icewind, Tatyova), but the threats are thin and small, removal is mostly fight effects that the many small bodies can't power, and too many slots go to low-impact spells (Fleeting Distraction, Think Twice, Snakeskin Veil, Refute) chasing a Tolarian Terror plan the deck can't fully support."
+  },
+  "reply": "{\"archetype\": \"UG ramp/tempo\", \"coherent\": false, \"concerns\": [\"threat quality\", \"removal\", \"filler\", \"split plan\"], \"rating\": 2, \"verdict\": \"Playable UG shell with Elves, Overrun and solid fliers (Buccaneer, Icewind, Tatyova), but the threats are thin and small, removal is mostly fight effects that the many small bodies can't power, and too many slots go to low-impact spells (Fleeting Distraction, Think Twice, Snakeskin Veil, Refute) chasing a Tolarian Terror plan the deck can't fully support.\"}",
+  "cost_usd": 0.05669,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "c156613448e95fb1": {
+  "review": {
+   "archetype": "UG spells tempo (r splash)",
+   "coherent": true,
+   "concerns": [
+    "splash",
+    "reactive",
+    "small bodies"
+   ],
+   "rating": 3,
+   "verdict": "A playable UG spells deck: the Terrors, Kiora and the blue fliers are good, and 9 instants and sorceries feed Terror. But the red splash for a 2-drop Balmor and Ashroot on 3 red sources is shaky, and four counterspells plus fight spells on 2/1 bodies make it reactive and fragile."
+  },
+  "reply": "{\"archetype\": \"UG spells tempo (r splash)\", \"coherent\": true, \"concerns\": [\"splash\", \"reactive\", \"small bodies\"], \"rating\": 3, \"verdict\": \"A playable UG spells deck: the Terrors, Kiora and the blue fliers are good, and 9 instants and sorceries feed Terror. But the red splash for a 2-drop Balmor and Ashroot on 3 red sources is shaky, and four counterspells plus fight spells on 2/1 bodies make it reactive and fragile.\"}",
+  "cost_usd": 0.05496,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "74760650509b4355": {
+  "review": {
+   "archetype": "UG midrange (green-heavy)",
+   "coherent": true,
+   "concerns": [
+    "light removal",
+    "mana split",
+    "blue filler",
+    "no bombs"
+   ],
+   "rating": 3,
+   "verdict": "A solid green core: Beast-Kin Rangers, Cackling Prowlers, Snarespinners, Spinner, Sylvan Scavenging and Stomper give a sound curve and good bodies. The blue half is thin: Think Twice, Mystic and Refute do little, and removal is only Bite Down plus two clunky Voyages. Green is the main color, so 9/9 lands should be about 10 Forest / 8 Island. A fine but unexciting deck."
+  },
+  "reply": "{\"archetype\": \"UG midrange (green-heavy)\", \"coherent\": true, \"concerns\": [\"light removal\", \"mana split\", \"blue filler\", \"no bombs\"], \"rating\": 3, \"verdict\": \"A solid green core: Beast-Kin Rangers, Cackling Prowlers, Snarespinners, Spinner, Sylvan Scavenging and Stomper give a sound curve and good bodies. The blue half is thin: Think Twice, Mystic and Refute do little, and removal is only Bite Down plus two clunky Voyages. Green is the main color, so 9/9 lands should be about 10 Forest / 8 Island. A fine but unexciting deck.\"}",
+  "cost_usd": 0.05362,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "de5a1b795d2f4e23": {
+  "review": {
+   "archetype": "UG ramp midrange",
+   "coherent": true,
+   "concerns": [
+    "fliers",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "Solid UG ramp shell built around a Koma bomb, with good interaction (Bigfin, 2 Voyage, Imprisoned, Indrik, Bushwhack) and real ramp. A few filler slots (Aegis Turtle, Hornbeetle) and little defense against fliers keep it a fine deck rather than a great one."
+  },
+  "reply": "{\"archetype\": \"UG ramp midrange\", \"coherent\": true, \"concerns\": [\"fliers\", \"filler\"], \"rating\": 3, \"verdict\": \"Solid UG ramp shell built around a Koma bomb, with good interaction (Bigfin, 2 Voyage, Imprisoned, Indrik, Bushwhack) and real ramp. A few filler slots (Aegis Turtle, Hornbeetle) and little defense against fliers keep it a fine deck rather than a great one.\"}",
+  "cost_usd": 0.05181,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "79f513ce19c7ce75": {
+  "review": {
+   "archetype": "UG flash/fliers midrange",
+   "coherent": true,
+   "concerns": [
+    "removal",
+    "thin elves",
+    "green early drops"
+   ],
+   "rating": 3,
+   "verdict": "Solid UG deck with strong blue top end (Curator, two High Fae Tricksters, Buccaneer, Icewind), good fight spells and a fine curve. Removal is light, the elf package is too small to pay off, and only 7 Forests support a green-heavy 2-drop slot."
+  },
+  "reply": "{\"archetype\": \"UG flash/fliers midrange\", \"coherent\": true, \"concerns\": [\"removal\", \"thin elves\", \"green early drops\"], \"rating\": 3, \"verdict\": \"Solid UG deck with strong blue top end (Curator, two High Fae Tricksters, Buccaneer, Icewind), good fight spells and a fine curve. Removal is light, the elf package is too small to pay off, and only 7 Forests support a green-heavy 2-drop slot.\"}",
+  "cost_usd": 0.05169,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "3286e34e20be7558": {
+  "review": {
+   "archetype": "UG ramp (Koma)",
+   "coherent": true,
+   "concerns": [
+    "mana split",
+    "removal",
+    "small threats"
+   ],
+   "rating": 3,
+   "verdict": "A solid UG ramp shell. Llanowar Elves and ramp lead into Koma and Quilled Greatwurm, and Micromancer fetches Bushwhack or Veil. But the green-heavy cards, with GG costs and green one-drops, want more than 8 Forests, and fight-based removal is thin with mostly small bodies."
+  },
+  "reply": "{\"archetype\": \"UG ramp (Koma)\", \"coherent\": true, \"concerns\": [\"mana split\", \"removal\", \"small threats\"], \"rating\": 3, \"verdict\": \"A solid UG ramp shell. Llanowar Elves and ramp lead into Koma and Quilled Greatwurm, and Micromancer fetches Bushwhack or Veil. But the green-heavy cards, with GG costs and green one-drops, want more than 8 Forests, and fight-based removal is thin with mostly small bodies.\"}",
+  "cost_usd": 0.05187,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "c726b57e327ca650": {
+  "review": {
+   "archetype": "UG tempo-midrange",
+   "coherent": true,
+   "concerns": [
+    "pointless splash",
+    "few creatures",
+    "filler"
+   ],
+   "rating": 3,
+   "verdict": "Solid UG deck with plenty of fight-based removal (2 Bushwhack, Bite Down, Indrik) plus Witness Protection and Uncharted Voyage, and good green bodies to fight with. Splashing white just for Celestial Armor isn't worth it. A light creature count and filler like Heraldic Banner and Scrawling Crawler keep it at average; cut the splash for another creature."
+  },
+  "reply": "{\"archetype\": \"UG tempo-midrange\", \"coherent\": true, \"concerns\": [\"pointless splash\", \"few creatures\", \"filler\"], \"rating\": 3, \"verdict\": \"Solid UG deck with plenty of fight-based removal (2 Bushwhack, Bite Down, Indrik) plus Witness Protection and Uncharted Voyage, and good green bodies to fight with. Splashing white just for Celestial Armor isn't worth it. A light creature count and filler like Heraldic Banner and Scrawling Crawler keep it at average; cut the splash for another creature.\"}",
+  "cost_usd": 0.05217,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "68a68cfedab487b0": {
+  "review": {
+   "archetype": "G stompy, light blue (Koma)",
+   "coherent": true,
+   "concerns": [
+    "thin blue",
+    "filler",
+    "few fliers"
+   ],
+   "rating": 3,
+   "verdict": "A solid green beatdown deck with good fight removal (Bite Down x2, Bushwhack, Indrik) and strong top end in Quilled Greatwurm and Koma, but the blue half is only Bouncers, Koma and a clunky Epiphany, and Librarian and Grow from the Ashes are filler, so it's a fine deck rather than a great one."
+  },
+  "reply": "{\"archetype\": \"G stompy, light blue (Koma)\", \"coherent\": true, \"concerns\": [\"thin blue\", \"filler\", \"few fliers\"], \"rating\": 3, \"verdict\": \"A solid green beatdown deck with good fight removal (Bite Down x2, Bushwhack, Indrik) and strong top end in Quilled Greatwurm and Koma, but the blue half is only Bouncers, Koma and a clunky Epiphany, and Librarian and Grow from the Ashes are filler, so it's a fine deck rather than a great one.\"}",
+  "cost_usd": 0.0512,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "10cd3cf44a7687b9": {
+  "review": {
+   "archetype": "UG midrange/fight",
+   "coherent": true,
+   "concerns": [
+    "no bombs",
+    "few fliers"
+   ],
+   "rating": 4,
+   "verdict": "Clean UG midrange: 19 creatures with good power on a smooth curve, plenty of fight and bounce removal (Bite Down x2, Felling Blow, Indrik x2, Bouncer x2, Voyage), Zimone as a strong payoff and solid mana; it lacks a true bomb and has little air defense beyond one Snarespinner."
+  },
+  "reply": "{\"archetype\": \"UG midrange/fight\", \"coherent\": true, \"concerns\": [\"no bombs\", \"few fliers\"], \"rating\": 4, \"verdict\": \"Clean UG midrange: 19 creatures with good power on a smooth curve, plenty of fight and bounce removal (Bite Down x2, Felling Blow, Indrik x2, Bouncer x2, Voyage), Zimone as a strong payoff and solid mana; it lacks a true bomb and has little air defense beyond one Snarespinner.\"}",
+  "cost_usd": 0.05262,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ },
+ "05559777441ee144": {
+  "review": {
+   "archetype": "UG ramp/landfall",
+   "coherent": true,
+   "concerns": [
+    "top-end power",
+    "light removal"
+   ],
+   "rating": 3,
+   "verdict": "Solid green-heavy ramp shell: elves into Tatyova and Elfsworn Giant, with Bite Down and Indrik on 4-power bodies for removal. Blue is a light, castable splash; the deck is fine but lacks bombs and has a few filler 1-drops."
+  },
+  "reply": "{\"archetype\": \"UG ramp/landfall\", \"coherent\": true, \"concerns\": [\"top-end power\", \"light removal\"], \"rating\": 3, \"verdict\": \"Solid green-heavy ramp shell: elves into Tatyova and Elfsworn Giant, with Bite Down and Indrik on 4-power bodies for removal. Blue is a light, castable splash; the deck is fine but lacks bombs and has a few filler 1-drops.\"}",
+  "cost_usd": 0.04862,
+  "model": "claude-opus-5-5",
+  "effort": "medium",
+  "system_sha": "260858dc7eeb"
+ }
+}

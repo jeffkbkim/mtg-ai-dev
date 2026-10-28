@@ -167,6 +167,7 @@ def main():
     p.add_argument("--min-wins", type=int, default=0, help="draft record floor (7 = trophy decks only)")
     p.add_argument("--exclude", nargs="*", default=[], help="manifest.json files whose draft ids are left out")
     p.add_argument("--no-review", action="store_true")
+    p.add_argument("--tier2-cap", type=int, help="at most this many tier-2 (★★) decks per colour pair (4 for new pools)")
     p.add_argument("--model", default="claude-opus-5-5"); p.add_argument("--effort", default="medium")
     p.add_argument("--parallel", type=int, default=5); p.add_argument("--timeout", type=int, default=600)
     args = p.parse_args()
@@ -270,6 +271,10 @@ def main():
         d["deck_score_gih"] = round(sum(n * gih[c]["wr"] for c, n in d["deck"].items() if not gih[c]["land"])
                                     / sum(n for c, n in d["deck"].items() if not gih[c]["land"]), 5) if gih else None
     order = lambda d: (-d["tier"], -d["review"]["rating"], -d["mana_score"], -bucket(d), tie(d))
+    if args.tier2_cap is not None:  # Jeff 2026-10-26: at most this many ★★ per colour pair; the rest become ★
+        for x in pairs:
+            for d in sorted((d for d in shortlist if d["main_colors"] == x and d["tier"] == 2), key=order)[args.tier2_cap:]:
+                d["tier"], d["tier_capped"] = 1, True
     kept = []
     for x in pairs:
         kept += sorted((d for d in shortlist if d["main_colors"] == x and d["review"]["rating"] >= args.keep_rating),
@@ -294,7 +299,7 @@ def main():
                       **{x: d[x] for x in ("draft_id", "build_index", "build_games", "build_wins", "games", "wins", "losses",
                                            "main_colors", "splash_colors", "user_win_rate_bucket", "user_n_games_bucket")},
                       "drafter_bucket": round(bucket(d), 2), "rank_17lands": d["rank"], "review": d["review"], "mana_score": d["mana_score"], "mana": d["mana"],
-                      "stats": d["stats"], "archetype_flag": d["archetype_flag"], "deck_score_gih": d["deck_score_gih"],
+                      "stats": d["stats"], "archetype_flag": d["archetype_flag"], "tier_capped": d.get("tier_capped", False), "deck_score_gih": d["deck_score_gih"],
                       "in_current_pool": cur_ids.get(d["draft_id"]), "deck": d["deck"]})
     rated = Counter((d["main_colors"], d["review"]["rating"]) for d in shortlist)
     summary = {
