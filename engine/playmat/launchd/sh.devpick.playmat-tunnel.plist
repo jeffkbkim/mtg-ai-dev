@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- The Cloudflare tunnel for play.devpick.sh as a system daemon (runs as bobkim, survives logouts). install.sh -->
+<plist version="1.0"><dict>
+  <key>Label</key><string>sh.devpick.playmat-tunnel</string>
+  <key>UserName</key><string>bobkim</string>
+  <key>ProgramArguments</key><array>
+    <string>/opt/homebrew/bin/cloudflared</string><string>tunnel</string><string>--config</string>
+    <string>/Users/bobkim/.cloudflared/config.yml</string><string>run</string><string>playmat-mini</string>
+  </array>
+  <key>EnvironmentVariables</key><dict><key>HOME</key><string>/Users/bobkim</string></dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>ThrottleInterval</key><integer>10</integer>
+  <key>StandardOutPath</key><string>/Users/bobkim/playmat-run/data/tunnel.log</string>
+  <key>StandardErrorPath</key><string>/Users/bobkim/playmat-run/data/tunnel.log</string>
+</dict></plist>

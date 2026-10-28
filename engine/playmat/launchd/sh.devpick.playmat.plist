@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Keeps Playmat (game server + Claude service) running as a system daemon (runs as bobkim, survives logouts):
+     supervise.sh starts engine/playmat/run.sh whenever the launcher is down, except during a deploy. install.sh -->
+<plist version="1.0"><dict>
+  <key>Label</key><string>sh.devpick.playmat</string>
+  <key>UserName</key><string>bobkim</string>
+  <key>ProgramArguments</key><array>
+    <string>/bin/bash</string><string>/Users/bobkim/dev/mtg-ai/engine/playmat/launchd/supervise.sh</string>
+  </array>
+  <key>EnvironmentVariables</key><dict>
+    <key>HOME</key><string>/Users/bobkim</string>
+    <key>PATH</key><string>/Users/bobkim/.local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>ThrottleInterval</key><integer>30</integer>
+  <key>StandardOutPath</key><string>/Users/bobkim/playmat-run/data/supervise.log</string>
+  <key>StandardErrorPath</key><string>/Users/bobkim/playmat-run/data/supervise.log</string>
+</dict></plist>

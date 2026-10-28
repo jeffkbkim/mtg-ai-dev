@@ -13,6 +13,9 @@ REC=${MTGAI_RECORD_DIR:-$HOME/mtg-data/playmat-games}
 active() { find "$REC" -name game_log.jsonl -mmin -10 2>/dev/null | grep -q .; }
 [ "${1:-}" = "--go" ] || { echo "refusing: deploys need an explicit --go after a person checked no game is running"; exit 2; }
 if active; then echo "a game was active in the last 10 minutes: not deployed"; find "$REC" -name game_log.jsonl -mmin -10; exit 2; fi
+# the sh.devpick.playmat daemon (launchd/supervise.sh) leaves Playmat alone while this lock is held
+DATA=${PLAYMAT_DATA:-$RUN/data}
+touch "$DATA/deploying"; trap 'rm -f "$DATA/deploying"' EXIT
 "$HERE/run.sh" stop
 rm -rf "$RUN/build-prev"
 mv "$RUN/build" "$RUN/build-prev"
