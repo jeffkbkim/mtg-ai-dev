@@ -10,7 +10,8 @@ using as extra training data or as an opponent.
   (`claude -p`, stream-json, no tools). The conversation restarts at the start of each of the seat's own turns with a
   log of the game so far. Replies are one JSON line `{"choice": n, "reason": "..."}`, optionally with `"pass_until"`
   (`my_main`, `end_of_turn` or `my_turn`) to skip empty priority windows (never its own main phases, combat or
-  anything on the stack); the prompt asks for one on every PASS that isn't followed by an action at the next window; an invalid reply gets one retry, then option 0 is played and
+  anything on the stack); the prompt asks for one on every PASS that isn't followed by an action at the next window.
+  Its own upkeep and draw step are always passed when the stack is empty (recorded `"auto": "own_upkeep_draw"`); an invalid reply gets one retry, then option 0 is played and
   the decision is flagged `invalid`.
 - `render.py`: observation and options as text. Card rules text is shown the first time a seat sees a card
   (`engine/vocab/dsk_card_text.json`, dumped from XMage by `engine/xmage/CardTextDump.java`).
