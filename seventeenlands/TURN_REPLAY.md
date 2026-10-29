@@ -180,7 +180,7 @@ On 100 games (seed 11, `--probe 30`) there were 9,045 rows: 8,066 recorded, 266 
 ## Quality batch, 2026-10-28 (1,500 games, seeds 2001/2002/2004, `--probe 30 --rows`, main `4966286`)
 
 Four workers of 500 games were started on the mini; the seed-2003 worker died at start (JVM socket timeout), and the
-four-worker start most likely caused a WindowServer hang and logout on the mini. Use at most two workers there.
+four-worker start caused a WindowServer hang and logout on the mini: the crash report shows each Python process at about 13 GB while loading the replay parquet (about 53 GB on a 16 GB machine). Fix the loading before running it on the mini again.
 
 | Turns | Reproduced |
 |---|---:|
