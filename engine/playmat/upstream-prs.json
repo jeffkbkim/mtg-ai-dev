@@ -1,0 +1,128 @@
+{
+ "105": {
+  "checks": [
+   "SUCCESS"
+  ],
+  "closedAt": null,
+  "comments": 0,
+  "lastActivity": null,
+  "mergeable": "MERGEABLE",
+  "mergedAt": null,
+  "others": [],
+  "reviews": 0,
+  "state": "OPEN",
+  "title": "Match: dim tapped permanents and count open lands on land stacks"
+ },
+ "106": {
+  "checks": [
+   "SUCCESS"
+  ],
+  "closedAt": null,
+  "comments": 0,
+  "lastActivity": null,
+  "mergeable": "MERGEABLE",
+  "mergedAt": null,
+  "others": [],
+  "reviews": 0,
+  "state": "OPEN",
+  "title": "Launcher: accept extra browser origins from PLAYMAT_EXTRA_ORIGINS"
+ },
+ "107": {
+  "checks": [
+   "SUCCESS"
+  ],
+  "closedAt": null,
+  "comments": 0,
+  "lastActivity": null,
+  "mergeable": "MERGEABLE",
+  "mergedAt": null,
+  "others": [],
+  "reviews": 0,
+  "state": "OPEN",
+  "title": "Deck builder: lay out the deck in columns by mana value"
+ },
+ "108": {
+  "checks": [
+   "SUCCESS"
+  ],
+  "closedAt": null,
+  "comments": 0,
+  "lastActivity": null,
+  "mergeable": "CONFLICTING",
+  "mergedAt": null,
+  "others": [],
+  "reviews": 0,
+  "state": "OPEN",
+  "title": "Match: estimate combat while declaring attackers and blockers"
+ },
+ "109": {
+  "checks": [
+   "SUCCESS"
+  ],
+  "closedAt": null,
+  "comments": 0,
+  "lastActivity": null,
+  "mergeable": "MERGEABLE",
+  "mergedAt": null,
+  "others": [],
+  "reviews": 0,
+  "state": "OPEN",
+  "title": "Match: warn about unblocked must-be-blocked attackers, and log the ser"
+ },
+ "110": {
+  "checks": [
+   "SUCCESS"
+  ],
+  "closedAt": null,
+  "comments": 0,
+  "lastActivity": null,
+  "mergeable": "MERGEABLE",
+  "mergedAt": null,
+  "others": [],
+  "reviews": 0,
+  "state": "OPEN",
+  "title": "Match: signal triggered abilities on the board"
+ },
+ "111": {
+  "checks": [
+   "SUCCESS"
+  ],
+  "closedAt": null,
+  "comments": 0,
+  "lastActivity": null,
+  "mergeable": "MERGEABLE",
+  "mergedAt": null,
+  "others": [],
+  "reviews": 0,
+  "state": "OPEN",
+  "title": "Match: explain keywords where they are printed, and show counters as s"
+ },
+ "112": {
+  "checks": [
+   "SUCCESS"
+  ],
+  "closedAt": null,
+  "comments": 0,
+  "lastActivity": null,
+  "mergeable": "MERGEABLE",
+  "mergedAt": null,
+  "others": [],
+  "reviews": 0,
+  "state": "OPEN",
+  "title": "Match: keep revealed hand cards known and show a Room's unlocked doors"
+ },
+ "113": {
+  "checks": [
+   "SUCCESS"
+  ],
+  "closedAt": null,
+  "comments": 0,
+  "lastActivity": null,
+  "mergeable": "MERGEABLE",
+  "mergedAt": null,
+  "others": [],
+  "reviews": 0,
+  "state": "OPEN",
+  "title": "Match: library list, mana available and an AI thinking timer"
+ }
+}

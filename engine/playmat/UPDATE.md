@@ -6,6 +6,11 @@ that is safe, and holds it for Jeff when it isn't. Each run appends its review t
 
 ## Steps
 
+0. Every run, before anything else: `engine/playmat/check_upstream_prs.sh` checks our upstream PRs (#105-#113,
+   read-only) against the last snapshot (`upstream-prs.json`). Put its lines in the run's log entry. Any CHANGED line
+   (merged, closed, a maintainer review or comment, a new conflict, CI not passing) goes first in the run's final
+   message, with the comment text summarised, so it reaches Jeff. Never comment, push, rebase or force-push on
+   Playmat's GitHub: a reply or a rebase (e.g. #108's conflict) waits for Jeff's yes.
 1. `engine/playmat/update_upstream.sh` fetches Playmat's master and prints the new commits, files changed per area,
    which DSK card files changed, the security pass inputs (dependency, build, install and CI changes; URLs the new
    code adds) and whether our patches still apply. No new commits: log "no changes" and stop.
