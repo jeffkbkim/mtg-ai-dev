@@ -6,20 +6,23 @@ One seeded sample of --sample games is cut into batches of --batch games; batch 
 of the sorted sample (turn_replay.py --sample/--offset), so no game is replayed twice. Worker w runs batches
 w, w+workers, ... one after another. Each batch is its own run directory, turn_replay/<name>/b0000, so a crash costs
 one batch; a batch with a summary.json is done and is skipped when the command is run again. Progress goes to
-turn_replay/<name>/progress.log.
+turn_replay/<name>/progress.log. Stop it with `kill <driver pid>`: running batches are killed and rerun next time.
 """
-import argparse, os, subprocess, sys, time
-from multiprocessing import Pool
+import argparse, signal, subprocess, sys, threading, time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 DATA = Path.home() / "mtg-data/17lands/DSK/turn_replay"
+RUNNING, STOP = set(), threading.Event()
 
 
 def worker(job):
     a, w = job
     nb = -(-a.sample // a.batch)
     for b in range(w, nb, a.workers):
+        if STOP.is_set():
+            return
         run = f"{a.name}/b{b:04d}"
         if (DATA / run / "summary.json").exists():
             continue
@@ -29,7 +32,10 @@ def worker(job):
         t = time.time()
         (DATA / run).mkdir(parents=True, exist_ok=True)
         with open(DATA / run / "stdout.log", "w") as log:
-            code = subprocess.call(cmd, stdout=log, stderr=subprocess.STDOUT, cwd=HERE.parent)
+            p = subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT, cwd=HERE.parent, start_new_session=True)
+            RUNNING.add(p)
+            code = p.wait()
+            RUNNING.discard(p)
         with open(DATA / a.name / "progress.log", "a") as p:
             p.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} worker {w} batch {b}/{nb} games {games} exit {code} "
                     f"{time.time() - t:.0f}s\n")
@@ -46,8 +52,14 @@ def main():
     ap.add_argument("extra", nargs="*", help="passed on to turn_replay.py after --, e.g. -- --probe 30 --rows")
     a = ap.parse_args()
     (DATA / a.name).mkdir(parents=True, exist_ok=True)
-    with Pool(a.workers) as pool:
-        pool.map(worker, [(a, w) for w in range(a.workers)])
+    def stop(*_):   # kill -TERM <driver pid> stops everything; the unfinished batches rerun next time
+        STOP.set()
+        for p in list(RUNNING):
+            subprocess.run(["pkill", "-TERM", "-g", str(p.pid)])
+    signal.signal(signal.SIGTERM, stop)
+    signal.signal(signal.SIGINT, stop)
+    with ThreadPoolExecutor(a.workers) as ex:
+        list(ex.map(worker, [(a, w) for w in range(a.workers)]))
 
 
 if __name__ == "__main__":
