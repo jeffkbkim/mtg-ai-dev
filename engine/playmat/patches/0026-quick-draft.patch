@@ -49,10 +49,10 @@ index 2e46e77bf9..d618f04bf3 100644
          card.rarity = CareerRules.LAND;
 diff --git a/Mage.Server/src/main/java/mage/server/career/QuickDraft.java b/Mage.Server/src/main/java/mage/server/career/QuickDraft.java
 new file mode 100644
-index 0000000000..e411b96d2d
+index 0000000000..eb053138e4
 --- /dev/null
 +++ b/Mage.Server/src/main/java/mage/server/career/QuickDraft.java
-@@ -0,0 +1,842 @@
+@@ -0,0 +1,865 @@
 +package mage.server.career;
 +
 +import com.google.gson.Gson;
@@ -68,17 +68,17 @@ index 0000000000..e411b96d2d
 +import mage.cards.decks.DeckCardLists;
 +import org.apache.log4j.Logger;
 +
++import java.io.ByteArrayOutputStream;
 +import java.io.IOException;
-+import java.net.URI;
-+import java.net.http.HttpClient;
-+import java.net.http.HttpRequest;
-+import java.net.http.HttpResponse;
++import java.io.InputStream;
++import java.io.OutputStream;
++import java.net.HttpURLConnection;
++import java.net.URL;
 +import java.nio.charset.StandardCharsets;
 +import java.nio.file.Files;
 +import java.nio.file.Path;
 +import java.nio.file.Paths;
 +import java.nio.file.StandardOpenOption;
-+import java.time.Duration;
 +import java.time.LocalDate;
 +import java.util.ArrayList;
 +import java.util.Arrays;
@@ -115,7 +115,6 @@ index 0000000000..e411b96d2d
 +
 +    private final Path root;
 +    private final int brainPort;
-+    private final HttpClient http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(2)).build();
 +    /** quick draft tables in play: table id -> run, to count the result when the match ends */
 +    private final Map<UUID, Seated> tables = new ConcurrentHashMap<>();
 +
@@ -333,46 +332,70 @@ index 0000000000..e411b96d2d
 +
 +    // ---- the brain service
 +
-+    private JsonObject callBrain(String path, JsonObject body) {
++    /** one request to the brain service: the answer's JSON, or null when it isn't there or fails */
++    private String http(String method, String path, String body, int timeoutMs) {
++        HttpURLConnection connection = null;
 +        try {
-+            HttpRequest request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + brainPort + path))
-+                    .timeout(Duration.ofSeconds(path.equals("/build") ? 10 : 3))
-+                    .header("Content-Type", "application/json")
-+                    .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
-+                    .build();
-+            HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
-+            if (response.statusCode() != 200) {
-+                logger.warn("Quick draft: brain " + path + " answered " + response.statusCode() + ": " + response.body());
-+                return null;
++            connection = (HttpURLConnection) new URL("http://127.0.0.1:" + brainPort + path).openConnection();
++            connection.setRequestMethod(method);
++            connection.setConnectTimeout(2000);
++            connection.setReadTimeout(timeoutMs);
++            if (body != null) {
++                connection.setDoOutput(true);
++                connection.setRequestProperty("Content-Type", "application/json");
++                try (OutputStream out = connection.getOutputStream()) {
++                    out.write(body.getBytes(StandardCharsets.UTF_8));
++                }
 +            }
-+            return JsonParser.parseString(response.body()).getAsJsonObject();
++            int status = connection.getResponseCode();
++            try (InputStream in = status == 200 ? connection.getInputStream() : connection.getErrorStream()) {
++                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
++                byte[] buffer = new byte[8192];
++                for (int n; in != null && (n = in.read(buffer)) > 0; ) {
++                    bytes.write(buffer, 0, n);
++                }
++                String text = new String(bytes.toByteArray(), StandardCharsets.UTF_8);
++                if (status != 200) {
++                    logger.warn("Quick draft: brain " + path + " answered " + status + ": " + text);
++                    return null;
++                }
++                return text;
++            }
 +        } catch (IOException | RuntimeException e) {
 +            logger.warn("Quick draft: brain service unreachable (" + path + "): " + e.getMessage());
 +            return null;
-+        } catch (InterruptedException e) {
-+            Thread.currentThread().interrupt();
++        } finally {
++            if (connection != null) {
++                connection.disconnect();
++            }
++        }
++    }
++
++    private JsonObject callBrain(String path, JsonObject body) {
++        String text = http("POST", path, body.toString(), path.equals("/build") ? 10000 : 3000);
++        try {
++            return text == null ? null : new JsonParser().parse(text).getAsJsonObject();
++        } catch (RuntimeException e) {
++            logger.warn("Quick draft: brain " + path + " answered something unreadable: " + e.getMessage());
 +            return null;
 +        }
 +    }
 +
 +    public List<QuickDraftBrain> brains() {
 +        List<QuickDraftBrain> out = new ArrayList<>();
++        String text = http("GET", "/brains", null, 2000);
++        if (text == null) {
++            return out;
++        }
 +        try {
-+            HttpRequest request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + brainPort + "/brains"))
-+                    .timeout(Duration.ofSeconds(2)).GET().build();
-+            HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
-+            if (response.statusCode() == 200) {
-+                for (JsonElement element : JsonParser.parseString(response.body()).getAsJsonObject().getAsJsonArray("brains")) {
-+                    QuickDraftBrain brain = new QuickDraftBrain();
-+                    brain.name = element.getAsJsonObject().get("name").getAsString();
-+                    brain.label = element.getAsJsonObject().get("label").getAsString();
-+                    out.add(brain);
-+                }
++            for (JsonElement element : new JsonParser().parse(text).getAsJsonObject().getAsJsonArray("brains")) {
++                QuickDraftBrain brain = new QuickDraftBrain();
++                brain.name = element.getAsJsonObject().get("name").getAsString();
++                brain.label = element.getAsJsonObject().get("label").getAsString();
++                out.add(brain);
 +            }
-+        } catch (IOException | RuntimeException e) {
-+            logger.warn("Quick draft: brain service unreachable (/brains): " + e.getMessage());
-+        } catch (InterruptedException e) {
-+            Thread.currentThread().interrupt();
++        } catch (RuntimeException e) {
++            logger.warn("Quick draft: brain list unreadable: " + e.getMessage());
 +        }
 +        return out;
 +    }
@@ -897,10 +920,10 @@ index 0000000000..e411b96d2d
 +}
 diff --git a/Mage.Server/src/main/java/mage/server/websocket/api/QuickDraftApi.java b/Mage.Server/src/main/java/mage/server/websocket/api/QuickDraftApi.java
 new file mode 100644
-index 0000000000..3877165fe2
+index 0000000000..5922b8e674
 --- /dev/null
 +++ b/Mage.Server/src/main/java/mage/server/websocket/api/QuickDraftApi.java
-@@ -0,0 +1,128 @@
+@@ -0,0 +1,129 @@
 +package mage.server.websocket.api;
 +
 +import mage.cards.decks.DeckCardLists;
@@ -912,6 +935,7 @@ index 0000000000..3877165fe2
 +import mage.server.websocket.rpc.RpcMethod;
 +
 +import java.util.ArrayList;
++import java.util.Arrays;
 +import java.util.List;
 +
 +import static mage.server.websocket.rpc.RpcParam.Type.ARRAY;
@@ -943,7 +967,7 @@ index 0000000000..3877165fe2
 +    }
 +
 +    static List<RpcMethod> methods(ApiContext ctx) {
-+        return List.of(
++        return Arrays.asList(
 +                RpcMethod.named("quickDraft")
 +                        .returns("QuickDraftState")
 +                        .doc("Quick draft: the run in progress, recent runs, the bot brains on offer and whether the brain service is up.")
