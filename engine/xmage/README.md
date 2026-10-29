@@ -58,6 +58,9 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   (zone HAND, revealed) after priority and update events, disappears once it is shuffled away, discarded or back in
   hand as a new object or its turn is rolled back, that a card revealed from the library and put into the hand is not
   remembered, and that a never-revealed hand card never shows. Prints PASS or FAIL.
+- `RoomBounceCheck.java`: regression check that Unnerving Grasp on a Room (own or the opponent's, one or both doors
+  unlocked) returns it to its owner's hand as one card, the caster manifests dread, either door can be cast again for
+  its own cost, and the recast Room has only that door unlocked. Prints PASS or FAIL.
 - `BlockCheck.java`: builds a combat board directly and asks XMage's AI to block (for chasing block bugs).
 - `decks/`: smoke-test decks; `dsk_ug_modal.dck` swaps in modal spells to exercise MODE prompts.
 
@@ -103,6 +106,7 @@ VocabDump keeps the `tokens` list already in the file (token names come from rec
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP FaceDownRoomCheck) # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP ColorChoiceCheck) # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP VeteranSurvivorCheck) # expect PASS
+(cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP RoomBounceCheck)  # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP RevealCheck)      # expect PASS
 ```
 
