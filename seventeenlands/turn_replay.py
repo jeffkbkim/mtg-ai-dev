@@ -664,14 +664,34 @@ def diff(exp: dict, obs: dict) -> dict:
 
 # ---------------------------------------------------------------- the driver
 
-def run(args):
-    names = Names()
+def _write_sample(seed: int, games: int, path: str):
     lf = pl.scan_parquet(DATA / "parquet/replay_data.parquet")
     n = lf.select(pl.len()).collect().item()
-    rows_idx = sorted(random.Random(args.seed).sample(range(n), args.games))
-    df = lf.with_row_index("row").filter(pl.col("row").is_in(rows_idx)).collect()
+    rows_idx = sorted(random.Random(seed).sample(range(n), games))
+    lf.with_row_index("row").filter(pl.col("row").is_in(rows_idx)).collect().write_parquet(path)
+
+
+def sampled_rows(seed: int, games: int, path: Path) -> pl.DataFrame:
+    """The sampled games, picked in a short-lived child process. Picking rows out of the 1M-game file makes polars
+    decode every column of the row groups it reads, about 8 GB for a moment, and the process keeps ~5 GB of that after.
+    Four workers each holding that hung the mini on 2026-10-28. The child exits once the few hundred rows are written,
+    which returns the memory, and a lock lets only one worker pick at a time."""
+    import fcntl, multiprocessing
+    with open(DATA / "turn_replay" / ".sample.lock", "w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        p = multiprocessing.get_context("spawn").Process(target=_write_sample, args=(seed, games, str(path)))
+        p.start()
+        p.join()
+    if p.exitcode != 0:
+        sys.exit(f"picking the sample failed (exit code {p.exitcode})")
+    return pl.read_parquet(path)
+
+
+def run(args):
+    names = Names()
     out = DATA / "turn_replay" / args.run
     (out / "decks").mkdir(parents=True, exist_ok=True)
+    df = sampled_rows(args.seed, args.games, out / "sample.parquet")
     recs, specs, skipped = {}, [], {}
     for row in df.iter_rows(named=True):
         rec = Record(row, names)

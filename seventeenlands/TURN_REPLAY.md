@@ -194,3 +194,12 @@ Decision rows (user seat, clean reproduced turns): 129,610, about 86 per game. R
 
 Speed: about 8.3 s per game per worker with three workers running, so about 21 games a minute in total. At two workers
 the full 1.01M games would take roughly seven weeks on the mini.
+
+## Memory fix, 2026-10-29
+
+The ~13 GB per process came from picking the sample: `with_row_index().filter(is_in(...))` can't be pushed into the
+parquet reader, so polars decoded every column of the file (2,509 columns, 13 row groups of ~82k games). Reading in
+windows, one slice per game, the streaming engine and smaller row groups all still peaked at 7-9 GB, and the process
+kept ~5 GB afterwards. The sample is now picked in a short-lived child process that writes `sample.parquet` to the run
+directory and exits, under a lock so only one worker picks at a time. Measured: peak 6.8 GB in the child for ~7 s,
+74 MB in the parent afterwards (500 games, seed 2001).

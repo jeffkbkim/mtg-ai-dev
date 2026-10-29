@@ -25,7 +25,10 @@ Keep large data, checkpoints and secrets outside Git. Record experiment configur
 
 ## Mac mini heavy jobs
 
-The mini has 16 GB. On 2026-10-28 four 17lands turn-replay processes reached ~13 GB each, and WindowServer hung, which logged the user out.
-- Replay search (seventeenlands turn_replay / replay search): 1 worker only, until someone finds why each process reaches ~13 GB. Agents don't start replay search on their own.
-- Never run heavy jobs alongside each other: the nightly soak, builds, test servers, the decisions export, replay search. Never run them during the user's Playmat games.
+The mini has 16 GB. On 2026-10-28 four 17lands turn-replay processes reached ~13 GB each while loading the replay data, and WindowServer hung, which logged the user out.
+- Replay search (seventeenlands turn_replay): fixed 2026-10-29. Picking the sample games decodes whole row groups of the
+  1M-game parquet (~7-8 GB for a few seconds); it now runs in a short-lived child process, one worker at a time
+  (a lock), so each worker then holds only ~100 MB of Python plus its JVM (-Xmx4g). Measure before going above 3 workers. Agents don't start replay search on their own.
+- Never run heavy jobs alongside each other: the nightly soak, builds, test servers, the decisions export, replay search.
+- The user is fine with heavy jobs while they play Playmat games (2026-10-29).
 - Guard long data jobs on the process's own memory (RSS/footprint) as well as on swap and free memory, and stop them before the box swaps hard.
