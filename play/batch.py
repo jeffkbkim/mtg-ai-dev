@@ -125,6 +125,9 @@ def _pick(cands, want_i, what):
 
 def next_choice(plan, msg, label_of):
     """(option index, step) for this decision from the plan, or raises LookupError with why it doesn't fit."""
+    # targets the game chose itself (one legal target) were never asked: skip to the next play
+    while plan["pos"] < len(plan["steps"]) and plan["steps"][plan["pos"]]["kind"] == "TARGET" and msg["kind"] == "PRIORITY":
+        plan["pos"] += 1
     if plan["pos"] >= len(plan["steps"]):
         raise LookupError("plan finished")
     step = plan["steps"][plan["pos"]]

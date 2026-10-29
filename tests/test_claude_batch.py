@@ -151,3 +151,12 @@ def test_attack_plan_ending_without_done_is_not_a_fallback():
     p._from_batch(attack_msg(es2, [2]), es2[0])     # Wolf declared from the plan; XMage then ends the attack itself
     assert p._from_batch({"kind": "PRIORITY", "prompt": "", "obs": {"entries": es2}, "options": [opt("PASS")]}, es2[0]) is None
     assert p.batch is None and p.batch_dropped is None
+
+
+def test_targets_the_game_chose_itself_are_skipped():
+    es = entries(card("Swamp", zone="HAND"), card("Murder", zone="HAND"), card("Wolf", mine=False), step="Precombat Main")
+    m = {"kind": "PRIORITY", "prompt": "priority", "obs": {"entries": es}, "options": [opt("PASS"), opt("Spell | Murder | Cast Murder", 2)]}
+    plan = batch.make_plan(m, 1, {"targets": [3], "then": [{"do": "Play Swamp", "source": 1}]}, option_label)
+    m2 = {**m, "options": [opt("PASS"), opt("Play land | Swamp | Play Swamp", 1)]}   # no TARGET was asked
+    k, step = batch.next_choice(plan, m2, option_label)
+    assert k == 1 and step["label"] == "Play Swamp"
