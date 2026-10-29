@@ -664,14 +664,14 @@ def diff(exp: dict, obs: dict) -> dict:
 
 # ---------------------------------------------------------------- the driver
 
-def _write_sample(seed: int, games: int, path: str):
+def _write_sample(seed: int, games: int, path: str, sample: int = 0, offset: int = 0):
     lf = pl.scan_parquet(DATA / "parquet/replay_data.parquet")
     n = lf.select(pl.len()).collect().item()
-    rows_idx = sorted(random.Random(seed).sample(range(n), games))
+    rows_idx = sorted(random.Random(seed).sample(range(n), sample or games))[offset:offset + games]
     lf.with_row_index("row").filter(pl.col("row").is_in(rows_idx)).collect().write_parquet(path)
 
 
-def sampled_rows(seed: int, games: int, path: Path) -> pl.DataFrame:
+def sampled_rows(seed: int, games: int, path: Path, sample: int = 0, offset: int = 0) -> pl.DataFrame:
     """The sampled games, picked in a short-lived child process. Picking rows out of the 1M-game file makes polars
     decode every column of the row groups it reads, about 8 GB for a moment, and the process keeps ~5 GB of that after.
     Four workers each holding that hung the mini on 2026-10-28. The child exits once the few hundred rows are written,
@@ -679,7 +679,7 @@ def sampled_rows(seed: int, games: int, path: Path) -> pl.DataFrame:
     import fcntl, multiprocessing
     with open(DATA / "turn_replay" / ".sample.lock", "w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
-        p = multiprocessing.get_context("spawn").Process(target=_write_sample, args=(seed, games, str(path)))
+        p = multiprocessing.get_context("spawn").Process(target=_write_sample, args=(seed, games, str(path), sample, offset))
         p.start()
         p.join()
     if p.exitcode != 0:
@@ -691,7 +691,7 @@ def run(args):
     names = Names()
     out = DATA / "turn_replay" / args.run
     (out / "decks").mkdir(parents=True, exist_ok=True)
-    df = sampled_rows(args.seed, args.games, out / "sample.parquet")
+    df = sampled_rows(args.seed, args.games, out / "sample.parquet", args.sample, args.offset)
     recs, specs, skipped = {}, [], {}
     for row in df.iter_rows(named=True):
         rec = Record(row, names)
@@ -990,6 +990,10 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--games", type=int, default=20)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--sample", type=int, default=0,
+                    help="draw this many games with --seed (default --games) and replay --games of them from --offset, "
+                         "so batches of one sample never overlap (see replay_batches.py)")
+    ap.add_argument("--offset", type=int, default=0)
     ap.add_argument("--budget", type=int, default=40, help="attempts per turn")
     ap.add_argument("--chunk", type=int, default=10, help="games per JVM")
     ap.add_argument("--game-budget", type=int, default=400, help="rewinds per game, at most")
