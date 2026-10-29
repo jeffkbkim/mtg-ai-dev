@@ -49,10 +49,10 @@ index 2e46e77bf9..d618f04bf3 100644
          card.rarity = CareerRules.LAND;
 diff --git a/Mage.Server/src/main/java/mage/server/career/QuickDraft.java b/Mage.Server/src/main/java/mage/server/career/QuickDraft.java
 new file mode 100644
-index 0000000000..eb053138e4
+index 0000000000..13f1b029e9
 --- /dev/null
 +++ b/Mage.Server/src/main/java/mage/server/career/QuickDraft.java
-@@ -0,0 +1,865 @@
+@@ -0,0 +1,874 @@
 +package mage.server.career;
 +
 +import com.google.gson.Gson;
@@ -849,7 +849,16 @@ index 0000000000..eb053138e4
 +        run.tableId = null;
 +        Map<String, Object> line = new LinkedHashMap<>();
 +        line.put("event", "game");
-+        line.putAll(gson.fromJson(gson.toJson(result), Map.class));
++        line.put("number", result.number);
++        line.put("tableId", result.tableId);
++        line.put("seat", result.seat);
++        line.put("opponent", result.opponent);
++        line.put("brain", result.brain);
++        line.put("colors", result.colors);
++        line.put("pilot", result.pilot);
++        line.put("won", result.won);
++        line.put("turns", result.turns);
++        line.put("ended", result.ended);
 +        line.put("record", run.wins + "-" + run.losses);
 +        append(run, "games.jsonl", line);
 +        if (run.wins >= WINS || run.losses >= LOSSES) {
@@ -1189,11 +1198,16 @@ index 6e1ef742ff..b323c6adda 100644
            { path: '/tables', lazy: () => import('./screens/TablesScreen').then((m) => ({ Component: m.TablesScreen })) },
 diff --git a/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css b/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css
 new file mode 100644
-index 0000000000..4ae66e064d
+index 0000000000..f18ffde4b5
 --- /dev/null
 +++ b/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css
-@@ -0,0 +1,222 @@
+@@ -0,0 +1,235 @@
 +/* mtg-ai: Quick Draft (QuickDraftScreen.tsx); the pick screen reuses events/Draft.module.css, the rest Career's modes */
++
++/* the pick screen covers the app shell, like an event draft */
++.immersive {
++  z-index: 60;
++}
 +
 +.heading {
 +  margin: 0;
@@ -1328,22 +1342,6 @@ index 0000000000..4ae66e064d
 +  text-align: center;
 +}
 +
-+.wheelTag {
-+  position: absolute;
-+  top: 8px;
-+  left: 50%;
-+  transform: translateX(-50%);
-+  padding: 2px 10px;
-+  border-radius: 999px;
-+  background: var(--decision);
-+  color: var(--mat-900);
-+  font-family: var(--font-print);
-+  font-size: var(--text-xs, 12px);
-+  font-weight: 700;
-+  letter-spacing: 0.06em;
-+  text-transform: uppercase;
-+  pointer-events: none;
-+}
 +
 +.colorCounts {
 +  display: inline-flex;
@@ -1406,6 +1404,30 @@ index 0000000000..4ae66e064d
 +}
 +
 +@media (max-width: 700px) {
++  .top {
++    grid-template-columns: 1fr auto;
++    padding: var(--space-3) var(--space-4);
++  }
++
++  .top h1 {
++    font-size: var(--text-2xl);
++  }
++
++  .booster {
++    grid-template-columns: repeat(3, minmax(0, 1fr));
++    gap: 10px;
++    max-width: none;
++  }
++
++  .action {
++    max-width: none;
++  }
++
++  .picks {
++    max-height: 32vh;
++    overflow: auto;
++  }
++
 +  .choice {
 +    min-width: 0;
 +    flex: 1;
@@ -1417,14 +1439,17 @@ index 0000000000..4ae66e064d
 +}
 diff --git a/Mage.Web.Client/src/app/quickdraft/QuickDraftScreen.tsx b/Mage.Web.Client/src/app/quickdraft/QuickDraftScreen.tsx
 new file mode 100644
-index 0000000000..23e9b5a1c3
+index 0000000000..8d5f2377e9
 --- /dev/null
 +++ b/Mage.Web.Client/src/app/quickdraft/QuickDraftScreen.tsx
-@@ -0,0 +1,513 @@
+@@ -0,0 +1,519 @@
 +import { Bot, Layers, LogOut, Swords, Timer } from 'lucide-react';
 +import { useEffect, useMemo, useState } from 'react';
++import { createPortal } from 'react-dom';
 +import type { CareerPoolCard, QuickDraftBrain, QuickDraftRun, QuickDraftState } from '../../protocol/generated/views';
 +import { api } from '../connection';
++import { registerMessages } from '../i18n';
++import careerMessages from '../i18n/en/career';
 +import { LimitedBuilder } from '../career/CareerLimitedBuild';
 +import { DraftReview } from '../career/CareerLimitedCoach';
 +import { CLAUDE_EFFORTS, CLAUDE_MODELS, claudeSkill } from '../screens/aiSetup';
@@ -1447,6 +1472,9 @@ index 0000000000..23e9b5a1c3
 + * build 40 cards (a suggested build and lands are one click); then play Bo1 games against the bots' decks, one after
 + * another, until seven wins or three losses. Every pick of every seat is recorded on the server for training data.
 + */
++
++// the builder and the draft review are Career's and speak its messages
++registerMessages(careerMessages);
 +
 +const SET_NAMES: Record<string, string> = { DSK: 'Duskmourn: House of Horror', FDN: 'Foundations' };
 +const PREFS = 'playmat.quickDraft.prefs';
@@ -1646,7 +1674,6 @@ index 0000000000..23e9b5a1c3
 +    setShownKey(packKey);
 +    setSelected(null);
 +  }
-+  const wheeled = new Set(run.wheeled ?? []);
 +  const columns = useMemo(() => columnsOf(pool), [pool]);
 +  const counts = useMemo(() => {
 +    const byColor: Record<string, number> = {};
@@ -1679,9 +1706,10 @@ index 0000000000..23e9b5a1c3
 +    return () => window.removeEventListener('keydown', onKey);
 +  });
 +
-+  return (
-+    <div className={draft.screen}>
-+      <header className={draft.top}>
++  // over the whole page, like an event draft: the app shell's layout would otherwise hold the fixed screen
++  return createPortal(
++    <div className={[draft.screen, styles.immersive].join(' ')}>
++      <header className={[draft.top, styles.top].join(' ')}>
 +        <div className={draft.where}>
 +          <span className={draft.set}>{run.setName} · Quick Draft</span>
 +          <h1 className={draft.title}>Pack {run.round} <span>· Pick {run.pick}</span></h1>
@@ -1699,14 +1727,14 @@ index 0000000000..23e9b5a1c3
 +            This pack came back around. Taken since you saw it: {run.takenSince!.join(', ')}.
 +          </p>
 +        )}
-+        <div className={draft.booster} role="listbox" aria-label={`Pick a card, ${pack.length} left in the pack`}>
++        <div className={[draft.booster, styles.booster].join(' ')} role="listbox" aria-label={`Pick a card, ${pack.length} left in the pack`}>
 +          {pack.map((card, index) => (
 +            <button
 +              key={`${packKey}-${index}`}
 +              type="button"
 +              role="option"
 +              aria-selected={selected === index}
-+              aria-label={card.name + (wheeled.has(card.name ?? '') ? ', wheeled' : '')}
++              aria-label={card.name}
 +              className={[draft.card, selected === index ? draft.cardSelected : ''].join(' ')}
 +              style={{ animationDelay: `${index * 25}ms` }}
 +              disabled={busy}
@@ -1714,17 +1742,16 @@ index 0000000000..23e9b5a1c3
 +              onDoubleClick={() => void confirm(index)}
 +            >
 +              <CardFace card={{ name: card.name, setCode: card.setCode, cardNumber: card.cardNumber }} size="normal" />
-+              {wheeled.has(card.name ?? '') && <span className={styles.wheelTag}>Wheeled</span>}
 +            </button>
 +          ))}
 +        </div>
-+        <div className={draft.action}>
++        <div className={[draft.action, styles.action].join(' ')}>
 +          <p className={draft.hint}>{selected !== null ? 'Double-click or press Space to pick' : 'Choose a card'}</p>
 +          <Button variant="decision" size="xl" busy={busy} disabled={selected === null} onClick={() => void confirm(selected)}>Pick</Button>
 +        </div>
 +      </main>
 +
-+      <section className={draft.picks} aria-label={`Your picks, ${pool.length} cards`}>
++      <section className={[draft.picks, styles.picks].join(' ')} aria-label={`Your picks, ${pool.length} cards`}>
 +        <h2 className={draft.picksLabel}>
 +          Your picks <span>{pool.length}</span>
 +          <span className={styles.colorCounts}>
@@ -1748,7 +1775,8 @@ index 0000000000..23e9b5a1c3
 +          ))}
 +        </div>
 +      </section>
-+    </div>
++    </div>,
++    document.body,
 +  );
 +}
 +
