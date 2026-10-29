@@ -43,7 +43,7 @@ using as extra training data or as an opponent.
 - `launch_pairs.sh`: runs variant-vs-baseline deck pairs (each pair twice, the variant on seat A then on seat B, GAMES
   games each), 6 parts at a time, e.g. `play/launch_pairs.sh <out> engine/xmage/decks/17lands-r2 600 b03 trophy_10/trophy_11 ...`.
   VARIANT names the variant seat's flags (`VARIANT="facts check"`, or `VARIANT="effort=medium"` for `--effort-a medium`);
-  BOTH gives flags to both seats. `--effort-a` / `--effort-b` set one Claude seat's effort, overriding `--effort`.
+  BOTH gives flags to both seats; SEATINGS=1 runs one part per listed pair (for runs with no variant, list a/b and b/a). `--effort-a` / `--effort-b` set one Claude seat's effort, overriding `--effort`.
 - `review.py`: a reviewer (`claude -p`, no tools) reads each seat's game as that seat saw it and flags clear errors
   ("blunder" or "mistake", judged only on what was visible then, with a category: rules, combat_math, crack_back,
   hidden_info or other) plus suspected engine or harness bugs. Flags go to
