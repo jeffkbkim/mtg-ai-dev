@@ -469,6 +469,10 @@ class ClaudePlayer:
         if not self.batch:
             return None
         plan = self.batch
+        rest = plan["steps"][plan["pos"]:]
+        if rest and all(s.get("done") for s in rest) and msg["kind"] != rest[0]["kind"]:
+            self.batch = None  # the game ended the declarations itself (no attacker or blocker left): the plan is done
+            return None
         try:
             k, step = batch.next_choice(plan, msg, option_label)
         except LookupError as e:

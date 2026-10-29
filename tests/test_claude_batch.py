@@ -138,3 +138,16 @@ def test_player_records_each_planned_decision(monkeypatch, tmp_path):
     p._plan_batch(m, 1, {"attack": [1, 2]}, "both", {})
     assert p._from_batch({"kind": "PRIORITY", "prompt": "", "obs": {"entries": es}, "options": [opt("PASS")]}, es[0]) is None
     assert p.batch is None and "plan has ATTACK" in p.batch_dropped["why"]
+
+
+def test_attack_plan_ending_without_done_is_not_a_fallback():
+    import players
+    p = players.ClaudePlayer.__new__(players.ClaudePlayer)
+    p.batch, p.batch_dropped, p.pass_until, p.log, p.prompt_sha = None, None, None, [], "x"
+    es = entries(card("Bear"), card("Wolf"))
+    p._plan_batch(attack_msg(es, [1, 2]), 1, {"attack": [1, 2]}, "both", {})
+    es2 = [dict(e) for e in es]
+    es2[1]["attacking"] = True
+    p._from_batch(attack_msg(es2, [2]), es2[0])     # Wolf declared from the plan; XMage then ends the attack itself
+    assert p._from_batch({"kind": "PRIORITY", "prompt": "", "obs": {"entries": es2}, "options": [opt("PASS")]}, es2[0]) is None
+    assert p.batch is None and p.batch_dropped is None
