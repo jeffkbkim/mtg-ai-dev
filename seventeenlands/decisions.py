@@ -31,7 +31,7 @@ DATA = Path.home() / f"mtg-data/17lands/{SET}"
 REPO = Path(__file__).resolve().parent.parent
 KEY = ["draft_id", "build_index", "match_number", "game_number"]
 MAX_TURN = 30
-BATCH = 50_000
+BATCH = 20_000   # a batch of the wide replay table is ~2.5 GB in memory at 20k games; 50k peaked over 6 GB
 
 
 def main():
@@ -52,6 +52,10 @@ def main():
     splits = pl.read_parquet(DATA / "splits.parquet")
     n = lf.select(pl.len()).collect().item() if a.limit is None else a.limit
     out = DATA / "decisions"; out.mkdir(exist_ok=True)
+    # each batch's rows go to a part file, so memory holds one batch, not the set (FDN's ~800k games swapped the mini)
+    parts_dir = out / "parts"; parts_dir.mkdir(exist_ok=True)
+    for f in parts_dir.glob("*.parquet"):
+        f.unlink()
     tables = {"mulligans": [], "land_drops": [], "attacks": []}
     for start in range(0, n, BATCH):
         df = lf.slice(start, min(BATCH, n - start)).collect()
@@ -103,16 +107,25 @@ def main():
                 prev_hand, prev = names(g[p + "eot_user_cards_in_hand"]), p
         for k, r in rows.items():
             if r:
-                tables[k].append(pl.DataFrame(r, infer_schema_length=None).join(splits, on="draft_id", how="left"))
+                f = parts_dir / f"{k}-{start:08d}.parquet"
+                pl.DataFrame(r, infer_schema_length=None).join(splits, on="draft_id", how="left").write_parquet(f)
+                tables[k].append(f)
         print(f"{min(start + BATCH, n)}/{n} games", flush=True)
     summary = {}
     for k, parts in tables.items():
-        t = pl.concat(parts, how="diagonal_relaxed")
-        t.write_parquet(out / f"{k}.parquet", compression="zstd")
-        summary[k] = {"rows": t.height, "by_split": dict(t.group_by("split").len().iter_rows()), "missing_split": t["split"].null_count()}
-    summary["mulligans"]["kept_bottomed_consistent"] = float(pl.read_parquet(out / "mulligans.parquet").filter(pl.col("decision") == "keep")["bottomed_consistent"].mean())
-    summary["land_drops"]["land_in_hand_start"] = float(pl.read_parquet(out / "land_drops.parquet")["land_in_hand_start"].mean())
-    summary["attacks"]["attackers_in_available"] = float(pl.read_parquet(out / "attacks.parquet")["attackers_in_available"].mean())
+        # a batch's column can be all-null (no kept hand bottomed anything): diagonal_relaxed settles the types
+        pl.concat([pl.scan_parquet(f) for f in parts], how="diagonal_relaxed").sink_parquet(out / f"{k}.parquet", compression="zstd")
+        t = pl.scan_parquet(out / f"{k}.parquet")
+        summary[k] = {"rows": t.select(pl.len()).collect().item(),
+                      "by_split": dict(t.group_by("split").len().collect().iter_rows()),
+                      "missing_split": t.select(pl.col("split").null_count()).collect().item()}
+    for f in parts_dir.glob("*.parquet"):
+        f.unlink()
+    parts_dir.rmdir()
+    mean = lambda k, c, *where: float(pl.scan_parquet(out / f"{k}.parquet").filter(*where or [pl.lit(True)]).select(pl.col(c).mean()).collect().item())
+    summary["mulligans"]["kept_bottomed_consistent"] = mean("mulligans", "bottomed_consistent", pl.col("decision") == "keep")
+    summary["land_drops"]["land_in_hand_start"] = mean("land_drops", "land_in_hand_start")
+    summary["attacks"]["attackers_in_available"] = mean("attacks", "attackers_in_available")
     (out / "summary.json").write_text(json.dumps(summary, indent=1))
     print(json.dumps(summary, indent=1))
 
