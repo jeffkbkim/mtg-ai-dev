@@ -54,8 +54,10 @@ grep -q '^memory=' "$DATA/settings.properties" 2>/dev/null || echo 'memory=4g' >
 
 PRIMER=${PRIMER:-v2} nohup "$PY" "$HERE/claude_service.py" --port "$PORT" --play-draw "${PLAY_DRAW:-rule}" >> "$DATA/claude_service.log" 2>&1 &
 echo $! > "$DATA/claude_service.pid"
-(cd "$ROOT" && nohup /opt/homebrew/bin/uv run --group brain python -m play.draft_brain.server --port "$BRAIN_PORT" >> "$DATA/draft_brain.log" 2>&1 &
- echo $! > "$DATA/draft_brain.pid")
+# no subshell: one would hold the caller's output open as long as the service runs
+nohup /opt/homebrew/bin/uv run --directory "$ROOT" --group brain python -m play.draft_brain.server --port "$BRAIN_PORT" \
+  < /dev/null >> "$DATA/draft_brain.log" 2>&1 &
+echo $! > "$DATA/draft_brain.pid"
 
 export PLAYMAT_DATA=$DATA
 # the public name in front of this launcher (Cloudflare tunnel, behind Cloudflare Access): the game server accepts it
