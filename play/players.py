@@ -2,6 +2,7 @@
 import hashlib, json, os, random, re, subprocess, tempfile, threading, time
 from pathlib import Path
 
+import batch
 from facts import facts_block
 from render import BASICS, card_text, clean, events, load_card_text, names_in, option_label, render
 
@@ -40,7 +41,7 @@ How the game talks to you:
 - PRIORITY: PASS means do nothing now and let the game move on (to the next step, or let the top of the stack resolve).
   Casting a spell and choosing its targets are separate decisions; targets come right after you pick the cast.
 - ATTACK and BLOCK are declared one creature at a time; pick DONE when finished. Decide the whole attack (or block)
-  before the first declaration and give the plan in that reason.
+  before the first declaration, give the plan in that reason, and list it all in that reply (see Batching).
 - "choice" is the option number listed under "Decision:", never an [entry] number from the state.
 - You may be asked about the same window several times (e.g. after each spell you cast).
 - Each message starts with what changed since your previous decision (life, cards entering or leaving zones).
@@ -54,7 +55,22 @@ When you PASS priority, say how far to keep passing while nothing happens: "pass
 your next main phase: use it in your upkeep and draw step), "end_of_turn" (asked again at the end step of the
 opponent's turn, e.g. to cast an instant then) or "my_turn" (asked again at your next turn). Add one to every PASS
 unless you mean to act at the very next window; each extra question costs time. You are always asked again when
-anything goes on the stack, in your own main phases, during combat, and for attacks, blocks and other choices."""
+anything goes on the stack, in your own main phases, during combat, and for attacks, blocks and other choices.
+
+Batching: one reply may also cover the decisions that follow it, so you are not asked each one. Add any of these keys
+to the same JSON line (entry numbers are the [n] of the current state):
+- ATTACK: "attack": [every creature that attacks]. Your choice is one of them (or DONE for no attack); the others are
+  declared for you, then DONE.
+- BLOCK: "blocks": [[your blocker, the attacker it blocks], ...] for every block. Your choice is one of them.
+- A spell or ability you choose that will ask for targets: "targets": [each target in the order asked; "opp" or "me"
+  for a player].
+- PRIORITY in your own main phase with nothing on the stack: "then": the plays after this one, in order, e.g.
+  [{"do": "Cast Murder", "source": 5, "targets": [12]}, {"do": "PASS", "pass_until": "my_turn"}]. "do" is the
+  option's text exactly as listed ("Play Swamp", "Cast Murder", an ability's text, or PASS); "source" is the card.
+  Leave out "then" when what you do next depends on what happens.
+Planned decisions are made only while everything goes as planned: you are asked again as soon as anything differs
+(the opponent responds, a trigger or a choice you didn't plan comes up, a card or option is gone), and every trigger's
+targets are asked."""
 
 
 PLAN_RULES = """## Your plan
@@ -202,6 +218,8 @@ class ClaudePlayer:
         self.plan = None           # latest plan from the player's replies (plan mode)
         self.checked_combat = None  # (turn, ATTACK/BLOCK) of the last combat that got its self-check
         self.restart_note = None   # why the next conversation starts (a take-back), instead of the usual line
+        self.batch = None          # the decisions planned by the last answer (batch.py), or None
+        self.batch_dropped = None  # why the last plan stopped early, for the next asked decision's record
         self.workdir = tempfile.mkdtemp(prefix="claude-seat-")
         system = system_prompt(deck_path, self.texts, self.lessons, self.plan_mode, self.facts, self.primer)
         if self.concede:
@@ -293,7 +311,7 @@ class ClaudePlayer:
 
     @staticmethod
     def _parse(text, n):
-        """(choice, reason, pass_until, plan) from the reply, or Nones."""
+        """(choice, reason, pass_until, plan, reply dict) from the reply, or Nones."""
         # whole reply, then each line, from the last; reasons can hold mana symbols like {3}{G}, so no brace regex
         candidates = [text.strip()] + [l.strip() for l in reversed(text.splitlines())]
         for cand in candidates:
@@ -306,8 +324,8 @@ class ClaudePlayer:
                 continue
             c = j.get("choice") if isinstance(j, dict) else None
             if isinstance(c, int) and 0 <= c < n:
-                return c, str(j.get("reason", "")), j.get("pass_until"), j.get("plan")
-        return None, None, None, None
+                return c, str(j.get("reason", "")), j.get("pass_until"), j.get("plan"), j
+        return None, None, None, None, None
 
     def _auto_pass(self, msg, g):
         """True if this decision is an empty priority window the player asked to skip."""
@@ -368,6 +386,9 @@ class ClaudePlayer:
         self.prev_obs = msg["obs"]
         self.log += [f"turn {g['turn']}: {line}" for line in changes]
         self.pending += changes
+        planned = self._from_batch(msg, g)
+        if planned is not None:
+            return planned
         if self._auto_pass(msg, g):
             return 0, {"auto": f"pass_until:{self.pass_until['target']}"}
 
@@ -378,6 +399,8 @@ class ClaudePlayer:
                 self._close()
         text = self._prompt(msg, g)
         info = {"prompt_text": text, "turns": [], "conversation_decision": self.conv_decisions, "prompt_sha": self.prompt_sha}
+        if self.batch_dropped:
+            info["batch_fallback"], self.batch_dropped = self.batch_dropped, None
         n = len(msg["options"])
         ask, errors, invalid = text, 0, 0
         while True:
@@ -402,11 +425,12 @@ class ClaudePlayer:
                     return 0, info
                 ask = "You chose to keep playing. Reply with the one line of JSON for this decision."
                 continue
-            choice, reason, until, plan = self._parse(out, n)
+            choice, reason, until, plan, reply = self._parse(out, n)
             if choice is not None and self.check and self._check_gate(msg, g, choice):
-                choice, reason, until, plan = self._self_check(msg, info, choice, reason, until, plan)
+                choice, reason, until, plan, reply = self._self_check(msg, info, choice, reason, until, plan, reply)
             if choice is not None:
                 info["reason"] = reason
+                self._plan_batch(msg, choice, reply, reason, info)
                 if self.plan_mode:
                     if isinstance(plan, dict) and plan:
                         self.plan = info["plan"] = plan
@@ -423,6 +447,44 @@ class ClaudePlayer:
             ask = f"That was not a valid reply. Answer with one line of JSON, choice between 0 and {n - 1}."
         info["invalid"] = True  # recorded, never hidden: fall back to option 0 (PASS / DONE / first option)
         return 0, info
+
+    def _plan_batch(self, msg, choice, reply, reason, info):
+        """Keep the plan an answer gives for the decisions after it (batch.py); a broken plan is recorded and dropped."""
+        self.batch = None
+        if not isinstance(reply, dict):
+            return
+        try:
+            plan = batch.make_plan(msg, choice, reply, option_label)
+        except ValueError as e:
+            info["batch_invalid"] = str(e)
+            return
+        if plan:
+            plan["reason"] = reason
+            self.batch = plan
+            info["batch"] = {"id": plan["id"], "pos": 0, "of": len(plan["steps"])}
+
+    def _from_batch(self, msg, g):
+        """(choice, info) for a decision the current plan answers, or None (the plan is then dropped and the model
+        asked). Every planned decision is recorded on its own, with its place in the plan."""
+        if not self.batch:
+            return None
+        plan = self.batch
+        try:
+            k, step = batch.next_choice(plan, msg, option_label)
+        except LookupError as e:
+            self.batch_dropped = {"id": plan["id"], "pos": plan["pos"], "of": len(plan["steps"]), "why": str(e)}
+            self.batch = None
+            return None
+        plan["pos"] += 1
+        info = {"auto": "batch", "batch": {"id": plan["id"], "pos": plan["pos"], "of": len(plan["steps"])},
+                "reason": f"(planned) {plan['reason']}", "prompt_sha": self.prompt_sha}
+        if plan["pos"] >= len(plan["steps"]):
+            self.batch = None
+        if step.get("pass_until") in self.PASS_TARGETS and msg["options"][k]["label"] == "PASS":
+            self.pass_until = {"target": step["pass_until"], "turn": g["turn"], "my_turn": g["my_turn"]}
+            info["pass_until"] = step["pass_until"]
+        self.log.append(f"turn {g['turn']}: you chose \"{option_label(msg['options'][k], msg['obs']['entries'])}\" (planned)")
+        return k, info
 
     @staticmethod
     def _wants_concede(text):
@@ -474,7 +536,7 @@ class ClaudePlayer:
         low = min(g["my_life"], g["opp_life"]) <= self.CHECK_LIFE
         return low and msg["options"][choice]["label"] not in ("PASS", "DONE")
 
-    def _self_check(self, msg, info, choice, reason, until, plan):
+    def _self_check(self, msg, info, choice, reason, until, plan, reply=None):
         """One more model turn in the same conversation; keeps the first answer if the check fails or is invalid."""
         info["self_check"] = {"first_choice": choice, "first_reason": reason}
         t0 = time.time()
@@ -485,14 +547,14 @@ class ClaudePlayer:
                                   "self_check": True})
             self._close()  # the next decision starts a fresh conversation with the game log
             info["self_check"]["error"] = True
-            return choice, reason, until, plan
+            return choice, reason, until, plan, reply
         info["turns"].append({"reply": out, "usage": usage, "cost_usd": cost, "seconds": round(secs, 2), "self_check": True})
-        c2, r2, u2, p2 = self._parse(out, len(msg["options"]))
+        c2, r2, u2, p2, j2 = self._parse(out, len(msg["options"]))
         if c2 is None:
             info["self_check"]["invalid"] = True
-            return choice, reason, until, plan
+            return choice, reason, until, plan, reply
         info["self_check"]["changed"] = c2 != choice
-        return c2, r2, u2, (p2 if p2 else plan)
+        return c2, r2, u2, (p2 if p2 else plan), j2
 
     UNDONE = "(undone by {how}) "
     _LINE_TURN = re.compile(r"turn (\d+): ")
@@ -503,6 +565,7 @@ class ClaudePlayer:
         self.log.append(f"turn {to_turn}: the game went back to the start of turn {to_turn} ({how}); lines marked "
                         f"\"(undone ...)\" did not happen in this game, though you saw them")
         self.pending, self.prev_obs, self.pass_until = [], None, None
+        self.batch, self.batch_dropped = None, None
         self.round_turn, self.checked_combat, self.conv_pregame = None, None, False
         self.asked_any = self.asked_any or bool(self.log)
         self.restart_note = (f"The game went back to the start of turn {to_turn} ({how}), so your conversation was "
