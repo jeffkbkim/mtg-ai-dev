@@ -22,3 +22,10 @@ The user is a beginner learning Python and ML, with an M4 Mac mini and 16 GB uni
 ## Project hygiene
 
 Keep large data, checkpoints and secrets outside Git. Record experiment configuration, dataset version, seed and code commit. Update docs/plan.md and docs/decisions.md when material decisions change. Use separate branches for concurrent tasks.
+
+## Mac mini heavy jobs
+
+The mini has 16 GB. On 2026-10-28 four 17lands turn-replay processes reached ~13 GB each, and WindowServer hung, which logged the user out.
+- Replay search (seventeenlands turn_replay / replay search): 1 worker only, until someone finds why each process reaches ~13 GB. Agents don't start replay search on their own.
+- Never run heavy jobs alongside each other: the nightly soak, builds, test servers, the decisions export, replay search. Never run them during the user's Playmat games.
+- Guard long data jobs on the process's own memory (RSS/footprint) as well as on swap and free memory, and stop them before the box swaps hard.
