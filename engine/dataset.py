@@ -50,8 +50,13 @@ def _layout(vocab: Vocab) -> dict:
             "num_abilities": vocab.num_abilities, "num_named_options": vocab.num_named_options}
 
 
-def build(manifests: list[Path], out: Path, verdict: str = "clean", games_root: str | None = None) -> dict:
-    """Encode every game with this verdict once and save one file per split. Returns a summary."""
+def build(manifests: list[Path], out: Path, verdict: str = "clean", games_root: str | None = None,
+          train_also: tuple[str, ...] = (), require_keywords: bool = True) -> dict:
+    """Encode every game with this verdict once and save one file per split. Returns a summary.
+
+    Games with a verdict in train_also (e.g. "suspect") go to train only, whatever their hash says, so val and test
+    stay exactly the clean games of a cache built without them: the two caches' val numbers are comparable.
+    """
     vocab = Vocab.load()
     by_split: dict[str, list[dict]] = {s: [] for s in SPLITS}
     games: dict[str, list[str]] = {s: [] for s in SPLITS}
@@ -59,15 +64,20 @@ def build(manifests: list[Path], out: Path, verdict: str = "clean", games_root: 
     for manifest in manifests:
         for line in Path(manifest).read_text().splitlines():
             row = json.loads(line)
-            if row.get("verdict") != verdict:
+            if row.get("verdict") != verdict and row.get("verdict") not in train_also:
                 continue
             path = row["file"] if games_root is None else row["file"].replace(GAMES_ROOT, games_root, 1)
             key = game_key(row)
-            split = split_of(key)
+            split = split_of(key) if row.get("verdict") == verdict else "train"
+            if require_keywords and '"keywords"' not in Path(path).read_text():
+                # recorded before the seat sent keywords (2026-10-20): every has_<keyword> column would read 0
+                unmapped["game skipped: recorded before the seat sent keywords"] += 1
+                continue
             examples, problems = encode_file(Path(path), vocab)
             unmapped.update(problems)
             for x in examples:
                 x.meta["game"] = key
+                x.meta["verdict"] = row.get("verdict")
                 d = dataclasses.asdict(x)
                 d["card_features"] = torch.tensor(x.card_features, dtype=torch.float32)  # compact on disk
                 by_split[split].append(d)
@@ -75,7 +85,7 @@ def build(manifests: list[Path], out: Path, verdict: str = "clean", games_root: 
     out.mkdir(parents=True, exist_ok=True)
     for split, rows in by_split.items():
         torch.save({"layout": _layout(vocab), "examples": rows}, out / f"{split}.pt")
-    summary = {"verdict": verdict, "manifests": [str(m) for m in manifests],
+    summary = {"verdict": verdict, "train_also": list(train_also), "manifests": [str(m) for m in manifests],
                "games": {s: len(g) for s, g in games.items()},
                "decisions": {s: len(r) for s, r in by_split.items()},
                "unmapped_skipped": sum(unmapped.values()), "unmapped": dict(unmapped.most_common()),
@@ -120,8 +130,10 @@ def main() -> None:
     b.add_argument("--out", type=Path, required=True)
     b.add_argument("--verdict", default="clean")
     b.add_argument("--games-root", help=f"local folder that replaces {GAMES_ROOT} in manifest paths")
+    b.add_argument("--train-also", action="append", default=[], metavar="VERDICT",
+                   help="also use games with this verdict, in train only (e.g. suspect)")
     args = ap.parse_args()
-    s = build(args.manifest, args.out, args.verdict, args.games_root)
+    s = build(args.manifest, args.out, args.verdict, args.games_root, tuple(args.train_also))
     print(json.dumps({k: v for k, v in s.items() if k != "game_splits"}, indent=1))
 
 

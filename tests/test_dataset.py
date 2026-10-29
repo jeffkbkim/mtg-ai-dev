@@ -36,7 +36,7 @@ def cache(tmp_path_factory):
     manifest = tmp / "manifest.jsonl"
     manifest.write_text("".join(json.dumps(r) + "\n" for r in rows))
     out = tmp / "cache"
-    summary = build([manifest], out)
+    summary = build([manifest], out, require_keywords=False)  # the sample predates keywords in recordings
     return out, summary, len(lines)
 
 
@@ -47,6 +47,22 @@ def test_whole_games_go_to_one_split(cache):
         assert n == per_game * summary["games"][split]
     seen = [k for keys in summary["game_splits"].values() for k in keys]
     assert len(seen) == len(set(seen))
+
+
+def test_train_also_adds_games_to_train_only(cache, tmp_path):
+    out, clean, _ = cache
+    manifest = out.parent / "manifest.jsonl"
+    rows = [json.loads(line) for line in manifest.read_text().splitlines()]
+    games = [r for r in rows if r["verdict"] == "clean"]
+    for r in games[:10]:  # pretend 10 more games are suspect copies
+        rows.append({**r, "game": 100 + r["game"], "verdict": "suspect"})
+    rows = [r for r in rows if r["file"] != "missing"]
+    m2 = tmp_path / "manifest.jsonl"
+    m2.write_text("".join(json.dumps(r) + "\n" for r in rows))
+    both = build([m2], tmp_path / "cache", train_also=("suspect",), require_keywords=False)
+    assert both["game_splits"]["val"] == clean["game_splits"]["val"]
+    assert both["game_splits"]["test"] == clean["game_splits"]["test"]
+    assert both["games"]["train"] == clean["games"]["train"] + 10
 
 
 def test_loader_batches_follow_the_contract(cache):
