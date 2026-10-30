@@ -42,6 +42,7 @@ FIXES = [
     ("da20d51", "caution", {"Overgrown Zealot"}, "the payer could spend Overgrown Zealot's mana on a cost it can't pay, so the move was refused (fixed da20d51)"),
 ]
 LEVELS = {"clean": 0, "caution": 0, "suspect": 1, "unusable": 2}
+PAYMENT_FALLBACKS = {"CHOICE (mana)"}
 
 # A reviewer's bug note is "suspect" when the board changed in a way the player never chose, and only a "caution"
 # when nothing did (Jeff 2026-10-23): a move offered then refused or rolled back, a prompt repeated after DONE, a
@@ -139,10 +140,14 @@ def one_game(part, cfg, end, counters, part_games, root):
     scope = "" if part_games == 1 else f" (counted over the part's {part_games} games)"
     for seat in "AB":
         c = counters.get(seat, {})
-        if c.get("fallback"):
-            kinds = ", ".join(f"{k} x{v}" for k, v in sorted(c["fallback"].items()))
-            row["reasons"].append({"source": "engine", "seat": seat, "level": "suspect",
-                                   "what": f"XMage decided for seat {seat}: {kinds}{scope}"})
+        # the colour an "any colour" mana source makes while paying is part of the auto-payment, like which land is
+        # tapped, so it is only a caution (Jeff 2026-10-30); every other fallback took a decision from the player
+        for level, kinds in (("suspect", {k: v for k, v in c.get("fallback", {}).items() if k not in PAYMENT_FALLBACKS}),
+                             ("caution", {k: v for k, v in c.get("fallback", {}).items() if k in PAYMENT_FALLBACKS})):
+            if kinds:
+                text = ", ".join(f"{k} x{v}" for k, v in sorted(kinds.items()))
+                (row["reasons"] if level == "suspect" else row["cautions"]).append(
+                    {"source": "engine", "seat": seat, "level": level, "what": f"XMage decided for seat {seat}: {text}{scope}"})
         if c.get("leaks"):
             row["reasons"].append({"source": "engine", "seat": seat, "level": "unusable", "what": f"hidden-information leak: {c['leaks']}{scope}"})
         if c.get("rejected"):
