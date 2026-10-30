@@ -1198,10 +1198,10 @@ index 6e1ef742ff..b323c6adda 100644
            { path: '/tables', lazy: () => import('./screens/TablesScreen').then((m) => ({ Component: m.TablesScreen })) },
 diff --git a/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css b/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css
 new file mode 100644
-index 0000000000..103695e89c
+index 0000000000..44b0b7ba4d
 --- /dev/null
 +++ b/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css
-@@ -0,0 +1,500 @@
+@@ -0,0 +1,496 @@
 +/* mtg-ai: Quick Draft (QuickDraftScreen.tsx); the pick screen reuses events/Draft.module.css, the rest Career's modes */
 +
 +/* the pick screen covers the app shell, like an event draft */
@@ -1213,8 +1213,11 @@ index 0000000000..103695e89c
 +.screen.screen {
 +  --pick-w: clamp(80px, 6vw, 132px);
 +  grid-template-columns: minmax(0, 1fr) 290px;
-+  grid-template-rows: auto minmax(0, 1fr) auto;
++  grid-template-rows: auto auto 1fr;
 +  grid-template-areas: 'top top' 'pack lists' 'picks lists';
++  align-content: start;
++  /* large cards: the page scrolls to the pack's second row and the picks */
++  overflow: hidden auto;
 +}
 +
 +.screen > header {
@@ -1225,18 +1228,16 @@ index 0000000000..103695e89c
 +  grid-area: pack;
 +  display: flex;
 +  flex-direction: column;
-+  min-height: 0;
++  /* as tall as its cards: the screen scrolls rather than squeezing the pack */
++  min-height: auto;
 +  padding: 0 var(--space-4);
 +}
 +
 +.booster {
 +  display: grid;
-+  flex: 1;
-+  min-height: 0;
 +  gap: 14px;
 +  justify-content: center;
 +  align-content: start;
-+  overflow: auto;
 +  padding: 6px 0;
 +}
 +
@@ -1254,7 +1255,10 @@ index 0000000000..103695e89c
 +
 +.lists {
 +  grid-area: lists;
-+  position: relative;
++  position: sticky;
++  top: 8px;
++  align-self: start;
++  height: calc(100vh - 16px);
 +  display: flex;
 +  flex-direction: column;
 +  gap: var(--space-3);
@@ -1332,6 +1336,7 @@ index 0000000000..103695e89c
 +}
 +
 +.rowName {
++  min-width: 0;
 +  overflow: hidden;
 +  text-overflow: ellipsis;
 +  white-space: nowrap;
@@ -1361,12 +1366,13 @@ index 0000000000..103695e89c
 +
 +.picks {
 +  grid-area: picks;
-+  min-height: 0;
++  min-height: auto;
 +}
 +
 +.columns {
-+  max-height: 30vh;
++  max-height: none;
 +  min-height: 0;
++  padding-bottom: var(--space-4);
 +}
 +
 +.column {
@@ -1381,6 +1387,17 @@ index 0000000000..103695e89c
 +  cursor: pointer;
 +}
 +
++.dropTarget {
++  min-height: calc(var(--pick-w) * 1.6);
++  border-radius: 8px;
++  outline: 1.5px dashed var(--ink-ghost);
++  outline-offset: 2px;
++}
++
++.dragged {
++  opacity: 0.35;
++}
++
 +.inSide {
 +  filter: grayscale(0.7) brightness(0.55);
 +}
@@ -1393,6 +1410,11 @@ index 0000000000..103695e89c
 +  font-weight: 400;
 +  letter-spacing: 0;
 +  text-transform: none;
++}
++
++.zoomTurned {
++  position: absolute;
++  transform: rotate(90deg);
 +}
 +
 +.zoom {
@@ -1597,34 +1619,6 @@ index 0000000000..103695e89c
 +  color: var(--ink-strong);
 +}
 +
-+/* short windows (a laptop's browser): the pack gets the height, the header and picks shrink */
-+@media (max-height: 820px) and (min-width: 801px) {
-+  .top {
-+    padding: var(--space-2) var(--space-5);
-+  }
-+
-+  .top h1 {
-+    font-size: var(--text-2xl);
-+  }
-+
-+  .wheelNote {
-+    margin-bottom: 4px;
-+    font-size: 12px;
-+  }
-+
-+  .action {
-+    padding: 4px 0;
-+  }
-+
-+  .screen {
-+    --pick-w: 64px;
-+  }
-+
-+  .columns {
-+    max-height: 17vh;
-+  }
-+}
-+
 +@media (max-width: 800px) {
 +  /* doubled class: wins over events/Draft.module.css whatever order the sheets load in */
 +  .screen.screen {
@@ -1655,6 +1649,8 @@ index 0000000000..103695e89c
 +  }
 +
 +  .lists {
++    position: static;
++    height: auto;
 +    padding: 0 var(--space-4) var(--space-3);
 +  }
 +
@@ -1704,10 +1700,10 @@ index 0000000000..103695e89c
 +}
 diff --git a/Mage.Web.Client/src/app/quickdraft/QuickDraftScreen.tsx b/Mage.Web.Client/src/app/quickdraft/QuickDraftScreen.tsx
 new file mode 100644
-index 0000000000..39047f36d4
+index 0000000000..b124b74cfe
 --- /dev/null
 +++ b/Mage.Web.Client/src/app/quickdraft/QuickDraftScreen.tsx
-@@ -0,0 +1,704 @@
+@@ -0,0 +1,778 @@
 +import { Bot, Layers, LogOut, Swords, Timer } from 'lucide-react';
 +import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
 +import { createPortal } from 'react-dom';
@@ -1914,15 +1910,6 @@ index 0000000000..39047f36d4
 +  return COLOR_ORDER.indexOf(colors);
 +}
 +
-+/** picks in columns by mana value (lands last), each sorted by colour, like Arena's draft deck view */
-+function columnsOf(pool: CareerPoolCard[]): { label: string; cards: CareerPoolCard[] }[] {
-+  const columns: CareerPoolCard[][] = Array.from({ length: 8 }, () => []);
-+  for (const card of pool) columns[card.land ? 7 : Math.min(6, Math.max(0, card.manaValue ?? 0))].push(card);
-+  return columns
-+    .map((cards, index) => ({ label: index === 7 ? 'Lands' : index === 6 ? '6+' : String(index), cards: [...cards].sort((a, b) => colorRank(a) - colorRank(b) || (a.name ?? '').localeCompare(b.name ?? '')) }))
-+    .filter((column) => column.cards.length > 0);
-+}
-+
 +function pickSeconds(cardsLeft: number): number {
 +  return 15 + 4 * cardsLeft;
 +}
@@ -1938,6 +1925,37 @@ index 0000000000..39047f36d4
 +}
 +
 +const lower = (card: CareerPoolCard) => (card.name ?? '').toLowerCase();
++
++function layoutKey(runId: string): string {
++  return `playmat.quickDraft.layout.${runId}`;
++}
++
++const COLUMN_LABELS = ['0', '1', '2', '3', '4', '5', '6+', 'Lands'];
++
++/** the default column of a pick: its mana value, lands last */
++function columnOf(card: CareerPoolCard): string {
++  return card.land ? 'Lands' : COLUMN_LABELS[Math.min(6, Math.max(0, card.manaValue ?? 0))];
++}
++
++/** the picks in columns: where the player put them, new picks at the bottom of their mana value's column, each
++ * column's cards in colour order unless arranged; every column shows while a card is dragged (to drop into) */
++function arrange(pool: CareerPoolCard[], arranged: Record<string, number[]>, all: boolean) {
++  const placed = new Set<number>();
++  const columns: Record<string, number[]> = Object.fromEntries(COLUMN_LABELS.map((label) => [label, []]));
++  for (const [label, items] of Object.entries(arranged)) {
++    if (!columns[label]) continue;
++    for (const at of items) {
++      if (at >= 0 && at < pool.length && !placed.has(at)) {
++        columns[label].push(at);
++        placed.add(at);
++      }
++    }
++  }
++  const fresh = pool.map((_, at) => at).filter((at) => !placed.has(at))
++    .sort((a, b) => colorRank(pool[a]) - colorRank(pool[b]) || (pool[a].name ?? '').localeCompare(pool[b].name ?? ''));
++  for (const at of fresh) columns[columnOf(pool[at])].push(at);
++  return COLUMN_LABELS.map((label) => ({ label, items: columns[label] })).filter((column) => all || column.items.length > 0);
++}
 +
 +/** the deck and the sideboard from the picks and the cards moved to the sideboard */
 +function splitPool(pool: CareerPoolCard[], side: Record<string, number>) {
@@ -1996,7 +2014,20 @@ index 0000000000..39047f36d4
 +    setZoom(null);
 +  }
 +  const { deck, sideboard } = useMemo(() => splitPool(pool, side), [pool, side]);
-+  const columns = useMemo(() => columnsOf(pool), [pool]);
++  const [arranged, setArranged] = useState<Record<string, number[]>>(() => readJson(layoutKey(run.id ?? ''), {}));
++  const [dragging, setDragging] = useState<number | null>(null);
++  const layout = useMemo(() => arrange(pool, arranged, dragging !== null), [pool, arranged, dragging]);
++
++  /** a card dropped into a column at a place in its stack */
++  function drop(at: number, label: string, place: number) {
++    const columns = Object.fromEntries(layout.map((column) => [column.label, column.items.filter((item) => item !== at)]));
++    const target = columns[label] ?? [];
++    target.splice(Math.min(place, target.length), 0, at);
++    columns[label] = target;
++    writeJson(layoutKey(run.id ?? ''), columns);
++    setArranged(columns);
++  }
++  // per pick (by its place in the pool): whether it is a sideboard copy
 +  const sideCounts = useMemo(() => {
 +    const left = { ...side };
 +    return pool.map((card) => {
@@ -2009,6 +2040,7 @@ index 0000000000..39047f36d4
 +  }, [pool, side]);
 +  const passLeft = (run.round ?? 1) % 2 === 1;
 +  const boosterRef = useRef<HTMLDivElement>(null);
++  const listsRef = useRef<HTMLElement>(null);
 +  const grid = useCardGrid(boosterRef, pack.length);
 +
 +  function move(card: CareerPoolCard, toSide: boolean) {
@@ -2021,7 +2053,8 @@ index 0000000000..39047f36d4
 +    });
 +  }
 +
-+  const hover = (card: CareerPoolCard) => ({
++  // only a Room gets a zoom: it is printed sideways, the zoom turns it upright
++  const hover = (card: CareerPoolCard) => (!isRoom(card) ? {} : {
 +    onMouseEnter: (event: ReactMouseEvent) => {
 +      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
 +      setZoom({ card, left: rect.left, x: rect.right, y: rect.top });
@@ -2100,28 +2133,54 @@ index 0000000000..39047f36d4
 +        </div>
 +      </main>
 +
-+      <aside className={styles.lists} aria-label="Your deck and sideboard">
++      <aside ref={listsRef} className={styles.lists} aria-label="Your deck and sideboard">
 +        <CardList title="Deck" cards={deck} hint={`${deck.filter((card) => !card.land).length} spells · ${deck.filter((card) => card.creature).length} creatures · ${deck.filter((card) => card.land).length} lands`} moveLabel="To sideboard" onMove={(card) => move(card, true)} hover={hover} />
 +        <CardList title="Sideboard" cards={sideboard} hint={sideboard.length === 1 ? '1 card' : `${sideboard.length} cards`} moveLabel="To deck" onMove={(card) => move(card, false)} hover={hover} dim />
 +      </aside>
 +
 +      <section className={[draft.picks, styles.picks].join(' ')} aria-label={`Your picks, ${pool.length} cards, by mana value`}>
-+        <h2 className={draft.picksLabel}>Your picks <span>{pool.length}</span> <small className={styles.picksHint}>by mana value · click a card to move it between deck and sideboard</small></h2>
++        <h2 className={draft.picksLabel}>Your picks <span>{pool.length}</span> <small className={styles.picksHint}>drag cards to arrange them · click a card to move it between deck and sideboard</small></h2>
 +        <div className={[draft.columns, styles.columns].join(' ')}>
-+          {columns.map((column) => (
-+            <div key={column.label} className={[draft.column, styles.column].join(' ')}>
-+              <span className={draft.columnLabel}>{column.label} <small>({column.cards.length})</small></span>
-+              <div className={draft.columnCards} style={{ height: `calc(var(--pick-w) * (1.4 + 0.3 * ${column.cards.length - 1}))` }}>
-+                {column.cards.map((card, index) => {
-+                  const inSide = sideCounts[pool.indexOf(card)];
++          {layout.map((column) => (
++            <div
++              key={column.label}
++              className={[draft.column, styles.column, dragging !== null ? styles.dropTarget : ''].join(' ')}
++              onDragOver={(event) => {
++                if (dragging === null) return;
++                event.preventDefault();
++                event.dataTransfer.dropEffect = 'move';
++              }}
++              onDrop={(event) => {
++                event.preventDefault();
++                if (dragging === null) return;
++                const cards = (event.currentTarget.querySelector('[data-stack]') as HTMLElement | null);
++                const step = (cards?.firstElementChild as HTMLElement | null)?.offsetWidth ?? 80;
++                const y = event.clientY - (cards?.getBoundingClientRect().top ?? 0);
++                drop(dragging, column.label, Math.max(0, Math.round(y / (step * 0.3))));
++                setDragging(null);
++              }}
++            >
++              <span className={draft.columnLabel}>{column.label} <small>({column.items.length})</small></span>
++              <div data-stack className={draft.columnCards} style={{ height: `calc(var(--pick-w) * (1.4 + 0.3 * ${Math.max(0, column.items.length - 1)}))` }}>
++                {column.items.map((at, index) => {
++                  const card = pool[at];
++                  const inSide = sideCounts[at];
 +                  return (
 +                    <button
-+                      key={`${card.name}-${index}`}
++                      key={at}
 +                      type="button"
-+                      className={[draft.picked, styles.picked, inSide ? styles.inSide : ''].join(' ')}
++                      draggable
++                      className={[draft.picked, styles.picked, inSide ? styles.inSide : '', dragging === at ? styles.dragged : ''].join(' ')}
 +                      style={{ top: `calc(var(--pick-w) * ${0.3 * index})`, zIndex: index }}
 +                      aria-label={`${card.name}, ${inSide ? 'sideboard' : 'deck'}`}
 +                      onClick={() => move(card, !inSide)}
++                      onDragStart={(event) => {
++                        event.dataTransfer.effectAllowed = 'move';
++                        event.dataTransfer.setData('text/plain', String(at));
++                        setDragging(at);
++                        setZoom(null);
++                      }}
++                      onDragEnd={() => setDragging(null)}
 +                      {...hover(card)}
 +                    >
 +                      <CardFace card={faceProps(card)} size="normal" />
@@ -2134,7 +2193,7 @@ index 0000000000..39047f36d4
 +        </div>
 +      </section>
 +
-+      {zoom && <ZoomCard zoom={zoom} />}
++      {zoom && <ZoomCard zoom={zoom} bound={zoom.x > (listsRef.current?.getBoundingClientRect().left ?? Infinity) ? window.innerWidth : listsRef.current?.getBoundingClientRect().left ?? window.innerWidth} />}
 +    </div>,
 +    document.body,
 +  );
@@ -2142,6 +2201,7 @@ index 0000000000..39047f36d4
 +
 +const GAP = 14;
 +const CARD_RATIO = 1.396; // height / width
++const MAX_CARD = 330;
 +
 +/** The pack's grid: the column count that makes the cards largest in the space there is (width and height). */
 +function useCardGrid(ref: { current: HTMLDivElement | null }, count: number) {
@@ -2149,25 +2209,23 @@ index 0000000000..39047f36d4
 +  useLayoutEffect(() => {
 +    const element = ref.current;
 +    if (!element) return;
-+    const measure = () => setSize({ width: element.clientWidth, height: element.clientHeight });
++    const measure = () => {
++      const style = getComputedStyle(element);
++      const padY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
++      setSize({ width: element.clientWidth, height: element.clientHeight - padY - 4 });
++    };
 +    measure();
 +    const observer = new ResizeObserver(measure);
 +    observer.observe(element);
 +    return () => observer.disconnect();
 +  }, [ref]);
 +  return useMemo(() => {
++    // large cards, sized by the width only (the screen scrolls for a second row): a full pack in two rows
 +    const n = Math.max(1, count);
 +    const narrow = size.width < 640;
-+    let best = { cols: 3, width: 100 };
-+    for (let cols = 2; cols <= Math.min(10, n); cols++) {
-+      const rows = Math.ceil(n / cols);
-+      const byWidth = (size.width - (cols - 1) * GAP) / cols;
-+      const byHeight = ((size.height - (rows - 1) * GAP) / rows) / CARD_RATIO;
-+      const width = narrow ? byWidth : Math.min(byWidth, byHeight);
-+      if (width > best.width + 0.5 || (narrow && cols === 3)) best = { cols, width };
-+      if (narrow && cols === 3) break;
-+    }
-+    return { gridTemplateColumns: `repeat(${best.cols}, ${Math.floor(best.width)}px)` };
++    const cols = narrow ? 3 : Math.min(n, Math.max(5, Math.min(8, Math.ceil(n / 2))));
++    const width = Math.min(narrow ? 400 : MAX_CARD, (size.width - (cols - 1) * GAP) / cols);
++    return { gridTemplateColumns: `repeat(${cols}, ${Math.floor(width)}px)` };
 +  }, [size, count]);
 +}
 +
@@ -2178,7 +2236,7 @@ index 0000000000..39047f36d4
 +  hint: string;
 +  moveLabel: string;
 +  onMove(card: CareerPoolCard): void;
-+  hover(card: CareerPoolCard): { onMouseEnter(event: ReactMouseEvent): void; onMouseLeave(): void };
++  hover(card: CareerPoolCard): { onMouseEnter?(event: ReactMouseEvent): void; onMouseLeave?(): void };
 +  dim?: boolean;
 +}) {
 +  const rows = useMemo(() => {
@@ -2216,15 +2274,27 @@ index 0000000000..39047f36d4
 +  );
 +}
 +
-+/** the hovered card, large, beside it (or on the other side when there's no room) */
-+function ZoomCard({ zoom }: { zoom: Zoom }) {
-+  const width = Math.min(360, window.innerWidth * 0.4);
-+  const height = width * 1.396;
-+  const left = zoom.x + 12 + width < window.innerWidth ? zoom.x + 12 : Math.max(8, zoom.left - width - 12);
-+  const top = Math.max(8, Math.min(zoom.y, window.innerHeight - height - 8));
++/** a Room (two doors on one card) is printed sideways: its zoom is turned upright */
++function isRoom(card: CareerPoolCard): boolean {
++  return (card.name ?? '').includes(' // ') && card.setCode === 'DSK';
++}
++
++/** the hovered card, large, beside it: never over the deck and sideboard lists (bound: their left edge) */
++function ZoomCard({ zoom, bound }: { zoom: Zoom; bound: number }) {
++  const room = isRoom(zoom.card);
++  const portrait = Math.min(360, window.innerWidth * 0.4);
++  // a Room's box is landscape: the card inside is turned a quarter
++  const boxW = room ? portrait * CARD_RATIO : portrait;
++  const boxH = room ? portrait : portrait * CARD_RATIO;
++  const limit = Math.min(bound, window.innerWidth) - 8;
++  const right = zoom.x + 12;
++  const left = right + boxW <= limit ? right : Math.max(8, zoom.left - boxW - 12);
++  const top = Math.max(8, Math.min(zoom.y, window.innerHeight - boxH - 8));
 +  return (
-+    <div className={styles.zoom} style={{ left, top, width }} aria-hidden="true">
-+      <CardFace card={faceProps(zoom.card)} size="large" />
++    <div className={styles.zoom} style={{ left, top, width: boxW, height: boxH }} aria-hidden="true">
++      <div className={room ? styles.zoomTurned : undefined} style={room ? { width: boxH, left: (boxW - boxH) / 2, top: (boxH - boxW) / 2 } : undefined}>
++        <CardFace card={faceProps(zoom.card)} size="large" />
++      </div>
 +    </div>
 +  );
 +}
