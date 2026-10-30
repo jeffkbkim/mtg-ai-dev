@@ -9,7 +9,7 @@
 # Each deck pair is two parts of GAMES games (default 2) with the same seats and decks, the variant on seat A in one part and on seat B in
 # the other, so each variant plays each deck once on the play and once on the draw. 6 parts at a time.
 cd /home/claude/mtg-ai
-VARIANT=${VARIANT:-plan}
+VARIANT=${VARIANT-plan}  # only when unset: VARIANT="" means no variant
 GAMES=${GAMES:-2}  # games per part; GAMES=1 with 25 pairs gives a 50-game batch (seat A is on the play in each game 0)
 RUN=$1; D=$2; SEED=$3; TAG=$4; shift 4
 specs=""; p=0; i=0
