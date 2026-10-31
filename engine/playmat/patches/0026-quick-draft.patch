@@ -49,10 +49,10 @@ index 2e46e77bf9..d618f04bf3 100644
          card.rarity = CareerRules.LAND;
 diff --git a/Mage.Server/src/main/java/mage/server/career/QuickDraft.java b/Mage.Server/src/main/java/mage/server/career/QuickDraft.java
 new file mode 100644
-index 0000000000..13f1b029e9
+index 0000000000..f02f49435d
 --- /dev/null
 +++ b/Mage.Server/src/main/java/mage/server/career/QuickDraft.java
-@@ -0,0 +1,874 @@
+@@ -0,0 +1,904 @@
 +package mage.server.career;
 +
 +import com.google.gson.Gson;
@@ -814,6 +814,36 @@ index 0000000000..13f1b029e9
 +        }
 +    }
 +
++    /**
++     * A quick draft table's link to its run ("user|run id|seat"), kept with the table's save so a game carried on at
++     * a new table (a take-back, a kept game resumed) still counts for the run; null for other tables.
++     */
++    public String linkOf(UUID tableId) {
++        Seated seated = tableId == null ? null : tables.get(tableId);
++        return seated == null ? null : seated.user + "|" + seated.runId + "|" + seated.seat;
++    }
++
++    /** the table no longer plays for its run (its game carries on at another table): its end counts for nothing */
++    public void forget(UUID tableId) {
++        if (tableId != null && tables.remove(tableId) != null) {
++            logger.info("Quick draft: table " + tableId + " carries on elsewhere; its end won't count");
++        }
++    }
++
++    /** a new table carries on a quick draft game (linkOf of the old one): its result counts for the run */
++    public void adopt(UUID tableId, String link) {
++        String[] parts = link == null ? new String[0] : link.split("\\|");
++        if (tableId == null || parts.length != 3) {
++            return;
++        }
++        try {
++            register(tableId, parts[0], parts[1], Integer.parseInt(parts[2]));
++            logger.info("Quick draft: table " + tableId + " carries on run " + parts[1] + "'s game");
++        } catch (NumberFormatException e) {
++            logger.warn("Quick draft: bad table link " + link);
++        }
++    }
++
 +    public boolean isQuickDraftTable(UUID tableId) {
 +        return tables.containsKey(tableId);
 +    }
@@ -927,6 +957,59 @@ index 0000000000..13f1b029e9
 +    }
 +
 +}
+diff --git a/Mage.Server/src/main/java/mage/server/solo/SoloGames.java b/Mage.Server/src/main/java/mage/server/solo/SoloGames.java
+index fca087fb23..6696349167 100644
+--- a/Mage.Server/src/main/java/mage/server/solo/SoloGames.java
++++ b/Mage.Server/src/main/java/mage/server/solo/SoloGames.java
+@@ -65,6 +65,8 @@ public final class SoloGames {
+         public MatchOptions options;
+         public final List<SavedSeat> seats = new ArrayList<>();
+         public CareerService.CareerTable career;
++        /** mtg-ai: the quick draft run this game plays for (QuickDraft.linkOf), or null */
++        public String quickDraft;
+     }
+ 
+     public static class SavedSeat implements Serializable {
+@@ -213,6 +215,10 @@ public final class SoloGames {
+         }
+         entry.kept = true;
+         dirty.remove(tableId);
++        if (entry.info.quickDraft != null) {
++            // mtg-ai: leaving a kept quick draft game isn't a loss; the resumed game counts for the run
++            mage.server.career.QuickDraft.get().forget(tableId);
++        }
+         try {
+             write(entry, snapshot, KEPT);
+         } catch (SQLException | IOException | RuntimeException e) {
+@@ -255,6 +261,10 @@ public final class SoloGames {
+             // the old table stops playing for anything: the new one carries on for it
+             CareerService.get().forget(tableId);
+         }
++        if (entry.info.quickDraft != null) {
++            // mtg-ai: the old table stops playing for its quick draft run: the new one carries on for it
++            mage.server.career.QuickDraft.get().forget(tableId);
++        }
+         return new Resume(entry.info, snapshot, null);
+     }
+ 
+@@ -377,6 +387,9 @@ public final class SoloGames {
+         if (resume.info.career != null) {
+             CareerService.get().adopt(tableId, resume.info.career);
+         }
++        if (resume.info.quickDraft != null) {
++            mage.server.career.QuickDraft.get().adopt(tableId, resume.info.quickDraft);
++        }
+     }
+ 
+     /** a table set up for a resume was abandoned before it started */
+@@ -440,6 +453,7 @@ public final class SoloGames {
+         info.options = options;
+         info.title = options.getName();
+         info.career = CareerService.get().tableInfo(table.getId());
++        info.quickDraft = mage.server.career.QuickDraft.get().linkOf(table.getId());
+         return info;
+     }
+ 
 diff --git a/Mage.Server/src/main/java/mage/server/websocket/api/QuickDraftApi.java b/Mage.Server/src/main/java/mage/server/websocket/api/QuickDraftApi.java
 new file mode 100644
 index 0000000000..5922b8e674
