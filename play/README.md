@@ -10,7 +10,8 @@ using as extra training data or as an opponent.
   (`claude -p`, stream-json, no tools). The conversation restarts at the start of each of the seat's own turns with a
   log of the game so far. Replies are one JSON line `{"choice": n, "reason": "..."}`, optionally with `"pass_until"`
   (`my_main`, `end_of_turn` or `my_turn`) to skip empty priority windows (never its own main phases, combat or
-  anything on the stack); the prompt asks for one on every PASS that isn't followed by an action at the next window; an invalid reply gets one retry, then option 0 is played and
+  anything on the stack); the prompt asks for one on every PASS that isn't followed by an action at the next window.
+  Its own upkeep and draw step are always passed when the stack is empty (recorded `"auto": "own_upkeep_draw"`); an invalid reply gets one retry, then option 0 is played and
   the decision is flagged `invalid`.
 - `render.py`: observation and options as text. Card rules text is shown the first time a seat sees a card
   (`engine/vocab/dsk_card_text.json`, dumped from XMage by `engine/xmage/CardTextDump.java`).
@@ -20,7 +21,8 @@ using as extra training data or as an opponent.
   `lessons_v*.md` are optional card-agnostic play habits drawn from reviewed games, added per seat with
   `--lessons-a` / `--lessons-b`. The player name in each record carries the lessons version and each decision the
   system prompt's hash (`prompt_sha`), so games from different prompts are never pooled by accident.
-  Primer v2 (`--primer v2`, or `PRIMER=v2`; v1 is the default; names gain `:primer2`): `dsk_meta_v2.md` (per-pair
+  Primer v2 (`--primer v2`, or `PRIMER=v2`; v1 is the default for DSK decks, v2 for FDN decks, which have only v2;
+  an explicit v2 adds `:primer2` to the name): `dsk_meta_v2.md` (per-pair
   plans, synergies, key cards, rares, how to beat each pair; mandatory attack/block/tap-out/mulligan checks;
   instant-speed cards to respect per color; no win rates, 17lands data only picked the cards, via
   `archetype_stats_17lands.py`) instead of `dsk_meta.md` + the GIH table, and each deck card gets a one-line role
@@ -43,7 +45,7 @@ using as extra training data or as an opponent.
 - `launch_pairs.sh`: runs variant-vs-baseline deck pairs (each pair twice, the variant on seat A then on seat B, GAMES
   games each), 6 parts at a time, e.g. `play/launch_pairs.sh <out> engine/xmage/decks/17lands-r2 600 b03 trophy_10/trophy_11 ...`.
   VARIANT names the variant seat's flags (`VARIANT="facts check"`, or `VARIANT="effort=medium"` for `--effort-a medium`);
-  BOTH gives flags to both seats. `--effort-a` / `--effort-b` set one Claude seat's effort, overriding `--effort`.
+  BOTH gives flags to both seats; SEATINGS=1 runs one part per listed pair (for runs with no variant, list a/b and b/a). `--effort-a` / `--effort-b` set one Claude seat's effort, overriding `--effort`.
 - `review.py`: a reviewer (`claude -p`, no tools) reads each seat's game as that seat saw it and flags clear errors
   ("blunder" or "mistake", judged only on what was visible then, with a category: rules, combat_math, crack_back,
   hidden_info or other) plus suspected engine or harness bugs. Flags go to

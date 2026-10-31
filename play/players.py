@@ -52,10 +52,11 @@ How the game talks to you:
 Reply with exactly one line of JSON and nothing else:
 {"choice": <option number>, "reason": "<one or two sentences: your plan and the main risk you checked>"}
 When you PASS priority, say how far to keep passing while nothing happens: "pass_until": "my_main" (asked again in
-your next main phase: use it in your upkeep and draw step), "end_of_turn" (asked again at the end step of the
+your next main phase), "end_of_turn" (asked again at the end step of the
 opponent's turn, e.g. to cast an instant then) or "my_turn" (asked again at your next turn). Add one to every PASS
 unless you mean to act at the very next window; each extra question costs time. You are always asked again when
-anything goes on the stack, in your own main phases, during combat, and for attacks, blocks and other choices.
+anything goes on the stack, in your own main phases, during combat, and for attacks, blocks and other choices. Your
+own upkeep and draw step are passed for you unless something is on the stack.
 
 Batching: one reply may also cover the decisions that follow it, so you are not asked each one. Add any of these keys
 to the same JSON line (entry numbers are the [n] of the current state):
@@ -138,15 +139,16 @@ def deck_set(deck_path):
     return sets.pop() if sets else "DSK"
 
 
-def system_prompt(deck_path, texts, lessons=None, plan=False, facts=False, primer="v1"):
+def system_prompt(deck_path, texts, lessons=None, plan=False, facts=False, primer=None):
     """lessons: text of a lessons file (play/primer/lessons_v*.md) placed right after the rules, or None.
     plan: ask for a plan that is updated in every reply (PLAN_RULES). facts: explain the "Facts:" block (FACTS_RULES).
     primer: "v1" (dsk_meta.md + the 17lands GIH table) or "v2" (dsk_meta_v2.md: archetypes, checks, cards to respect;
-    each card in the deck gets its role from dsk_card_roles.json)."""
+    each card in the deck gets its role from dsk_card_roles.json). None: v1 for DSK, v2 for other sets (only v2 exists)."""
+    s = deck_set(deck_path)
+    primer = primer or ("v1" if s == "DSK" else "v2")
     if primer not in PRIMERS:
         raise ValueError(f"primer must be one of {PRIMERS}, not {primer!r}")
     deck = read_deck(deck_path)
-    s = deck_set(deck_path)
     rules = RULES.replace("Duskmourn (DSK)", f"{SET_NAMES[s]} ({s})")
     if s != "DSK" and primer != "v2":
         raise ValueError(f"{s} has only primer v2 (play/primer/{s.lower()}_meta_v2.md), not {primer!r}")
@@ -193,8 +195,9 @@ class ClaudePlayer:
                  timeout_s=600, primer=None, concede=False):
         self.model, self.effort, self.timeout_s = model, effort, timeout_s
         self.concede = concede  # may reply {"concede": true} (Playmat's Claude seat; match.py games play to the end)
-        self.primer = primer or os.environ.get("PRIMER") or "v1"  # an explicit argument wins over $PRIMER
-        if self.primer not in PRIMERS:
+        # an explicit argument wins over $PRIMER; neither: system_prompt picks by the deck's set (v1 DSK, v2 FDN)
+        self.primer = primer or os.environ.get("PRIMER") or None
+        if self.primer is not None and self.primer not in PRIMERS:
             raise ValueError(f"primer must be one of {PRIMERS}, not {self.primer!r}")
         self.lessons = Path(lessons).read_text() if lessons else None
         self.plan_mode = plan
@@ -328,17 +331,21 @@ class ClaudePlayer:
         return None, None, None, None, None
 
     def _auto_pass(self, msg, g):
-        """True if this decision is an empty priority window the player asked to skip."""
-        if not self.pass_until:
-            return False
+        """Why this decision is a priority window passed without asking (recorded as "auto"), or None to ask."""
         if msg["kind"] != "PRIORITY" or msg["options"][0]["label"] != "PASS":
-            return False  # attacks, blocks, targets... are always asked; pass_until stays for later windows
+            return None  # attacks, blocks, targets... are always asked; pass_until stays for later windows
+        if g["my_turn"] and g["step"] in ("Upkeep", "Draw") and g["stack_size"] == 0:
+            # Jeff 2026-10-29: in the effort batch 847 of these were asked, nearly always answered PASS ("wait for the
+            # draw"); the turn's conversation restart made them the first, costliest call of the turn
+            return "own_upkeep_draw"
+        if not self.pass_until:
+            return None
         if g["my_turn"] and g["step"] in ("Precombat Main", "Postcombat Main"):
             if self.pass_until["target"] == "my_main":
                 self.pass_until = None
-            return False  # never skip my own main phases (land drops, sorcery-speed plays); pass_until stays
+            return None  # never skip my own main phases (land drops, sorcery-speed plays); pass_until stays
         if any(e.get("attacking") for e in msg["obs"]["entries"]):
-            return False  # combat-trick windows (before and after blocks) are always asked
+            return None  # combat-trick windows (before and after blocks) are always asked
         # Windows where PASS is the only option are answered in Java and never reach us, so the target step may be
         # missed: expire by turn number too (turns are numbered across both players: mine, theirs, mine, ...).
         p = self.pass_until
@@ -351,8 +358,8 @@ class ClaudePlayer:
             reached = g["turn"] > last or (not g["my_turn"] and g["step"] == "End Turn")
         if reached or g["stack_size"] > 0:
             self.pass_until = None
-            return False
-        return True
+            return None
+        return f"pass_until:{p['target']}"
 
     def _prompt(self, msg, g):
         """This decision's text; starts a conversation (with the game log) if none is running."""
@@ -389,8 +396,9 @@ class ClaudePlayer:
         planned = self._from_batch(msg, g)
         if planned is not None:
             return planned
-        if self._auto_pass(msg, g):
-            return 0, {"auto": f"pass_until:{self.pass_until['target']}"}
+        auto = self._auto_pass(msg, g)
+        if auto:
+            return 0, {"auto": auto}
 
         # restart the conversation at the start of each of my turns (unless it has only held the mulligan)
         if g["my_turn"] and g["turn"] != self.round_turn:

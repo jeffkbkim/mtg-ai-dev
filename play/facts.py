@@ -209,8 +209,9 @@ def facts(msg):
 
     if kind == "ATTACK":
         opp_block = [b for b in opp_c if not b.e.get("tapped")]
-        cand = [by_i[o["source"]["entry"]] for o in msg["options"]
-                if "entry" in (o.get("source") or {}) and o["source"]["entry"] in by_i]
+        # one note per creature, though a creature that can also attack a planeswalker has two options
+        cand = list({o["source"]["entry"]: by_i[o["source"]["entry"]] for o in msg["options"]
+                     if "entry" in (o.get("source") or {}) and o["source"]["entry"] in by_i}.values())
         blockers_next = [b for b in mine_c if not b.e.get("tapped") and (not b.e.get("attacking") or b.vigilance)]
         opp_att = [b for b in opp_c if not (b.e.get("tapped") and _stunned(b))]
         for c in cand:

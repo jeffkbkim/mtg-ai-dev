@@ -9,13 +9,14 @@
 # Each deck pair is two parts of GAMES games (default 2) with the same seats and decks, the variant on seat A in one part and on seat B in
 # the other, so each variant plays each deck once on the play and once on the draw. 6 parts at a time.
 cd /home/claude/mtg-ai
-VARIANT=${VARIANT:-plan}
+VARIANT=${VARIANT-plan}  # only when unset: VARIANT="" means no variant
 GAMES=${GAMES:-2}  # games per part; GAMES=1 with 25 pairs gives a 50-game batch (seat A is on the play in each game 0)
 RUN=$1; D=$2; SEED=$3; TAG=$4; shift 4
 specs=""; p=0; i=0
 for pair in "$@"; do
   a=${pair%/*}; b=${pair#*/}
-  for planseat in a b; do
+  # SEATINGS=1 (env): one part per pair, for runs with no variant to swap (list a/b and b/a to swap who is on the play)
+  for planseat in $([ "${SEATINGS:-2}" = 1 ] && echo a || echo a b); do
     p=$((p+1))
     # PARTS (env): only these part numbers, e.g. to finish a batch whose machine went away; same seeds and decks
     if [ -z "$PARTS" ] || [[ " $PARTS " == *" $p "* ]]; then i=$((i+1)); specs="$specs $p:$a:$b:$planseat:$i"; fi

@@ -15,6 +15,7 @@ data = [
     "polars>=2.0.0",
 ]
 dev = [
+    "matplotlib>=3.11.2",
     "pytest>=9.1.1",
 ]
 

@@ -747,15 +747,22 @@ public class PySeat extends ComputerPlayer {
     @Override
     public void selectAttackers(Game game, UUID attackingPlayerId) {
         if (simulated(game)) { super.selectAttackers(game, attackingPlayerId); return; }
-        UUID defender = game.getOpponents(playerId).iterator().next();
+        UUID opponent = game.getOpponents(playerId).iterator().next();
         while (true) {
             boolean[] done = {false};
             List<Option> opts = new ArrayList<>();
             opts.add(new Option("DONE", null, null, () -> done[0] = true).as("DONE"));
-            for (Permanent p : getAvailableAttackers(defender, game)) {
-                if (p.isAttacking()) continue;
-                opts.add(new Option(label(game, p.getId()) + " attacks", p.getId(), defender,
-                        () -> declareAttacker(p.getId(), defender, game, false)).as("ATTACK"));
+            // the opponent first, then each planeswalker (or battle) that can be attacked: an attack at a planeswalker
+            // is the same ATTACK with that permanent as its target (Kaito, Bane of Nightmares was never attackable)
+            List<UUID> defenders = new ArrayList<>(Collections.singletonList(opponent));
+            for (UUID d : game.getCombat().getDefenders()) if (!d.equals(opponent) && game.getPermanent(d) != null) defenders.add(d);
+            for (UUID defender : defenders) {
+                for (Permanent p : getAvailableAttackers(defender, game)) {
+                    if (p.isAttacking()) continue;
+                    String at = defender.equals(opponent) ? "" : " " + label(game, defender);
+                    opts.add(new Option(label(game, p.getId()) + " attacks" + at, p.getId(), defender,
+                            () -> declareAttacker(p.getId(), defender, game, false)).as("ATTACK"));
+                }
             }
             if (opts.size() == 1) return;
             pick("ATTACK", "declare attackers one at a time", game, opts, null);
