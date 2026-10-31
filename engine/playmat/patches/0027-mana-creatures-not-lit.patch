@@ -1,0 +1,82 @@
+diff --git a/Mage.Web.Client/src/core/game/autoPass.ts b/Mage.Web.Client/src/core/game/autoPass.ts
+index 25be390ffa..94e5b5b5be 100644
+--- a/Mage.Web.Client/src/core/game/autoPass.ts
++++ b/Mage.Web.Client/src/core/game/autoPass.ts
+@@ -54,7 +54,9 @@ export interface AutoPassSettings {
+  * cost and "Add ...".
+  */
+ function isManaText(text: string | undefined): boolean {
+-  return !!text && /^[^:]*:\s*Add\b[^.]*\.?$/i.test(text.replace(/<[^>]*>/g, '').trim());
++  // mtg-ai: "Add ... . Spend this mana only to ..." (Overgrown Zealot) is a mana ability too; the server may cut
++  // the text short anywhere in that second sentence
++  return !!text && /^[^:]*:\s*Add\b[^.]*(\.\s*(Spend\b.*)?)?$/i.test(text.replace(/<[^>]*>/g, '').trim());
+ }
+ 
+ /** Turning a face-down permanent up (morph, disguise, manifest, cloak): a special action, any time you have priority. */
+diff --git a/Mage.Web.Client/src/core/game/interaction.test.ts b/Mage.Web.Client/src/core/game/interaction.test.ts
+index f5741ea430..1a2f8ab489 100644
+--- a/Mage.Web.Client/src/core/game/interaction.test.ts
++++ b/Mage.Web.Client/src/core/game/interaction.test.ts
+@@ -66,6 +66,25 @@ describe('interaction model', () => {
+     expect(interaction.mainButton).toMatchObject({ label: 'To Combat', command: { type: 'boolean', value: false } });
+   });
+ 
++  test('priority: a mana creature is not lit up, a land and a creature with another ability are (mtg-ai)', () => {
++    const interaction = deriveInteraction(view({
++      players: [
++        { playerId: ME, name: 'Me', life: 20, battlefield: {
++          zealot: { name: 'Overgrown Zealot', cardTypes: ['CREATURE'] },
++          forest: { name: 'Forest', cardTypes: ['LAND'] },
++          tracker: { name: 'Entity Tracker', cardTypes: ['CREATURE'] },
++        } },
++        { playerId: OPPONENT, name: 'Opponent', life: 20 },
++      ] as never,
++      canPlayObjects: { objects: {
++        zealot: { basicManaAbilities: [{ value: '{T}: Add one mana of any color.' }], other: [{ value: '{T}: Add two mana of any one color. Spend this ma' }] },
++        forest: { basicManaAbilities: [{ value: '{T}: Add {G}.' }] },
++        tracker: { other: [{ value: '{2}{U}: Draw a card.' }] },
++      } } as never,
++    }), parsePrompt('GAME_SELECT', { message: 'Play spells and abilities' }));
++    expect([...interaction.clickable.keys()]).toEqual(['forest', 'tracker']);
++  });
++
+   test('main button follows Arena wording', () => {
+     expect(passLabel(view({ stack: { s: { name: 'Bolt' } } }))).toBe('Resolve');
+     expect(passLabel(view({ activePlayerId: OPPONENT }))).toBe('Pass');
+diff --git a/Mage.Web.Client/src/core/game/interaction.ts b/Mage.Web.Client/src/core/game/interaction.ts
+index ea9cb3aad5..65094dad93 100644
+--- a/Mage.Web.Client/src/core/game/interaction.ts
++++ b/Mage.Web.Client/src/core/game/interaction.ts
+@@ -1,6 +1,7 @@
+ import type { GameView, ManaType, PlayerAction } from '../../protocol/generated/views';
+ import { assignmentAnswer, lethalFirst, parseDamageAssignment } from './damageAssignment';
+ import { poolId, poolTypes } from './payment';
++import { meaningfulPlays } from './autoPass';
+ import type { Prompt } from './prompt';
+ 
+ /** An answer to the server, independent of how the UI produced it. */
+@@ -69,6 +70,13 @@ function clickMap(ids: Iterable<string>): Map<string, Command> {
+   return map;
+ }
+ 
++/** mtg-ai: playable objects less nonland permanents that would only make mana (Overgrown Zealot) */
++function priorityPlays(view: GameView | null | undefined): string[] {
++  const meaningful = new Set(meaningfulPlays(view));
++  const battlefield = myPlayer(view)?.battlefield ?? {};
++  return playableIds(view).filter((id) => meaningful.has(id) || !battlefield[id] || (battlefield[id].cardTypes ?? []).includes('LAND'));
++}
++
+ /** Objects the player can play or activate right now (from the server's playable list). */
+ export function playableIds(view: GameView | null | undefined): string[] {
+   return Object.keys(view?.canPlayObjects?.objects ?? {});
+@@ -149,7 +157,9 @@ export function deriveInteraction(view: GameView | null | undefined, prompt: Pro
+         mode: 'priority',
+         prompt,
+         headline: prompt.text,
+-        clickable: clickMap(playableIds(view)),
++        // mtg-ai: a nonland permanent whose only ability right now makes mana (a mana creature) isn't lit up as a
++        // play: mana is paid for you; lands stay clickable to tap by hand
++        clickable: clickMap(priorityPlays(view)),
+         selected: EMPTY_SET,
+         mainButton: { label: passLabel(view), command: PASS, tone: 'primary', shortcut: 'Space' },
+         secondaryButtons: [],
