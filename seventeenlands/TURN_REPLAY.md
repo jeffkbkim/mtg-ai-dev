@@ -203,3 +203,22 @@ windows, one slice per game, the streaming engine and smaller row groups all sti
 kept ~5 GB afterwards. The sample is now picked in a short-lived child process that writes `sample.parquet` to the run
 directory and exits, under a lock so only one worker picks at a time. Measured: peak 6.8 GB in the child for ~7 s,
 74 MB in the parent afterwards (500 games, seed 2001).
+
+## 50k-game run, 2026-10-29 to 31 (seed 5001, `--probe 30 --rows`, code `0de201a`)
+
+`replay_batches.py --name dsk50k --sample 50000 --seed 5001 --batch 500 --workers 3`, on the mini. 100 batches of 500,
+about 68 minutes each, 41 hours in all. 4 batches failed when two workers started XMage at the same moment and one
+couldn't open XMage's card database (`expansionDao` null, then a socket timeout); they were rerun and all 100 finished.
+Free memory never went below 48%, swap stayed flat.
+
+| Turns | Reproduced |
+|---|---:|
+| From an exact start, n = 787,264 | 76.2% |
+| Before a game's first miss ("clean"), n = 441,428 | 89.5% |
+| After a reset, n = 380,135 | 54.0% |
+| Final turns, n = 31,684 | 24.2% |
+
+Decision rows: 4,456,698 (about 89 per game, 0.75 GB gzipped, `dsk50k/b*/decisions.jsonl.gz`). Recorded 3,979,567
+(89.3%), unique 133,258 (3.0%), ambiguous 332,472 (7.5%), not recorded 11,401 (0.3%).
+
+To do: retry an engine that fails to start instead of failing the batch.
