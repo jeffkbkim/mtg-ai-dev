@@ -1242,13 +1242,14 @@ index 0000000000..b5351828ea
 +}
 diff --git a/Mage.Web.Client/src/app/quickdraft/PoolBoard.tsx b/Mage.Web.Client/src/app/quickdraft/PoolBoard.tsx
 new file mode 100644
-index 0000000000..350a34bf8a
+index 0000000000..d4d45a23c8
 --- /dev/null
 +++ b/Mage.Web.Client/src/app/quickdraft/PoolBoard.tsx
-@@ -0,0 +1,202 @@
+@@ -0,0 +1,245 @@
 +import { useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 +import type { CareerPoolCard } from '../../protocol/generated/views';
 +import { CardFace } from '../ui/CardFace';
++import { COLOR_BOXES, TYPE_BOXES, type CardFilter } from './filter';
 +import { SIDEBOARD, colorRank, lower, type Column } from './pool';
 +import draft from '../events/Draft.module.css';
 +import styles from './QuickDraft.module.css';
@@ -1270,14 +1271,18 @@ index 0000000000..350a34bf8a
 +
 +type Hover = (card: CareerPoolCard) => object;
 +
-+export function PoolBoard({ pool, columns, onPlace, hover, head, hint }: {
++export function PoolBoard({ pool, columns, onPlace, hover, head, hint, filter }: {
 +  pool: readonly CareerPoolCard[];
 +  columns: readonly Column[];
 +  onPlace(at: number, label: string, position: number): void;
 +  hover: Hover;
 +  head?: ReactNode;
 +  hint?: string;
++  /** cards not matching are greyed out, or left out of the stacks (filter.ts) */
++  filter?: CardFilter;
 +}) {
++  const hidden = (at: number) => !!filter?.active && filter.state.hide && !filter.matches(pool[at]);
++  const shownOf = (column: Column) => column.items.filter((at) => !hidden(at));
 +  const [drag, setDrag] = useState<Drag | null>(null);
 +  const dragRef = useRef<Drag | null>(null);
 +
@@ -1312,7 +1317,13 @@ index 0000000000..350a34bf8a
 +      setDrag(null);
 +      if (!current?.moved) return;
 +      const target = dropTarget(up.clientX, up.clientY);
-+      if (target) onPlace(current.at, target.label, target.position);
++      if (!target) return;
++      // the place among the cards shown (some may be hidden by the filter) -> the place in the column
++      const column = columns.find((candidate) => candidate.label === target.label);
++      const shown = column ? shownOf(column).filter((item) => item !== current.at) : [];
++      const before = shown[target.position];
++      const items = column ? column.items.filter((item) => item !== current.at) : [];
++      onPlace(current.at, target.label, before === undefined ? items.length : items.indexOf(before));
 +    };
 +    window.addEventListener('pointermove', onMove);
 +    window.addEventListener('pointerup', onUp);
@@ -1328,6 +1339,7 @@ index 0000000000..350a34bf8a
 +        {head}
 +        <small className={styles.picksHint}>{hint ?? 'drag cards to arrange them, or into Sideboard to leave them out of the deck'}</small>
 +      </div>
++      {filter && <FilterBar filter={filter} />}
 +      <div className={[draft.columns, styles.columns].join(' ')}>
 +        {columns.map((column) => (
 +          <div
@@ -1337,15 +1349,16 @@ index 0000000000..350a34bf8a
 +              column.label === SIDEBOARD ? styles.sideColumn : '', moving ? styles.dropTarget : '', over === column.label ? styles.dropOver : ''].join(' ')}
 +          >
 +            <span className={draft.columnLabel}>{column.label} <small>({column.items.length})</small></span>
-+            <div data-stack className={draft.columnCards} style={{ height: `calc(var(--pick-w) * (1.4 + 0.3 * ${Math.max(0, column.items.length - 1)}))` }}>
-+              {column.items.map((at, index) => {
++            <div data-stack className={draft.columnCards} style={{ height: `calc(var(--pick-w) * (1.4 + 0.3 * ${Math.max(0, shownOf(column).length - 1)}))` }}>
++              {shownOf(column).map((at, index) => {
 +                const card = pool[at];
++                const dim = !!filter?.active && !filter.matches(card);
 +                return (
 +                  <div
 +                    key={at}
 +                    role="button"
 +                    tabIndex={0}
-+                    className={[draft.picked, styles.picked, column.label === SIDEBOARD ? styles.inSide : '', moving?.at === at ? styles.dragged : ''].join(' ')}
++                    className={[draft.picked, styles.picked, column.label === SIDEBOARD ? styles.inSide : '', dim ? styles.filteredOut : '', moving?.at === at ? styles.dragged : ''].join(' ')}
 +                    style={{ top: `calc(var(--pick-w) * ${0.3 * index})`, zIndex: index }}
 +                    aria-label={`${card.name}, ${column.label === SIDEBOARD ? 'sideboard' : 'deck'}; drag to move`}
 +                    {...(moving ? {} : hover(card))}
@@ -1399,13 +1412,42 @@ index 0000000000..350a34bf8a
 +  );
 +}
 +
++const COLOR_NAMES: Record<string, string> = { W: 'White', U: 'Blue', B: 'Black', R: 'Red', G: 'Green', C: 'Colourless', M: 'Multicolour' };
++
++/** Tick boxes for card types and colours, grey out or hide what doesn't match, and Clear. */
++export function FilterBar({ filter }: { filter: CardFilter }) {
++  return (
++    <div className={styles.filterBar} role="group" aria-label="Filter the pool">
++      {TYPE_BOXES.map((type) => (
++        <label key={type} className={[styles.filterBox, filter.state.types.includes(type) ? styles.filterOn : ''].join(' ')}>
++          <input type="checkbox" checked={filter.state.types.includes(type)} onChange={() => filter.toggleType(type)} />
++          {type}
++        </label>
++      ))}
++      <span className={styles.filterGap} aria-hidden="true" />
++      {COLOR_BOXES.map((color) => (
++        <label key={color} className={[styles.filterBox, filter.state.colors.includes(color) ? styles.filterOn : ''].join(' ')} title={COLOR_NAMES[color]}>
++          <input type="checkbox" checked={filter.state.colors.includes(color)} onChange={() => filter.toggleColor(color)} aria-label={COLOR_NAMES[color]} />
++          {color === 'C' || color === 'M' ? <span className={styles.filterLetter}>{color === 'C' ? '◇' : 'Multi'}</span> : <i className={`ms ms-cost ms-${color.toLowerCase()}`} aria-hidden="true" />}
++        </label>
++      ))}
++      <span className={styles.filterGap} aria-hidden="true" />
++      <label className={styles.filterBox}>
++        <input type="checkbox" checked={filter.state.hide} onChange={(event) => filter.setHide(event.target.checked)} />
++        Hide others
++      </label>
++      {filter.active && <button type="button" className={styles.suggest} onClick={filter.clear}>Clear</button>}
++    </div>
++  );
++}
++
 +function Mana({ colors }: { colors: string | undefined }) {
 +  return <>{[...(colors ?? '')].map((color) => <i key={color} className={`ms ms-cost ms-${color.toLowerCase()}`} aria-hidden="true" />)}</>;
 +}
 +
 +/** A deck or sideboard list, like Arena's: how many, the name, mana value and colours, and a button to move one copy;
 + * hovering a row shows the card. */
-+export function CardList({ title, cards, hint, action, actionLabel, onMove, hover, dim }: {
++export function CardList({ title, cards, hint, action, actionLabel, onMove, hover, dim, filter }: {
 +  title: string;
 +  cards: CareerPoolCard[];
 +  hint: string;
@@ -1414,6 +1456,7 @@ index 0000000000..350a34bf8a
 +  onMove(card: CareerPoolCard): void;
 +  hover(card: CareerPoolCard): object;
 +  dim?: boolean;
++  filter?: CardFilter;
 +}) {
 +  const rows = useMemo(() => {
 +    const byName = new Map<string, { card: CareerPoolCard; count: number }>();
@@ -1432,8 +1475,8 @@ index 0000000000..350a34bf8a
 +        <small>{hint}</small>
 +      </header>
 +      <ul>
-+        {rows.map(({ card, count }) => (
-+          <li key={lower(card)} className={styles.row} {...hover(card)}>
++        {rows.filter(({ card }) => !(filter?.active && filter.state.hide && !filter.matches(card))).map(({ card, count }) => (
++          <li key={lower(card)} className={[styles.row, filter?.active && !filter.matches(card) ? styles.filteredOut : ''].join(' ')} {...hover(card)}>
 +            <span className={styles.rowCount}>{count}×</span>
 +            <span className={styles.rowName}>{card.name}</span>
 +            <span className={styles.rowCost}>
@@ -1450,10 +1493,10 @@ index 0000000000..350a34bf8a
 +}
 diff --git a/Mage.Web.Client/src/app/quickdraft/QuickBuilder.tsx b/Mage.Web.Client/src/app/quickdraft/QuickBuilder.tsx
 new file mode 100644
-index 0000000000..4f40d9b12e
+index 0000000000..0696b1e2e4
 --- /dev/null
 +++ b/Mage.Web.Client/src/app/quickdraft/QuickBuilder.tsx
-@@ -0,0 +1,179 @@
+@@ -0,0 +1,182 @@
 +import { Minus, Plus, WandSparkles } from 'lucide-react';
 +import { useMemo, useRef, useState } from 'react';
 +import { createPortal } from 'react-dom';
@@ -1466,6 +1509,7 @@ index 0000000000..4f40d9b12e
 +import { CardList, ManaCurve, PoolBoard } from './PoolBoard';
 +import { BASIC_NAMES, SIDEBOARD, arrange, columnOf, deckStats, layoutKey, lower, placeIn, type Column } from './pool';
 +import { submitQuickDraftDeck } from './quickDraftData';
++import { useCardFilter } from './filter';
 +import { useCardZoom } from './zoom';
 +import draft from '../events/Draft.module.css';
 +import styles from './QuickDraft.module.css';
@@ -1517,6 +1561,7 @@ index 0000000000..4f40d9b12e
 +  const [basics, setBasics] = useState<Record<BasicLand, number>>(() => readJson(basicsKey(id), run.deck?.length ? basicsFromDeck(run) : emptyBasics()));
 +  const [busy, setBusy] = useState(false);
 +  const zoom = useCardZoom();
++  const filter = useCardFilter(pool);
 +  const listsRef = useRef<HTMLElement>(null);
 +
 +  const columns = useMemo(() => arrange(pool, arranged), [pool, arranged]);
@@ -1591,13 +1636,14 @@ index 0000000000..4f40d9b12e
 +          columns={columns}
 +          onPlace={(at, label, position) => save(placeIn(columns, at, label, position))}
 +          hover={hover}
++          filter={filter}
 +          head={<h2 className={draft.picksLabel}>Your pool <span>{pool.length}</span></h2>}
 +        />
 +      </div>
 +
 +      <aside ref={listsRef} className={styles.lists} aria-label="Your deck">
 +        <ManaCurve stats={stats} />
-+        <CardList title="Deck" cards={deckCards} hint={`${size} / ${DECK_MIN} with basics`} action="−" actionLabel="Move to sideboard" onMove={(card) => moveCopy(card, true)} hover={hover} />
++        <CardList title="Deck" cards={deckCards} hint={`${size} / ${DECK_MIN} with basics`} action="−" actionLabel="Move to sideboard" onMove={(card) => moveCopy(card, true)} hover={hover} filter={filter} />
 +        <section className={styles.basics} aria-label="Basic lands">
 +          <header className={styles.listHead}>
 +            <h2>Basic lands <span>{basicCount}</span></h2>
@@ -1621,7 +1667,7 @@ index 0000000000..4f40d9b12e
 +            ))}
 +          </ul>
 +        </section>
-+        <CardList title="Sideboard" cards={sideboard} hint={sideboard.length === 1 ? '1 card' : `${sideboard.length} cards`} action="+" actionLabel="Add to deck" onMove={(card) => moveCopy(card, false)} hover={hover} dim />
++        <CardList title="Sideboard" cards={sideboard} hint={sideboard.length === 1 ? '1 card' : `${sideboard.length} cards`} action="+" actionLabel="Add to deck" onMove={(card) => moveCopy(card, false)} hover={hover} filter={filter} dim />
 +        <div className={styles.saveRow}>
 +          {size < DECK_MIN && <span className={styles.short}>{DECK_MIN - size} more to 40</span>}
 +          <Button variant="decision" busy={busy} disabled={size < DECK_MIN} onClick={() => void submit()}>Use this deck</Button>
@@ -1635,10 +1681,10 @@ index 0000000000..4f40d9b12e
 +}
 diff --git a/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css b/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css
 new file mode 100644
-index 0000000000..3705f903a9
+index 0000000000..2287c043c2
 --- /dev/null
 +++ b/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css
-@@ -0,0 +1,703 @@
+@@ -0,0 +1,747 @@
 +/* mtg-ai: Quick Draft (QuickDraftScreen.tsx); the pick screen reuses events/Draft.module.css, the rest Career's modes */
 +
 +/* the pick screen covers the app shell, like an event draft */
@@ -1871,6 +1917,50 @@ index 0000000000..3705f903a9
 +  padding-left: var(--space-4);
 +  border-left: 1.5px dashed var(--ink-ghost);
 +  min-width: calc(var(--pick-w) + var(--space-4));
++}
++
++.filterBar {
++  display: flex;
++  flex-wrap: wrap;
++  align-items: center;
++  gap: 6px;
++  margin: 0 0 var(--space-3);
++}
++
++.filterBox {
++  display: inline-flex;
++  align-items: center;
++  gap: 5px;
++  padding: 3px 9px;
++  border-radius: 999px;
++  background: rgb(var(--mat-rgb) / 0.7);
++  box-shadow: inset 0 0 0 1.5px var(--ink-faint);
++  color: var(--ink-soft);
++  font-size: 13px;
++  cursor: pointer;
++  user-select: none;
++}
++
++.filterBox input {
++  margin: 0;
++  accent-color: var(--decision);
++}
++
++.filterOn {
++  box-shadow: inset 0 0 0 2px var(--decision);
++  color: var(--ink-strong);
++}
++
++.filterGap {
++  width: var(--space-3);
++}
++
++.filterLetter {
++  font-size: 12px;
++}
++
++.filteredOut {
++  filter: grayscale(0.9) brightness(0.35);
 +}
 +
 +.dropOver {
@@ -2344,10 +2434,10 @@ index 0000000000..3705f903a9
 +}
 diff --git a/Mage.Web.Client/src/app/quickdraft/QuickDraftScreen.tsx b/Mage.Web.Client/src/app/quickdraft/QuickDraftScreen.tsx
 new file mode 100644
-index 0000000000..06ba6349e8
+index 0000000000..834e638a57
 --- /dev/null
 +++ b/Mage.Web.Client/src/app/quickdraft/QuickDraftScreen.tsx
-@@ -0,0 +1,538 @@
+@@ -0,0 +1,541 @@
 +import { Bot, Layers, LogOut, Swords, Timer } from 'lucide-react';
 +import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 +import { createPortal } from 'react-dom';
@@ -2371,6 +2461,7 @@ index 0000000000..06ba6349e8
 +import { CardList, ManaCurve, PoolBoard } from './PoolBoard';
 +import { QuickBuilder } from './QuickBuilder';
 +import { SIDEBOARD, arrange, columnOf, deckStats, isRoomCard, layoutKey, lower, placeIn, type Column } from './pool';
++import { useCardFilter } from './filter';
 +import { useCardZoom } from './zoom';
 +import styles from './QuickDraft.module.css';
 +
@@ -2561,6 +2652,7 @@ index 0000000000..06ba6349e8
 +  const [selected, setSelected] = useState<number | null>(null);
 +  const [busy, setBusy] = useState(false);
 +  const zoom = useCardZoom();
++  const filter = useCardFilter(pool);
 +  const [arranged, setArranged] = useState<Record<string, number[]>>(() => readJson(layoutKey(run.id ?? ''), {}));
 +  const timed = readJson<Partial<Prefs>>(PREFS, {}).timer === true;
 +  const packKey = `${run.round}-${run.pick}`;
@@ -2671,8 +2763,8 @@ index 0000000000..06ba6349e8
 +
 +      <aside ref={listsRef} className={styles.lists} aria-label="Your deck and sideboard">
 +        <ManaCurve stats={stats} />
-+        <CardList title="Deck" cards={deck} hint={`${stats.spells} spells · ${stats.lands} lands`} action="−" actionLabel="Move to sideboard" onMove={(card) => moveCopy(card, true)} hover={hover} />
-+        <CardList title="Sideboard" cards={sideboard} hint={sideboard.length === 1 ? '1 card' : `${sideboard.length} cards`} action="+" actionLabel="Add to deck" onMove={(card) => moveCopy(card, false)} hover={hover} dim />
++        <CardList title="Deck" cards={deck} hint={`${stats.spells} spells · ${stats.lands} lands`} action="−" actionLabel="Move to sideboard" onMove={(card) => moveCopy(card, true)} hover={hover} filter={filter} />
++        <CardList title="Sideboard" cards={sideboard} hint={sideboard.length === 1 ? '1 card' : `${sideboard.length} cards`} action="+" actionLabel="Add to deck" onMove={(card) => moveCopy(card, false)} hover={hover} filter={filter} dim />
 +      </aside>
 +
 +      <PoolBoard
@@ -2680,6 +2772,7 @@ index 0000000000..06ba6349e8
 +        columns={columns}
 +        onPlace={(at, label, position) => save(placeIn(columns, at, label, position))}
 +        hover={hover}
++        filter={filter}
 +        head={<h2 className={draft.picksLabel}>Your picks <span>{pool.length}</span></h2>}
 +      />
 +
@@ -2886,6 +2979,98 @@ index 0000000000..06ba6349e8
 +    </section>
 +  );
 +}
+diff --git a/Mage.Web.Client/src/app/quickdraft/filter.ts b/Mage.Web.Client/src/app/quickdraft/filter.ts
+new file mode 100644
+index 0000000000..65dd6762d3
+--- /dev/null
++++ b/Mage.Web.Client/src/app/quickdraft/filter.ts
+@@ -0,0 +1,86 @@
++import { useMemo, useState } from 'react';
++import type { CareerPoolCard } from '../../protocol/generated/views';
++import type { DeckCardInfo } from '../../core/decks/types';
++import { useCardInfo } from '../decks/cardInfo';
++import { entryKey } from '../decks/deckModel';
++import { readJson, writeJson } from '../stores/persist';
++import { isRoomCard } from './pool';
++
++/**
++ * mtg-ai: Quick Draft's card filter: tick card types and colours; cards that match none of the ticked boxes of a
++ * group are greyed out, or hidden. Nothing ticked: everything shows. The types come from the card database (the pool
++ * only says creature or land). Remembered in this browser.
++ */
++
++export const TYPE_BOXES = ['Creature', 'Enchantment', 'Room', 'Instant', 'Sorcery', 'Artifact', 'Land'] as const;
++export const COLOR_BOXES = ['W', 'U', 'B', 'R', 'G', 'C', 'M'] as const;
++export type TypeBox = (typeof TYPE_BOXES)[number];
++export type ColorBox = (typeof COLOR_BOXES)[number];
++
++export interface FilterState {
++  types: TypeBox[];
++  colors: ColorBox[];
++  hide: boolean;
++}
++
++const KEY = 'playmat.quickDraft.filter';
++const EMPTY: FilterState = { types: [], colors: [], hide: false };
++
++export function useCardFilter(pool: readonly CareerPoolCard[]) {
++  const [state, setState] = useState<FilterState>(() => ({ ...EMPTY, ...readJson<Partial<FilterState>>(KEY, {}) }));
++  const entries = useMemo<DeckCardInfo[]>(() => pool.map((card) => ({ cardName: card.name ?? '', setCode: card.setCode ?? '', cardNumber: card.cardNumber ?? '', amount: 1 })), [pool]);
++  const info = useCardInfo(entries);
++
++  const update = (next: FilterState) => {
++    writeJson(KEY, next);
++    setState(next);
++  };
++
++  /** the card's type boxes: from the card database, else what the pool knows */
++  const typesOf = (card: CareerPoolCard): Set<TypeBox> => {
++    const view = info.get(entryKey({ cardName: card.name ?? '', setCode: card.setCode, cardNumber: card.cardNumber }));
++    const types = new Set<TypeBox>();
++    for (const type of view?.cardTypes ?? []) {
++      const named = (type.charAt(0) + type.slice(1).toLowerCase()) as TypeBox;
++      if ((TYPE_BOXES as readonly string[]).includes(named)) types.add(named);
++    }
++    if (card.creature) types.add('Creature');
++    if (card.land) types.add('Land');
++    if (isRoomCard(card)) {
++      types.add('Room');
++      types.add('Enchantment');
++    }
++    return types;
++  };
++
++  const colorsOf = (card: CareerPoolCard): ColorBox[] => {
++    const colors = card.colors ?? '';
++    if (colors.length === 0) return ['C'];
++    return colors.length > 1 ? ['M', ...(colors.split('') as ColorBox[])] : [colors as ColorBox];
++  };
++
++  const active = state.types.length > 0 || state.colors.length > 0;
++  const matches = (card: CareerPoolCard): boolean => {
++    if (state.types.length > 0) {
++      const types = typesOf(card);
++      if (!state.types.some((type) => types.has(type))) return false;
++    }
++    if (state.colors.length > 0) {
++      const colors = colorsOf(card);
++      if (!state.colors.some((color) => colors.includes(color))) return false;
++    }
++    return true;
++  };
++
++  return {
++    state,
++    active,
++    matches,
++    toggleType: (type: TypeBox) => update({ ...state, types: state.types.includes(type) ? state.types.filter((t) => t !== type) : [...state.types, type] }),
++    toggleColor: (color: ColorBox) => update({ ...state, colors: state.colors.includes(color) ? state.colors.filter((c) => c !== color) : [...state.colors, color] }),
++    setHide: (hide: boolean) => update({ ...state, hide }),
++    clear: () => update({ ...EMPTY, hide: state.hide }),
++  };
++}
++
++export type CardFilter = ReturnType<typeof useCardFilter>;
 diff --git a/Mage.Web.Client/src/app/quickdraft/pool.ts b/Mage.Web.Client/src/app/quickdraft/pool.ts
 new file mode 100644
 index 0000000000..d34898faac
