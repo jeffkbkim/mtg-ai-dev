@@ -706,15 +706,36 @@ def run(args):
     cp = ":".join([args.classes] + sorted(glob.glob(str(RUNTIME / "**/*.jar"), recursive=True)))
 
     def open_jvm(k: int, chunk: list):
-        """One JVM per chunk of games: XMage keeps per-game state around, so a long run in one JVM runs out of heap."""
+        """One JVM per chunk of games: XMage keeps per-game state around, so a long run in one JVM runs out of heap.
+
+        A JVM that exits before connecting is started again, up to 3 tries: when two workers start XMage at the same
+        moment, one can fail to open XMage's card database and die (4 of 100 batches in the 50k run)."""
         path = out / f"games_{k:03d}.jsonl"
         path.write_text("".join(json.dumps(sp) + "\n" for sp in chunk))
-        srv = socket.socket(); srv.bind(("127.0.0.1", 0)); srv.listen(1)
-        jvm = subprocess.Popen(["java", "-Xmx4g", "-Djava.awt.headless=true", "--add-opens=java.base/java.lang=ALL-UNNAMED", "-cp", cp,
-                                "ReplayMatch", str(srv.getsockname()[1]), str(path)],
-                               cwd=RUNTIME, stdout=open(out / f"jvm_{k:03d}.log", "w"), stderr=subprocess.STDOUT)
-        srv.settimeout(300)
-        conn, _ = srv.accept()
+        log = out / f"jvm_{k:03d}.log"
+        for attempt in range(3):
+            if attempt:
+                log.rename(log.with_suffix(f".failed{attempt}.log"))
+                time.sleep(random.uniform(5, 20))
+            srv = socket.socket(); srv.bind(("127.0.0.1", 0)); srv.listen(1)
+            jvm = subprocess.Popen(["java", "-Xmx4g", "-Djava.awt.headless=true", "--add-opens=java.base/java.lang=ALL-UNNAMED", "-cp", cp,
+                                    "ReplayMatch", str(srv.getsockname()[1]), str(path)],
+                                   cwd=RUNTIME, stdout=open(log, "w"), stderr=subprocess.STDOUT)
+            srv.settimeout(5)
+            conn = None
+            for _ in range(60):   # up to 300 s, as before, but give up as soon as the JVM has exited
+                try:
+                    conn, _ = srv.accept()
+                    break
+                except TimeoutError:
+                    if jvm.poll() is not None:
+                        break
+            srv.close()
+            if conn:
+                break
+            jvm.kill()
+        else:
+            raise RuntimeError(f"XMage did not start for chunk {k} after 3 tries, see {log}")
         conn.settimeout(300)
         return jvm, conn.makefile("rw")
 

@@ -221,4 +221,4 @@ Free memory never went below 48%, swap stayed flat.
 Decision rows: 4,456,698 (about 89 per game, 0.75 GB gzipped, `dsk50k/b*/decisions.jsonl.gz`). Recorded 3,979,567
 (89.3%), unique 133,258 (3.0%), ambiguous 332,472 (7.5%), not recorded 11,401 (0.3%).
 
-To do: retry an engine that fails to start instead of failing the batch.
+Since then (2026-10-31) an engine that exits before connecting is started again, up to 3 tries, a few seconds apart.
