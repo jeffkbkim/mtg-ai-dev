@@ -98,8 +98,9 @@ def pump_tricks(entries):
             continue  # a flash creature isn't a pump
         m = _PUMP.search(rules)
         kws = set()
-        # a conditional upgrade ("Delirium - ... gains double strike instead") isn't counted
-        plain = " ".join(x for x in re.split(r"(?<=\.)\s+", rules) if "instead" not in x.lower())
+        # a conditional upgrade (Violent Urge: "Delirium - If ..., that creature gains double strike") isn't counted
+        plain = " ".join(x for x in re.split(r"(?<=\.)\s+", rules)
+                         if "instead" not in x.lower() and not re.match(r"(Delirium|Eerie|Survival|If|As long as)\b", x))
         for g in _GAINS.findall(plain):
             kws |= {k.strip().lower() for k in re.split(r",| and ", g) if k.strip()}
         if not m and not kws:
