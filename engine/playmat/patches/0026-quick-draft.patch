@@ -1086,79 +1086,6 @@ index 624961ec17..2be82016f6 100644
    { to: '/decks', label: 'shell.nav.decks' },
    { to: '/events', label: 'shell.nav.events' },
    { to: '/tables', label: 'shell.nav.tables' },
-diff --git a/Mage.Web.Client/src/app/career/CareerLimitedBuild.tsx b/Mage.Web.Client/src/app/career/CareerLimitedBuild.tsx
-index 7a8a6072cb..441ad6548a 100644
---- a/Mage.Web.Client/src/app/career/CareerLimitedBuild.tsx
-+++ b/Mage.Web.Client/src/app/career/CareerLimitedBuild.tsx
-@@ -1,6 +1,6 @@
- import { Minus, Plus, WandSparkles } from 'lucide-react';
- import { useEffect, useMemo, useState } from 'react';
--import type { CareerLimitedRun } from '../../protocol/generated/views';
-+import type { CareerLimitedCoach, CareerLimitedRun } from '../../protocol/generated/views';
- import { useT, type MessageKey } from '../i18n';
- import { readJson, writeJson } from '../stores/persist';
- import { notify } from '../stores/toasts';
-@@ -31,7 +31,15 @@ function draftKey(runId: string): string {
-  * Building a sealed or draft deck from the run's pool: click a card to put a copy in, take it out from the deck list,
-  * add basic lands (free), and send it once it has 40 cards. The deck in progress stays in this browser until then.
-  */
--export function LimitedBuilder({ run, onDone, onCancel }: { run: CareerLimitedRun; onDone(): void; onCancel?: () => void }) {
-+export function LimitedBuilder({ run, onDone, onCancel, submit = submitLimitedDeck, coach }: {
-+  run: CareerLimitedRun;
-+  onDone(): void;
-+  onCancel?: () => void;
-+  /** mtg-ai: where the deck goes (Quick Draft sends it to its own run) */
-+  submit?: (deck: ReturnType<typeof buildDeck>) => Promise<unknown>;
-+  /** mtg-ai: the pool coach's source, when not Career's run */
-+  coach?: () => Promise<CareerLimitedCoach>;
-+}) {
-   const t = useT();
-   const entries = useMemo(() => poolEntries(run.pool), [run.pool]);
-   const [build, setBuild] = useState<LimitedBuild>(() => readJson<LimitedBuild | null>(draftKey(run.id ?? ''), null) ?? buildFrom(run.deck));
-@@ -54,7 +62,7 @@ export function LimitedBuilder({ run, onDone, onCancel }: { run: CareerLimitedRu
-   async function save() {
-     setBusy(true);
-     try {
--      await submitLimitedDeck(buildDeck(build, entries, `${run.setName ?? run.setCode ?? ''} ${run.kind ?? ''}`.trim()));
-+      await submit(buildDeck(build, entries, `${run.setName ?? run.setCode ?? ''} ${run.kind ?? ''}`.trim()));
-       notify(t('career.limited.deckSaved'), t('career.deck.summary', { count: size }));
-       onDone();
-     } catch (reason) {
-@@ -88,6 +96,7 @@ export function LimitedBuilder({ run, onDone, onCancel }: { run: CareerLimitedRu
-         {run.kind === 'draft' && <DraftReview picks={run.picks ?? []} />}
-         <PoolCoach
-           run={run}
-+          load={coach}
-           onBuild={(pair) => {
-             setBuild(buildFrom(pair.deck));
-             notify(t('career.coach.built'), t('career.coach.builtText', { colors: pair.colors ?? '' }));
-diff --git a/Mage.Web.Client/src/app/career/CareerLimitedCoach.tsx b/Mage.Web.Client/src/app/career/CareerLimitedCoach.tsx
-index 41ecc24200..5c2f000388 100644
---- a/Mage.Web.Client/src/app/career/CareerLimitedCoach.tsx
-+++ b/Mage.Web.Client/src/app/career/CareerLimitedCoach.tsx
-@@ -1,5 +1,6 @@
-+import { useQuery } from '@tanstack/react-query';
- import { WandSparkles } from 'lucide-react';
--import type { CareerLimitedRun, ColorSignal, PairAdvice, PickRecord } from '../../protocol/generated/views';
-+import type { CareerLimitedCoach, CareerLimitedRun, ColorSignal, PairAdvice, PickRecord } from '../../protocol/generated/views';
- import { useT, type MessageKey } from '../i18n';
- import { Button } from '../ui/Button';
- import { useLimitedCoach } from './careerModesData';
-@@ -100,9 +101,12 @@ export function DraftReview({ picks }: { picks: readonly PickRecord[] }) {
- }
- 
- /** The sealed pool coach (S020): the two best colour pairs with their reasons, and a build of either to start from. */
--export function PoolCoach({ run, onBuild }: { run: CareerLimitedRun; onBuild(pair: PairAdvice): void }) {
-+export function PoolCoach({ run, onBuild, load }: { run: CareerLimitedRun; onBuild(pair: PairAdvice): void; load?: () => Promise<CareerLimitedCoach> }) {
-   const t = useT();
--  const coach = useLimitedCoach(run.id ?? '', true);
-+  const career = useLimitedCoach(run.id ?? '', !load);
-+  // mtg-ai: Quick Draft's pool comes from its own run
-+  const own = useQuery({ queryKey: ['quickDraft', 'coach', run.id ?? ''], queryFn: () => load!(), enabled: !!load && !!run.id, staleTime: Infinity });
-+  const coach = load ? own : career;
-   const pairs = (coach.data?.pairs ?? []).slice(0, 2);
-   const curveLabels = ['1', '2', '3', '4', '5', '6+'];
-   return (
 diff --git a/Mage.Web.Client/src/app/i18n/en/core.ts b/Mage.Web.Client/src/app/i18n/en/core.ts
 index ffe942cb93..5bcb0c0f24 100644
 --- a/Mage.Web.Client/src/app/i18n/en/core.ts
@@ -1196,12 +1123,439 @@ index 6e1ef742ff..b323c6adda 100644
            { path: '/events', lazy: () => import('./screens/EventsScreen').then((m) => ({ Component: m.EventsScreen })) },
            { path: '/event/:tournamentId', lazy: () => import('./events/EventScreen').then((m) => ({ Component: m.EventScreen })) },
            { path: '/tables', lazy: () => import('./screens/TablesScreen').then((m) => ({ Component: m.TablesScreen })) },
+diff --git a/Mage.Web.Client/src/app/quickdraft/CardZoom.tsx b/Mage.Web.Client/src/app/quickdraft/CardZoom.tsx
+new file mode 100644
+index 0000000000..b5351828ea
+--- /dev/null
++++ b/Mage.Web.Client/src/app/quickdraft/CardZoom.tsx
+@@ -0,0 +1,28 @@
++import { createPortal } from 'react-dom';
++import { CardFace } from '../ui/CardFace';
++import { isRoomCard } from './pool';
++import type { Shown } from './zoom';
++import styles from './QuickDraft.module.css';
++
++const RATIO = 1.396; // height / width
++
++/** The zoom itself; `bound` is an x it must not cross (the deck list's left edge), or the window's width. */
++export function CardZoom({ shown, bound }: { shown: Shown | null; bound?: number }) {
++  if (!shown) return null;
++  const room = isRoomCard(shown.card);
++  const portrait = Math.min(340, window.innerWidth * 0.42);
++  const boxW = room ? portrait * RATIO : portrait;
++  const boxH = room ? portrait : portrait * RATIO;
++  // over the list itself (a hovered row), the bound is the window; elsewhere the list's left edge
++  const limit = (bound !== undefined && shown.right <= bound ? bound : window.innerWidth) - 8;
++  const left = shown.right + 12 + boxW <= limit ? shown.right + 12 : Math.max(8, shown.left - boxW - 12);
++  const top = Math.max(8, Math.min(shown.top, window.innerHeight - boxH - 8));
++  return createPortal(
++    <div className={[styles.zoom, styles.zoomTop].join(' ')} style={{ left, top, width: boxW, height: boxH }} aria-hidden="true">
++      <div className={room ? styles.zoomTurned : undefined} style={room ? { width: boxH, left: (boxW - boxH) / 2, top: (boxH - boxW) / 2 } : undefined}>
++        <CardFace card={shown.card} size="large" />
++      </div>
++    </div>,
++    document.body,
++  );
++}
+diff --git a/Mage.Web.Client/src/app/quickdraft/PoolBoard.tsx b/Mage.Web.Client/src/app/quickdraft/PoolBoard.tsx
+new file mode 100644
+index 0000000000..350a34bf8a
+--- /dev/null
++++ b/Mage.Web.Client/src/app/quickdraft/PoolBoard.tsx
+@@ -0,0 +1,202 @@
++import { useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
++import type { CareerPoolCard } from '../../protocol/generated/views';
++import { CardFace } from '../ui/CardFace';
++import { SIDEBOARD, colorRank, lower, type Column } from './pool';
++import draft from '../events/Draft.module.css';
++import styles from './QuickDraft.module.css';
++
++/**
++ * mtg-ai: the pool in columns (pool.ts), like Arena's: drag a card with the pointer (mouse, pen or finger; Safari
++ * can't drag buttons the HTML way) to another place in its column, to another column, or into the Sideboard column.
++ * Every column always shows, so nothing moves under a dragged card. A tap or click does nothing to the deck.
++ */
++
++interface Drag {
++  at: number;
++  x: number;
++  y: number;
++  startX: number;
++  startY: number;
++  moved: boolean;
++}
++
++type Hover = (card: CareerPoolCard) => object;
++
++export function PoolBoard({ pool, columns, onPlace, hover, head, hint }: {
++  pool: readonly CareerPoolCard[];
++  columns: readonly Column[];
++  onPlace(at: number, label: string, position: number): void;
++  hover: Hover;
++  head?: ReactNode;
++  hint?: string;
++}) {
++  const [drag, setDrag] = useState<Drag | null>(null);
++  const dragRef = useRef<Drag | null>(null);
++
++  /** the column under the pointer and the place in its stack */
++  function dropTarget(x: number, y: number): { label: string; position: number } | null {
++    const element = document.elementFromPoint(x, y)?.closest('[data-column]') as HTMLElement | null;
++    if (!element) return null;
++    const stack = element.querySelector('[data-stack]') as HTMLElement | null;
++    const step = (stack?.firstElementChild as HTMLElement | null)?.offsetWidth ?? 90;
++    const top = stack?.getBoundingClientRect().top ?? element.getBoundingClientRect().top;
++    return { label: element.dataset.column!, position: Math.max(0, Math.round((y - top) / (step * 0.3))) };
++  }
++
++  function onPointerDown(event: ReactPointerEvent, at: number) {
++    if (event.button !== 0) return;
++    const start = { at, x: event.clientX, y: event.clientY, startX: event.clientX, startY: event.clientY, moved: false };
++    dragRef.current = start;
++    setDrag(start);
++    const onMove = (move: PointerEvent) => {
++      const current = dragRef.current;
++      if (!current) return;
++      const moved = current.moved || Math.hypot(move.clientX - current.startX, move.clientY - current.startY) > 6;
++      dragRef.current = { ...current, x: move.clientX, y: move.clientY, moved };
++      if (moved) setDrag(dragRef.current);
++    };
++    const onUp = (up: PointerEvent) => {
++      window.removeEventListener('pointermove', onMove);
++      window.removeEventListener('pointerup', onUp);
++      window.removeEventListener('pointercancel', onUp);
++      const current = dragRef.current;
++      dragRef.current = null;
++      setDrag(null);
++      if (!current?.moved) return;
++      const target = dropTarget(up.clientX, up.clientY);
++      if (target) onPlace(current.at, target.label, target.position);
++    };
++    window.addEventListener('pointermove', onMove);
++    window.addEventListener('pointerup', onUp);
++    window.addEventListener('pointercancel', onUp);
++  }
++
++  const moving = drag?.moved ? drag : null;
++  const over = moving ? dropTarget(moving.x, moving.y)?.label : null;
++
++  return (
++    <section className={[draft.picks, styles.picks, moving ? styles.dragging : ''].join(' ')} aria-label={`Your pool, ${pool.length} cards`}>
++      <div className={styles.picksHead}>
++        {head}
++        <small className={styles.picksHint}>{hint ?? 'drag cards to arrange them, or into Sideboard to leave them out of the deck'}</small>
++      </div>
++      <div className={[draft.columns, styles.columns].join(' ')}>
++        {columns.map((column) => (
++          <div
++            key={column.label}
++            data-column={column.label}
++            className={[draft.column, styles.column, column.items.length === 0 && column.label !== SIDEBOARD ? styles.emptyColumn : '',
++              column.label === SIDEBOARD ? styles.sideColumn : '', moving ? styles.dropTarget : '', over === column.label ? styles.dropOver : ''].join(' ')}
++          >
++            <span className={draft.columnLabel}>{column.label} <small>({column.items.length})</small></span>
++            <div data-stack className={draft.columnCards} style={{ height: `calc(var(--pick-w) * (1.4 + 0.3 * ${Math.max(0, column.items.length - 1)}))` }}>
++              {column.items.map((at, index) => {
++                const card = pool[at];
++                return (
++                  <div
++                    key={at}
++                    role="button"
++                    tabIndex={0}
++                    className={[draft.picked, styles.picked, column.label === SIDEBOARD ? styles.inSide : '', moving?.at === at ? styles.dragged : ''].join(' ')}
++                    style={{ top: `calc(var(--pick-w) * ${0.3 * index})`, zIndex: index }}
++                    aria-label={`${card.name}, ${column.label === SIDEBOARD ? 'sideboard' : 'deck'}; drag to move`}
++                    {...(moving ? {} : hover(card))}
++                    onPointerDown={(event) => {
++                      // the zoom's long press (touch) and the drag both start here
++                      (hover(card) as { onPointerDown?(e: ReactPointerEvent): void }).onPointerDown?.(event);
++                      onPointerDown(event, at);
++                    }}
++                  >
++                    <CardFace card={{ name: card.name, setCode: card.setCode, cardNumber: card.cardNumber }} size="normal" />
++                  </div>
++                );
++              })}
++            </div>
++          </div>
++        ))}
++      </div>
++      {moving && (
++        <div className={styles.ghost} style={{ left: moving.x - 45, top: moving.y - 20 }} aria-hidden="true">
++          <CardFace card={{ name: pool[moving.at].name, setCode: pool[moving.at].setCode, cardNumber: pool[moving.at].cardNumber }} size="normal" />
++        </div>
++      )}
++    </section>
++  );
++}
++
++/** Spells by mana value as bars, then colours, creatures and lands (pool.ts deckStats). */
++export function ManaCurve({ stats }: { stats: { curve: number[]; colors: { color: string; count: number }[]; spells: number; creatures: number; lands: number; average: number } }) {
++  const tallest = Math.max(1, ...stats.curve);
++  return (
++    <div className={styles.curveBox} aria-label="Mana curve of the deck">
++      <div className={styles.curve} role="img" aria-label={stats.curve.map((n, index) => `${index === 6 ? '6+' : index}: ${n}`).join(', ')}>
++        {stats.curve.map((n, index) => (
++          <span key={index}>
++            <b>{n || ''}</b>
++            <i style={{ height: `${(n / tallest) * 100}%` }} />
++            <small>{index === 6 ? '6+' : index}</small>
++          </span>
++        ))}
++      </div>
++      <p className={styles.curveFacts}>
++        {stats.colors.map(({ color, count }) => (
++          <span key={color}><i className={`ms ms-cost ms-${color.toLowerCase()}`} aria-hidden="true" /> {count}</span>
++        ))}
++        <span>{stats.creatures} creatures</span>
++        <span>{stats.spells - stats.creatures} other spells</span>
++        <span>{stats.lands} lands</span>
++        {stats.spells > 0 && <span>avg {stats.average.toFixed(1)}</span>}
++      </p>
++    </div>
++  );
++}
++
++function Mana({ colors }: { colors: string | undefined }) {
++  return <>{[...(colors ?? '')].map((color) => <i key={color} className={`ms ms-cost ms-${color.toLowerCase()}`} aria-hidden="true" />)}</>;
++}
++
++/** A deck or sideboard list, like Arena's: how many, the name, mana value and colours, and a button to move one copy;
++ * hovering a row shows the card. */
++export function CardList({ title, cards, hint, action, actionLabel, onMove, hover, dim }: {
++  title: string;
++  cards: CareerPoolCard[];
++  hint: string;
++  action: string;
++  actionLabel: string;
++  onMove(card: CareerPoolCard): void;
++  hover(card: CareerPoolCard): object;
++  dim?: boolean;
++}) {
++  const rows = useMemo(() => {
++    const byName = new Map<string, { card: CareerPoolCard; count: number }>();
++    for (const card of cards) {
++      const row = byName.get(lower(card));
++      if (row) row.count++;
++      else byName.set(lower(card), { card, count: 1 });
++    }
++    return [...byName.values()].sort((a, b) => Number(!!a.card.land) - Number(!!b.card.land)
++      || (a.card.manaValue ?? 0) - (b.card.manaValue ?? 0) || colorRank(a.card) - colorRank(b.card) || (a.card.name ?? '').localeCompare(b.card.name ?? ''));
++  }, [cards]);
++  return (
++    <section className={[styles.list, dim ? styles.listDim : ''].join(' ')} aria-label={title}>
++      <header className={styles.listHead}>
++        <h2>{title} <span>{cards.length}</span></h2>
++        <small>{hint}</small>
++      </header>
++      <ul>
++        {rows.map(({ card, count }) => (
++          <li key={lower(card)} className={styles.row} {...hover(card)}>
++            <span className={styles.rowCount}>{count}×</span>
++            <span className={styles.rowName}>{card.name}</span>
++            <span className={styles.rowCost}>
++              {!card.land && <b>{card.manaValue ?? 0}</b>}
++              <Mana colors={card.colors} />
++            </span>
++            <button type="button" className={styles.rowMove} title={actionLabel} aria-label={`${actionLabel}: ${card.name}`} onClick={() => onMove(card)}>{action}</button>
++          </li>
++        ))}
++        {rows.length === 0 && <li className={styles.empty}>{dim ? 'Drag cards here from your picks, or press − in the deck list.' : 'Your picks go here.'}</li>}
++      </ul>
++    </section>
++  );
++}
+diff --git a/Mage.Web.Client/src/app/quickdraft/QuickBuilder.tsx b/Mage.Web.Client/src/app/quickdraft/QuickBuilder.tsx
+new file mode 100644
+index 0000000000..4f40d9b12e
+--- /dev/null
++++ b/Mage.Web.Client/src/app/quickdraft/QuickBuilder.tsx
+@@ -0,0 +1,179 @@
++import { Minus, Plus, WandSparkles } from 'lucide-react';
++import { useMemo, useRef, useState } from 'react';
++import { createPortal } from 'react-dom';
++import type { CareerPoolCard, QuickDraftRun } from '../../protocol/generated/views';
++import { BASIC_LANDS, buildDeck, emptyBasics, poolEntries, suggestBasics, type BasicLand, type LimitedBuild } from '../career/careerModesModel';
++import { readJson, writeJson } from '../stores/persist';
++import { notify } from '../stores/toasts';
++import { Button } from '../ui/Button';
++import { CardZoom } from './CardZoom';
++import { CardList, ManaCurve, PoolBoard } from './PoolBoard';
++import { BASIC_NAMES, SIDEBOARD, arrange, columnOf, deckStats, layoutKey, lower, placeIn, type Column } from './pool';
++import { submitQuickDraftDeck } from './quickDraftData';
++import { useCardZoom } from './zoom';
++import draft from '../events/Draft.module.css';
++import styles from './QuickDraft.module.css';
++
++/**
++ * mtg-ai: Quick Draft's deck builder, laid out like the pick screen and Arena's: the pool in mana-value columns (the
++ * arrangement and Sideboard column carry over from the draft), dragged to arrange and to move cards in and out of the
++ * deck; on the right the mana curve, the deck and sideboard lists, basic lands and the button that saves the deck.
++ * Hovering a card or a row shows it large.
++ */
++
++const SYMBOL: Record<BasicLand, string> = { Plains: 'w', Island: 'u', Swamp: 'b', Mountain: 'r', Forest: 'g' };
++const DECK_MIN = 40;
++
++function basicsKey(runId: string): string {
++  return `playmat.quickDraft.basics.${runId}`;
++}
++
++/** a saved deck (editing after games) as columns: what isn't in it goes to the Sideboard column */
++function fromDeck(pool: readonly CareerPoolCard[], run: QuickDraftRun): Record<string, number[]> {
++  const left = new Map<string, number>();
++  for (const card of run.deck ?? []) left.set((card.cardName ?? '').toLowerCase(), (left.get((card.cardName ?? '').toLowerCase()) ?? 0) + (card.amount ?? 0));
++  const columns: Record<string, number[]> = {};
++  pool.forEach((card, at) => {
++    const n = left.get(lower(card)) ?? 0;
++    const label = n > 0 || (card.land && BASIC_NAMES.includes(lower(card))) ? columnOf(card) : SIDEBOARD;
++    if (n > 0) left.set(lower(card), n - 1);
++    (columns[label] ??= []).push(at);
++  });
++  return columns;
++}
++
++function basicsFromDeck(run: QuickDraftRun): Record<BasicLand, number> {
++  const basics = emptyBasics();
++  for (const card of run.deck ?? []) {
++    const land = BASIC_LANDS.find((name) => name.toLowerCase() === (card.cardName ?? '').toLowerCase());
++    if (land) basics[land] += card.amount ?? 0;
++  }
++  return basics;
++}
++
++export function QuickBuilder({ run, onDone, onCancel }: { run: QuickDraftRun; onDone(): void; onCancel?: () => void }) {
++  const pool = useMemo(() => run.pool ?? [], [run.pool]);
++  const id = run.id ?? '';
++  const [arranged, setArranged] = useState<Record<string, number[]>>(() => {
++    const saved = readJson<Record<string, number[]> | null>(layoutKey(id), null);
++    return saved ?? (run.deck?.length ? fromDeck(pool, run) : {});
++  });
++  const [basics, setBasics] = useState<Record<BasicLand, number>>(() => readJson(basicsKey(id), run.deck?.length ? basicsFromDeck(run) : emptyBasics()));
++  const [busy, setBusy] = useState(false);
++  const zoom = useCardZoom();
++  const listsRef = useRef<HTMLElement>(null);
++
++  const columns = useMemo(() => arrange(pool, arranged), [pool, arranged]);
++  const sideSet = useMemo(() => new Set(columns.find((column) => column.label === SIDEBOARD)?.items ?? []), [columns]);
++  const deck = useMemo(() => pool.filter((_, at) => !sideSet.has(at)), [pool, sideSet]);
++  const sideboard = useMemo(() => pool.filter((_, at) => sideSet.has(at)), [pool, sideSet]);
++  // basic lands drafted from packs are free anyway: the steppers below are the deck's basics
++  const deckCards = useMemo(() => deck.filter((card) => !(card.land && BASIC_NAMES.includes(lower(card)))), [deck]);
++  const basicCount = Object.values(basics).reduce((sum, n) => sum + n, 0);
++  const stats = deckStats(deckCards, basicCount);
++  const size = deckCards.length + basicCount;
++
++  function save(next: Column[]) {
++    const stored = Object.fromEntries(next.map((column) => [column.label, column.items]));
++    writeJson(layoutKey(id), stored);
++    setArranged(stored);
++  }
++
++  function setBasic(land: BasicLand, delta: number) {
++    setBasics((current) => {
++      const next = { ...current, [land]: Math.max(0, current[land] + delta) };
++      writeJson(basicsKey(id), next);
++      return next;
++    });
++  }
++
++  function moveCopy(card: CareerPoolCard, toSide: boolean) {
++    zoom.hide(); // the row under the pointer moves to the other list without a mouseleave
++    const at = pool.findIndex((candidate, index) => lower(candidate) === lower(card) && sideSet.has(index) !== toSide);
++    if (at < 0) return;
++    const label = toSide ? SIDEBOARD : columnOf(pool[at]);
++    save(placeIn(columns, at, label, columns.find((column) => column.label === label)!.items.length));
++  }
++
++  function build(): LimitedBuild {
++    const picks: Record<string, number> = {};
++    for (const card of deckCards) picks[lower(card)] = (picks[lower(card)] ?? 0) + 1;
++    return { picks, basics };
++  }
++
++  async function submit() {
++    setBusy(true);
++    try {
++      await submitQuickDraftDeck(buildDeck(build(), poolEntries(pool), `${run.setCode ?? ''} quick draft`.trim()));
++      notify('Deck saved', `${size} cards`);
++      onDone();
++    } catch (reason) {
++      notify("The deck wasn't accepted", reason instanceof Error ? reason.message : String(reason), 'error');
++    } finally {
++      setBusy(false);
++    }
++  }
++
++  const hover = (card: CareerPoolCard) => zoom.handlers({ name: card.name, setCode: card.setCode, cardNumber: card.cardNumber });
++
++  return createPortal(
++    <div className={[draft.screen, styles.immersive, styles.screen, styles.builderScreen].join(' ')}>
++      <header className={[draft.top, styles.top].join(' ')}>
++        <div className={draft.where}>
++          <span className={draft.set}>{run.setName} · Quick Draft</span>
++          <h1 className={draft.title}>Build your deck <span>· {size} / {DECK_MIN}</span></h1>
++        </div>
++        <p className={styles.pass}>Drag cards into Sideboard to leave them out; add basic lands on the right.</p>
++        <div className={draft.topRight}>
++          {onCancel && <Button variant="quiet" size="sm" onClick={onCancel}>Keep the saved deck</Button>}
++        </div>
++      </header>
++
++      <div className={styles.builderPool}>
++        <PoolBoard
++          pool={pool}
++          columns={columns}
++          onPlace={(at, label, position) => save(placeIn(columns, at, label, position))}
++          hover={hover}
++          head={<h2 className={draft.picksLabel}>Your pool <span>{pool.length}</span></h2>}
++        />
++      </div>
++
++      <aside ref={listsRef} className={styles.lists} aria-label="Your deck">
++        <ManaCurve stats={stats} />
++        <CardList title="Deck" cards={deckCards} hint={`${size} / ${DECK_MIN} with basics`} action="−" actionLabel="Move to sideboard" onMove={(card) => moveCopy(card, true)} hover={hover} />
++        <section className={styles.basics} aria-label="Basic lands">
++          <header className={styles.listHead}>
++            <h2>Basic lands <span>{basicCount}</span></h2>
++            <button type="button" className={styles.suggest} onClick={() => {
++              const next = suggestBasics(build(), poolEntries(pool));
++              writeJson(basicsKey(id), next);
++              setBasics(next);
++            }}>
++              <WandSparkles size={14} aria-hidden="true" /> Suggest
++            </button>
++          </header>
++          <ul>
++            {BASIC_LANDS.map((land) => (
++              <li key={land} className={styles.row}>
++                <i className={`ms ms-cost ms-${SYMBOL[land]}`} aria-hidden="true" />
++                <span className={styles.rowName}>{land}</span>
++                <button type="button" className={styles.rowMove} aria-label={`One less ${land}`} disabled={basics[land] === 0} onClick={() => setBasic(land, -1)}><Minus size={13} /></button>
++                <b className={styles.basicCount}>{basics[land]}</b>
++                <button type="button" className={styles.rowMove} aria-label={`One more ${land}`} onClick={() => setBasic(land, 1)}><Plus size={13} /></button>
++              </li>
++            ))}
++          </ul>
++        </section>
++        <CardList title="Sideboard" cards={sideboard} hint={sideboard.length === 1 ? '1 card' : `${sideboard.length} cards`} action="+" actionLabel="Add to deck" onMove={(card) => moveCopy(card, false)} hover={hover} dim />
++        <div className={styles.saveRow}>
++          {size < DECK_MIN && <span className={styles.short}>{DECK_MIN - size} more to 40</span>}
++          <Button variant="decision" busy={busy} disabled={size < DECK_MIN} onClick={() => void submit()}>Use this deck</Button>
++        </div>
++      </aside>
++
++      <CardZoom shown={zoom.shown} bound={listsRef.current?.getBoundingClientRect().left} />
++    </div>,
++    document.body,
++  );
++}
 diff --git a/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css b/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css
 new file mode 100644
-index 0000000000..389f874804
+index 0000000000..3705f903a9
 --- /dev/null
 +++ b/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css
-@@ -0,0 +1,575 @@
+@@ -0,0 +1,703 @@
 +/* mtg-ai: Quick Draft (QuickDraftScreen.tsx); the pick screen reuses events/Draft.module.css, the rest Career's modes */
 +
 +/* the pick screen covers the app shell, like an event draft */
@@ -1398,7 +1752,8 @@ index 0000000000..389f874804
 +  min-height: auto;
 +}
 +
-+.columns {
++/* doubled class: wins over events/Draft.module.css (its 26vh cap) whatever order the sheets load in */
++.columns.columns {
 +  max-height: none;
 +  min-height: 0;
 +  padding-bottom: var(--space-4);
@@ -1489,6 +1844,138 @@ index 0000000000..389f874804
 +  font-weight: 400;
 +  letter-spacing: 0;
 +  text-transform: none;
++}
++
++/* the deck builder: the pool fills the left, the curve, lists, basics and save on the right */
++.screen.builderScreen {
++  /* nine columns (0-6+, lands, sideboard) fit beside the lists */
++  --pick-w: clamp(84px, calc((100vw - 540px) / 9.6), 175px);
++  grid-template-rows: auto 1fr;
++  grid-template-areas: 'top top' 'pack lists';
++}
++
++.builderPool {
++  grid-area: pack;
++  min-width: 0;
++}
++
++.builderPool > section {
++  border-top: 0;
++  background: transparent;
++}
++
++.curveBox {
++  flex: none;
++  padding: var(--space-2) var(--space-3) var(--space-1, 4px);
++  border-radius: var(--radius-control);
++  background: rgb(var(--void-rgb) / 0.45);
++  box-shadow: inset 0 0 0 1.5px var(--ink-ghost);
++}
++
++.curve {
++  display: grid;
++  grid-template-columns: repeat(7, 1fr);
++  align-items: end;
++  gap: 4px;
++  height: 92px;
++}
++
++.curve span {
++  display: flex;
++  flex-direction: column;
++  align-items: center;
++  justify-content: flex-end;
++  height: 100%;
++  gap: 2px;
++}
++
++.curve i {
++  width: 100%;
++  min-height: 2px;
++  border-radius: 3px 3px 0 0;
++  background: var(--decision);
++}
++
++.curve b {
++  color: var(--ink-strong);
++  font-size: 12px;
++}
++
++.curve small {
++  color: var(--ink-dim);
++  font-size: 11px;
++}
++
++.curveFacts {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 4px 10px;
++  margin: 6px 0 0;
++  color: var(--ink-soft);
++  font-size: 12px;
++}
++
++.basics {
++  flex: none;
++  border-radius: var(--radius-control);
++  background: rgb(var(--void-rgb) / 0.45);
++  box-shadow: inset 0 0 0 1.5px var(--ink-ghost);
++}
++
++.basics ul {
++  margin: 0;
++  padding: 4px;
++  list-style: none;
++}
++
++.basics .row {
++  padding: 2px 8px;
++}
++
++.basicCount {
++  width: 22px;
++  text-align: center;
++}
++
++.suggest {
++  display: inline-flex;
++  align-items: center;
++  gap: 4px;
++  padding: 2px 8px;
++  border: 0;
++  border-radius: 999px;
++  background: rgb(var(--mat-rgb) / 0.9);
++  box-shadow: inset 0 0 0 1.5px var(--ink-faint);
++  color: var(--ink-strong);
++  font: inherit;
++  font-size: 12px;
++  cursor: pointer;
++}
++
++.saveRow {
++  display: flex;
++  flex: none;
++  align-items: center;
++  justify-content: flex-end;
++  gap: var(--space-3);
++}
++
++.short {
++  color: var(--decision);
++  font-size: var(--text-sm);
++}
++
++.builderScreen .lists {
++  overflow: auto;
++}
++
++.builderScreen .list {
++  min-height: 120px;
++}
++
++/* the builder's zoom sits over the app shell's page */
++.zoomTop {
++  z-index: 120;
 +}
 +
 +.zoomTurned {
@@ -1714,6 +2201,7 @@ index 0000000000..389f874804
 +  }
 +
 +  .packArea,
++  .builderPool,
 +  .lists,
 +  .picks {
 +    min-height: auto;
@@ -1762,12 +2250,6 @@ index 0000000000..389f874804
 +    max-width: none;
 +  }
 +
-+  .picks {
-+  grid-area: picks;
-+    max-height: 32vh;
-+    overflow: auto;
-+  }
-+
 +  .choice {
 +    min-width: 0;
 +    flex: 1;
@@ -1779,19 +2261,16 @@ index 0000000000..389f874804
 +}
 diff --git a/Mage.Web.Client/src/app/quickdraft/QuickDraftScreen.tsx b/Mage.Web.Client/src/app/quickdraft/QuickDraftScreen.tsx
 new file mode 100644
-index 0000000000..1057786495
+index 0000000000..06ba6349e8
 --- /dev/null
 +++ b/Mage.Web.Client/src/app/quickdraft/QuickDraftScreen.tsx
-@@ -0,0 +1,815 @@
+@@ -0,0 +1,538 @@
 +import { Bot, Layers, LogOut, Swords, Timer } from 'lucide-react';
-+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
++import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 +import { createPortal } from 'react-dom';
 +import type { CareerPoolCard, QuickDraftBrain, QuickDraftRun, QuickDraftState } from '../../protocol/generated/views';
-+import { api } from '../connection';
 +import { registerMessages } from '../i18n';
 +import careerMessages from '../i18n/en/career';
-+import { LimitedBuilder } from '../career/CareerLimitedBuild';
-+import { DraftReview } from '../career/CareerLimitedCoach';
 +import { CLAUDE_EFFORTS, CLAUDE_MODELS, claudeSkill } from '../screens/aiSetup';
 +import type { ClaudeEffort, ClaudeModel } from '../stores/play';
 +import { usePlay } from '../stores/play';
@@ -1801,10 +2280,15 @@ index 0000000000..1057786495
 +import { CardFace } from '../ui/CardFace';
 +import { isEditableEventTarget } from '../ui/keys';
 +import {
-+  abandonQuickDraft, pickQuickDraft, playQuickDraft, setQuickDraftPilot, startQuickDraft, submitQuickDraftDeck, useQuickDraft,
++  abandonQuickDraft, pickQuickDraft, playQuickDraft, setQuickDraftPilot, startQuickDraft, useQuickDraft,
 +} from './quickDraftData';
 +import draft from '../events/Draft.module.css';
 +import modes from '../career/CareerModes.module.css';
++import { CardZoom } from './CardZoom';
++import { CardList, ManaCurve, PoolBoard } from './PoolBoard';
++import { QuickBuilder } from './QuickBuilder';
++import { SIDEBOARD, arrange, columnOf, deckStats, isRoomCard, layoutKey, lower, placeIn, type Column } from './pool';
++import { useCardZoom } from './zoom';
 +import styles from './QuickDraft.module.css';
 +
 +/**
@@ -1980,101 +2464,12 @@ index 0000000000..1057786495
 +
 +// ---- drafting
 +
-+const COLOR_ORDER = 'WUBRG';
-+
-+function colorRank(card: CareerPoolCard): number {
-+  const colors = card.colors ?? '';
-+  if (colors.length === 0) return 6;
-+  if (colors.length > 1) return 5;
-+  return COLOR_ORDER.indexOf(colors);
-+}
-+
 +function pickSeconds(cardsLeft: number): number {
 +  return 15 + 4 * cardsLeft;
 +}
 +
-+function builderKey(runId: string): string {
-+  return `playmat.career.limited.${runId}`; // CareerLimitedBuild's saved build
-+}
-+
-+const lower = (card: CareerPoolCard) => (card.name ?? '').toLowerCase();
-+
-+/** where the player put each pick (by its place in the pool), kept in this browser for the draft */
-+function layoutKey(runId: string): string {
-+  return `playmat.quickDraft.layout.${runId}`;
-+}
-+
-+const SIDEBOARD = 'Sideboard';
-+const COLUMN_LABELS = ['0', '1', '2', '3', '4', '5', '6+', 'Lands', SIDEBOARD];
-+const BASIC_NAMES = ['plains', 'island', 'swamp', 'mountain', 'forest'];
-+
-+/** the default column of a pick: its mana value, lands last */
-+function columnOf(card: CareerPoolCard): string {
-+  return card.land ? 'Lands' : COLUMN_LABELS[Math.min(6, Math.max(0, card.manaValue ?? 0))];
-+}
-+
-+interface Column {
-+  label: string;
-+  items: number[];
-+}
-+
-+/** the picks in columns: where the player put them, new picks at the bottom of their mana value's column in colour
-+ * order; the Sideboard column holds what's left out of the deck */
-+function arrange(pool: CareerPoolCard[], arranged: Record<string, number[]>): Column[] {
-+  const placed = new Set<number>();
-+  const columns: Record<string, number[]> = Object.fromEntries(COLUMN_LABELS.map((label) => [label, []]));
-+  for (const [label, items] of Object.entries(arranged)) {
-+    if (!columns[label]) continue;
-+    for (const at of items) {
-+      if (Number.isInteger(at) && at >= 0 && at < pool.length && !placed.has(at)) {
-+        columns[label].push(at);
-+        placed.add(at);
-+      }
-+    }
-+  }
-+  const fresh = pool.map((_, at) => at).filter((at) => !placed.has(at))
-+    .sort((a, b) => colorRank(pool[a]) - colorRank(pool[b]) || (pool[a].name ?? '').localeCompare(pool[b].name ?? ''));
-+  for (const at of fresh) columns[columnOf(pool[at])].push(at);
-+  return COLUMN_LABELS.map((label) => ({ label, items: columns[label] }));
-+}
-+
-+/** the builder's starting deck from the draft's columns (only when no build was saved yet) */
-+function seedBuild(run: QuickDraftRun) {
-+  if (!run.id || readJson<unknown>(builderKey(run.id), null)) return;
-+  const pool = run.pool ?? [];
-+  const columns = arrange(pool, readJson<Record<string, number[]>>(layoutKey(run.id), {}));
-+  const picks: Record<string, number> = {};
-+  for (const column of columns) {
-+    if (column.label === SIDEBOARD) continue;
-+    for (const at of column.items) {
-+      const card = pool[at];
-+      if (card.land && BASIC_NAMES.includes(lower(card))) continue;
-+      picks[lower(card)] = (picks[lower(card)] ?? 0) + 1;
-+    }
-+  }
-+  writeJson(builderKey(run.id), { picks, basics: { Plains: 0, Island: 0, Swamp: 0, Mountain: 0, Forest: 0 } });
-+}
-+
-+interface Zoom {
-+  card: CareerPoolCard;
-+  /** the hovered element's left and right edges and top */
-+  left: number;
-+  x: number;
-+  y: number;
-+}
-+
 +function faceProps(card: CareerPoolCard) {
 +  return { name: card.name, setCode: card.setCode, cardNumber: card.cardNumber };
-+}
-+
-+/** A card being dragged in the picks area (pointer events: Safari can't drag buttons the HTML way). */
-+interface Drag {
-+  at: number;
-+  x: number;
-+  y: number;
-+  moved: boolean;
-+  startX: number;
-+  startY: number;
 +}
 +
 +function Drafting({ run, brains }: { run: QuickDraftRun; brains: QuickDraftBrain[] | undefined }) {
@@ -2082,17 +2477,14 @@ index 0000000000..1057786495
 +  const pool = useMemo(() => run.pool ?? [], [run.pool]);
 +  const [selected, setSelected] = useState<number | null>(null);
 +  const [busy, setBusy] = useState(false);
-+  const [zoom, setZoom] = useState<Zoom | null>(null);
++  const zoom = useCardZoom();
 +  const [arranged, setArranged] = useState<Record<string, number[]>>(() => readJson(layoutKey(run.id ?? ''), {}));
-+  const [drag, setDrag] = useState<Drag | null>(null);
-+  const dragRef = useRef<Drag | null>(null);
 +  const timed = readJson<Partial<Prefs>>(PREFS, {}).timer === true;
 +  const packKey = `${run.round}-${run.pick}`;
 +  const [shownKey, setShownKey] = useState(packKey);
 +  if (shownKey !== packKey) {
 +    setShownKey(packKey);
 +    setSelected(null);
-+    setZoom(null);
 +  }
 +  const columns = useMemo(() => arrange(pool, arranged), [pool, arranged]);
 +  const sideSet = useMemo(() => new Set(columns.find((column) => column.label === SIDEBOARD)?.items ?? []), [columns]);
@@ -2102,6 +2494,7 @@ index 0000000000..1057786495
 +  const boosterRef = useRef<HTMLDivElement>(null);
 +  const listsRef = useRef<HTMLElement>(null);
 +  const grid = useCardGrid(boosterRef, pack.length);
++  const stats = deckStats(deck);
 +
 +  function save(next: Column[]) {
 +    const stored = Object.fromEntries(next.map((column) => [column.label, column.items]));
@@ -2109,79 +2502,23 @@ index 0000000000..1057786495
 +    setArranged(stored);
 +  }
 +
-+  /** a pick put into a column at a place in its stack */
-+  function place(at: number, label: string, position: number) {
-+    const next = columns.map((column) => ({ label: column.label, items: column.items.filter((item) => item !== at) }));
-+    const target = next.find((column) => column.label === label)!;
-+    target.items.splice(Math.max(0, Math.min(position, target.items.length)), 0, at);
-+    save(next);
-+  }
-+
 +  /** one copy of a card (from a list row) to the deck or the sideboard */
 +  function moveCopy(card: CareerPoolCard, toSide: boolean) {
-+    setZoom(null); // the row under the pointer moves to the other list without a mouseleave
++    zoom.hide(); // the row under the pointer moves to the other list without a mouseleave
 +    const at = pool.findIndex((candidate, index) => lower(candidate) === lower(card) && sideSet.has(index) !== toSide);
 +    if (at < 0) return;
 +    const label = toSide ? SIDEBOARD : columnOf(pool[at]);
-+    place(at, label, columns.find((column) => column.label === label)!.items.length);
++    save(placeIn(columns, at, label, columns.find((column) => column.label === label)!.items.length));
 +  }
 +
-+  const zoomOn = (card: CareerPoolCard) => ({
-+    onMouseEnter: (event: ReactMouseEvent) => {
-+      if (dragRef.current?.moved) return;
-+      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-+      setZoom({ card, left: rect.left, x: rect.right, y: rect.top });
-+    },
-+    onMouseLeave: () => setZoom(null),
-+  });
++  const hover = (card: CareerPoolCard) => zoom.handlers(faceProps(card));
 +  // the pack's cards are already large: only a Room (printed sideways) gets a zoom, turned upright
-+  const packZoom = (card: CareerPoolCard) => (isRoom(card) ? zoomOn(card) : {});
-+
-+  // ---- dragging picks: the column under the pointer and the place in its stack
-+  function dropTarget(x: number, y: number): { label: string; position: number } | null {
-+    const element = document.elementFromPoint(x, y)?.closest('[data-column]') as HTMLElement | null;
-+    if (!element) return null;
-+    const label = element.dataset.column!;
-+    const stack = element.querySelector('[data-stack]') as HTMLElement | null;
-+    const step = (stack?.firstElementChild as HTMLElement | null)?.offsetWidth ?? 90;
-+    const top = stack?.getBoundingClientRect().top ?? element.getBoundingClientRect().top;
-+    return { label, position: Math.max(0, Math.round((y - top) / (step * 0.3))) };
-+  }
-+
-+  function onPickPointerDown(event: React.PointerEvent, at: number) {
-+    if (event.button !== 0) return;
-+    const start = { at, x: event.clientX, y: event.clientY, startX: event.clientX, startY: event.clientY, moved: false };
-+    dragRef.current = start;
-+    setDrag(start);
-+    const onMove = (move: PointerEvent) => {
-+      const current = dragRef.current;
-+      if (!current) return;
-+      const moved = current.moved || Math.hypot(move.clientX - current.startX, move.clientY - current.startY) > 6;
-+      const next = { ...current, x: move.clientX, y: move.clientY, moved };
-+      dragRef.current = next;
-+      if (moved) {
-+        setZoom(null);
-+        setDrag(next);
-+      }
-+    };
-+    const onUp = (up: PointerEvent) => {
-+      window.removeEventListener('pointermove', onMove);
-+      window.removeEventListener('pointerup', onUp);
-+      const current = dragRef.current;
-+      dragRef.current = null;
-+      setDrag(null);
-+      if (!current?.moved) return; // a click: nothing moves (the lists and the Sideboard column do that)
-+      const target = dropTarget(up.clientX, up.clientY);
-+      if (target) place(current.at, target.label, target.position);
-+    };
-+    window.addEventListener('pointermove', onMove);
-+    window.addEventListener('pointerup', onUp);
-+  }
++  const packZoom = (card: CareerPoolCard) => (isRoomCard(card) ? hover(card) : {});
 +
 +  async function confirm(index: number | null) {
 +    if (index === null || busy) return;
 +    setBusy(true);
-+    setZoom(null);
++    zoom.hide();
 +    try {
 +      await pickQuickDraft(index);
 +    } catch (reason) {
@@ -2203,17 +2540,9 @@ index 0000000000..1057786495
 +    return () => window.removeEventListener('keydown', onKey);
 +  });
 +
-+  const deckSpells = deck.filter((card) => !card.land);
-+  const colorCounts = COLOR_ORDER.split('').map((color) => ({ color, count: deckSpells.filter((card) => (card.colors ?? '').includes(color)).length }))
-+    .filter((entry) => entry.count > 0);
-+  const avgValue = deckSpells.length ? deckSpells.reduce((sum, card) => sum + (card.manaValue ?? 0), 0) / deckSpells.length : 0;
-+  // every column always shows (empty ones narrow), so nothing shifts under a dragged card
-+  const shownColumns = columns;
-+  const dragged = drag?.moved ? pool[drag.at] : null;
-+
 +  // over the whole page, like an event draft: the app shell's layout would otherwise hold the fixed screen
 +  return createPortal(
-+    <div className={[draft.screen, styles.immersive, styles.screen, drag?.moved ? styles.dragging : ''].join(' ')}>
++    <div className={[draft.screen, styles.immersive, styles.screen].join(' ')}>
 +      <header className={[draft.top, styles.top].join(' ')}>
 +        <div className={draft.where}>
 +          <span className={draft.set}>{run.setName} · Quick Draft</span>
@@ -2258,69 +2587,26 @@ index 0000000000..1057786495
 +      </main>
 +
 +      <aside ref={listsRef} className={styles.lists} aria-label="Your deck and sideboard">
-+        <CardList title="Deck" cards={deck} hint={`${deckSpells.length} spells · ${deck.filter((card) => card.creature).length} creatures · ${deck.length - deckSpells.length} lands`} action="−" actionLabel="Move to sideboard" onMove={(card) => moveCopy(card, true)} hover={zoomOn} />
-+        <CardList title="Sideboard" cards={sideboard} hint={sideboard.length === 1 ? '1 card' : `${sideboard.length} cards`} action="+" actionLabel="Add to deck" onMove={(card) => moveCopy(card, false)} hover={zoomOn} dim />
++        <ManaCurve stats={stats} />
++        <CardList title="Deck" cards={deck} hint={`${stats.spells} spells · ${stats.lands} lands`} action="−" actionLabel="Move to sideboard" onMove={(card) => moveCopy(card, true)} hover={hover} />
++        <CardList title="Sideboard" cards={sideboard} hint={sideboard.length === 1 ? '1 card' : `${sideboard.length} cards`} action="+" actionLabel="Add to deck" onMove={(card) => moveCopy(card, false)} hover={hover} dim />
 +      </aside>
 +
-+      <section className={[draft.picks, styles.picks].join(' ')} aria-label={`Your picks, ${pool.length} cards`}>
-+        <div className={styles.picksHead}>
-+          <h2 className={draft.picksLabel}>Your picks <span>{pool.length}</span></h2>
-+          <span className={styles.mana} aria-label="Deck colours">
-+            {colorCounts.map(({ color, count }) => (
-+              <span key={color}><i className={`ms ms-cost ms-${color.toLowerCase()}`} aria-hidden="true" /> {count}</span>
-+            ))}
-+            {deckSpells.length > 0 && <span>· avg mana value {avgValue.toFixed(1)}</span>}
-+          </span>
-+          <small className={styles.picksHint}>drag cards to arrange them, or into Sideboard to leave them out of the deck</small>
-+        </div>
-+        <div className={[draft.columns, styles.columns].join(' ')}>
-+          {shownColumns.map((column) => {
-+            const over = drag?.moved && dropTarget(drag.x, drag.y)?.label === column.label;
-+            return (
-+              <div
-+                key={column.label}
-+                data-column={column.label}
-+                className={[draft.column, styles.column, column.items.length === 0 && column.label !== SIDEBOARD ? styles.emptyColumn : '', column.label === SIDEBOARD ? styles.sideColumn : '', drag?.moved ? styles.dropTarget : '', over ? styles.dropOver : ''].join(' ')}
-+              >
-+                <span className={draft.columnLabel}>{column.label === SIDEBOARD ? 'Sideboard' : column.label} <small>({column.items.length})</small></span>
-+                <div data-stack className={draft.columnCards} style={{ height: `calc(var(--pick-w) * (1.4 + 0.3 * ${Math.max(0, column.items.length - 1)}))` }}>
-+                  {column.items.map((at, index) => {
-+                    const card = pool[at];
-+                    return (
-+                      <div
-+                        key={at}
-+                        role="button"
-+                        tabIndex={0}
-+                        className={[draft.picked, styles.picked, column.label === SIDEBOARD ? styles.inSide : '', drag?.moved && drag.at === at ? styles.dragged : ''].join(' ')}
-+                        style={{ top: `calc(var(--pick-w) * ${0.3 * index})`, zIndex: index }}
-+                        aria-label={`${card.name}, ${column.label === SIDEBOARD ? 'sideboard' : 'deck'}; drag to move`}
-+                        onPointerDown={(event) => onPickPointerDown(event, at)}
-+                        {...zoomOn(card)}
-+                      >
-+                        <CardFace card={faceProps(card)} size="normal" />
-+                      </div>
-+                    );
-+                  })}
-+                </div>
-+              </div>
-+            );
-+          })}
-+        </div>
-+      </section>
++      <PoolBoard
++        pool={pool}
++        columns={columns}
++        onPlace={(at, label, position) => save(placeIn(columns, at, label, position))}
++        hover={hover}
++        head={<h2 className={draft.picksLabel}>Your picks <span>{pool.length}</span></h2>}
++      />
 +
-+      {dragged && drag && (
-+        <div className={styles.ghost} style={{ left: drag.x - 45, top: drag.y - 20 }} aria-hidden="true">
-+          <CardFace card={faceProps(dragged)} size="normal" />
-+        </div>
-+      )}
-+      {zoom && !drag?.moved && <ZoomCard zoom={zoom} bound={zoom.x > (listsRef.current?.getBoundingClientRect().left ?? Infinity) ? window.innerWidth : listsRef.current?.getBoundingClientRect().left ?? window.innerWidth} />}
++      <CardZoom shown={zoom.shown} bound={listsRef.current?.getBoundingClientRect().left} />
 +    </div>,
 +    document.body,
 +  );
 +}
 +
 +const GAP = 14;
-+const CARD_RATIO = 1.396; // height / width
 +const MAX_CARD = 330;
 +
 +/** The pack's grid: large cards sized by the width (the screen scrolls for a second row), a full pack in two rows. */
@@ -2344,76 +2630,6 @@ index 0000000000..1057786495
 +  }, [width, count]);
 +}
 +
-+/** A deck or sideboard list, like Arena's: how many, the name, mana value and colours, and a button to move one copy;
-+ * hovering a row shows the card. */
-+function CardList({ title, cards, hint, action, actionLabel, onMove, hover, dim }: {
-+  title: string;
-+  cards: CareerPoolCard[];
-+  hint: string;
-+  action: string;
-+  actionLabel: string;
-+  onMove(card: CareerPoolCard): void;
-+  hover(card: CareerPoolCard): { onMouseEnter?(event: ReactMouseEvent): void; onMouseLeave?(): void };
-+  dim?: boolean;
-+}) {
-+  const rows = useMemo(() => {
-+    const byName = new Map<string, { card: CareerPoolCard; count: number }>();
-+    for (const card of cards) {
-+      const row = byName.get(lower(card));
-+      if (row) row.count++;
-+      else byName.set(lower(card), { card, count: 1 });
-+    }
-+    return [...byName.values()].sort((a, b) => Number(!!a.card.land) - Number(!!b.card.land)
-+      || (a.card.manaValue ?? 0) - (b.card.manaValue ?? 0) || colorRank(a.card) - colorRank(b.card) || (a.card.name ?? '').localeCompare(b.card.name ?? ''));
-+  }, [cards]);
-+  return (
-+    <section className={[styles.list, dim ? styles.listDim : ''].join(' ')} aria-label={title}>
-+      <header className={styles.listHead}>
-+        <h2>{title} <span>{cards.length}</span></h2>
-+        <small>{hint}</small>
-+      </header>
-+      <ul>
-+        {rows.map(({ card, count }) => (
-+          <li key={lower(card)} className={styles.row} {...hover(card)}>
-+            <span className={styles.rowCount}>{count}×</span>
-+            <span className={styles.rowName}>{card.name}</span>
-+            <span className={styles.rowCost}>
-+              {!card.land && <b>{card.manaValue ?? 0}</b>}
-+              <Mana colors={card.colors} />
-+            </span>
-+            <button type="button" className={styles.rowMove} title={actionLabel} aria-label={`${actionLabel}: ${card.name}`} onClick={() => onMove(card)}>{action}</button>
-+          </li>
-+        ))}
-+        {rows.length === 0 && <li className={styles.empty}>{dim ? 'Drag cards here from your picks, or press − in the deck list.' : 'Your picks go here.'}</li>}
-+      </ul>
-+    </section>
-+  );
-+}
-+
-+/** a Room (two doors on one card) is printed sideways: its zoom is turned upright */
-+function isRoom(card: CareerPoolCard): boolean {
-+  return (card.name ?? '').includes(' // ') && card.setCode === 'DSK';
-+}
-+
-+/** the hovered card, large, beside it: never over the deck and sideboard lists (bound: their left edge) */
-+function ZoomCard({ zoom, bound }: { zoom: Zoom; bound: number }) {
-+  const room = isRoom(zoom.card);
-+  const portrait = Math.min(340, window.innerWidth * 0.4);
-+  // a Room's box is landscape: the card inside is turned a quarter
-+  const boxW = room ? portrait * CARD_RATIO : portrait;
-+  const boxH = room ? portrait : portrait * CARD_RATIO;
-+  const limit = Math.min(bound, window.innerWidth) - 8;
-+  const right = zoom.x + 12;
-+  const left = right + boxW <= limit ? right : Math.max(8, zoom.left - boxW - 12);
-+  const top = Math.max(8, Math.min(zoom.y, window.innerHeight - boxH - 8));
-+  return (
-+    <div className={styles.zoom} style={{ left, top, width: boxW, height: boxH }} aria-hidden="true">
-+      <div className={room ? styles.zoomTurned : undefined} style={room ? { width: boxH, left: (boxW - boxH) / 2, top: (boxH - boxW) / 2 } : undefined}>
-+        <CardFace card={faceProps(zoom.card)} size="large" />
-+      </div>
-+    </div>
-+  );
-+}
 +
 +function PickClock({ seconds, onExpire }: { seconds: number; onExpire(): void }) {
 +  const [deadline] = useState(() => Date.now() + seconds * 1000);
@@ -2465,17 +2681,7 @@ index 0000000000..1057786495
 +function Run({ run, brains }: { run: QuickDraftRun; brains: QuickDraftBrain[] | undefined }) {
 +  const [editing, setEditing] = useState(false);
 +  if (run.phase === 'build' || editing) {
-+    seedBuild(run);
-+    return (
-+      <LimitedBuilder
-+        key={run.id}
-+        run={run}
-+        submit={submitQuickDraftDeck}
-+        coach={() => api.quickDraftCoach()}
-+        onDone={() => setEditing(false)}
-+        onCancel={run.phase === 'play' ? () => setEditing(false) : undefined}
-+      />
-+    );
++    return <QuickBuilder key={run.id} run={run} onDone={() => setEditing(false)} onCancel={run.phase === 'play' ? () => setEditing(false) : undefined} />;
 +  }
 +  return <Games run={run} brains={brains} onEdit={() => setEditing(true)} />;
 +}
@@ -2558,7 +2764,6 @@ index 0000000000..1057786495
 +        <AbandonButton />
 +      </div>
 +      <GameList run={run} brains={brains} />
-+      <DraftReview picks={run.picks ?? []} />
 +    </section>
 +  );
 +}
@@ -2597,6 +2802,98 @@ index 0000000000..1057786495
 +      </ul>
 +    </section>
 +  );
++}
+diff --git a/Mage.Web.Client/src/app/quickdraft/pool.ts b/Mage.Web.Client/src/app/quickdraft/pool.ts
+new file mode 100644
+index 0000000000..d34898faac
+--- /dev/null
++++ b/Mage.Web.Client/src/app/quickdraft/pool.ts
+@@ -0,0 +1,86 @@
++import type { CareerPoolCard } from '../../protocol/generated/views';
++
++/**
++ * mtg-ai: Quick Draft's picks laid out in columns, like Arena's pool: by mana value (0 to 6+), lands, and a Sideboard
++ * column for what's left out of the deck. The player rearranges them by dragging; the layout is kept in this browser
++ * per run (by each pick's place in the pool, which never changes), from the first pick to the deck builder.
++ */
++
++export const COLOR_ORDER = 'WUBRG';
++export const SIDEBOARD = 'Sideboard';
++export const COLUMN_LABELS = ['0', '1', '2', '3', '4', '5', '6+', 'Lands', SIDEBOARD];
++export const BASIC_NAMES = ['plains', 'island', 'swamp', 'mountain', 'forest'];
++
++export interface Column {
++  label: string;
++  /** places in the pool, top of the stack first */
++  items: number[];
++}
++
++export const lower = (card: CareerPoolCard) => (card.name ?? '').toLowerCase();
++
++export function colorRank(card: CareerPoolCard): number {
++  const colors = card.colors ?? '';
++  if (colors.length === 0) return 6;
++  if (colors.length > 1) return 5;
++  return COLOR_ORDER.indexOf(colors);
++}
++
++export function layoutKey(runId: string): string {
++  return `playmat.quickDraft.layout.${runId}`;
++}
++
++/** the column a card starts in: its mana value, lands last */
++export function columnOf(card: CareerPoolCard): string {
++  return card.land ? 'Lands' : COLUMN_LABELS[Math.min(6, Math.max(0, card.manaValue ?? 0))];
++}
++
++/** The pool in columns: where the player put each card, the rest in their mana value's column in colour order. */
++export function arrange(pool: readonly CareerPoolCard[], arranged: Record<string, number[]>): Column[] {
++  const placed = new Set<number>();
++  const columns: Record<string, number[]> = Object.fromEntries(COLUMN_LABELS.map((label) => [label, []]));
++  for (const [label, items] of Object.entries(arranged)) {
++    if (!columns[label] || !Array.isArray(items)) continue;
++    for (const at of items) {
++      if (Number.isInteger(at) && at >= 0 && at < pool.length && !placed.has(at)) {
++        columns[label].push(at);
++        placed.add(at);
++      }
++    }
++  }
++  const fresh = pool.map((_, at) => at).filter((at) => !placed.has(at))
++    .sort((a, b) => colorRank(pool[a]) - colorRank(pool[b]) || (pool[a].name ?? '').localeCompare(pool[b].name ?? ''));
++  for (const at of fresh) columns[columnOf(pool[at])].push(at);
++  return COLUMN_LABELS.map((label) => ({ label, items: columns[label] }));
++}
++
++/** the columns with one card moved to a place in another (or the same) column */
++export function placeIn(columns: readonly Column[], at: number, label: string, position: number): Column[] {
++  const next = columns.map((column) => ({ label: column.label, items: column.items.filter((item) => item !== at) }));
++  const target = next.find((column) => column.label === label);
++  if (!target) return next;
++  target.items.splice(Math.max(0, Math.min(position, target.items.length)), 0, at);
++  return next;
++}
++
++/** a Room (two doors on one card) is printed sideways */
++export function isRoomCard(card: { name?: string; setCode?: string }): boolean {
++  return (card.name ?? '').includes(' // ') && card.setCode === 'DSK';
++}
++
++/** the deck's numbers, as Arena shows them: spells by mana value, colours, creatures and lands */
++export function deckStats(cards: readonly CareerPoolCard[], basics = 0) {
++  const spells = cards.filter((card) => !card.land);
++  const curve = [0, 0, 0, 0, 0, 0, 0];
++  for (const card of spells) curve[Math.min(6, Math.max(0, card.manaValue ?? 0))]++;
++  const colors = COLOR_ORDER.split('').map((color) => ({ color, count: spells.filter((card) => (card.colors ?? '').includes(color)).length }))
++    .filter((entry) => entry.count > 0);
++  return {
++    curve,
++    colors,
++    spells: spells.length,
++    creatures: spells.filter((card) => card.creature).length,
++    lands: cards.length - spells.length + basics,
++    average: spells.length ? spells.reduce((sum, card) => sum + (card.manaValue ?? 0), 0) / spells.length : 0,
++  };
 +}
 diff --git a/Mage.Web.Client/src/app/quickdraft/quickDraftData.ts b/Mage.Web.Client/src/app/quickdraft/quickDraftData.ts
 new file mode 100644
@@ -2663,6 +2960,86 @@ index 0000000000..5254b1ab22
 +    void queryClient.invalidateQueries({ queryKey: KEY });
 +  }
 +}
+diff --git a/Mage.Web.Client/src/app/quickdraft/zoom.ts b/Mage.Web.Client/src/app/quickdraft/zoom.ts
+new file mode 100644
+index 0000000000..256576e308
+--- /dev/null
++++ b/Mage.Web.Client/src/app/quickdraft/zoom.ts
+@@ -0,0 +1,74 @@
++import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from 'react';
++
++/**
++ * mtg-ai: a card shown large while the pointer is over its tile or list row (Quick Draft), beside it and never over
++ * the deck list. A Room, printed sideways, is turned upright (CardZoom.tsx). On a touch screen a long press shows it
++ * and the next tap anywhere closes it.
++ */
++
++export interface ZoomCardInfo {
++  name?: string;
++  setCode?: string;
++  cardNumber?: string;
++}
++
++export interface Shown {
++  card: ZoomCardInfo;
++  left: number;
++  right: number;
++  top: number;
++}
++
++const LONG_PRESS_MS = 450;
++
++/** Zoom state and the handlers to spread on each hoverable element. */
++export function useCardZoom() {
++  const [shown, setShown] = useState<Shown | null>(null);
++  const press = useRef<ReturnType<typeof setTimeout> | null>(null);
++  // a long press shows the card: the click that ends it must not also add the card to the deck
++  const swallowClick = useRef(false);
++
++  useEffect(() => {
++    if (!shown) return;
++    // a touch-opened zoom closes on the next tap; a mouse one when the pointer leaves
++    const close = () => setShown(null);
++    window.addEventListener('pointerdown', close, true);
++    return () => window.removeEventListener('pointerdown', close, true);
++  }, [shown]);
++
++  const show = (card: ZoomCardInfo, element: HTMLElement) => {
++    const rect = element.getBoundingClientRect();
++    setShown({ card, left: rect.left, right: rect.right, top: rect.top });
++  };
++
++  const handlers = (card: ZoomCardInfo) => ({
++    onMouseEnter: (event: ReactMouseEvent) => show(card, event.currentTarget as HTMLElement),
++    onMouseLeave: () => setShown(null),
++    onPointerDown: (event: ReactPointerEvent) => {
++      if (event.pointerType !== 'touch') return;
++      const element = event.currentTarget as HTMLElement;
++      press.current = setTimeout(() => {
++        swallowClick.current = true;
++        show(card, element);
++      }, LONG_PRESS_MS);
++    },
++    onPointerUp: () => {
++      if (press.current) clearTimeout(press.current);
++    },
++    onPointerCancel: () => {
++      if (press.current) clearTimeout(press.current);
++    },
++    onClickCapture: (event: ReactMouseEvent) => {
++      if (!swallowClick.current) return;
++      swallowClick.current = false;
++      event.stopPropagation();
++      event.preventDefault();
++    },
++    onContextMenu: (event: ReactMouseEvent) => {
++      if (swallowClick.current) event.preventDefault(); // no copy/share menu over the long press
++    },
++  });
++
++  return { shown, handlers, hide: () => setShown(null) };
++}
++
 diff --git a/Mage.Web.Client/src/protocol/generated/api.ts b/Mage.Web.Client/src/protocol/generated/api.ts
 index 4881ee167e..29d0ef11aa 100644
 --- a/Mage.Web.Client/src/protocol/generated/api.ts
