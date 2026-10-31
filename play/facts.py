@@ -14,7 +14,7 @@ from render import load_card_text
 BASIC_COLOR = {"Plains": "W", "Island": "U", "Swamp": "B", "Mountain": "R", "Forest": "G", "Everywhere": "WUBRG"}
 MAIN_STEPS = ("Upkeep", "Draw", "Precombat Main", "Begin Combat", "Declare Attackers", "Postcombat Main")
 
-CAVEAT = "board only: no tricks, flash, face-down flips or unlisted abilities"
+CAVEAT = "board only, plus pump tricks in your own hand: no opponent tricks, flash, face-down flips or unlisted abilities"
 
 
 @lru_cache(maxsize=None)
@@ -66,6 +66,66 @@ class Body:
 
     def can_block(self, attacker):
         return not attacker.flying or self.flying or self.reach
+
+
+_PUMP = re.compile(r"(?:target creature|enchanted creature|it)[^.]*?\bgets? \+(\d+)/\+(\d+)", re.I)
+_GAINS = re.compile(r"\b(?:gains?|has) ((?:first strike|double strike|deathtouch|indestructible|trample|flying)"
+                    r"(?:(?:,| and) (?:first strike|double strike|deathtouch|indestructible|trample|flying))*)", re.I)
+
+
+def _mana_value(cost):
+    return sum(int(x) if x.isdigit() else (0 if x.upper() == "X" else 1) for x in re.findall(r"\{([^}]+)\}", cost or ""))
+
+
+def pump_tricks(entries):
+    """Instant-speed pumps in this seat's own hand it can pay for with its untapped lands (colour not checked): an
+    instant, or a card with flash, whose text gives a creature +X/+Y and/or combat keywords. [(entry, dp, dt,
+    keywords, mana value)]; only the seat's own hand, which it sees."""
+    lands = [e for e in entries[1:] if e["kind"] == "card" and e["zone"] == "BATTLEFIELD" and e["mine"]
+             and "Land" in e.get("types", "") and not e.get("tapped")]
+    out = []
+    for e in entries[1:]:
+        if e["kind"] != "card" or e["zone"] != "HAND" or not e["mine"]:
+            continue
+        c = _texts().get(e.get("name") or "")
+        if not c:
+            continue
+        rules = " ".join(c.get("rules", []))
+        types = c.get("types", "")
+        if not ("Instant" in types or re.search(r"\bFlash\b", rules)):
+            continue
+        if "Creature" in types:
+            continue  # a flash creature isn't a pump
+        m = _PUMP.search(rules)
+        kws = set()
+        for g in _GAINS.findall(rules):
+            kws |= {k.strip().lower() for k in re.split(r",| and ", g) if k.strip()}
+        if not m and not kws:
+            continue
+        mv = _mana_value(c.get("cost"))
+        if mv > len(lands):
+            continue
+        out.append((e, int(m.group(1)) if m else 0, int(m.group(2)) if m else 0, kws, mv))
+    return sorted(out, key=lambda t: t[4])  # the cheapest first: lines show at most three
+
+
+def boosted(body, dp, dt, kws):
+    """A copy of a creature with a pump on it."""
+    b = Body(body.e)
+    b.power, b.toughness, b.left = b.power + dp, b.toughness + dt, b.left + dt
+    b.first = b.first or "first strike" in kws or "double strike" in kws
+    b.double = b.double or "double strike" in kws
+    b.deathtouch = b.deathtouch or "deathtouch" in kws
+    b.indestructible = b.indestructible or "indestructible" in kws
+    b.trample = b.trample or "trample" in kws
+    b.flying = b.flying or "flying" in kws
+    return b
+
+
+def _trick_name(t):
+    e, dp, dt, kws, mv = t
+    what = ", ".join(([f"+{dp}/+{dt}"] if dp or dt else []) + sorted(kws))
+    return f"[{e['i']}] {e.get('name')} ({what}, mana value {mv})"
 
 
 def creatures(entries, mine):
@@ -169,6 +229,7 @@ def facts(msg):
     blocks = [(a, b) for t, a, b in edges if t == "blocks"]  # blocker entry, attacker entry
     by_i = {b.i: b for b in mine_c + opp_c}
     out = []
+    tricks = pump_tricks(entries)
 
     if g["my_turn"] and g["step"] in MAIN_STEPS and kind in ("PRIORITY", "ATTACK"):
         lands = [e for e in entries[1:] if e["kind"] == "card" and e["zone"] == "BATTLEFIELD" and e["mine"]
@@ -233,6 +294,12 @@ def facts(msg):
                          f"{min_through(opp_att, rest)} gets through "
                          f"(you are at {g['my_life']})")
             out.append(f"Attack with {c.label()}: {note}.")
+            for t in tricks[:3]:
+                pumped = boosted(c, t[1], t[2], t[3])
+                cells = [f"blocked by [{b.i}] {b.power}/{b.toughness} -> {_outcome(pumped, [b])}" for b in alone[:3]]
+                if cells:
+                    out.append(f"  ...if you cast {_trick_name(t)} on it after blocks ({pumped.power}/{pumped.toughness}): "
+                               + " | ".join(cells) + ".")
 
     if kind == "BLOCK":
         attackers = [b for b in opp_c if b.e.get("attacking")]
@@ -252,11 +319,21 @@ def facts(msg):
                              f"{_outcome(a, list(pairs[0]))}"))
                 continue
             cells = [f"[{b.i}] -> {_outcome(a, mine_on + [b])}" for b in ok]
+            trick_lines = []
+            for t in tricks[:3]:
+                for b in ok[:3]:
+                    pumped = boosted(b, t[1], t[2], t[3])
+                    att_dies, dead = fight(a, [pumped])
+                    trick_lines.append(f"if [{b.i}] blocks {a.label()} and you cast {_trick_name(t)} on it "
+                               f"({pumped.power}/{pumped.toughness}): " + "; ".join(
+                                   ["attacker dies" if att_dies else "attacker survives",
+                                    "your blocker dies" if pumped in dead else "your blocker survives"]) + ".")
             if not mine_on:  # double blocks: show the ones that kill the attacker, the trap is the exact damage split
                 cells += [f"[{x.i}]+[{y.i}] -> {_outcome(a, [x, y])}" for k, x in enumerate(ok) for y in ok[k + 1:]
                           if fight(a, [x, y])[0]][:3]
             if cells:
                 out.append(f"{a.label()} attacking{', adding a blocker' if mine_on else ''}: " + " | ".join(cells))
+            out += ["  ..." + x for x in trick_lines]
         unblocked = [a for a in attackers if not any(y == a.i for _, y in blocks)]
         if attackers:
             out.append(f"Unblocked so far: {sum(a.power for a in unblocked)} damage; you are at {g['my_life']}.")
@@ -265,6 +342,19 @@ def facts(msg):
             on = [by_i[x] for x, y in blocks if y == a.i and x in by_i]
             if on:
                 out.append(f"Combat now: {a.label()} blocked by {_fmt_list(on)}: {_outcome(a, on)}.")
+                for t in tricks[:3]:
+                    if a.e["mine"]:
+                        pumped = boosted(a, t[1], t[2], t[3])
+                        out.append(f"  ...if you cast {_trick_name(t)} on {a.label()} ({pumped.power}/{pumped.toughness}): "
+                                   f"{_outcome(pumped, on)}.")
+                    else:
+                        for b in [x for x in on if x.e["mine"]][:2]:
+                            pumped = boosted(b, t[1], t[2], t[3])
+                            att_dies, dead = fight(a, [pumped if x is b else x for x in on])
+                            out.append(f"  ...if you cast {_trick_name(t)} on your blocker [{b.i}] "
+                                       f"({pumped.power}/{pumped.toughness}): "
+                                       + ("attacker dies" if att_dies else "attacker survives") + "; "
+                                       + ("your blocker dies" if pumped in dead else "your blocker survives") + ".")
     return out
 
 

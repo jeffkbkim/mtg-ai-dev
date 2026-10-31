@@ -83,3 +83,37 @@ def test_block_lines_show_double_blocks_that_kill_both():
 def test_no_facts_before_the_game():
     msg = {"kind": "USE", "obs": {"entries": [glob(step="null")], "edges": []}, "options": []}
     assert facts(msg) == []
+
+
+def hand(i, name):
+    return {"kind": "card", "zone": "HAND", "i": i, "mine": True, "name": name, "types": ""}
+
+
+def test_pump_trick_in_hand_shows_its_combat():
+    # 2026-10-31: Orphans 2/1 attacked a 2/2 "to flash Shardmage's Rescue and survive"; a 3/2 still dies to 2 damage
+    entries = [glob(step="Declare Attackers"), hand(4, "Shardmage's Rescue"), card(8, False, 2, 2),
+               card(11, True, 2, 1, name="Orphans of the Wheat"), land(9, True, "Plains"), land(10, True, "Swamp")]
+    msg = {"kind": "ATTACK", "obs": {"entries": entries, "edges": []},
+           "options": [{"label": "DONE"}, {"label": "Orphans attacks", "source": {"entry": 11}, "target": {"player": "opp"}}]}
+    lines = facts(msg)
+    pump = [x for x in lines if "Shardmage's Rescue" in x]
+    assert pump and "(3/2)" in pump[0] and "attacker dies; blocker dies" in pump[0]
+
+
+def test_deathtouch_and_indestructible_grant():
+    # Horrid Vigor: target creature gains deathtouch and indestructible; a 1/1 blocker then kills a 5/5 and survives
+    entries = [glob(step="Declare Attackers", my_turn=False), hand(4, "Horrid Vigor"), land(9, True, "Forest"), land(10, True, "Forest"),
+               card(8, False, 5, 5, attacking=True), card(11, True, 1, 1)]
+    msg = {"kind": "BLOCK", "obs": {"entries": entries, "edges": []},
+           "options": [{"label": "DONE"}, {"label": "c11 blocks c8", "source": {"entry": 11}, "target": {"entry": 8}}]}
+    line = next(x for x in facts(msg) if "Horrid Vigor" in x)
+    assert "attacker dies" in line and "your blocker survives" in line
+
+
+def test_unaffordable_trick_not_shown():
+    # Shardmage's Rescue costs {W}: with no untapped land it isn't offered
+    entries = [glob(step="Declare Attackers"), hand(4, "Shardmage's Rescue"), card(8, False, 2, 2),
+               card(11, True, 2, 1), land(9, True, "Plains", tapped=True)]
+    msg = {"kind": "ATTACK", "obs": {"entries": entries, "edges": []},
+           "options": [{"label": "DONE"}, {"label": "c11 attacks", "source": {"entry": 11}, "target": {"player": "opp"}}]}
+    assert not any("Shardmage's Rescue" in x for x in facts(msg))
