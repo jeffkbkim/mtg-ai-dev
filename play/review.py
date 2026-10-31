@@ -15,7 +15,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from players import read_deck
+from players import SET_NAMES, deck_set, read_deck
 from render import card_text, clean, load_card_text, names_in, option_label, render
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -64,6 +64,13 @@ Reply with one JSON object and nothing else:
 SYSTEM_SHA = hashlib.sha256(REVIEW_RULES.encode()).hexdigest()[:12]
 
 
+def review_rules(deck_path):
+    """REVIEW_RULES naming the set of the deck (written for DSK, identical for DSK decks) and its sha."""
+    s = deck_set(deck_path)
+    rules = REVIEW_RULES.replace("Duskmourn (DSK)", f"{SET_NAMES[s]} ({s})")
+    return rules, hashlib.sha256(rules.encode()).hexdigest()[:12]
+
+
 def seat_transcript(records, seat, deck_path, texts, result_line):
     """The seat's own view of the game as text, and the idx values of the decisions it was asked."""
     lines, names, asked, last_state, auto = [], set(), set(), None, 0
@@ -98,9 +105,9 @@ def seat_transcript(records, seat, deck_path, texts, result_line):
     return "\n".join(head + lines), asked
 
 
-def ask_reviewer(text, model, effort, timeout_s):
+def ask_reviewer(text, model, effort, timeout_s, rules=REVIEW_RULES):
     work = tempfile.mkdtemp(prefix="claude-review-")
-    Path(work, "system.txt").write_text(REVIEW_RULES)
+    Path(work, "system.txt").write_text(rules)
     env = {k: v for k, v in os.environ.items() if k not in ("CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_REMOTE_SESSION_ID")}
     env["CLAUDE_EFFORT"] = effort
     env["DISABLE_PROMPT_CACHING"] = "1"  # one-shot call: a cache write would cost more than plain input and never be read
@@ -151,12 +158,13 @@ def review_one(game_file, seat, args, texts):
                     result_line = (f"not known: the game was carried on at another table from turn {g.get('superseded_from_turn')}, "
                                    "and this transcript stops there")
     text, asked = seat_transcript(records, seat, deck, texts, result_line)
+    rules, rules_sha = review_rules(deck)
     reply = parsed = None
     cost = secs = 0.0
     usage = {}
     for attempt in range(2):  # one retry on an unreadable reply or a failed call
         try:
-            reply, c, usage, s = ask_reviewer(text, args.model, args.effort, args.timeout)
+            reply, c, usage, s = ask_reviewer(text, args.model, args.effort, args.timeout, rules)
             cost += c; secs += s
         except (RuntimeError, subprocess.TimeoutExpired, json.JSONDecodeError) as e:
             reply = f"[error] {e}"
@@ -170,7 +178,7 @@ def review_one(game_file, seat, args, texts):
     for f in flags:
         f["idx_valid"] = f.get("idx") in asked
     review = {"game_file": str(game_file), "game": game_no, "seat": seat, "player": mine[0]["player"],
-              "reviewer": {"model": args.model, "effort": args.effort, "rules_sha": SYSTEM_SHA},
+              "reviewer": {"model": args.model, "effort": args.effort, "rules_sha": rules_sha},
               "asked": len(asked), "flags": flags, "bugs": parsed.get("bugs", []),
               "cost_usd": round(cost, 4), "seconds": round(secs, 1), "usage": usage, "transcript_chars": len(text)}
     out_path.write_text(json.dumps(review, indent=1))

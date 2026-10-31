@@ -123,15 +123,16 @@ def deck_set(deck_path):
     return sets.pop() if sets else "DSK"
 
 
-def system_prompt(deck_path, texts, lessons=None, plan=False, facts=False, primer="v1"):
+def system_prompt(deck_path, texts, lessons=None, plan=False, facts=False, primer=None):
     """lessons: text of a lessons file (play/primer/lessons_v*.md) placed right after the rules, or None.
     plan: ask for a plan that is updated in every reply (PLAN_RULES). facts: explain the "Facts:" block (FACTS_RULES).
     primer: "v1" (dsk_meta.md + the 17lands GIH table) or "v2" (dsk_meta_v2.md: archetypes, checks, cards to respect;
-    each card in the deck gets its role from dsk_card_roles.json)."""
+    each card in the deck gets its role from dsk_card_roles.json). None: v1 for DSK, v2 for other sets (only v2 exists)."""
+    s = deck_set(deck_path)
+    primer = primer or ("v1" if s == "DSK" else "v2")
     if primer not in PRIMERS:
         raise ValueError(f"primer must be one of {PRIMERS}, not {primer!r}")
     deck = read_deck(deck_path)
-    s = deck_set(deck_path)
     rules = RULES.replace("Duskmourn (DSK)", f"{SET_NAMES[s]} ({s})")
     if s != "DSK" and primer != "v2":
         raise ValueError(f"{s} has only primer v2 (play/primer/{s.lower()}_meta_v2.md), not {primer!r}")
@@ -178,8 +179,9 @@ class ClaudePlayer:
                  timeout_s=600, primer=None, concede=False):
         self.model, self.effort, self.timeout_s = model, effort, timeout_s
         self.concede = concede  # may reply {"concede": true} (Playmat's Claude seat; match.py games play to the end)
-        self.primer = primer or os.environ.get("PRIMER") or "v1"  # an explicit argument wins over $PRIMER
-        if self.primer not in PRIMERS:
+        # an explicit argument wins over $PRIMER; neither: system_prompt picks by the deck's set (v1 DSK, v2 FDN)
+        self.primer = primer or os.environ.get("PRIMER") or None
+        if self.primer is not None and self.primer not in PRIMERS:
             raise ValueError(f"primer must be one of {PRIMERS}, not {self.primer!r}")
         self.lessons = Path(lessons).read_text() if lessons else None
         self.plan_mode = plan
