@@ -1,3 +1,4 @@
+import gzip
 import json
 import math
 from collections import Counter
@@ -8,7 +9,7 @@ import torch
 
 from engine.baselines import ActionTypePrior, evaluate, uniform_logits
 from engine.batch_config import BatchConfig
-from engine.dataset import DecisionDataset, build, make_loaders, split_of
+from engine.dataset import DecisionDataset, build, build_17lands, draft_split, make_loaders, split_of
 from engine.encode import Vocab
 from synthetic.fake_batch import validate_batch
 
@@ -97,3 +98,58 @@ def test_type_prior_beats_uniform_on_its_own_training_data(cache):
     loaders = make_loaders(out, batch_size=8)
     prior = ActionTypePrior(loaders["train"])
     assert evaluate(prior, loaders["train"])["all"]["loss"] < evaluate(uniform_logits, loaders["train"])["all"]["loss"]
+
+
+@pytest.fixture(scope="module")
+def chunks(tmp_path_factory):
+    """3 chunks of 17lands-style rows: the sample decisions as games of 12 drafts, a quarter of rows ambiguous."""
+    tmp = tmp_path_factory.mktemp("chunks")
+    lines = [json.loads(line) for line in FIXTURE.read_text().splitlines()]
+    paths, n = [], 0
+    for c in range(3):
+        rows = []
+        for g in range(4):
+            draft = f"draft{c * 4 + g}"
+            for i, d in enumerate(lines):
+                rows.append({**d, "draft_id": draft, "game": f"{draft}/1", "seat": "A",
+                             "label": "ambiguous" if i % 4 == 3 else "recorded"})
+                n += i % 4 != 3
+        p = tmp / f"b000{c}" / "decisions.jsonl.gz"
+        p.parent.mkdir()
+        with gzip.open(p, "wt") as f:
+            f.writelines(json.dumps(r) + "\n" for r in rows)
+        paths.append(p)
+    out = tmp / "cache"
+    return out, build_17lands(paths, out), n
+
+
+def test_17lands_build_keeps_labels_and_splits_by_draft(chunks):
+    out, summary, kept = chunks
+    assert summary["skipped_by_reason"]["label ambiguous"] > 0
+    assert sum(summary["decisions"].values()) == kept
+    assert sum(summary["files"].values()) == kept and len(summary["files"]) == 9  # 3 chunks x 3 splits
+    for split in ("val", "test"):
+        for x in DecisionDataset(sorted(out.glob(f"{split}-*.pt"))):
+            assert draft_split(x.meta["draft_id"]) == split and x.meta["label"] == "recorded"
+
+
+def test_17lands_train_streams_every_decision_once_per_epoch(chunks):
+    out, summary, _ = chunks
+    loader = make_loaders(out, batch_size=8)["train"]
+    assert len(loader.dataset) == summary["decisions"]["train"]
+    orders = []
+    for _ in range(2):
+        seen = []
+        for batch in loader:
+            validate_batch(batch, BatchConfig.from_vocab())
+            seen += batch["label"].tolist()
+        assert len(seen) == summary["decisions"]["train"]
+        orders.append(seen)
+    assert sorted(orders[0]) == sorted(orders[1])
+
+
+def test_draft_split_matches_the_frozen_17lands_split():
+    pytest.importorskip("polars")
+    from seventeenlands.prepare import split_of as frozen
+    for i in range(200):
+        assert draft_split(f"d{i}") == {"validation": "val"}.get(frozen(f"d{i}"), frozen(f"d{i}"))

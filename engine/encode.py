@@ -445,9 +445,15 @@ def collate(examples: list[Example]) -> dict[str, Tensor]:
 
 def encode_file(path: Path, vocab: Vocab) -> tuple[list[Example], dict[str, int]]:
     """Encode every decision in a JSON-lines file. Returns examples and a report of unmapped items (by message)."""
-    examples, problems = [], {}
     decisions = [d for d in map(json.loads, Path(path).read_text().splitlines())
                  if d.get("type", "decision") == "decision"]
+    return encode_decisions(decisions, vocab)
+
+
+def encode_decisions(decisions: list[dict], vocab: Vocab,
+                     keep: tuple[str, ...] = ()) -> tuple[list[Example], dict[str, int]]:
+    """encode_file for decisions already read. keep: row fields copied into each example's meta (e.g. draft_id)."""
+    examples, problems = [], {}
     add_lands_played(decisions)
     for d in decisions:
         if d.get("choice", 0) < 0:  # no label: an unmapped answer, or blocks the engine refused (Playmat records)
@@ -455,7 +461,10 @@ def encode_file(path: Path, vocab: Vocab) -> tuple[list[Example], dict[str, int]
             problems[key] = problems.get(key, 0) + 1
             continue
         try:
-            examples.append(encode_decision(d, vocab))
+            x = encode_decision(d, vocab)
         except Unmapped as err:
             problems[str(err)] = problems.get(str(err), 0) + 1
+            continue
+        x.meta.update({k: d[k] for k in keep if k in d})
+        examples.append(x)
     return examples, problems
