@@ -338,6 +338,8 @@ class ClaudePlayer:
             # Jeff 2026-10-29: in the effort batch 847 of these were asked, nearly always answered PASS ("wait for the
             # draw"); the turn's conversation restart made them the first, costliest call of the turn
             return "own_upkeep_draw"
+        if self._flip_only_on_their_ability(msg):
+            return "flip_only"
         if not self.pass_until:
             return None
         if g["my_turn"] and g["step"] in ("Precombat Main", "Postcombat Main"):
@@ -360,6 +362,29 @@ class ClaudePlayer:
             self.pass_until = None
             return None
         return f"pass_until:{p['target']}"
+
+    _FLIP = "Turn this face-down permanent face up"
+    _HARMFUL = re.compile(r"damage|destroy|exile|sacrifice|-\d+/-\d+|return [^.]* to [^.]*hand|tap target|stun", re.I)
+
+    def _flip_only_on_their_ability(self, msg):
+        """Jeff 2026-11-01: an opponent's triggered or activated ability on the stack, outside combat, when the only
+        thing to do besides passing is turning a face-down permanent up (41 such windows took ~220 s, all passed).
+        Still asked: any spell on the stack, combat, an empty stack, and an ability that targets one of my
+        permanents or could hurt them (flipping in response can matter then)."""
+        entries = msg["obs"]["entries"]
+        rest = [o["label"] for o in msg["options"][1:]]
+        if not rest or not all(self._FLIP in x for x in rest):
+            return False
+        stack = [e for e in entries[1:] if e.get("zone") == "STACK"]
+        if not stack or any(e.get("kind") != "ability" or e.get("mine") for e in stack):
+            return False
+        if any(e.get("attacking") or e.get("blocking") for e in entries[1:]):
+            return False
+        mine = {e["i"] for e in entries[1:] if e.get("mine") and e.get("zone") == "BATTLEFIELD"}
+        on_stack = {e["i"] for e in stack}
+        if any(t == "targets" and a in on_stack and b in mine for t, a, b in msg["obs"].get("edges", [])):
+            return False
+        return not any(self._HARMFUL.search(e.get("text") or "") for e in stack)
 
     def _prompt(self, msg, g):
         """This decision's text; starts a conversation (with the game log) if none is running."""

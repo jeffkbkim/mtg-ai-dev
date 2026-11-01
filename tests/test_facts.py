@@ -117,3 +117,46 @@ def test_unaffordable_trick_not_shown():
     msg = {"kind": "ATTACK", "obs": {"entries": entries, "edges": []},
            "options": [{"label": "DONE"}, {"label": "c11 attacks", "source": {"entry": 11}, "target": {"player": "opp"}}]}
     assert not any("Shardmage's Rescue" in x for x in facts(msg))
+
+
+def test_opponent_tricks_on_the_primo_triple_block():
+    # 2026-10-31 game 6399b3ec turn 15: Primo 7/7 attacked into 7/6 + 6/5 + 3/3 with 8 lands (G/W/U) open and one
+    # card; Claude triple-blocked and Horrid Vigor killed all three blockers
+    g = {**glob(step="Declare Blockers", my_turn=False, my_life=10, opp_life=21), "opp_hand": 1}
+    opp_lands = [land(20 + k, False, n) for k, n in enumerate(["Forest", "Forest", "Plains", "Plains", "Island",
+                                                                "Floodfarm Verge", "Lakeside Shack", "Etched Cornfield"])]
+    entries = [g, card(14, False, 7, 7, attacking=True, tapped=True, name="Primo, the Indivisible"),
+               card(31, True, 7, 6), card(33, True, 6, 5), card(34, True, 3, 3)] + opp_lands
+    msg = {"kind": "BLOCK", "obs": {"entries": entries, "edges": []}, "options": [{"label": "DONE"}]}
+    lines = facts(msg)
+    tricks = next(x for x in lines if x.startswith("Opponent's possible tricks"))
+    assert "8 untapped lands" in tricks and "1 card in hand" in tricks
+    assert tricks.index("Horrid Vigor") < tricks.index("Jump Scare")  # what turns a block around first
+    assert "Murder" not in tricks and "Scorching Dragonfire" not in tricks  # no black or red mana
+    assert tricks.count(";") <= 5  # at most six
+    assert any("each extra blocker is an extra loss" in x for x in lines)
+
+
+def test_no_opponent_tricks_without_cards_or_mana():
+    entries = [{**glob(step="Declare Blockers", my_turn=False), "opp_hand": 0},
+               card(14, False, 3, 3, attacking=True, tapped=True), card(31, True, 2, 2), land(20, False, "Forest")]
+    msg = {"kind": "BLOCK", "obs": {"entries": entries, "edges": []}, "options": [{"label": "DONE"}]}
+    assert not any("possible tricks" in x for x in facts(msg))
+    entries[0]["opp_hand"] = 3
+    entries[-1]["tapped"] = True
+    assert not any("possible tricks" in x for x in facts(msg))
+
+
+def test_murder_needs_two_black_sources():
+    from facts import opponent_tricks
+    g = glob()
+    one_swamp = [g, land(1, False, "Swamp"), land(2, False, "Forest"), land(3, False, "Forest")]
+    assert "Murder" not in [t[0] for t in opponent_tricks(one_swamp, limit=99)[2]]
+    assert "Murder" in [t[0] for t in opponent_tricks(one_swamp + [land(4, False, "Swamp")], limit=99)[2]]
+
+
+def test_attack_note_says_trades_with():
+    entries = [glob(step="Declare Attackers"), card(13, False, 1, 1), card(29, True, 1, 1)]
+    msg = {"kind": "ATTACK", "obs": {"entries": entries, "edges": []},
+           "options": [{"label": "DONE"}, {"label": "c29 attacks", "source": {"entry": 29}, "target": {"player": "opp"}}]}
+    assert any("dies to a single block by [13] (trades with [13])" in x for x in facts(msg))

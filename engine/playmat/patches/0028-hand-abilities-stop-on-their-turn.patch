@@ -1,0 +1,48 @@
+--- a/Mage.Web.Client/src/core/game/autoPass.ts
++++ b/Mage.Web.Client/src/core/game/autoPass.ts
+@@ -84,6 +84,14 @@
+     .map(([id]) => id);
+ }
+ 
++/** Cards in the player's hand with a non-mana ability to activate (cycling, landcycling, channel). */
++export function handAbilities(view: GameView | null | undefined): string[] {
++  const hand = view?.myHand ?? {};
++  return Object.entries(view?.canPlayObjects?.objects ?? {})
++    .filter(([id, stats]) => id in hand && (stats.other ?? []).some((record) => !isManaText(record.value)))
++    .map(([id]) => id);
++}
++
+ /**
+  * Crew, or "becomes a 3/3 ... creature" (manlands): abilities whose moment is before attackers are declared. The
+  * server cuts ability text at 50 characters, which often leaves only the power and toughness.
+@@ -128,7 +136,11 @@
+       if (combatStopHere(view, settings.combatStops)) return null;
+       // like Arena: when no creature attacks, the rest of combat goes by even with instants in hand
+       if (settings.autoSkipCombat && noCombat(view)) return 'pass';
+-      return meaningfulPlays(view, myTurn || settings.abilitiesOnTheirTurn).length === 0 ? 'pass' : null;
++      if (meaningfulPlays(view, myTurn || settings.abilitiesOnTheirTurn).length > 0) return null;
++      // mtg-ai: abilities of cards in hand (cycling, landcycling, channel) stop you on their turn when they cast
++      // something and at their end step, the usual moments to use them
++      return !myTurn && handAbilities(view).length > 0
++        && (Object.keys(view.stack ?? {}).length > 0 || view.step === 'END_TURN') ? null : 'pass';
+     }
+     // the server stops listing creatures once they are declared: with everything chosen the list is empty too, and
+     // that declaration is the player's to confirm
+--- a/Mage.Web.Client/src/core/game/autoPass.test.ts
++++ b/Mage.Web.Client/src/core/game/autoPass.test.ts
+@@ -41,6 +41,15 @@
+     expect(autoAnswer(theirTurn, priority, { ...on, abilitiesOnTheirTurn: true })).toBeNull();
+     expect(autoAnswer(myTurn, priority, on)).toBeNull();
+   });
++  it("on the opponent's turn, a hand card's ability (cycling) stops you for their spells and at their end step", () => {
++    const cycling = { other: [{ value: '{2}, Discard this card: Search your library for a Swamp card...' }] };
++    const base: GameView = { ...view({ snatcher: cycling }), activePlayerId: 'them', myHand: { snatcher: {} } } as GameView;
++    expect(autoAnswer({ ...base, step: 'PRECOMBAT_MAIN' }, priority, on)).toBe('pass');
++    expect(autoAnswer({ ...base, step: 'PRECOMBAT_MAIN', stack: { fly: {} } } as GameView, priority, on)).toBeNull();
++    expect(autoAnswer({ ...base, step: 'END_TURN' }, priority, on)).toBeNull();
++    // the same ability on a permanent still follows the setting
++    expect(autoAnswer({ ...base, myHand: {}, step: 'END_TURN' }, priority, on)).toBe('pass');
++  });
+   it("stops on the opponent's turn to turn a face-down creature up (a morph after blocks)", () => {
+     const morph = { other: [{ value: '{0}: Turn this face-down permanent face up' }] };
+     expect(autoAnswer({ ...view({ proteus: morph }), activePlayerId: 'them' }, priority, on)).toBeNull();

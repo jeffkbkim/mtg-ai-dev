@@ -14,7 +14,35 @@ from render import load_card_text
 BASIC_COLOR = {"Plains": "W", "Island": "U", "Swamp": "B", "Mountain": "R", "Forest": "G", "Everywhere": "WUBRG"}
 MAIN_STEPS = ("Upkeep", "Draw", "Precombat Main", "Begin Combat", "Declare Attackers", "Postcombat Main")
 
-CAVEAT = "board only, plus pump tricks in your own hand: no opponent tricks, flash, face-down flips or unlisted abilities"
+CAVEAT = ("board only, plus pump tricks in your own hand and a list of tricks the opponent could have: the outcomes "
+          "ignore opponent tricks, flash, face-down flips and unlisted abilities")
+
+# DSK's common and uncommon instant-speed cards that change a fight, checked against the set's card data
+# (2026-11-01): (name, cost, what it does, kind). Kinds order the list: what turns a block around first.
+OPP_TRICKS = [
+    ("Horrid Vigor", "{1}{G}", "deathtouch + indestructible", "deathtouch"),
+    ("Jump Scare", "{W}", "+2/+2 and flying", "pump"),
+    ("Turn Inside Out", "{R}", "+3/+0", "pump"),
+    ("Violent Urge", "{R}", "+1/+0 and first strike", "pump"),
+    ("Shardmage's Rescue", "{W}", "flash aura on their creature: +1/+1, hexproof", "pump"),
+    ("Give In to Violence", "{1}{B}", "+2/+2 and lifelink", "pump"),
+    ("Frantic Strength", "{2}{G}", "flash aura: +2/+2 and trample", "pump"),
+    ("Unwanted Remake", "{W}", "destroy target creature", "removal"),
+    ("Nowhere to Run", "{1}{B}", "flash: -3/-3", "removal"),
+    ("Winter's Intervention", "{1}{B}", "2 damage", "removal"),
+    ("Scorching Dragonfire", "{1}{R}", "3 damage", "removal"),
+    ("Seized from Slumber", "{1}{W}", "destroy target tapped creature ({4}{W} otherwise)", "removal"),
+    ("Murder", "{1}{B}{B}", "destroy target creature", "removal"),
+    ("Withering Torment", "{2}{B}", "destroy target creature", "removal"),
+    ("Betrayer's Bargain", "{1}{R}", "5 damage (plus {2} or a sacrifice)", "removal"),
+    ("Floodpits Drowner", "{1}{U}", "flash creature: taps a creature and stuns it", "flash"),
+    ("Appendage Amalgam", "{2}{B}", "flash 3/2 creature (a surprise blocker)", "flash"),
+    ("Untimely Malfunction", "{1}{R}", "one or two creatures can't block", "flash"),
+    ("Drag to the Roots", "{2}{B}{G}", "destroy target nonland permanent ({B}{G} with delirium)", "removal"),
+    ("Live or Die", "{3}{B}{B}", "destroy target creature", "removal"),
+    ("Impossible Inferno", "{4}{R}", "6 damage", "removal"),
+]
+_TRICK_ORDER = {"deathtouch": 0, "pump": 1, "removal": 2, "flash": 3}
 
 
 @lru_cache(maxsize=None)
@@ -110,6 +138,47 @@ def pump_tricks(entries):
             continue
         out.append((e, int(m.group(1)) if m else 0, int(m.group(2)) if m else 0, kws, mv))
     return sorted(out, key=lambda t: t[4])  # the cheapest first: lines show at most three
+
+
+def opponent_tricks(entries, limit=6):
+    """(untapped lands, their colours, tricks) for the opponent: OPP_TRICKS they could pay for with their untapped
+    lands right now (one land per mana, each coloured pip needs a land of that colour). Public information only:
+    the set's card pool, not their hand."""
+    up = [e for e in entries[1:] if e["kind"] == "card" and e["zone"] == "BATTLEFIELD" and not e["mine"]
+          and "Land" in e.get("types", "") and not e.get("tapped")]
+    colors = [land_colors(e) for e in up]
+    have = "".join(sorted({c for x in colors for c in x}, key="WUBRGC*".index))
+
+    def payable(cost):
+        pips = re.findall(r"\{([WUBRG])\}", cost)
+        if _mana_value(cost) > len(up):
+            return False
+        free = list(colors)
+        for p in sorted(pips, key=lambda p: sum(p in x or "*" in x for x in free)):  # scarcest colour first
+            land = next((x for x in sorted(free, key=len) if p in x or "*" in x), None)
+            if land is None:
+                return False
+            free.remove(land)
+        return True
+
+    ok = [t for t in OPP_TRICKS if payable(t[1])]
+    ok.sort(key=lambda t: (_TRICK_ORDER[t[3]], _mana_value(t[1])))
+    return len(up), have, ok[:limit]
+
+
+def _opp_tricks_lines(entries, g, multi):
+    if not g.get("opp_hand"):
+        return []
+    n, have, ok = opponent_tricks(entries)
+    if not ok:
+        return []
+    out = [f"Opponent's possible tricks: {n} untapped land{'s' if n != 1 else ''}" + (f" ({have})" if have else "")
+           + f", {_n(g['opp_hand'], 'card')} in hand. DSK instant-speed cards they could cast now (the set's pool, "
+           "not their hand): " + "; ".join(f"{name} {cost} {what}" for name, cost, what, _ in ok) + "."]
+    if multi and any(t[3] == "deathtouch" for t in ok):
+        out.append("Against deathtouch/indestructible each extra blocker is an extra loss; extra blockers only help "
+                   "against pumps.")
+    return out
 
 
 def boosted(body, dp, dt, kws):
@@ -285,7 +354,9 @@ def facts(msg):
             else:
                 kills = [b for b in alone if fight(c, [b])[0]]
                 free = [b for b in kills if not fight(c, [b])[1]]
+                trades = [b for b in kills if b not in free]
                 note = ("dies to a single block by " + ", ".join(f"[{b.i}]" for b in kills) +
+                        (f" (trades with {', '.join(f'[{b.i}]' for b in trades)})" if trades else "") +
                         (f" (without killing it: {', '.join(f'[{b.i}]' for b in free)})" if free else "")
                         if kills else "no single untapped blocker kills it")
             pair = next(((x, y) for k, x in enumerate(alone) for y in alone[k + 1:] if fight(c, [x, y])[0]), None)
@@ -303,6 +374,9 @@ def facts(msg):
                 if cells:
                     out.append(f"  ...if you cast {_trick_name(t)} on it after blocks ({pumped.power}/{pumped.toughness}): "
                                + " | ".join(cells) + ".")
+
+    if kind == "ATTACK" and cand:
+        out += _opp_tricks_lines(entries, g, multi=False)
 
     if kind == "BLOCK":
         attackers = [b for b in opp_c if b.e.get("attacking")]
@@ -340,6 +414,7 @@ def facts(msg):
         unblocked = [a for a in attackers if not any(y == a.i for _, y in blocks)]
         if attackers:
             out.append(f"Unblocked so far: {sum(a.power for a in unblocked)} damage; you are at {g['my_life']}.")
+            out += _opp_tricks_lines(entries, g, multi=len(free) + len(blocks) > 1)
     elif blocks and kind == "PRIORITY":
         for a in [b for b in mine_c + opp_c if b.e.get("attacking")]:
             on = [by_i[x] for x, y in blocks if y == a.i and x in by_i]
