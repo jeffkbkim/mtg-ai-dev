@@ -3,8 +3,8 @@
   uv run --group data python seventeenlands/replay_batches.py --name dsk50k --sample 50000 --seed 5001 [--batch 500] [--workers 3]
 
 One seeded sample of --sample games is cut into batches of --batch games; batch b replays games [b*batch, (b+1)*batch)
-of the sorted sample (turn_replay.py --sample/--offset), so no game is replayed twice. Worker w runs batches
-w, w+workers, ... one after another. Each batch is its own run directory, turn_replay/<name>/b0000, so a crash costs
+of the sorted sample (turn_replay.py --sample/--offset), so no game is replayed twice. Workers take the
+unfinished batches from one queue. Each batch is its own run directory, turn_replay/<name>/b0000, so a crash costs
 one batch; a batch with a summary.json is done and is skipped when the command is run again. Progress goes to
 turn_replay/<name>/progress.log. Stop it with `kill <driver pid>`: running batches are killed and rerun next time.
 """
@@ -14,18 +14,18 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 DATA = Path.home() / "mtg-data/17lands/DSK/turn_replay"
-RUNNING, STOP = set(), threading.Event()
+RUNNING, STOP, LOCK = set(), threading.Event(), threading.Lock()
 
 
 def worker(job):
-    a, w = job
+    a, w, todo = job
     nb = -(-a.sample // a.batch)
-    for b in range(w, nb, a.workers):
-        if STOP.is_set():
-            return
+    while not STOP.is_set():
+        with LOCK:
+            if not todo:
+                return
+            b = todo.pop(0)
         run = f"{a.name}/b{b:04d}"
-        if (DATA / run / "summary.json").exists():
-            continue
         games = min(a.batch, a.sample - b * a.batch)
         cmd = [sys.executable, str(HERE / "turn_replay.py"), "--games", str(games), "--sample", str(a.sample),
                "--offset", str(b * a.batch), "--seed", str(a.seed), "--run", run, "--classes", a.classes] + a.extra
@@ -58,8 +58,10 @@ def main():
             subprocess.run(["pkill", "-TERM", "-g", str(p.pid)])
     signal.signal(signal.SIGTERM, stop)
     signal.signal(signal.SIGINT, stop)
+    nb = -(-a.sample // a.batch)
+    todo = [b for b in range(nb) if not (DATA / f"{a.name}/b{b:04d}" / "summary.json").exists()]
     with ThreadPoolExecutor(a.workers) as ex:
-        list(ex.map(worker, [(a, w) for w in range(a.workers)]))
+        list(ex.map(worker, [(a, w, todo) for w in range(a.workers)]))
 
 
 if __name__ == "__main__":
