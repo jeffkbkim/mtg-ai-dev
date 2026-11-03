@@ -52,12 +52,15 @@ tooling work under his direction. Model design and model code are Jeff's own; [A
   source, target, global and action-type slots, and a softmax runs over the legal options. Design notes are in
   [docs/decisions.md](docs/decisions.md).
 - It passes the overfit-one-batch test. The dataset builder caches replay chunks and streams them to training.
+- Imitation training of the policy on the replay rows has started (policy head only, no results yet).
+- Claude-vs-Claude games are being generated as a second data source, recorded with model, effort and prompt hash.
 
 ## Not done yet
 
-- No trained model or playing-strength results yet. Next is imitation training on the replay rows, evaluated in real
-  games against fixed opponents with seat balance and uncertainty intervals, not by move agreement.
-- Reinforcement learning with an opponent pool, decision-time search, and drafting come after that.
+- No playing-strength results yet. The policy will be evaluated in real games against fixed opponents with seat
+  balance and uncertainty intervals, not by move agreement.
+- Planned next: a value head, then MCTS, then reinforcement learning with an opponent pool. Drafting comes after
+  gameplay.
 
 ## Layout
 
