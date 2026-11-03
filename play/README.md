@@ -84,7 +84,9 @@ to filter on is decided when building a training set.
 ## Known limits
 
 - Mana is paid automatically by the seat (lands before creatures, keeping the colours the hand needs). X (the
-  largest affordable), combat damage among several blockers and "distribute" amounts (TARGET_AMOUNT, e.g. Omnivorous
-  Flytrap's counters, targets included) are XMage AI choices, not asked (counted as FALLBACK in the log).
+  largest affordable) and "distribute" amounts (TARGET_AMOUNT, e.g. Omnivorous Flytrap's counters, targets included)
+  are XMage AI choices, not asked (counted as FALLBACK in the log). Combat damage among several blockers is asked
+  (DAMAGE, one decision per blocker, since 2026-11-03); engine/encode.py does not map DAMAGE yet, so the dataset
+  skips those decisions as unmapped.
 - Costs in the summary are API list-price equivalents reported by Claude Code; on a subscription the run counts
   against plan usage instead.

@@ -42,6 +42,10 @@ How the game talks to you:
   Casting a spell and choosing its targets are separate decisions; targets come right after you pick the cast.
 - ATTACK and BLOCK are declared one creature at a time; pick DONE when finished. Decide the whole attack (or block)
   before the first declaration, give the plan in that reason, and list it all in that reply (see Batching).
+- DAMAGE: when your attacking creature is blocked by two or more creatures (or by one, if it has trample), you divide
+  its combat damage, one decision per blocker: how much that blocker gets ("(lethal)" marks enough to destroy it).
+  Without trample any split is allowed. With trample each blocker must get lethal damage first, and whatever is not
+  assigned to blockers goes to the defending player.
 - "choice" is the option number listed under "Decision:", never an [entry] number from the state.
 - You may be asked about the same window several times (e.g. after each spell you cast).
 - Each message starts with what changed since your previous decision (life, cards entering or leaving zones).

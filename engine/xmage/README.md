@@ -63,6 +63,9 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   its own cost, and the recast Room has only that door unlocked. Prints PASS or FAIL.
 - `PlaneswalkerAttackCheck.java`: regression check that an opponent's planeswalker is offered as an attack target
   (Kaito, Bane of Nightmares was never attackable): the player attacks Kaito with Bashful Beastie.
+- `DamageCheck.java`: regression check that an attacker blocked by two creatures lets its player divide the damage
+  (DAMAGE decisions, one per blocker), without trample (any split) and with trample (lethal to each blocker first,
+  the rest to the player). Prints PASS or FAIL.
 - `BlockCheck.java`: builds a combat board directly and asks XMage's AI to block (for chasing block bugs).
 - `decks/`: smoke-test decks; `dsk_ug_modal.dck` swaps in modal spells to exercise MODE prompts.
 
@@ -111,6 +114,7 @@ VocabDump keeps the `tokens` list already in the file (token names come from rec
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP RoomBounceCheck)  # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP RevealCheck)      # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP PlaneswalkerAttackCheck) # expect PASS
+(cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP DamageCheck)             # expect PASS
 ```
 
 Same seed does not reproduce the same game (XMage's own randomness), so every action is logged.

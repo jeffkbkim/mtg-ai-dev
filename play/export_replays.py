@@ -1,7 +1,7 @@
 """Export recorded games (Claude vs Claude, Playmat) for other projects, in two shapes. The decision logs stay the
 source of truth; both exports are derived from them and lose detail.
 
-  python3 play/export_replays.py --manifest <manifest.jsonl> [--manifest ...] --out <dir> [--verdict clean] [--human NAME ...]
+  [MTG_SET=FDN] python3 play/export_replays.py --manifest <manifest.jsonl> [--manifest ...] --out <dir> [--verdict clean] [--human NAME ...]
 
 Inputs are play/manifest.py manifests: one row per finished game with its file and verdict. Only rows with the given
 verdict are exported (default clean). Each game is read from its gameN.jsonl (both seats' decisions, in order),
@@ -18,14 +18,17 @@ Outputs in --out:
   columns are the state at the next decision after the turn ended. Columns we can't rebuild are left out (mana spent,
   combat damage, kills, discards, tutors, ability ids); see docs/research/draftzero-export-mapping-2026-10-27.md.
 - export-manifest.jsonl: per game, what was exported and the cards whose ids could not be found, or why it was
-  left out (a human player not passed with --human, a deck with cards outside DSK, a missing deck file).
+  left out (a human player not passed with --human, a deck with cards outside the set, a missing deck file).
+
+MTG_SET (default DSK) picks the set: its Arena ids and the set named in both exports. Games of other sets are left out.
 """
-import argparse, csv, gzip, json, re
+import argparse, csv, gzip, json, os, re
 from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CARDS_CSV = Path.home() / "mtg-data/17lands/cards.csv"
+SET = os.environ.get("MTG_SET", "DSK").upper()  # MTG_SET=FDN exports Foundations games
 THEIR_TYPE = {"PRIORITY": "PRIORITY", "USE": "CHOOSE_USE", "TARGET": "CHOOSE_TARGET", "BLOCK": "CHOOSE_TARGET"}
 STEP_ORDER = ["null", "Untap", "Upkeep", "Draw", "Precombat Main", "Begin Combat", "Declare Attackers",
               "Declare Blockers", "First Strike Damage", "Combat Damage", "End Combat", "Postcombat Main", "End Turn",
@@ -33,15 +36,15 @@ STEP_ORDER = ["null", "Untap", "Upkeep", "Draw", "Precombat Main", "Begin Combat
 
 
 def card_ids(path):
-    """Card name -> Arena id, DSK first, then its tokens (TDSK, keyed by "<name> Token" as XMage names them)."""
+    """Card name -> Arena id, the set (SET) first, then its tokens (T<SET>, keyed by "<name> Token" as XMage names them)."""
     ids = {}
     with open(path) as f:
         for row in csv.DictReader(f):
-            if row["expansion"] == "DSK":
+            if row["expansion"] == SET:
                 ids.setdefault(row["name"], int(row["id"]))
                 if " // " in row["name"]:
                     ids.setdefault(row["name"].split(" // ")[0], int(row["id"]))
-            elif row["expansion"] == "TDSK":
+            elif row["expansion"] == "T" + SET:
                 ids.setdefault(row["name"] + " Token", int(row["id"]))
                 ids.setdefault(row["name"], int(row["id"]))
     return ids
@@ -147,7 +150,7 @@ def draftzero_lines(row, d, g, cfg, end, recs):
         yield {
             "pair": cfg.get("game_id") or f"{row.get('run')}/{row.get('part')}/game{g}", "swap": None, "seat": seat,
             "bot": bot_of(cfg, row, seat), "opp_bot": bot_of(cfg, row, "B" if seat == "A" else "A"),
-            "result": result_of(end, seat), "set": "DSK", "source": cfg.get("source") or "claude-games",
+            "result": result_of(end, seat), "set": SET, "source": cfg.get("source") or "claude-games",
             "first": end.get("first"), "turns": end.get("turns"), "code_commit": row.get("code_commit"),
             "xmage": cfg.get("xmage"), "verdict": row.get("verdict"),
             "deck": dict(read_deck(deck)) if deck else None, "records": out,
@@ -244,7 +247,7 @@ def seventeenlands_rows(row, d, g, cfg, end, recs, ids, missing):
     for user in "AB":
         opp = "B" if user == "A" else "A"
         mine = [r for r in recs if r["seat"] == user]
-        out = {"expansion": "DSK", "event_type": "PlaymatHuman" if cfg.get("source") == "playmat" else "ClaudeSelfPlay",
+        out = {"expansion": SET, "event_type": "PlaymatHuman" if cfg.get("source") == "playmat" else "ClaudeSelfPlay",
                "draft_id": cfg.get("game_id") or f"{row.get('run')}/{row.get('part')}", "game_number": g,
                "on_play": first == user, "num_mulligans": mulls[user], "opp_num_mulligans": mulls[opp],
                "won": result_of(end, user) == 1 if result_of(end, user) is not None else "",
@@ -376,7 +379,7 @@ def main():
                 decks = [find_deck(d, cfg, s) for s in "AB"]
                 off_set = sorted({n for p in decks if p for n in read_deck(p) if n not in ids})
                 skip = ("human players not allowed: " + ", ".join(sorted(humans - set(a.human))) if humans - set(a.human)
-                        else "not a DSK deck: " + ", ".join(off_set) if off_set
+                        else f"not a {SET} deck: " + ", ".join(off_set) if off_set
                         else "deck file not found" if not all(decks) else None)
                 if skip:
                     em.write(json.dumps({"game": str(d / f"game{g}.jsonl"), "skipped": skip}) + "\n")
