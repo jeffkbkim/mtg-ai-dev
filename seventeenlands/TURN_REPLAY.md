@@ -222,3 +222,21 @@ Decision rows: 4,456,698 (about 89 per game, 0.75 GB gzipped, `dsk50k/b*/decisio
 (89.3%), unique 133,258 (3.0%), ambiguous 332,472 (7.5%), not recorded 11,401 (0.3%).
 
 Since then (2026-10-31) an engine that exits before connecting is started again, up to 3 tries, a few seconds apart.
+
+## Second 50k-game run, 2026-10-31 to 2026-11-03 (seed 5002, `--probe 30 --rows`, code `0de201a`+, classes from `77067d0`)
+
+`replay_batches.py --name dsk50k-2 --sample 50000 --seed 5002 ... --exclude dsk50k/rows_done.txt`: 50,000 games not in
+the first run. One game (row 499338) looped in Python on its turn 22 and held its batch for 41 hours; the `--stall`
+watchdog was added for it (that game is now given up after 10 minutes), and the run resumed with a shared queue. In
+all, 49,999 games finished (1 stall). Free memory never went below 43%.
+
+| Turns | Reproduced |
+|---|---:|
+| From an exact start, n = 786,287 | 76.2% |
+| Before a game's first miss ("clean"), n = 439,844 | 89.4% |
+| After a reset, n = 380,563 | 54.2% |
+| Final turns, n = 31,438 | 24.0% |
+
+Decision rows: 4,438,971 (0.74 GB gzipped, `dsk50k-2/b*/decisions.jsonl.gz`). Recorded 3,962,673 (89.3%), unique
+132,770 (3.0%), ambiguous 332,098 (7.5%), not recorded 11,430 (0.3%). With the first run: 99,999 games, 8.9M rows.
+Still open: why row 499338 loops.
