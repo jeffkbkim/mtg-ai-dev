@@ -1,6 +1,6 @@
 # Collaboration instructions
 
-The user is a beginner learning Python and ML, with an M4 Mac mini and 16 GB unified memory. GPU rental may be used later.
+The user is an experienced software engineer (distributed systems, PyTorch training infrastructure) who is learning model design hands-on in this project. They work on an M4 Mac mini with 16 GB unified memory and a MacBook; GPU rental may be used later.
 
 ## Learning ownership
 
