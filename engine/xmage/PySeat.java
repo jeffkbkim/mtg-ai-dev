@@ -792,6 +792,76 @@ public class PySeat extends ComputerPlayer {
         }
     }
 
+    // ---------- combat damage among blockers ----------
+
+    /**
+     * An attacker blocked by two or more creatures (or a trampler) divides its combat damage among its blockers. XMage
+     * asks through this one dialogue; ComputerPlayer answered it silently (lethal damage to each blocker in order),
+     * so our players never chose (data batches 2026-10-30/31). Sent as one DAMAGE decision per blocker: the options
+     * are the amounts that blocker can get ("damage:N"), source = the attacker, target = the blocker; a blocker whose
+     * amount is already fixed by what is left is not asked. Current rules (since Foundations): without trample any
+     * split is legal; with trample each blocker gets at least lethal damage before any goes to the player. Other uses
+     * of this dialogue (a blocker splitting damage among attackers, distributing counters) stay XMage's choice.
+     */
+    @Override
+    public List<Integer> getMultiAmountWithIndividualConstraints(Outcome outcome, List<mage.util.MultiAmountMessage> messages,
+                                                                 int totalMin, int totalMax, mage.constants.MultiAmountType type, Game game) {
+        if (simulated(game)) return super.getMultiAmountWithIndividualConstraints(outcome, messages, totalMin, totalMax, type, game);
+        Permanent attacker = null;
+        List<Permanent> blockers = null;
+        if (type.getTitle().startsWith("Assign combat damage")) {
+            for (CombatGroup g : game.getCombat().getGroups()) {
+                if (g.getAttackers().isEmpty()) continue;
+                Permanent a = game.getPermanent(g.getAttackers().get(0));
+                if (a == null || !a.isControlledBy(playerId) || !type.getHeader().contains(a.getLogName())) continue;
+                List<Permanent> bs = new ArrayList<>();
+                for (UUID b : g.getBlockers()) if (game.getPermanent(b) != null) bs.add(game.getPermanent(b));
+                if (bs.size() == messages.size()) { attacker = a; blockers = bs; break; }
+            }
+        }
+        if (attacker == null) {
+            fallback("MULTI_AMOUNT (" + type.getTitle() + ")");
+            return super.getMultiAmountWithIndividualConstraints(outcome, messages, totalMin, totalMax, type, game);
+        }
+        boolean trample = type.getTitle().contains("trample");
+        int n = blockers.size();
+        int[] lethal = new int[n], lo = new int[n], hi = new int[n];
+        int sumLethal = 0;
+        for (int i = 0; i < n; i++) {
+            lethal[i] = blockers.get(i).getLethalDamage(attacker.getId(), game);
+            sumLethal += lethal[i];
+        }
+        for (int i = 0; i < n; i++) {
+            lo[i] = Math.max(messages.get(i).min, trample && totalMax >= sumLethal ? lethal[i] : 0);
+            hi[i] = messages.get(i).max;
+        }
+        List<Integer> amounts = new ArrayList<>();
+        int assigned = 0;
+        for (int i = 0; i < n; i++) {
+            int restLo = 0, restHi = 0;
+            for (int j = i + 1; j < n; j++) { restLo += lo[j]; restHi += hi[j]; }
+            int from = Math.max(lo[i], totalMin - assigned - restHi), to = Math.min(hi[i], totalMax - assigned - restLo);
+            if (from > to) throw new IllegalStateException("no legal damage for blocker " + (i + 1) + " of " + n + ": " + messages);
+            Permanent b = blockers.get(i);
+            int[] pickedAmount = {from};
+            List<Option> opts = new ArrayList<>();
+            for (int k = from; k <= to; k++) {
+                int amount = k;
+                String note = k >= lethal[i] ? " (lethal)" : "";
+                opts.add(new Option(amount + " damage to " + label(game, b.getId()) + note, attacker.getId(), b.getId(),
+                        () -> pickedAmount[0] = amount).as("DAMAGE").choice("damage:" + amount));
+            }
+            int left = totalMax - assigned;
+            String prompt = String.format("assign %s's %d combat damage among %d blockers: blocker %d of %d, %d damage left%s",
+                    label(game, attacker.getId()), totalMax, n, i + 1, n, left,
+                    trample ? " (trample: damage not assigned to blockers goes to the defending player)" : "");
+            pick("DAMAGE", prompt, game, opts, null);
+            amounts.add(pickedAmount[0]);
+            assigned += pickedAmount[0];
+        }
+        return amounts;
+    }
+
     // ---------- defaults not sent yet: count them ----------
 
     private void fallback(String kind) {
