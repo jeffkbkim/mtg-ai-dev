@@ -1,7 +1,7 @@
 """Recorded games -> train / val / test decisions, cached once, served as padded batches.
 
     python -m engine.dataset build --manifest /mnt/project-files/claude-games/manifest.jsonl --out data/cache/claude-v1
-    python -m engine.dataset build-17lands --chunks data/17lands/dsk50k/b000*.jsonl.gz --out data/cache/17lands-10
+    python -m engine.dataset build-17lands --chunks data/17lands/dsk50k/b000?/decisions.jsonl.gz --out data/cache/17lands-10
     loaders = make_loaders("data/cache/claude-v1", batch_size=64)
     for batch in loaders["train"]:            # dict of contract tensors, the same keys as collate()
         logits = model(Batch(**batch))
@@ -18,6 +18,7 @@ import hashlib
 import json
 import random
 from collections import Counter
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 import torch
@@ -114,37 +115,53 @@ def _chunk_name(path: Path) -> str:
     return path.parent.name if path.name == "decisions.jsonl.gz" else path.name.split(".")[0]
 
 
-def build_17lands(chunks: list[Path], out: Path, labels: tuple[str, ...] = LABELS_17LANDS) -> dict:
+def _build_chunk(chunk: Path, out: Path, labels: tuple[str, ...]) -> dict:
+    """One chunk -> train-/val-/test-<chunk>.pt. Runs in its own process when building with workers.
+
+    Each row is encoded as soon as it is read and the raw row dropped: holding a chunk's raw rows took ~5 GB.
+    The rows already carry lands_played, so encoding one at a time loses nothing.
+    """
+    vocab = Vocab.load()
+    stored: dict[str, list[dict]] = {s: [] for s in SPLITS}
+    drafts: dict[str, set] = {s: set() for s in SPLITS}
+    skipped: Counter = Counter()
+    with gzip.open(chunk, "rt") as f:
+        for line in f:
+            r = json.loads(line)
+            if r.get("label") not in labels:
+                skipped[f"label {r.get('label')}"] += 1
+                continue
+            split = draft_split(r["draft_id"])
+            drafts[split].add(r["draft_id"])
+            examples, problems = encode_decisions([r], vocab, keep=("game", "draft_id", "label", "turn"))
+            skipped.update(problems)
+            stored[split] += [_stored(x) for x in examples]
+    files = {}
+    for split, rows in stored.items():
+        name = f"{split}-{_chunk_name(Path(chunk))}.pt"
+        torch.save({"layout": _layout(vocab), "examples": rows}, out / name)
+        files[name] = len(rows)
+    print(f"{_chunk_name(Path(chunk))}: {sum(files.values()):,} decisions", flush=True)
+    return {"files": files, "drafts": drafts, "skipped": skipped}
+
+
+def build_17lands(chunks: list[Path], out: Path, labels: tuple[str, ...] = LABELS_17LANDS, workers: int = 1) -> dict:
     """17lands turn-replay rows -> one cache file per chunk and split: train-b0000.pt, val-b0000.pt, ...
 
     One file per chunk because the whole train split doesn't fit in memory once there are many chunks: the train
     loader reads a few files at a time (ShardedDecisions). A game never spans two chunks and a draft's games all go to
-    one split, so no game is in two files.
+    one split, so no game is in two files. Chunks are independent, so `workers` processes build several at once.
     """
-    vocab = Vocab.load()
     out.mkdir(parents=True, exist_ok=True)
-    decisions: dict[str, int] = {s: 0 for s in SPLITS}
-    drafts: dict[str, set] = {s: set() for s in SPLITS}
-    files: dict[str, int] = {}
-    skipped: Counter = Counter()
-    for chunk in chunks:
-        rows: dict[str, list[dict]] = {s: [] for s in SPLITS}
-        with gzip.open(chunk, "rt") as f:
-            for line in f:
-                r = json.loads(line)
-                if r.get("label") not in labels:
-                    skipped[f"label {r.get('label')}"] += 1
-                    continue
-                rows[draft_split(r["draft_id"])].append(r)
-        for split, rs in rows.items():
-            examples, problems = encode_decisions(rs, vocab, keep=("game", "draft_id", "label", "turn"))
-            skipped.update(problems)
-            name = f"{split}-{_chunk_name(Path(chunk))}.pt"
-            torch.save({"layout": _layout(vocab), "examples": [_stored(x) for x in examples]}, out / name)
-            files[name] = len(examples)
-            decisions[split] += len(examples)
-            drafts[split].update(r["draft_id"] for r in rs)
-        print(f"{_chunk_name(Path(chunk))}: {sum(len(r) for r in rows.values()):,} rows kept", flush=True)
+    if workers > 1:
+        with ProcessPoolExecutor(workers) as pool:
+            results = list(pool.map(_build_chunk, chunks, [out] * len(chunks), [labels] * len(chunks)))
+    else:
+        results = [_build_chunk(c, out, labels) for c in chunks]
+    files = {k: v for r in results for k, v in r["files"].items()}
+    drafts = {s: set().union(*(r["drafts"][s] for r in results)) for s in SPLITS}
+    skipped = sum((r["skipped"] for r in results), Counter())
+    decisions = {s: sum(n for k, n in files.items() if k.startswith(f"{s}-")) for s in SPLITS}
     summary = {"source": "17lands turn replay", "labels": list(labels), "chunks": [str(c) for c in chunks],
                "drafts": {s: len(d) for s, d in drafts.items()}, "decisions": decisions,
                "skipped": sum(skipped.values()), "skipped_by_reason": dict(skipped.most_common()), "files": files}
@@ -241,9 +258,10 @@ def main() -> None:
     c.add_argument("--out", type=Path, required=True)
     c.add_argument("--labels", nargs="+", default=list(LABELS_17LANDS),
                    help="row labels to keep (recorded, unique, ambiguous, not_recorded)")
+    c.add_argument("--workers", type=int, default=4, help="chunks built at once, one process each")
     args = ap.parse_args()
     if args.cmd == "build-17lands":
-        s = build_17lands(args.chunks, args.out, tuple(args.labels))
+        s = build_17lands(args.chunks, args.out, tuple(args.labels), args.workers)
         print(json.dumps({k: v for k, v in s.items() if k not in ("files", "chunks")}, indent=1))
         return
     s = build(args.manifest, args.out, args.verdict, args.games_root, tuple(args.train_also))

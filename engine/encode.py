@@ -210,6 +210,8 @@ def _keyword(rule: str) -> str | None:
     first = re.split(r" |&mdash;|—", s)[0]
     if first in IGNORED_KEYWORDS or first.endswith("cycling"):
         return None
+    if s.startswith("if this card is in your opening hand"):  # Leyline of Resonance: only matters before turn 1
+        return None
     for k in KEYWORDS:
         if s == k or s.startswith(k + " ") or s.startswith(k + "&mdash;") or s.startswith(k + "—"):
             return k

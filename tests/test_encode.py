@@ -279,3 +279,11 @@ def test_chosen_modes_on_the_stack(vocab, decisions):
     stack["modes"] = ["?"]
     with pytest.raises(Unmapped):
         encode_decision(d, vocab)
+
+
+def test_keyword_rules_that_are_not_board_keywords_are_ignored():
+    from engine.encode import _keyword
+    assert _keyword("{this} can't be blocked.") == "can't be blocked"
+    assert _keyword("Ward {2}") == "ward"
+    assert _keyword("Swampcycling {2}") is None
+    assert _keyword("If this card is in your opening hand, you may begin the game with it on the battlefield.") is None

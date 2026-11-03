@@ -120,7 +120,7 @@ def chunks(tmp_path_factory):
             f.writelines(json.dumps(r) + "\n" for r in rows)
         paths.append(p)
     out = tmp / "cache"
-    return out, build_17lands(paths, out), n
+    return out, build_17lands(paths, out, workers=2), n
 
 
 def test_17lands_build_keeps_labels_and_splits_by_draft(chunks):
