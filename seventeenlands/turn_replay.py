@@ -29,7 +29,7 @@ manifested off the top of the library are not scripted yet; turns that need them
 """
 from __future__ import annotations
 
-import argparse, collections, glob, gzip, heapq, itertools, json, os, random, socket, subprocess, sys, time
+import argparse, collections, glob, gzip, heapq, itertools, json, os, random, signal, socket, subprocess, sys, time
 from pathlib import Path
 
 import polars as pl
@@ -744,7 +744,7 @@ def run(args):
     def lines():
         for k in range(0, len(specs), args.chunk):
             jvm, f = open_jvm(k // args.chunk, specs[k:k + args.chunk])
-            CHAN["f"] = f
+            CHAN["f"], CHAN["jvm"] = f, jvm
             for line in f:
                 yield line
                 if json.loads(line)["type"] == "end":
@@ -836,8 +836,13 @@ def run(args):
         if args.verbose:
             print(f"{cur['gid']} t{cur['t']} {cur['sc'].active} {'OK' if ok else 'FAIL'} after {cur['attempts']} {'' if ok else json.dumps(d)[:300]}", flush=True)
 
-    t0 = time.time()
-    for line in lines():
+    class Stalled(Exception):
+        pass
+
+    def on_alarm(*_):
+        raise Stalled()
+
+    def handle(line):
         f = CHAN["f"]
         msg = json.loads(line)
         if msg.get("game") and msg["game"] != cur["gid"]:
@@ -992,21 +997,39 @@ def run(args):
             f.write("{}\n"); f.flush()
             if gi < len(specs):
                 new_game()
-            continue
+            return
         elif typ == "end":
-            continue
+            return
         f.write(json.dumps(reply) + "\n"); f.flush()
-    if rows_out:
-        rows_out.close()
-    summary = {"games": len(specs), "skipped": skipped, "budget": args.budget, "seconds": round(time.time() - t0, 1), **stats}
-    if stats["exact_start_turns"]:
-        summary["exact_start_rate"] = round(stats["exact_start_ok"] / stats["exact_start_turns"], 3)
-    for k in ("clean", "after_resync"):
-        if stats[f"{k}_turns"]:
-            summary[f"{k}_rate"] = round(stats[f"{k}_ok"] / stats[f"{k}_turns"], 3)
-    summary["resync_residual_top"] = RESIDUAL.most_common(25)
-    (out / "summary.json").write_text(json.dumps(summary, indent=1))
-    print(json.dumps(summary, indent=1))
+
+    def finish():
+        if rows_out:
+            rows_out.close()
+        summary = {"games": len(specs), "skipped": skipped, "budget": args.budget, "seconds": round(time.time() - t0, 1), **stats}
+        if stats["exact_start_turns"]:
+            summary["exact_start_rate"] = round(stats["exact_start_ok"] / stats["exact_start_turns"], 3)
+        for k in ("clean", "after_resync"):
+            if stats[f"{k}_turns"]:
+                summary[f"{k}_rate"] = round(stats[f"{k}_ok"] / stats[f"{k}_turns"], 3)
+        summary["resync_residual_top"] = RESIDUAL.most_common(25)
+        (out / "summary.json").write_text(json.dumps(summary, indent=1))
+        print(json.dumps(summary, indent=1))
+
+    # A reply that takes longer than --stall seconds is a stall: in the second 50k run one batch spun in Python for
+    # 41 hours on one game. The rest of that JVM's chunk is given up (its games count as lost) and the run goes on.
+    signal.signal(signal.SIGALRM, on_alarm)
+    t0 = time.time()
+    for line in lines():
+        signal.alarm(args.stall)
+        try:
+            handle(line)
+        except Stalled:
+            stats["stalls"] += 1
+            print(f"stalled on {cur['gid']} turn {cur['t']}: giving up the rest of this chunk", flush=True)
+            CHAN["jvm"].kill()
+        finally:
+            signal.alarm(0)
+    finish()
 
 
 if __name__ == "__main__":
@@ -1017,6 +1040,7 @@ if __name__ == "__main__":
                     help="draw this many games with --seed (default --games) and replay --games of them from --offset, "
                          "so batches of one sample never overlap (see replay_batches.py)")
     ap.add_argument("--offset", type=int, default=0)
+    ap.add_argument("--stall", type=int, default=600, help="seconds one reply may take before the chunk is given up")
     ap.add_argument("--exclude", default="", help="a file of replay_data row numbers never to pick (games already replayed)")
     ap.add_argument("--budget", type=int, default=40, help="attempts per turn")
     ap.add_argument("--chunk", type=int, default=10, help="games per JVM")
