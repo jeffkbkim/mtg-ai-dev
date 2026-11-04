@@ -110,3 +110,23 @@ Primer v2 (no win rates; archetype plans, cards to respect, mandatory checks, pr
 v1 for Playmat's Claude seat after a puzzle test on 19 frozen decisions (notes/puzzles-v1-vs-v2-2026-10-24.md): it fixed
 3 of 9 known mistakes and broke none of 10 controls, Opus high, 3 samples each. Small sample; batch match.py runs stay
 on v1 unless --primer v2. The prompt hash on every decision keeps the two apart.
+
+## 17lands turn-replay rows: turn-0 filler dropped at cache build (2026-11-03)
+
+Found by Jeff while debugging CHOOSE (val loss 2.06, a uniform guess over 8 options is 2.08). `turn_replay.py` answers
+every decision it has no turn script for with option 0, and writes it as `label: "recorded"`, `turn: 0`, on the
+assumption that only mulligans and bottoms happen without a script. But `Record.slot()` also has no script past the
+recorded turns (or turn 30), and XMage plays on until someone decks: the seat passes, never attacks, and discards its
+first card at every cleanup. No 17lands field covers those turns, so they can't be relabelled.
+
+- dsk50k chunks b0000-b0009: 349,466 of 420,610 recorded/unique rows (83%) were this filler; 71,144 remain
+  (train 56,956 / val 7,209 / test 6,979, `data/cache/17lands-10-clean`). Every result on `data/cache/17lands-10` is
+  void: most of its 84% PRIORITY passes, 2,348 of b0000's 3,376 ATTACK rows and 1,985 of its ~2,040 CHOOSE rows were
+  filler.
+- Fix for now: `engine/dataset.py` `_is_pregame` keeps a turn-0 row only if its prompt is a mulligan or a London bottom
+  (skipped as "turn 0 past the record (replay filler)"). One pre-game Leyline "put onto the battlefield?" row is also
+  dropped: its YES is the replay's default, not the record.
+- `turn_replay.py` itself no longer writes these rows (15c5f42), so new replay runs are clean at the source; the
+  existing 200 dsk50k chunks still need this filter. Unchecked: whether games longer than 30 turns lose real labels to
+  the cap, and whether a cleanup discard inside a reproduced turn picks the recorded `cards_discarded` card.
+- Clean val mix: PRIORITY 67% (87% of those PASS), ATTACK 14%, USE 8%, BLOCK 4%, TARGET 3%, CHOOSE 1%.

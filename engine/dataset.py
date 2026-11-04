@@ -115,6 +115,17 @@ def _chunk_name(path: Path) -> str:
     return path.parent.name if path.name == "decisions.jsonl.gz" else path.name.split(".")[0]
 
 
+def _is_pregame(row: dict) -> bool:
+    """A mulligan or London-mulligan bottom: the only turn-0 rows the replay actually decides from the record.
+
+    turn_replay.py writes every decision it has no turn script for as label "recorded", turn 0. Besides the
+    pre-game ones, that includes every decision after the recorded turns run out (the game keeps going in XMage
+    until someone decks): option 0 each time, i.e. pass, no attack, discard the first card. Those are filler.
+    """
+    prompt = row.get("prompt", "")
+    return prompt.startswith("Mulligan") or "bottom of your library" in prompt
+
+
 def _build_chunk(chunk: Path, out: Path, labels: tuple[str, ...]) -> dict:
     """One chunk -> train-/val-/test-<chunk>.pt. Runs in its own process when building with workers.
 
@@ -130,6 +141,9 @@ def _build_chunk(chunk: Path, out: Path, labels: tuple[str, ...]) -> dict:
             r = json.loads(line)
             if r.get("label") not in labels:
                 skipped[f"label {r.get('label')}"] += 1
+                continue
+            if r.get("turn") == 0 and not _is_pregame(r):
+                skipped["turn 0 past the record (replay filler)"] += 1
                 continue
             split = draft_split(r["draft_id"])
             drafts[split].add(r["draft_id"])

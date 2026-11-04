@@ -153,3 +153,21 @@ def test_draft_split_matches_the_frozen_17lands_split():
     from seventeenlands.prepare import split_of as frozen
     for i in range(200):
         assert draft_split(f"d{i}") == {"validation": "val"}.get(frozen(f"d{i}"), frozen(f"d{i}"))
+
+
+def test_17lands_build_drops_turn_0_rows_past_the_record(tmp_path):
+    """turn_replay writes unscripted decisions as turn 0: only mulligans and bottoms among them are real."""
+    lines = [json.loads(line) for line in FIXTURE.read_text().splitlines()]
+    base = {"draft_id": "draft0", "game": "draft0/1", "seat": "A", "label": "recorded"}
+    rows = ([{**d, **base, "turn": 0, "prompt": "Mulligan? Your hand has 7 cards"} for d in lines[:3]]
+            + [{**d, **base, "turn": 0, "prompt": "Put Fear of Immobility on the bottom of your library"}
+               for d in lines[3:5]]
+            + [{**d, **base, "turn": 0} for d in lines[5:12]]  # filler: the game went on past the record
+            + [{**d, **base, "turn": 4} for d in lines[12:]])
+    p = tmp_path / "b0000" / "decisions.jsonl.gz"
+    p.parent.mkdir()
+    with gzip.open(p, "wt") as f:
+        f.writelines(json.dumps(r) + "\n" for r in rows)
+    summary = build_17lands([p], tmp_path / "cache")
+    assert summary["skipped_by_reason"]["turn 0 past the record (replay filler)"] == 7
+    assert sum(summary["decisions"].values()) == 3 + 2 + len(lines[12:])
