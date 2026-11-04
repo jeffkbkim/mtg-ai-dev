@@ -972,9 +972,14 @@ def run(args):
                     point = before if sc_ is not None and len(sc_.taken) > before else None
                     row = {"kind": msg["kind"], "prompt": msg["prompt"], "step": msg.get("step"), "obs": msg["obs"],
                            "options": msg["options"], "choice": reply["choice"], "point": point, "fixed_label": fixed_label}
-                    if sc_ is None:   # mulligans and bottoms, before turn 1: recorded exactly
+                    if sc_ is None and cur["t"] is None:   # mulligans and bottoms, before turn 1: recorded exactly
                         row.pop("fixed_label", None)
                         write_row(row, label="recorded", turn=0)
+                    elif sc_ is None:
+                        # Past the record (its last turn, or the 30-turn cap): XMage plays on, often to a deck-out,
+                        # since the real ending (usually a concession) isn't reproduced, and every answer is a default.
+                        # These used to be written as "recorded" turn-0 rows: ~84% of the recorded rows in dsk50k.
+                        stats["decisions_past_record"] += 1
                     else:
                         cur.setdefault("buf", []).append(row)
             except Exception as e:  # a bug in the script must not hang the JVM

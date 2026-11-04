@@ -240,3 +240,25 @@ all, 49,999 games finished (1 stall). Free memory never went below 43%.
 Decision rows: 4,438,971 (0.74 GB gzipped, `dsk50k-2/b*/decisions.jsonl.gz`). Recorded 3,962,673 (89.3%), unique
 132,770 (3.0%), ambiguous 332,098 (7.5%), not recorded 11,430 (0.3%). With the first run: 99,999 games, 8.9M rows.
 Still open: why row 499338 loops.
+
+## Correction, 2026-11-03: filler rows (both 50k runs and the 1,500-game batch)
+
+Found by the Model Arch thread. Once a game passed its last recorded turn, XMage kept playing (the real ending,
+usually a concession, isn't reproduced), every answer was a default (pass, no attack, option 0), and each of those
+decisions was written as a `recorded` row with turn 0. The code assumed rows without a turn script only happen before
+turn 1. So the row counts and label shares above are inflated. In `b0000` of each run:
+
+| | dsk50k b0000 | dsk50k-2 b0000 |
+|---|---:|---:|
+| All rows | 46,569 | 46,892 |
+| Filler (turn 0, not a mulligan or bottom) | 36,230 (78%) | 36,368 (78%) |
+| Real rows | 10,339 | 10,524 |
+| of which recorded / unique / ambiguous / not recorded | 55% / 12% / 32% / 1% | 54% / 12% / 33% / 1% |
+
+So about 21 real rows per game, roughly 2.1M across the 100k games (estimated from these two chunks), and about two
+thirds of them are recorded or unique. Drop filler with: turn 0 and the prompt is not a mulligan or a bottom. The turn
+reproduction rates are unaffected. The 30-turn cap drops nothing: `num_turns` is at most 30 in the DSK file.
+
+Fixed in `turn_replay.py`: rows past the record are no longer written; they are counted as `decisions_past_record`.
+Still open: end the game once the record runs out, which would also save engine time (needs a way to stop a game in
+`ReplayMatch`).
