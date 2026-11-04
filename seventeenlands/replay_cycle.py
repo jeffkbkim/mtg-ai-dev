@@ -8,6 +8,7 @@
 
 `auto` is what keeps runs going back to back with no one watching: it resumes a run whose driver stopped, and when a
 run finishes it appends the report to seventeenlands/TURN_REPLAY.md, commits and pushes it, and starts the next run.
+A file turn_replay/NO_NEXT_RUN pauses it after the current run (the run is still finished and reported).
 Anything worth knowing goes to ~/mtg-data/17lands/DSK/turn_replay/NOTES.md (newest last), once per message.
 
 Runs live in ~/mtg-data/17lands/DSK/turn_replay/dsk50k, dsk50k-2, dsk50k-3, ... Run n uses seed 5000+n and excludes
@@ -175,6 +176,8 @@ def auto():
             launch(d.name, 5000 + n, None if "--exclude" not in (d / "README.txt").read_text()
                    else Path(re.search(r"--exclude (\S+)", (d / "README.txt").read_text()).group(1).rstrip(";")))
             note(f"{first}. Batches {s['failed_batches']} failed, so it was resumed to redo them. Report {pushed}.")
+        elif (TR / "NO_NEXT_RUN").exists():
+            note(f"{first}. Report {pushed}. No next run: replay is paused (turn_replay/NO_NEXT_RUN).")
         else:
             subprocess.run([sys.executable, __file__, "next"], cwd=REPO)
             note(f"{first}. Report {pushed}. Started dsk50k-{n + 1}.")
@@ -203,6 +206,8 @@ def main():
     elif what == "auto":
         auto()
     elif what == "next":
+        if (TR / "NO_NEXT_RUN").exists():
+            sys.exit("paused: turn_replay/NO_NEXT_RUN exists (" + (TR / "NO_NEXT_RUN").read_text().strip() + ")")
         n, d = runs()[-1]
         if driver_running(d.name) or done(d) < BATCHES:
             sys.exit(f"{d.name} isn't finished")
