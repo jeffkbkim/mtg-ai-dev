@@ -273,3 +273,7 @@ Row 499338 records 14 blockers on 14 blocked attackers in one turn. `block_pairi
 blockers to attackers in order (14**14) looking for ones that cover every attacker, and the first such assignment is
 about 10**13 steps in. The walk now stops after 20,000 assignments and, if it found none, builds one covering pairing
 directly; small cases are unchanged. The game now replays in 28 seconds. The `--stall` watchdog stays as a backstop.
+Big combats (2026-11-04): when there are too many assignments to search (0.14% of 17lands turns with blocks, measured
+on 100k games), the first block decision now ranks pairings with `combat_pairing`: using the creatures' power and
+toughness at the block, it picks the pairing (moving or swapping one blocker at a time) whose predicted combat deaths
+best match the recorded ones, and tries that first.

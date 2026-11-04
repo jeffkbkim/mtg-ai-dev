@@ -198,6 +198,7 @@ class Record:
                     "abilities": self.n.ids(self.r.get(prefix + ab_theirs))},
             "blocked": self.L(prefix, "creatures_blocked"),
             "noncreature_cast": self.L(prefix, "non_creatures_cast"),
+            "killed_combat": self.L(prefix, "user_creatures_killed_combat") + self.L(prefix, "oppo_creatures_killed_combat"),
             "killed": self.L(prefix, "user_creatures_killed_combat") + self.L(prefix, "user_creatures_killed_non_combat")
                       + self.L(prefix, "oppo_creatures_killed_combat") + self.L(prefix, "oppo_creatures_killed_non_combat"),
         }
@@ -376,6 +377,9 @@ class TurnScript:
         # what each seat ends the turn with: a choice that brings one of these in (a search, a manifest) is likelier
         self.gain = {"A": collections.Counter(self.expected["bf_A"] + self.expected["hand_A"]), "B": collections.Counter(self.expected["bf_B"])}
         self.pairings = block_pairings(p[self.other]["block"], p["blocked"])
+        # too many assignments to walk: at the first block, rank them by the recorded combat deaths (combat_pairing)
+        self.pairings_big = bool(p["blocked"]) and len(set(p["blocked"])) ** len(p[self.other]["block"]) > BLOCK_BUDGET
+        self.killed_combat = collections.Counter(p["killed_combat"])
         self.pairing = None
         self.flash_blockers = set(p[self.other].get("flash", [])) & {names.norm(x) for x in p[self.other]["block"]}
         # which door of a Room each seat cast: 17lands records the door, so cast that one, not the other
@@ -420,7 +424,10 @@ class TurnScript:
         return out
 
 
-def block_pairings(blockers: list[str], blocked: list[str], cap: int = 8, budget: int = 20_000) -> list[list[tuple[str, str]]]:
+BLOCK_BUDGET = 20_000
+
+
+def block_pairings(blockers: list[str], blocked: list[str], cap: int = 8, budget: int = BLOCK_BUDGET) -> list[list[tuple[str, str]]]:
     """Ways to give each recorded blocker one of the blocked attackers, every blocked attacker getting at least one.
 
     The search walks every assignment in order, which is attackers ** blockers of them: with many blocks the first one
@@ -444,6 +451,53 @@ def block_pairings(blockers: list[str], blocked: list[str], cap: int = 8, budget
 
 
 # ---------------------------------------------------------------- answering decisions
+
+def combat_pairing(blockers: list[str], blocked: list[str], stats: dict, killed: collections.Counter,
+                   steps: int = 2_000) -> list[tuple[str, str]] | None:
+    """For a combat too big to search: the pairing of blockers to attackers that best explains the recorded combat
+    deaths, from the creatures' power and toughness at the block (stats: name -> (power, toughness)).
+
+    An attacker is predicted to die when its blockers' total power reaches its toughness, a blocker when its attacker's
+    power reaches its toughness (damage splits and abilities ignored). Starts from a pairing that blocks every attacker
+    and moves or swaps blockers one step at a time while that explains more deaths. None if a creature's stats are unknown."""
+    att, bl = sorted(set(blocked)), sorted(blockers)
+    if len(bl) < len(att) or any(n not in stats for n in att + bl):
+        return None
+    pt = lambda n: stats[n]
+
+    def score(assign):
+        died = collections.Counter()
+        for a in att:
+            if sum(pt(b)[0] for b, x in zip(bl, assign) if x == a) >= pt(a)[1]:
+                died[a] += 1
+        for b, a in zip(bl, assign):
+            if pt(a)[0] >= pt(b)[1]:
+                died[b] += 1
+        return sum(min(c, killed[n]) for n, c in died.items()) - sum(max(0, c - killed[n]) for n, c in died.items())
+
+    assign = att + [att[i % len(att)] for i in range(len(bl) - len(att))]
+    best = score(assign)
+    for _ in range(steps):
+        better = None
+        trials = []
+        for i in range(len(bl)):
+            for a in att:   # move one blocker, as long as every attacker keeps at least one
+                if a != assign[i] and assign.count(assign[i]) >= 2:
+                    trials.append(assign[:i] + [a] + assign[i + 1:])
+            for j in range(i + 1, len(bl)):   # or swap the attackers of two blockers
+                if assign[i] != assign[j]:
+                    t = assign[:]
+                    t[i], t[j] = t[j], t[i]
+                    trials.append(t)
+        for trial in trials:
+            sc_ = score(trial)
+            if sc_ > best:
+                best, better = sc_, trial
+        if better is None:
+            break
+        assign = better
+    return sorted(zip(bl, assign))
+
 
 def entry_name(msg: dict, ref: dict, hidden_as_face_down: bool = False) -> str | None:
     """Card name of an option's source or target. With hidden_as_face_down, a face-down permanent is
@@ -578,6 +632,21 @@ def answer(msg: dict, sc: TurnScript | None, rec: Record, names: Names) -> int:
                 return i
         return pick(labels, "DONE")
     if kind == "BLOCK":
+        if sc.pairing is None and sc.pairings_big:
+            stats = {}
+            for o in opts:
+                for ref, hide in ((o.get("source"), seat == "B"), (o.get("target"), seat == "A")):
+                    i = (ref or {}).get("entry")
+                    if i is not None:
+                        e = msg["obs"]["entries"][i]
+                        try:
+                            stats[names.norm(entry_name(msg, ref, hidden_as_face_down=hide) or "")] = (int(e["power"]), int(e["toughness"]))
+                        except (KeyError, TypeError, ValueError):
+                            pass
+            smart = combat_pairing(sc.p[sc.other]["block"], sc.p["blocked"], stats, sc.killed_combat)
+            if smart:
+                sc.pairings = [smart] + [x for x in sc.pairings if x != smart]
+            sc.pairings_big = False
         if sc.pairing is None:
             sc.pairing = sc.pairings[sc.choose(len(sc.pairings), "block pairing")] if sc.pairings else []
             sc.block_todo = collections.Counter(sc.pairing)
