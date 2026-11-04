@@ -105,7 +105,15 @@ def main():
                            cwd=args.runtime, stdout=open(out / "jvm.log", "w"), stderr=subprocess.STDOUT)
     conns = []
     for s in servers:
-        c, _ = s.accept()
+        s.settimeout(5)
+        while True:  # a JVM that dies before connecting (e.g. card database startup) must not leave this waiting forever
+            try:
+                c, _ = s.accept()
+                break
+            except socket.timeout:
+                if jvm.poll() is not None:
+                    sys.exit(f"engine exited with code {jvm.returncode} before both seats connected; see {out / 'jvm.log'}")
+        c.settimeout(None)
         c.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         conns.append(c)
     players = [make_player(args.a, args.seed, args, args.lessons_a, args.plan_a, args.facts_a, args.check_a, args.effort_a),
