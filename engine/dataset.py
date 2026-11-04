@@ -111,8 +111,14 @@ def _stored(x: Example) -> dict:
 
 
 def _chunk_name(path: Path) -> str:
-    """b0000 for both .../b0000/decisions.jsonl.gz (on the mini) and .../b0000.jsonl.gz (a copy)."""
-    return path.parent.name if path.name == "decisions.jsonl.gz" else path.name.split(".")[0]
+    """dsk50k-b0000 for .../dsk50k/b0000/decisions.jsonl.gz, b0000 for a copy at .../b0000.jsonl.gz.
+
+    The run's folder is part of the name because every replay run numbers its chunks from b0000: the two dsk50k
+    runs would otherwise write the same cache files.
+    """
+    if path.name == "decisions.jsonl.gz":
+        return f"{path.parent.parent.name}-{path.parent.name}"
+    return path.name.split(".")[0]
 
 
 def _is_pregame(row: dict) -> bool:
@@ -160,12 +166,15 @@ def _build_chunk(chunk: Path, out: Path, labels: tuple[str, ...]) -> dict:
 
 
 def build_17lands(chunks: list[Path], out: Path, labels: tuple[str, ...] = LABELS_17LANDS, workers: int = 1) -> dict:
-    """17lands turn-replay rows -> one cache file per chunk and split: train-b0000.pt, val-b0000.pt, ...
+    """17lands turn-replay rows -> one cache file per chunk and split: train-dsk50k-b0000.pt, val-dsk50k-b0000.pt, ...
 
     One file per chunk because the whole train split doesn't fit in memory once there are many chunks: the train
     loader reads a few files at a time (ShardedDecisions). A game never spans two chunks and a draft's games all go to
     one split, so no game is in two files. Chunks are independent, so `workers` processes build several at once.
     """
+    names = Counter(_chunk_name(Path(c)) for c in chunks)
+    if clash := [n for n, k in names.items() if k > 1]:
+        raise ValueError(f"chunks with the same cache name would overwrite each other: {clash}")
     out.mkdir(parents=True, exist_ok=True)
     if workers > 1:
         with ProcessPoolExecutor(workers) as pool:
