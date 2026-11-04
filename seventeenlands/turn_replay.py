@@ -420,19 +420,27 @@ class TurnScript:
         return out
 
 
-def block_pairings(blockers: list[str], blocked: list[str], cap: int = 8) -> list[list[tuple[str, str]]]:
-    """Ways to give each recorded blocker one of the blocked attackers, every blocked attacker getting at least one."""
+def block_pairings(blockers: list[str], blocked: list[str], cap: int = 8, budget: int = 20_000) -> list[list[tuple[str, str]]]:
+    """Ways to give each recorded blocker one of the blocked attackers, every blocked attacker getting at least one.
+
+    The search walks every assignment in order, which is attackers ** blockers of them: with many blocks the first one
+    that covers every attacker can be astronomically far in. Row 499338 recorded 14 blockers on 14 attackers (14**14)
+    and spun for 41 hours. So the walk stops after `budget` assignments, and if it found nothing, one pairing that
+    covers every attacker is built directly."""
     if not blockers or not blocked:
         return []
+    att, bl = sorted(set(blocked)), sorted(blockers)
     out = []
-    for combo in itertools.product(sorted(set(blocked)), repeat=len(blockers)):
+    for i, combo in enumerate(itertools.product(att, repeat=len(bl))):
+        if len(out) >= cap or i >= budget:
+            break
         if set(combo) >= set(blocked):
-            pairs = sorted(zip(sorted(blockers), combo))
+            pairs = sorted(zip(bl, combo))
             if pairs not in out:
                 out.append(pairs)
-        if len(out) >= cap:
-            break
-    return out or [sorted(zip(sorted(blockers), sorted(blocked)))]
+    if not out and len(bl) >= len(att):
+        out.append(sorted(zip(bl, att + [att[i % len(att)] for i in range(len(bl) - len(att))])))
+    return out or [sorted(zip(bl, sorted(blocked)))]
 
 
 # ---------------------------------------------------------------- answering decisions

@@ -266,3 +266,10 @@ Also fixed (2026-11-04): once the record runs out after turn 1, Python replies `
 `ReplaySeat` concedes that seat at its next priority, so the game ends the way the record did instead of being played
 out. Needs the engine classes rebuilt from this commit (`~/mtg-data/xmage-cls-replay`, the `replay_batches.py`
 default, is rebuilt). On 6 games: the same 160 real rows, 0 decisions past the record (was 29).
+
+## The 41-hour loop, found 2026-11-04
+
+Row 499338 records 14 blockers on 14 blocked attackers in one turn. `block_pairings` walked every assignment of
+blockers to attackers in order (14**14) looking for ones that cover every attacker, and the first such assignment is
+about 10**13 steps in. The walk now stops after 20,000 assignments and, if it found none, builds one covering pairing
+directly; small cases are unchanged. The game now replays in 28 seconds. The `--stall` watchdog stays as a backstop.
