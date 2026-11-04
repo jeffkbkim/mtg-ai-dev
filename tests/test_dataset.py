@@ -133,19 +133,29 @@ def test_17lands_build_keeps_labels_and_splits_by_draft(chunks):
             assert draft_split(x.meta["draft_id"]) == split and x.meta["label"] == "recorded"
 
 
-def test_17lands_train_streams_every_decision_once_per_epoch(chunks):
+@pytest.mark.parametrize("workers", [0, 2])
+def test_17lands_train_streams_every_decision_once_per_epoch(chunks, workers):
     out, summary, _ = chunks
-    loader = make_loaders(out, batch_size=8)["train"]
+    loader = make_loaders(out, batch_size=8, workers=workers)["train"]
     assert len(loader.dataset) == summary["decisions"]["train"]
     orders = []
     for _ in range(2):
         seen = []
         for batch in loader:
             validate_batch(batch, BatchConfig.from_vocab())
-            seen += batch["label"].tolist()
+            seen += [(n, a, y) for n, a, y in zip(batch["card_mask"].sum(1).tolist(),
+                                                   batch["action_mask"].sum(1).tolist(), batch["label"].tolist())]
         assert len(seen) == summary["decisions"]["train"]
         orders.append(seen)
     assert sorted(orders[0]) == sorted(orders[1])
+    assert orders[0] != orders[1]  # a new order each epoch, also when workers hold copies of the dataset
+
+
+def test_loader_workers_give_the_same_val_batches(chunks):
+    out, _, _ = chunks
+    plain, background = make_loaders(out, batch_size=8)["val"], make_loaders(out, batch_size=8, workers=2)["val"]
+    for a, b in zip(plain, background, strict=True):
+        assert all(torch.equal(a[k], b[k]) for k in a if torch.is_tensor(a[k]))
 
 
 def test_draft_split_matches_the_frozen_17lands_split():

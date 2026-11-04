@@ -22,7 +22,7 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 import torch
-from torch.utils.data import DataLoader, Dataset, IterableDataset
+from torch.utils.data import DataLoader, Dataset, IterableDataset, get_worker_info
 
 from engine.encode import (ABILITY_FEATURES, ACTION_TYPES, CARD_FEATURES, EDGE_TYPES, GLOBAL_FEATURES, Example,
                            Vocab, collate, encode_decisions, encode_file)
@@ -221,6 +221,10 @@ class ShardedDecisions(IterableDataset):
     files together before handing them out. Memory holds only per_pool files, and a batch mixes the games of
     several chunks. The shuffle is a little weaker than a full one: two decisions in files of different pools
     never share a batch in that epoch.
+
+    With loader workers, each worker streams its own share of the files (every num_workers-th file of the epoch's
+    order), so every decision still comes exactly once per epoch. `epoch` is set by EpochLoader in the main
+    process: each worker gets a fresh copy of this dataset every epoch, so a counter kept in here would never move.
     """
 
     def __init__(self, paths: list[Path], sizes: dict[str, int], vocab: Vocab, seed: int = 0, per_pool: int = 2):
@@ -233,36 +237,51 @@ class ShardedDecisions(IterableDataset):
 
     def __iter__(self):
         rng = random.Random(self.seed * 1_000_003 + self.epoch)  # a different order every epoch, same per seed
-        self.epoch += 1
         order = rng.sample(self.paths, len(self.paths))
+        worker = get_worker_info()
+        if worker is not None:
+            order = order[worker.id::worker.num_workers]
         for i in range(0, len(order), self.per_pool):
             pool = [x for p in order[i:i + self.per_pool] for x in _load(p, self.vocab)]
             rng.shuffle(pool)
             yield from pool
 
 
-def make_loaders(cache: str | Path, batch_size: int = 64, seed: int = 0) -> dict[str, DataLoader]:
+class EpochLoader(DataLoader):
+    """A DataLoader that tells its ShardedDecisions which epoch is starting, before any worker copies it."""
+
+    def __iter__(self):
+        self.dataset.epoch = self.epochs_started
+        self.epochs_started += 1
+        return super().__iter__()
+
+
+def make_loaders(cache: str | Path, batch_size: int = 64, seed: int = 0, workers: int = 0) -> dict[str, DataLoader]:
     """train is reshuffled every epoch (seeded); val and test keep a fixed order.
 
     A cache made of per-chunk files (build-17lands) streams train a few files at a time and loads val and test whole.
+    `workers` processes build batches in the background while the model trains (0: the training loop builds each
+    batch itself). Val and test keep their workers between epochs; train starts new ones each epoch, which is cheap
+    because its dataset is just a list of file names.
     """
     vocab = Vocab.load()
     cache = Path(cache)
+    common = {"batch_size": batch_size, "collate_fn": collate, "num_workers": workers}
+    fixed = {**common, "persistent_workers": workers > 0}
     if not (cache / "train.pt").exists():
         files = json.loads((cache / "summary.json").read_text())["files"]
         paths = {s: sorted(cache.glob(f"{s}-*.pt")) for s in SPLITS}
-        train = ShardedDecisions(paths["train"], files, vocab, seed)
-        loaders = {"train": DataLoader(train, batch_size=batch_size, collate_fn=collate)}
+        train = EpochLoader(ShardedDecisions(paths["train"], files, vocab, seed), **common)
+        train.epochs_started = 0
+        loaders = {"train": train}
         for split in ("val", "test"):
-            loaders[split] = DataLoader(DecisionDataset(paths[split], vocab), batch_size=batch_size,
-                                        collate_fn=collate)
+            loaders[split] = DataLoader(DecisionDataset(paths[split], vocab), **fixed)
         return loaders
     loaders = {}
     for split in SPLITS:
         data = DecisionDataset(cache / f"{split}.pt", vocab)
         g = torch.Generator().manual_seed(seed)
-        loaders[split] = DataLoader(data, batch_size=batch_size, shuffle=split == "train", generator=g,
-                                    collate_fn=collate)
+        loaders[split] = DataLoader(data, shuffle=split == "train", generator=g, **fixed)
     return loaders
 
 
