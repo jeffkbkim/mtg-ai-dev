@@ -223,8 +223,10 @@ class ShardedDecisions(IterableDataset):
     never share a batch in that epoch.
 
     With loader workers, each worker streams its own share of the files (every num_workers-th file of the epoch's
-    order), so every decision still comes exactly once per epoch. `epoch` is set by EpochLoader in the main
-    process: each worker gets a fresh copy of this dataset every epoch, so a counter kept in here would never move.
+    order), so every decision still comes exactly once per epoch. The loader keeps its workers alive between epochs
+    (persistent_workers): starting a worker on macOS re-imports torch and costs seconds, every epoch. So each worker
+    keeps its own copy of `epoch`, and all copies advance in step, one per pass, like the main one does without
+    workers.
     """
 
     def __init__(self, paths: list[Path], sizes: dict[str, int], vocab: Vocab, seed: int = 0, per_pool: int = 2):
@@ -237,6 +239,7 @@ class ShardedDecisions(IterableDataset):
 
     def __iter__(self):
         rng = random.Random(self.seed * 1_000_003 + self.epoch)  # a different order every epoch, same per seed
+        self.epoch += 1
         order = rng.sample(self.paths, len(self.paths))
         worker = get_worker_info()
         if worker is not None:
@@ -247,22 +250,13 @@ class ShardedDecisions(IterableDataset):
             yield from pool
 
 
-class EpochLoader(DataLoader):
-    """A DataLoader that tells its ShardedDecisions which epoch is starting, before any worker copies it."""
-
-    def __iter__(self):
-        self.dataset.epoch = self.epochs_started
-        self.epochs_started += 1
-        return super().__iter__()
-
-
 def make_loaders(cache: str | Path, batch_size: int = 64, seed: int = 0, workers: int = 0) -> dict[str, DataLoader]:
     """train is reshuffled every epoch (seeded); val and test keep a fixed order.
 
     A cache made of per-chunk files (build-17lands) streams train a few files at a time and loads val and test whole.
     `workers` processes build batches in the background while the model trains (0: the training loop builds each
-    batch itself). Val and test keep their workers between epochs; train starts new ones each epoch, which is cheap
-    because its dataset is just a list of file names.
+    batch itself). Every loader keeps its workers between epochs: starting them again each epoch cost more than the
+    workers saved (2 workers: 20 s an epoch against 13 s with none, on 17lands-10-clean).
     """
     vocab = Vocab.load()
     cache = Path(cache)
@@ -271,9 +265,7 @@ def make_loaders(cache: str | Path, batch_size: int = 64, seed: int = 0, workers
     if not (cache / "train.pt").exists():
         files = json.loads((cache / "summary.json").read_text())["files"]
         paths = {s: sorted(cache.glob(f"{s}-*.pt")) for s in SPLITS}
-        train = EpochLoader(ShardedDecisions(paths["train"], files, vocab, seed), **common)
-        train.epochs_started = 0
-        loaders = {"train": train}
+        loaders = {"train": DataLoader(ShardedDecisions(paths["train"], files, vocab, seed), **fixed)}
         for split in ("val", "test"):
             loaders[split] = DataLoader(DecisionDataset(paths[split], vocab), **fixed)
         return loaders
