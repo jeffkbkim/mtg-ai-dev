@@ -876,6 +876,11 @@ def run(args):
                 cur["fixed_to"] = None
             if rec.slot(t) is None:
                 cur["sc"] = None
+                if t > 1:
+                    # the record has run out (most games end in a concession, which no play reproduces): end the game
+                    # the way it ended, with the 17lands loser conceding, instead of playing on to a deck-out
+                    reply["concede"] = "B" if rec.r.get("won") else "A"
+                    stats["games_conceded"] += 1
             else:
                 if cur["t"] != t:
                     cur.update(t=t, path=(), frontier=[], seen={()}, attempts=0, best=None, probe=None)

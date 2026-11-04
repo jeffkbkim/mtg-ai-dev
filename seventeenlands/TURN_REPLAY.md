@@ -262,3 +262,8 @@ reproduction rates are unaffected. The 30-turn cap drops nothing: `num_turns` is
 Fixed in `turn_replay.py`: rows past the record are no longer written; they are counted as `decisions_past_record`.
 Still open: end the game once the record runs out, which would also save engine time (needs a way to stop a game in
 `ReplayMatch`).
+
+Also fixed (2026-11-04): once the record runs out after turn 1, Python replies `{"concede": <the 17lands loser>}` and
+`ReplaySeat` concedes that seat at its next priority, so the game ends the way the record did instead of being played
+out. Needs the engine classes rebuilt from this commit (`~/mtg-data/xmage-cls-replay`, the `replay_batches.py`
+default, is rebuilt). On 6 games: the same 160 real rows, 0 decisions past the record (was 29).

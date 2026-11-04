@@ -21,6 +21,7 @@ import java.util.*;
  *  - sync points: at the active player's first priority in upkeep a {"type":"turn_start"} message, and in the end
  *    step a {"type":"eot"} message carrying the true state of both players (hands, battlefields, life ...) for
  *    Python to compare with the recorded end of turn. These go out even when the seat has nothing to decide;
+ *  - end: a reply with {"concede": "A"} makes that seat concede at the next priority, once the record has run out.
  *  - rewind: a reply with {"rollback": true} sends the game back to the start of the current turn (XMage's own
  *    turn rollback), so Python can try another reading of the record.
  * Messages carry "seat", "turn" and "step". The true-state dump is for the replay harness only: a policy must
@@ -39,6 +40,7 @@ public class ReplaySeat extends PySeat {
         boolean started;                                   // first priority reached: mulligans are over
         long seed;                                         // XMage's random generator is reseeded from this each turn
         String gameId = "";                                // the record's id, sent with every message
+        String concede;                                    // seat name to concede at its next priority: the record ran out
     }
 
     final transient Shared shared;
@@ -88,6 +90,7 @@ public class ReplaySeat extends PySeat {
         }
         if (reply.has("rollback") && reply.get("rollback").getAsBoolean()) shared.rollback = true;
         if (reply.has("fix")) fix(reply.getAsJsonObject("fix"), game);
+        if (reply.has("concede")) shared.concede = reply.get("concede").getAsString();
     }
 
     /**
@@ -360,6 +363,13 @@ public class ReplaySeat extends PySeat {
             shared.sentKey = "";
             game.rollbackTurns(0);
             return true;
+        }
+        if (shared.concede != null) {  // past the record: end the game the way the record did, instead of playing it out
+            for (Player p : game.getPlayers().values()) {
+                if (p.getName().equals(shared.concede)) game.concede(p.getId());
+            }
+            shared.concede = null;
+            return false;
         }
         PhaseStep step = game.getTurnStepType();
         if (game.isActivePlayer(playerId) && (step == PhaseStep.UPKEEP || step == PhaseStep.END_TURN)) {
