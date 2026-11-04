@@ -171,3 +171,21 @@ def test_17lands_build_drops_turn_0_rows_past_the_record(tmp_path):
     summary = build_17lands([p], tmp_path / "cache")
     assert summary["skipped_by_reason"]["turn 0 past the record (replay filler)"] == 7
     assert sum(summary["decisions"].values()) == 3 + 2 + len(lines[12:])
+
+
+def test_17lands_chunks_of_two_runs_get_their_own_cache_files(tmp_path):
+    """Every replay run numbers its chunks from b0000: the run's folder keeps their cache files apart."""
+    lines = [json.loads(line) for line in FIXTURE.read_text().splitlines()]
+    paths = []
+    for run in ("dsk50k", "dsk50k-2"):
+        p = tmp_path / run / "b0000" / "decisions.jsonl.gz"
+        p.parent.mkdir(parents=True)
+        with gzip.open(p, "wt") as f:
+            f.writelines(json.dumps({**d, "draft_id": f"{run}-d{i}", "game": f"{run}-d{i}/1", "seat": "A",
+                                     "label": "recorded", "turn": 3}) + "\n" for i, d in enumerate(lines))
+        paths.append(p)
+    summary = build_17lands(paths, tmp_path / "cache")
+    assert sum(summary["files"].values()) == 2 * len(lines)
+    assert {n.split("-", 1)[1].rsplit(".", 1)[0] for n in summary["files"]} == {"dsk50k-b0000", "dsk50k-2-b0000"}
+    with pytest.raises(ValueError, match="same cache name"):
+        build_17lands([paths[0], paths[0]], tmp_path / "cache2")
