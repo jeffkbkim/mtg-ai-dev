@@ -4,6 +4,11 @@
   uv run --group data python seventeenlands/replay_cycle.py report    # summary of the newest finished run, as markdown
   uv run --group data python seventeenlands/replay_cycle.py resume    # restart the current run's driver (skips done batches)
   uv run --group data python seventeenlands/replay_cycle.py next      # start the next run: new seed, skips every game done
+  uv run --group data python seventeenlands/replay_cycle.py auto      # all of the above as needed (launchd, every 30 min)
+
+`auto` is what keeps runs going back to back with no one watching: it resumes a run whose driver stopped, and when a
+run finishes it appends the report to seventeenlands/TURN_REPLAY.md, commits and pushes it, and starts the next run.
+Anything worth knowing goes to ~/mtg-data/17lands/DSK/turn_replay/NOTES.md (newest last), once per message.
 
 Runs live in ~/mtg-data/17lands/DSK/turn_replay/dsk50k, dsk50k-2, dsk50k-3, ... Run n uses seed 5000+n and excludes
 every game of the runs before it, so no game is replayed twice. Each run dir has README.txt (command, code, how to
@@ -133,6 +138,55 @@ def launch(name: str, seed: int, exclude: Path | None):
     return cmd
 
 
+def note(text: str):
+    f = TR / "NOTES.md"
+    old = f.read_text() if f.exists() else ""
+    if text in old:
+        return
+    with open(f, "a") as out:
+        out.write(f"- {time.strftime('%Y-%m-%d %H:%M')} {text}\n")
+
+
+def git(*args) -> subprocess.CompletedProcess:
+    return subprocess.run(["git", "-C", str(REPO), *args], capture_output=True, text=True)
+
+
+def auto():
+    s = status()
+    n, d = runs()[-1]
+    if s["finished"] and not s["reported"]:
+        rep = report()
+        md = REPO / "seventeenlands/TURN_REPLAY.md"
+        md.write_text(md.read_text().rstrip("\n") + "\n\n" + rep.replace("## ", "## Run ", 1) + "\n")
+        git("add", "seventeenlands/TURN_REPLAY.md")
+        c = git("commit", "-m", f"Turn replay: {d.name} results\n\nCo-Authored-By: Claude <noreply@anthropic.com>")
+        pushed = "not committed: " + c.stderr.strip()[:200] if c.returncode else ""
+        if not c.returncode:
+            pl = git("pull", "--no-rebase", "origin", "main")
+            if pl.returncode:
+                git("merge", "--abort")
+                pushed = "committed locally, pull failed: " + (pl.stderr or pl.stdout).strip()[:200]
+            else:
+                ps = git("push", "origin", "main")
+                pushed = "pushed" if not ps.returncode else "committed locally, push failed: " + ps.stderr.strip()[:200]
+        (d / "REPORTED").touch()
+        first = rep.splitlines()[0].lstrip("# ")
+        if s["failed_batches"]:
+            launch(d.name, 5000 + n, None if "--exclude" not in (d / "README.txt").read_text()
+                   else Path(re.search(r"--exclude (\S+)", (d / "README.txt").read_text()).group(1).rstrip(";")))
+            note(f"{first}. Batches {s['failed_batches']} failed, so it was resumed to redo them. Report {pushed}.")
+        else:
+            subprocess.run([sys.executable, __file__, "next"], cwd=REPO)
+            note(f"{first}. Report {pushed}. Started dsk50k-{n + 1}.")
+        return
+    if not s["driver_running"] and s["batches_done"] < BATCHES:
+        subprocess.run([sys.executable, __file__, "resume"], cwd=REPO)
+        note(f"{d.name}: the driver had stopped with {BATCHES - s['batches_done']} batches left; resumed.")
+    for p in s["problems"]:
+        if "driver not running" not in p:
+            note(f"{d.name}: {p}")
+
+
 def main():
     what = sys.argv[1] if len(sys.argv) > 1 else "status"
     if what == "status":
@@ -146,6 +200,8 @@ def main():
         cmd = (d / "README.txt").read_text()
         ex = re.search(r"--exclude (\S+)", cmd)
         print(launch(d.name, 5000 + n, Path(ex.group(1).rstrip(";")) if ex else None))
+    elif what == "auto":
+        auto()
     elif what == "next":
         n, d = runs()[-1]
         if driver_running(d.name) or done(d) < BATCHES:
