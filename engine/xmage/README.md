@@ -29,6 +29,8 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   set from `-Dmtg.set=FDN` or `$MTG_SET`, DSK when neither is given. The leak checker knows every supported set's names.
 - `SeatSpike.java`: runs N games, our seat vs XMage's AI.
 - `TwoSeatMatch.java`: runs N games with both seats driven from Python (used by `play/match.py`).
+- `EvalMatch.java`: plays a schedule of games (deck A, deck B, who starts) with seat A driven from Python and seat B
+  either Python or XMage's AI (used by `play/eval_games.py`, see `experiments/policy_v1/README.md`).
 - `CardTextDump.java`: writes `engine/vocab/dsk_card_text.json` (rules text of every DSK card as XMage implements it).
 - `run_games.py`: Python side, a random-move bot that records every decision to JSON lines.
 - `SeatChoiceCheck.java`: regression check that a cost an opponent's ability makes this seat pay (Osseous Sticktwister's

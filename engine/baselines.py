@@ -50,6 +50,31 @@ class ActionTypePrior:
                       key=lambda r: -r[1])
 
 
+class KindTypePrior:
+    """ActionTypePrior learned separately for each decision kind: the most-frequent pick of that kind wins.
+
+    An ATTACK option and a PRIORITY option of the same type can have very different pick rates; this baseline
+    knows the decision kind as well as the action types, and still nothing about cards or the board.
+    """
+
+    def __init__(self, train_loader):
+        K, T = len(DECISION_KINDS), len(ACTION_TYPES)
+        picked, offered = torch.ones(K, T), 2 * torch.ones(K, T)
+        for batch in train_loader:
+            types, mask = batch["action_types"], batch["action_mask"]
+            kinds = batch["global_state"][:, KIND_COLUMNS].argmax(dim=1)  # (B,)
+            kind_of = kinds[:, None].expand_as(types)  # (B, A)
+            offered.view(-1).index_add_(0, (kind_of * T + types)[mask], torch.ones(int(mask.sum())))
+            chosen = types.gather(1, batch["label"][:, None]).squeeze(1)
+            picked.view(-1).index_add_(0, kinds * T + chosen, torch.ones(len(chosen)))
+        self.rate = picked / offered  # (K, T)
+
+    def __call__(self, batch: dict) -> Tensor:
+        kinds = batch["global_state"][:, KIND_COLUMNS].argmax(dim=1)
+        logits = self.rate.log()[kinds[:, None], batch["action_types"]]  # (B, A)
+        return logits.masked_fill(~batch["action_mask"], float("-inf"))
+
+
 @torch.no_grad()
 def evaluate(logits_fn, loader) -> dict[str, dict[str, float]]:
     """Loss and accuracy overall and per decision kind (ATTACK, BLOCK, TARGET...).
