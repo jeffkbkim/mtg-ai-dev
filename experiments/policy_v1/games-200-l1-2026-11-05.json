@@ -1,0 +1,134 @@
+[
+ {
+  "run": "/root/evals/2026-11-05/200-l1-vs-random",
+  "policy": "200-l1",
+  "opponent": "random",
+  "scheduled": 400,
+  "games": 400,
+  "wins": 145,
+  "losses": 255,
+  "no_winner": 0,
+  "win_rate": 0.3625,
+  "wilson95": [
+   0.31690358933984025,
+   0.4107123868250719
+  ],
+  "pair_bootstrap95": [
+   0.31,
+   0.415
+  ],
+  "decisions": 35234,
+  "fallbacks": 81,
+  "mean_turns": 18.6325,
+  "code_commit": "2b5697f69feed01846147126e19ec0e7b5fe54a7",
+  "checkpoint_sha256": "ca31f054b258ab4f4529c47d34a1d49c513d5fb50bdf6ef8ff2de575c36f1497",
+  "seed": 1,
+  "on_the_play": {
+   "games": 200,
+   "wins": 66,
+   "wilson95": [
+    0.26857320614303315,
+    0.3978344358691961
+   ]
+  },
+  "on_the_draw": {
+   "games": 200,
+   "wins": 79,
+   "wilson95": [
+    0.3298398699878317,
+    0.4641177912550158
+   ]
+  },
+  "land_windows": 2967,
+  "land_windows_passed": 515,
+  "no_winner_games": []
+ },
+ {
+  "run": "/root/evals/2026-11-05/200-l1-vs-xmage",
+  "policy": "200-l1",
+  "opponent": "xmage",
+  "scheduled": 400,
+  "games": 400,
+  "wins": 33,
+  "losses": 367,
+  "no_winner": 0,
+  "win_rate": 0.0825,
+  "wilson95": [
+   0.059345516507342,
+   0.11359753839339136
+  ],
+  "pair_bootstrap95": [
+   0.055,
+   0.11
+  ],
+  "decisions": 25192,
+  "fallbacks": 18,
+  "mean_turns": 15.535,
+  "code_commit": "2b5697f69feed01846147126e19ec0e7b5fe54a7",
+  "checkpoint_sha256": "ca31f054b258ab4f4529c47d34a1d49c513d5fb50bdf6ef8ff2de575c36f1497",
+  "seed": 2,
+  "on_the_play": {
+   "games": 200,
+   "wins": 21,
+   "wilson95": [
+    0.0697069624619373,
+    0.15518138221353622
+   ]
+  },
+  "on_the_draw": {
+   "games": 200,
+   "wins": 12,
+   "wilson95": [
+    0.0346518499012715,
+    0.10193263530685089
+   ]
+  },
+  "land_windows": 2531,
+  "land_windows_passed": 523,
+  "no_winner_games": []
+ },
+ {
+  "run": "/root/evals/2026-11-05/random-vs-xmage",
+  "policy": "random",
+  "opponent": "xmage",
+  "scheduled": 400,
+  "games": 400,
+  "wins": 58,
+  "losses": 342,
+  "no_winner": 0,
+  "win_rate": 0.145,
+  "wilson95": [
+   0.1138699785258184,
+   0.18288399629995486
+  ],
+  "pair_bootstrap95": [
+   0.11,
+   0.18
+  ],
+  "decisions": 13816,
+  "fallbacks": 0,
+  "mean_turns": 16.9775,
+  "code_commit": "2b5697f69feed01846147126e19ec0e7b5fe54a7",
+  "checkpoint_sha256": null,
+  "seed": 2,
+  "on_the_play": {
+   "games": 200,
+   "wins": 34,
+   "wilson95": [
+    0.12427835351105657,
+    0.22816001039503528
+   ]
+  },
+  "on_the_draw": {
+   "games": 200,
+   "wins": 24,
+   "wilson95": [
+    0.08197935023887545,
+    0.17234361425904846
+   ]
+  },
+  "land_windows": 2455,
+  "land_windows_passed": 142,
+  "no_winner_games": []
+ }
+]
