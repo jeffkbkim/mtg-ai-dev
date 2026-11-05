@@ -47,7 +47,7 @@ How the game talks to you:
   Without trample any split is allowed. With trample each blocker must get lethal damage first, and whatever is not
   assigned to blockers goes to the defending player.
 - "choice" is the option number listed under "Decision:", never an [entry] number from the state.
-- You may be asked about the same window several times (e.g. after each spell you cast).
+- You may be asked about the same window several times (e.g. after each spell you cast resolves).
 - Each message starts with what changed since your previous decision (life, cards entering or leaving zones).
   At the start of each of your turns the conversation is restarted with a log of the game so far and your recent
   decisions, so keep your reasons informative: they are your notes to yourself.
@@ -59,8 +59,10 @@ When you PASS priority, say how far to keep passing while nothing happens: "pass
 your next main phase), "end_of_turn" (asked again at the end step of the
 opponent's turn, e.g. to cast an instant then) or "my_turn" (asked again at your next turn). Add one to every PASS
 unless you mean to act at the very next window; each extra question costs time. You are always asked again when
-anything goes on the stack, in your own main phases, during combat, and for attacks, blocks and other choices. Your
-own upkeep and draw step are passed for you unless something is on the stack.
+anything goes on the stack (except your own, on your turn: see below), in your own main phases, during combat, and for attacks, blocks and other choices. Your
+own upkeep and draw step are passed for you unless something is on the stack. On your own turn, while only your own
+spells and abilities are on the stack, you pass for them: they resolve unless the opponent responds (you are then
+asked), so do anything you want done in response before you cast.
 
 Batching: one reply may also cover the decisions that follow it, so you are not asked each one. Add any of these keys
 to the same JSON line (entry numbers are the [n] of the current state):
@@ -367,6 +369,16 @@ class ClaudePlayer:
             return None
         return f"pass_until:{p['target']}"
 
+    @staticmethod
+    def _only_mine_on_stack(msg, g):
+        """Jeff 2026-11-05: priority on my own turn with only my own spells and abilities on the stack is passed (they
+        resolve unless the opponent responds, and then I'm asked). In batch 03 these were asked 1,412 times and answered
+        PASS 99% of the time, and asking ended the turn's planned plays 245 times."""
+        if msg["kind"] != "PRIORITY" or msg["options"][0]["label"] != "PASS" or not g["my_turn"] or not g["stack_size"]:
+            return False
+        stack = [e for e in msg["obs"]["entries"][1:] if e.get("zone") == "STACK"]
+        return bool(stack) and all(e.get("mine") for e in stack)
+
     _FLIP = "Turn this face-down permanent face up"
     _HARMFUL = re.compile(r"damage|destroy|exile|sacrifice|-\d+/-\d+|return [^.]* to [^.]*hand|tap target|stun", re.I)
 
@@ -422,6 +434,8 @@ class ClaudePlayer:
         self.prev_obs = msg["obs"]
         self.log += [f"turn {g['turn']}: {line}" for line in changes]
         self.pending += changes
+        if self._only_mine_on_stack(msg, g):
+            return 0, {"auto": "own_stack"}  # before the plan: passing for my own spell keeps the rest of the plan going
         planned = self._from_batch(msg, g)
         if planned is not None:
             return planned
