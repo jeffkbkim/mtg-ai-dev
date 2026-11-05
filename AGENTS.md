@@ -32,3 +32,8 @@ The mini has 16 GB. On 2026-10-28 four 17lands turn-replay processes reached ~13
 - Never run heavy jobs alongside each other: the nightly soak, builds, test servers, the decisions export, replay search.
 - The user is fine with heavy jobs while they play Playmat games (2026-10-29).
 - Guard long data jobs on the process's own memory (RSS/footprint) as well as on swap and free memory, and stop them before the box swaps hard.
+
+## Corrections (mistakes not to repeat)
+
+- Check where an observation field is actually filled before relying on it. Card `keywords` are listed only for
+  battlefield permanents, not for cards in hand, so flash must come from the card's rules text (2026-11-05).
