@@ -284,6 +284,9 @@ class Example:
     card_modes: list[list[int]] = field(default_factory=list)  # per card: chosen modes (ability ids), mostly []
     ability_modes: list[list[int]] = field(default_factory=list)  # per stack ability: chosen modes
     meta: dict = field(default_factory=dict)
+    # every option that fits the record (17lands "ambiguous_set" rows); empty means just `label`
+    label_set: list[int] = field(default_factory=list)
+    weight: float = 1.0  # the decision's share of its turn's readings (turn_replay's world_share)
 
 
 def encode_decision(d: dict, vocab: Vocab) -> Example:
@@ -380,7 +383,7 @@ def _chosen_modes(e: dict, vocab: Vocab) -> list[int]:
     return found
 
 
-def collate(examples: list[Example]) -> dict[str, Tensor]:
+def collate(examples: list[Example], label_sets: bool = False) -> dict[str, Tensor]:
     """Pad a list of examples into contract tensors. Card j -> entry 1 + j, ability k -> entry 1 + N + k."""
     B = len(examples)
     N = max(len(x.card_ids) for x in examples)
@@ -442,6 +445,13 @@ def collate(examples: list[Example]) -> dict[str, Tensor]:
             out["ability_modes"][b, k, :len(modes)] = torch.tensor(modes, dtype=torch.long)
         out["action_mask"][b, :a] = True
         out["label"][b] = x.label
+    if label_sets:
+        # opt-in (make_loaders turns it on for caches built with set labels): which options fit the record, and how
+        # much each decision weighs. A plain one-hot `label` row has label_set = {label} and weight 1.
+        out["label_set"] = torch.zeros(B, A, dtype=torch.bool)
+        out["weight"] = torch.tensor([x.weight for x in examples])
+        for b, x in enumerate(examples):
+            out["label_set"][b, x.label_set or [x.label]] = True
     return out
 
 

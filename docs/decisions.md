@@ -130,3 +130,23 @@ first card at every cleanup. No 17lands field covers those turns, so they can't 
   existing 200 dsk50k chunks still need this filter. Unchecked: whether games longer than 30 turns lose real labels to
   the cap, and whether a cleanup discard inside a reproduced turn picks the recorded `cards_discarded` card.
 - Clean val mix: PRIORITY 67% (87% of those PASS), ATTACK 14%, USE 8%, BLOCK 4%, TARGET 3%, CHOOSE 1%.
+
+## Ambiguous timing: keep every reading of the record, not one (2026-11-05)
+
+The 200-l1 policy lost to the random bot (36% [32, 41] over 400 games; 8% against XMage, random 14.5%). It skipped
+its first land drop in 64% of games and its second in 40% (random: ~1%). Cause: 17lands records what each turn did,
+not in which window, so "play the land in main 1" and "pass, play it in main 2" both reproduce the turn and the
+main-1 decision was labelled `ambiguous` and dropped: ~97% of first-turn land-drop decisions, 84% of creature casts
+in a main phase. The kept passes (certain: nothing recorded left to play) made "pass" the model's habit.
+
+- Chosen (Jeff): no timing heuristic (such as "lands go in main 1"). turn_replay.py now writes, for an ambiguous
+  choice point whose every alternative was tried, `ambiguous_set` with the full set of options that fit
+  (`consistent`), and the later decisions of each other reproducing reading as `alternative` rows, with
+  `world_share` = 1/n per split so a turn's readings weigh as one. Without the alternative rows a policy that passes
+  in main 1 meets "main 2, land still in hand" almost never seen in training.
+- build-17lands keeps them only when asked (`--labels recorded unique ambiguous_set alternative`); batches of such a
+  cache carry `label_set` (B, A) and `weight` (B,). The loss for a set target is Jeff's (e.g. -log of the probability
+  on the set); the plain cross-entropy on `label` would train the replay's default pick, i.e. the heuristic.
+- Old runs (dsk50k, -2, -3) have no sets; they stay usable with recorded + unique as the baseline. New runs need the
+  new code. Success: early land-drop misses near 1%, fewer "sorcery-speed spell castable, nothing cast" turns, and
+  win rates above random with intervals.

@@ -766,6 +766,69 @@ def sampled_rows(seed: int, games: int, path: Path, sample: int = 0, offset: int
     return pl.read_parquet(path)
 
 
+def consistent_sets(points: list[dict], worlds: dict) -> dict[int, set[int]]:
+    """Choice point -> the option indices (besides the reproducing path's own) that also reproduce the turn.
+
+    Only for points whose every alternative was tried (fully_probed): there the set is complete, so a row can say
+    "any of these fits the record" instead of being dropped as ambiguous. worlds maps (point, alternative) of each
+    reproducing departure to its decisions; the departing decision is the one row with that point.
+    """
+    out = {}
+    for j, p in enumerate(points):
+        if not (p["ambiguous"] and p["fully_probed"]):
+            continue
+        out[j] = {r["choice"] for (pj, _), rows in worlds.items() if pj == j for r in rows if r["point"] == j}
+    return out
+
+
+def alternative_rows(points: list[dict], worlds: dict) -> list[dict]:
+    """The decisions after the departure in each reproducing alternative world, e.g. "main 2, land still in hand".
+
+    The reproducing path never reaches those states (the land went down in main 1), so without them a model that
+    passes in main 1 meets main 2 with almost no training data. Each row says which departure it came from and how
+    many worlds share that choice point (n_worlds, the reproducing path included), so training can weight them.
+    Decisions before the departure are the reproducing path's own and are not repeated.
+    """
+    rows = []
+    for (j, a), world in sorted(worlds.items()):
+        if not (points[j]["ambiguous"] and points[j]["fully_probed"]):
+            continue
+        n = world_counts(points, worlds).get(j, 1)
+        at = next((k for k, r in enumerate(world) if r["point"] == j), None)
+        if at is None:
+            continue
+        for r in world[at + 1:]:
+            if r.get("fixed_label"):
+                continue   # an answer the replay fixes itself (scry, surveil): not a reading of the record
+            r = dict(r)
+            r.pop("fixed_label", None)
+            r["world"] = {"departs_at": j, "alternative": a, "n_worlds": n}
+            r["world_share"] = world_share(j, world_counts(points, worlds)) / n
+            rows.append(r)
+    return rows
+
+
+def world_counts(points: list[dict], worlds: dict) -> dict[int, int]:
+    """Choice point -> how many readings of the turn it splits into (the reproducing path plus each departure).
+
+    Only the user's own choice points count: a departure at the opponent's choice (when it cast a trick) writes no
+    rows of its own, so it must not shrink the share of the user's rows after it.
+    """
+    n = collections.Counter(j for (j, _), rows in worlds.items() if points[j]["ambiguous"] and points[j]["fully_probed"]
+                            and any(r["point"] == j for r in rows))
+    return {j: 1 + k for j, k in n.items()}
+
+
+def world_share(at: int, n_worlds: dict[int, int]) -> float:
+    """A decision's share of its turn: 1/n for every split point before it (at = choice points taken so far), so a
+    turn's readings together weigh as much as one turn with a single reading."""
+    share = 1.0
+    for j, n in n_worlds.items():
+        if j < at:
+            share /= n
+    return share
+
+
 def run(args):
     names = Names()
     out = DATA / "turn_replay" / args.run
@@ -841,7 +904,7 @@ def run(args):
         spec = by_id[gid] if gid else specs[gi]; gi += 1
         MULLIGANS["A"] = MULLIGANS["B"] = 0
         cur.update(gid=spec["id"], rec=recs[spec["id"]], sc=None, t=None, path=(), frontier=[], seen=set(), best=None,
-                   failed=False, attempts=0, fixed_to=None, fix_sent=None, game_attempts=0)
+                   failed=False, attempts=0, fixed_to=None, fix_sent=None, game_attempts=0, worlds={})
 
     new_game()
 
@@ -889,17 +952,27 @@ def run(args):
             stats["last_ok"] += ok
             return
         if ok and args.rows and not cur["failed"]:
-            amb = {i: x["ambiguous"] for i, x in enumerate(extra.get("ambiguity") or [])}
+            points = extra.get("ambiguity") or []
+            amb = {i: x["ambiguous"] for i, x in enumerate(points)}
+            worlds = cur.get("worlds") or {}
+            sets, n_worlds = consistent_sets(points, worlds), world_counts(points, worlds)
             for row in cur.get("buf", []):
+                row["world_share"] = world_share(row["at"], n_worlds)
                 if row.pop("fixed_label", None):
                     label = "not_recorded"        # an answer the replay fixes itself (surveil, scry)
                 elif row["point"] is None:
                     label = "recorded"            # the record decides it (attacks, blocks, the only legal reading)
+                elif row["point"] in sets:
+                    label = "ambiguous_set"       # every option that reproduces the turn is known: row["consistent"]
+                    row["consistent"] = sorted(sets[row["point"]] | {row["choice"]})
                 elif row["point"] in amb:
                     label = "ambiguous" if amb[row["point"]] else "unique"
                 else:
                     label = "unprobed"            # searched, and no ambiguity check ran
                 write_row(row, label=label, turn=cur["t"])
+            for row in alternative_rows(points, worlds):
+                write_row(row, label="alternative" if row["point"] is None else "alternative_unprobed", turn=cur["t"])
+        cur["worlds"] = {}
         key = "after_resync" if cur["failed"] else "clean"
         cur["last_ok"] = ok
         if not ok:
@@ -960,7 +1033,7 @@ def run(args):
                     stats["games_conceded"] += 1
             else:
                 if cur["t"] != t:
-                    cur.update(t=t, path=(), frontier=[], seen={()}, attempts=0, best=None, probe=None)
+                    cur.update(t=t, path=(), frontier=[], seen={()}, attempts=0, best=None, probe=None, worlds={})
                 if cur.get("fixed_to") is None and cur["failed"] and cur.get("last_ok"):
                     cur["start_exact"] = True   # the previous turn reproduced, so this one starts from the record too
                 cur["attempts"] += 1
@@ -988,6 +1061,10 @@ def run(args):
                     # ambiguity check: did this departure from the reproducing choices also reproduce the turn?
                     if probe["at"] is not None:
                         probe["results"].append((probe["at"][0], probe["at"][1], not d))
+                        if not d and args.rows:
+                            # a departure that also reproduces the turn: keep its decisions, they are another
+                            # reading of the same record (see consistent_sets and alternative_rows)
+                            cur.setdefault("worlds", {})[probe["at"]] = [dict(r) for r in cur.get("buf", [])]
                     if probe["queue"]:
                         j, a = probe["queue"].pop(0)
                         probe["at"] = (j, a)
@@ -1053,7 +1130,8 @@ def run(args):
                 if args.rows and msg["seat"] == "A":
                     point = before if sc_ is not None and len(sc_.taken) > before else None
                     row = {"kind": msg["kind"], "prompt": msg["prompt"], "step": msg.get("step"), "obs": msg["obs"],
-                           "options": msg["options"], "choice": reply["choice"], "point": point, "fixed_label": fixed_label}
+                           "options": msg["options"], "choice": reply["choice"], "point": point, "at": before,
+                           "fixed_label": fixed_label}
                     if sc_ is None and cur["t"] is None:   # mulligans and bottoms, before turn 1: recorded exactly
                         row.pop("fixed_label", None)
                         write_row(row, label="recorded", turn=0)

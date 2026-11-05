@@ -199,3 +199,27 @@ def test_17lands_chunks_of_two_runs_get_their_own_cache_files(tmp_path):
     assert {n.split("-", 1)[1].rsplit(".", 1)[0] for n in summary["files"]} == {"dsk50k-b0000", "dsk50k-2-b0000"}
     with pytest.raises(ValueError, match="same cache name"):
         build_17lands([paths[0], paths[0]], tmp_path / "cache2")
+
+
+def test_17lands_set_labels_reach_the_batch_only_when_built_in(tmp_path):
+    """ambiguous_set rows keep every option that fits the record; their batches say so, plain caches' batches don't."""
+    lines = [json.loads(line) for line in FIXTURE.read_text().splitlines()]
+    d = next(x for x in lines if len(x["options"]) >= 2)
+    base = {"draft_id": "draft0", "game": "draft0/1", "seat": "A", "turn": 3}
+    rows = [{**d, **base, "label": "ambiguous_set", "choice": 0, "consistent": [0, 1], "world_share": 1.0},
+            {**d, **base, "label": "alternative", "choice": 1, "world_share": 0.5},
+            {**d, **base, "label": "recorded", "choice": 0}]
+    p = tmp_path / "run" / "b0000" / "decisions.jsonl.gz"
+    p.parent.mkdir(parents=True)
+    with gzip.open(p, "wt") as f:
+        f.writelines(json.dumps(r) + "\n" for r in rows)
+    split = draft_split("draft0")
+
+    build_17lands([p], tmp_path / "plain")
+    plain = next(iter(make_loaders(tmp_path / "plain", batch_size=8)[split]))
+    assert "label_set" not in plain and len(plain["label"]) == 1   # only the recorded row
+
+    build_17lands([p], tmp_path / "sets", labels=("recorded", "unique", "ambiguous_set", "alternative"))
+    batch = next(iter(make_loaders(tmp_path / "sets", batch_size=8)[split]))
+    assert batch["label_set"][:, :2].tolist() == [[True, True], [False, True], [True, False]]
+    assert batch["weight"].tolist() == [1.0, 0.5, 1.0]

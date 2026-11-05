@@ -141,6 +141,14 @@ that reproduced, excluding final turns, plus the mulligans.
   - `ambiguous`: a searched choice where other alternatives fit too.
   - `unprobed`: searched, without an ambiguity check (when run without `--probe`).
   - `not_recorded`: an answer the replay fixes itself (surveil and scry keep the top card).
+  - `ambiguous_set` (from 2026-11-05): an ambiguous choice whose every alternative was tried (`fully_probed`).
+    `consistent` lists every option index that reproduces the turn; `choice` is just the reproducing path's pick.
+  - `alternative` (from 2026-11-05): a decision after the departure in another reproducing reading of the turn,
+    e.g. "main 2, land still in hand" when the land could have gone down in either main phase. `world` says where it
+    departs and how many readings that point has. `alternative_unprobed`: such a decision that is itself a choice
+    point of that reading, never checked.
+- **`world_share`** (from 2026-11-05): a decision's share of its turn, 1/n for each split point before it, so the
+  readings of one turn together weigh as much as one turn. `at` is the number of choice points taken before it.
 
 On 100 games (seed 11, `--probe 30`) there were 9,045 rows: 8,066 recorded, 266 unique and 713 ambiguous.
 

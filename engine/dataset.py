@@ -18,6 +18,7 @@ import hashlib
 import json
 import random
 from collections import Counter
+from functools import partial
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
@@ -31,6 +32,9 @@ SPLITS = {"train": 0.8, "val": 0.1, "test": 0.1}
 GAMES_ROOT = "/mnt/project-files/claude-games"  # where manifest paths point; --games-root swaps it for a local copy
 DRAFT_SPLIT_SALT = "mtg-ai-dsk-split-v1"  # seventeenlands/prepare.py's SPLIT_SALT for DSK
 LABELS_17LANDS = ("recorded", "unique")  # the labels the record pins down (seventeenlands/TURN_REPLAY.md)
+# a choice the record leaves open between several options that all fit it, and the decisions of those other readings:
+# their target is a set (batch["label_set"]), not one option, so they are opt-in (--labels ... ambiguous_set alternative)
+SET_LABELS = ("ambiguous_set", "alternative")
 
 
 def game_key(row: dict) -> str:
@@ -155,6 +159,8 @@ def _build_chunk(chunk: Path, out: Path, labels: tuple[str, ...]) -> dict:
             drafts[split].add(r["draft_id"])
             examples, problems = encode_decisions([r], vocab, keep=("game", "draft_id", "label", "turn"))
             skipped.update(problems)
+            for x in examples:
+                x.label_set, x.weight = list(r.get("consistent") or []), float(r.get("world_share", 1.0))
             stored[split] += [_stored(x) for x in examples]
     files = {}
     for split, rows in stored.items():
@@ -260,10 +266,13 @@ def make_loaders(cache: str | Path, batch_size: int = 64, seed: int = 0, workers
     """
     vocab = Vocab.load()
     cache = Path(cache)
-    common = {"batch_size": batch_size, "collate_fn": collate, "num_workers": workers}
+    summary = json.loads((cache / "summary.json").read_text()) if (cache / "summary.json").exists() else {}
+    # batches carry label_set and weight only for a cache built with set labels; other caches' batches don't change
+    with_sets = bool(set(summary.get("labels", [])) & set(SET_LABELS))
+    common = {"batch_size": batch_size, "collate_fn": partial(collate, label_sets=with_sets), "num_workers": workers}
     fixed = {**common, "persistent_workers": workers > 0}
     if not (cache / "train.pt").exists():
-        files = json.loads((cache / "summary.json").read_text())["files"]
+        files = summary["files"]
         paths = {s: sorted(cache.glob(f"{s}-*.pt")) for s in SPLITS}
         loaders = {"train": DataLoader(ShardedDecisions(paths["train"], files, vocab, seed), **fixed)}
         for split in ("val", "test"):
