@@ -277,3 +277,16 @@ Big combats (2026-11-04): when there are too many assignments to search (0.14% o
 on 100k games), the first block decision now ranks pairings with `combat_pairing`: using the creatures' power and
 toughness at the block, it picks the pairing (moving or swapping one blocker at a time) whose predicted combat deaths
 best match the recorded ones, and tries that first.
+
+## Third 50k-game run, 2026-11-03 to 05 (dsk50k-3, seed 5003): 50,000 games, 1,057,091 decision rows (135 MB gz)
+
+- Turns reproduced: clean 89.4% (n = 440,538), from an exact start 76.0% (n = 784,005), after a reset 53.5% (n = 378,135)
+- Rows: recorded 582,187 (55.1%), unique 132,699 (12.6%), ambiguous 331,068 (31.3%), not_recorded 11,137 (1.1%)
+- Stalls 0, games lost 0, games conceded at record end 14,962
+- Lowest free memory 57%
+
+The first run with every fix in (no filler rows, concede at record end, stall watchdog, engine-start retry, bounded
+block search; combat_pairing from batch ~3 on). No filler: turn-0 rows are mulligans and bottoms only. 3 workers, then 4
+from batch 55 (each batch slowed from ~68 to ~83 min, so 4 barely helps). With the first two runs, after dropping their
+filler: about 3.2M real rows from 150k games. Replay is paused after this run (`turn_replay/NO_NEXT_RUN`) so the mini is
+free for policy evaluation.
