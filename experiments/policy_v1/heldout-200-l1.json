@@ -1,0 +1,345 @@
+{
+ "split": "test",
+ "cache": "data/cache/17lands-200-clean",
+ "cache_summary": {
+  "source": "17lands turn replay",
+  "labels": [
+   "recorded",
+   "unique"
+  ],
+  "drafts": {
+   "train": 61208,
+   "val": 7665,
+   "test": 7674
+  },
+  "decisions": {
+   "train": 1143437,
+   "val": 140404,
+   "test": 146211
+  },
+  "skipped": 7465617,
+  "skipped_by_reason": {
+   "turn 0 past the record (replay filler)": 6777921,
+   "label ambiguous": 664570,
+   "label not_recorded": 22831,
+   "card name not in vocabulary: 'Spirit Cleric Token'": 181,
+   "ability on the stack has no key: 'Ability': 'Up to that many target creatures each get -2/-2 until end of turn.'": 87,
+   "counter type not in list: ['lore']": 24,
+   "ability on the stack has no key: 'Ability': 'When Ragged Playmate becomes the target of a spell or ability, sacrifice it.'": 1,
+   "ability on the stack has no key: 'Ability': 'When The Swarmweaver becomes the target of a spell or ability, sacrifice it.'": 1,
+   "option refers to an object not in the observation (CHOOSE_CARDS: 'Innocuous Rat')": 1
+  }
+ },
+ "policy": "data/policies/200-l1/policy.onnx",
+ "policy_meta": {
+  "name": "200-l1",
+  "checkpoint": "data/runs/2026-11-03_224849_200-l1/best.pt",
+  "checkpoint_sha256": "ca31f054b258ab4f4529c47d34a1d49c513d5fb50bdf6ef8ff2de575c36f1497",
+  "epoch": 7,
+  "val": {
+   "n": 140404,
+   "loss": 0.2843390194048887,
+   "acc": 0.8796733847217854
+  },
+  "model_config": {
+   "emb_dim": 16,
+   "card_feature_dim": 55,
+   "ability_feature_dim": 3,
+   "vocab_card": 301,
+   "vocab_ability": 303,
+   "vocab_actions": 18,
+   "global_state_dim": 37,
+   "hidden_dim": 32,
+   "ffn_dim": 64,
+   "num_edges": 8,
+   "num_blocks": 1
+  },
+  "parameters": 30900,
+  "onnx_inputs": [
+   "card_ids",
+   "card_features",
+   "ability_ids",
+   "ability_features",
+   "global_state",
+   "active_edges",
+   "action_types",
+   "action_sources",
+   "action_targets",
+   "action_abilities",
+   "action_target_players",
+   "action_named_options",
+   "card_mask",
+   "ability_mask",
+   "action_mask"
+  ],
+  "model_files_sha256": {
+   "batch.py": "a9adc0cb638214f04f2ac6262508a933fac7fb5134101a9754d5398e8401cc6b",
+   "model.py": "9b5e175b2097e3cc5c33b2c0d5e8a7174a07d29f71d50334e1ec530ba5f32be2",
+   "output_mlp.py": "1e6ce71a507c7c125d6a6c5e42dd279334e097885dae7d0ec42728ecfa79f92d",
+   "transformer.py": "87ef4ba6a77d89231c44b618e867703ce6148296648446f8db192c174311eeda"
+  },
+  "git_commit": "a400a73fc84684071ee79904394a063280247023",
+  "model_dir_uncommitted": false,
+  "vocab_sha256": "0753597dcb020c58f99d02674f5aaa39333bccfb27ce8b627a5755a4857b4dd9",
+  "encode_py_sha256": "b6350cd577489a2c141ced269054ba86ade52ad871bd0b36dc1a559d493c3968",
+  "torch": "2.14.1",
+  "onnxruntime": "1.31.1",
+  "check": {
+   "sample": "/Users/jkim/dev/mtg-ai/tests/fixtures/xmage_decisions_sample.jsonl",
+   "decisions": 18,
+   "max_abs_diff": 1.9073486328125e-06
+  }
+ },
+ "code_commit": "a400a73fc84684071ee79904394a063280247023",
+ "seconds": 284,
+ "results": {
+  "uniform": {
+   "all": {
+    "n": 146211,
+    "loss": 0.8944973126453828,
+    "acc": 0.42775426900588054
+   },
+   "PRIORITY": {
+    "n": 97589,
+    "loss": 0.8972869887324285,
+    "acc": 0.42566435384961876
+   },
+   "ATTACK": {
+    "n": 21420,
+    "loss": 0.8653269815789997,
+    "acc": 0.43445183870310433
+   },
+   "USE": {
+    "n": 12155,
+    "loss": 0.6931471824645996,
+    "acc": 0.5
+   },
+   "BLOCK": {
+    "n": 5561,
+    "loss": 0.9699045294288507,
+    "acc": 0.40184537774111656
+   },
+   "TARGET": {
+    "n": 5376,
+    "loss": 1.2833567772371073,
+    "acc": 0.31188053461872706
+   },
+   "CHOOSE_CARDS": {
+    "n": 1905,
+    "loss": 0.6955776367287624,
+    "acc": 0.49903762033918087
+   },
+   "CHOOSE": {
+    "n": 1250,
+    "loss": 1.1989150792121888,
+    "acc": 0.32622796852588654
+   },
+   "TRIGGER_ORDER": {
+    "n": 343,
+    "loss": 0.7518337697398906,
+    "acc": 0.47725947613966363
+   },
+   "MODE": {
+    "n": 299,
+    "loss": 0.7867160577040452,
+    "acc": 0.4615384638309479
+   },
+   "TARGET_CARDS": {
+    "n": 286,
+    "loss": 2.1870437593726844,
+    "acc": 0.12440169446326636
+   },
+   "CHOICE": {
+    "n": 27,
+    "loss": 0.8967673513624403,
+    "acc": 0.43333333399560714
+   }
+  },
+  "type prior": {
+   "all": {
+    "n": 146211,
+    "loss": 0.5394852377496271,
+    "acc": 0.7711351501392744
+   },
+   "PRIORITY": {
+    "n": 97589,
+    "loss": 0.4075543149718796,
+    "acc": 0.8636116775456251
+   },
+   "ATTACK": {
+    "n": 21420,
+    "loss": 0.8469763329216078,
+    "acc": 0.5411760265092834
+   },
+   "USE": {
+    "n": 12155,
+    "loss": 0.4143087962854551,
+    "acc": 0.8547922665569725
+   },
+   "BLOCK": {
+    "n": 5561,
+    "loss": 0.8912637523129098,
+    "acc": 0.6063657615536774
+   },
+   "TARGET": {
+    "n": 5376,
+    "loss": 1.2986593125388026,
+    "acc": 0.27726945605051395
+   },
+   "CHOOSE_CARDS": {
+    "n": 1905,
+    "loss": 0.6952704095464992,
+    "acc": 0.5004811898773424
+   },
+   "CHOOSE": {
+    "n": 1250,
+    "loss": 1.2179895550727844,
+    "acc": 0.2579638408839703
+   },
+   "TRIGGER_ORDER": {
+    "n": 343,
+    "loss": 0.7518337697398906,
+    "acc": 0.47725947613966363
+   },
+   "MODE": {
+    "n": 299,
+    "loss": 0.7867160577040452,
+    "acc": 0.4615384638309479
+   },
+   "TARGET_CARDS": {
+    "n": 286,
+    "loss": 2.1870437593726844,
+    "acc": 0.12440169446326636
+   },
+   "CHOICE": {
+    "n": 27,
+    "loss": 0.8967673513624403,
+    "acc": 0.43333333399560714
+   }
+  },
+  "kind+type prior": {
+   "all": {
+    "n": 146211,
+    "loss": 0.5356357619128665,
+    "acc": 0.7741583393886851
+   },
+   "PRIORITY": {
+    "n": 97589,
+    "loss": 0.4075543149718796,
+    "acc": 0.8636116775456251
+   },
+   "ATTACK": {
+    "n": 21420,
+    "loss": 0.8404769062383725,
+    "acc": 0.5411760265092834
+   },
+   "USE": {
+    "n": 12155,
+    "loss": 0.4143087962854551,
+    "acc": 0.8547922665569725
+   },
+   "BLOCK": {
+    "n": 5561,
+    "loss": 0.8824930245917899,
+    "acc": 0.6063657615536774
+   },
+   "TARGET": {
+    "n": 5376,
+    "loss": 1.2446004680435483,
+    "acc": 0.33178262726592256
+   },
+   "CHOOSE_CARDS": {
+    "n": 1905,
+    "loss": 0.69536823491099,
+    "acc": 0.5004811898773424
+   },
+   "CHOOSE": {
+    "n": 1250,
+    "loss": 1.1504615674972534,
+    "acc": 0.3771324127972126
+   },
+   "TRIGGER_ORDER": {
+    "n": 343,
+    "loss": 0.7518337697398906,
+    "acc": 0.47725947613966363
+   },
+   "MODE": {
+    "n": 299,
+    "loss": 0.7867160577040452,
+    "acc": 0.4615384638309479
+   },
+   "TARGET_CARDS": {
+    "n": 286,
+    "loss": 2.1870437593726844,
+    "acc": 0.12440169446326636
+   },
+   "CHOICE": {
+    "n": 27,
+    "loss": 0.8967673513624403,
+    "acc": 0.43333333399560714
+   }
+  },
+  "policy": {
+   "all": {
+    "n": 146211,
+    "loss": 0.27637276029604163,
+    "acc": 0.8826778390609542
+   },
+   "PRIORITY": {
+    "n": 97589,
+    "loss": 0.1675703705015387,
+    "acc": 0.9325482380351505
+   },
+   "ATTACK": {
+    "n": 21420,
+    "loss": 0.4889278912403454,
+    "acc": 0.7822899160091005
+   },
+   "USE": {
+    "n": 12155,
+    "loss": 0.2446910463855075,
+    "acc": 0.9038255861785274
+   },
+   "BLOCK": {
+    "n": 5561,
+    "loss": 0.7121578973327046,
+    "acc": 0.6814122160300786
+   },
+   "TARGET": {
+    "n": 5376,
+    "loss": 0.708984132029002,
+    "acc": 0.7141617064508388
+   },
+   "CHOOSE_CARDS": {
+    "n": 1905,
+    "loss": 0.6732450149268929,
+    "acc": 0.5866141732283464
+   },
+   "CHOOSE": {
+    "n": 1250,
+    "loss": 0.8718387665048242,
+    "acc": 0.622
+   },
+   "TRIGGER_ORDER": {
+    "n": 343,
+    "loss": 0.23837420617414054,
+    "acc": 0.89990281832809
+   },
+   "MODE": {
+    "n": 299,
+    "loss": 0.34690281088085123,
+    "acc": 0.8394648829431438
+   },
+   "TARGET_CARDS": {
+    "n": 286,
+    "loss": 0.9755987578000014,
+    "acc": 0.6915251416238871
+   },
+   "CHOICE": {
+    "n": 27,
+    "loss": 0.0004133059733459487,
+    "acc": 1.0
+   }
+  }
+ }
+}
