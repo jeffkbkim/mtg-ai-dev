@@ -16,7 +16,8 @@ extra card more often, and the win rate reflects the player, not the draw of dec
 Writes into --out:
   config.json        everything needed to repeat the run: arguments, policy.json of the model, git commit, schedule
   games.jsonl        one line per finished game: decks, who was on the play, winner, turns, decisions, fallbacks
-  part<k>/decisions.jsonl   per policy decision: kind, options, choice, the policy's probability or fallback reason
+  part<k>/decisions.jsonl   per policy decision: kind, offered action types, each option's card (name, types, and
+                     instant/sorcery speed for casts), choice, the policy's probability or fallback reason
   part<k>/jvm.log    the engine's log (leaks, rejected moves, unmapped abilities)
   errors.log         a part that stopped early and why (its finished games are kept)
 Then play/eval_report.py <out> prints win rates with 95% intervals.
@@ -30,6 +31,42 @@ sys.path.insert(0, str(HERE))
 from policy_player import PolicyPlayer  # noqa: E402
 
 READ_TIMEOUT = 900  # seconds without a message from the engine before a part is declared hung
+
+
+_FLASH = None
+
+
+def has_flash(name: str) -> bool:
+    """Whether the card's printed rules give it flash (engine/vocab/<set>_card_text.json, as XMage implements it).
+
+    The observation can't say: it lists keywords only for permanents on the battlefield, not for cards in hand.
+    """
+    global _FLASH
+    if _FLASH is None:
+        from render import load_card_text
+        _FLASH = {n for n, c in load_card_text().items() if any(r.strip() == "Flash" for r in c["rules"])}
+    return name in _FLASH
+
+
+def option_cards(msg: dict) -> list[dict]:
+    """Each option's action and, when it comes from a card, that card's name, types and (for casts) its speed.
+
+    speed is "instant" for an instant or a card with flash, else "sorcery": a sorcery-speed cast can only happen in
+    one's own main phase, so passing on one is a different mistake from holding a trick for the opponent's turn.
+    """
+    entries = msg["obs"]["entries"]
+    out = []
+    for o in msg["options"]:
+        d = {"action": o.get("action")}
+        i = (o.get("source") or {}).get("entry")
+        card = entries[i] if i is not None and i < len(entries) and entries[i].get("kind") == "card" else None
+        if card:
+            d.update(name=card.get("card_name") or card.get("name"), types=card.get("types"))
+            if d["action"] == "CAST":
+                flash = has_flash(d["name"]) or any(k.lower() == "flash" for k in card.get("keywords") or [])
+                d["speed"] = "instant" if flash or "Instant" in (card.get("types") or "") else "sorcery"
+        out.append(d)
+    return out
 
 
 def make_schedule(decks: list[Path], pairs: int, seed: int) -> list[dict]:
@@ -162,7 +199,8 @@ class Part:
                         "game": game, "idx": idx, "turn": g0.get("turn"), "step": g0.get("step"),
                         "my_turn": g0.get("my_turn"), "lands_played": g0.get("lands_played"), "kind": msg["kind"],
                         "offered": sorted({o.get("action") for o in msg["options"]}), "choice": choice,
-                        "label": msg["options"][choice].get("label", "")[:60], **pol}) + "\n")
+                        "label": msg["options"][choice].get("label", "")[:60], "options": option_cards(msg),
+                        **pol}) + "\n")
                 idx += 1
                 f.write(json.dumps({"choice": choice}) + "\n"); f.flush()
         except Exception:
