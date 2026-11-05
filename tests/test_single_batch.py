@@ -50,7 +50,8 @@ def build_model(cfg: BatchConfig):
 
     return Model(
         emb_dim=16,  # different from hidden_dim on purpose, so a width mix-up shows up as an error
-        feature_dim=cfg.card_feature_dim,
+        card_feature_dim=cfg.card_feature_dim,
+        ability_feature_dim=cfg.ability_feature_dim,
         vocab_card=cfg.vocab_card,
         vocab_ability=cfg.vocab_ability,
         vocab_actions=cfg.vocab_action,
@@ -116,6 +117,8 @@ def overfit_one_batch(batch, cfg: BatchConfig) -> None:
     validate_batch(batch, cfg)
     model = build_model(cfg)
     B, A = batch.action_mask.shape
+    print()
+    print("model config", model.config())
     print(f"\n{sum(p.numel() for p in model.parameters()):,} parameters, "
           f"{B} examples, A = {A}, "
           f"legal actions per example {batch.action_mask.sum(dim=1).tolist()}")

@@ -10,8 +10,6 @@ class OutputMLP(nn.Module):
         self.output_layer = nn.Linear(output_features, 1, bias=False)
 
     def forward(self, x: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
-        print(x.shape, self.input_layer.weight.shape)
         values = self.output_layer(self.dropout(self.relu(self.input_layer(x)))).squeeze(dim=-1)
         values[~mask] = float('-inf')
-        print("final values:", values)
         return values

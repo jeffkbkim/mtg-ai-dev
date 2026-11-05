@@ -53,7 +53,7 @@ class Batch:
     card_ids: Tensor
     ability_ids: Tensor
     card_features: Tensor # (B, N, F) -> float32
-    ability_features: Tensor # (B, N_a, F) -> float32
+    ability_features: Tensor # (B, N_a, F_a) -> float32
     card_modes: Tensor # (B, N, K_m) -> long: chosen modes of a modal spell on the stack (ability ids), 0 = none
     ability_modes: Tensor # (B, N_a, K_m) -> long: chosen modes of a modal ability on the stack, 0 = none
 

@@ -45,7 +45,6 @@ class Attention(nn.Module):
         q_proj = self.Q(x) # (B, M, D)
         k_proj = self.K(x) # (B, M, D)
         v_proj = self.V(x) # (B, M, D)
-        print(f"mask type: {mask.dtype}")
 
         raw_attention_score = (q_proj @ k_proj.transpose(-1, -2)) / self.d_h ** 0.5 # (B, M, M)
 
