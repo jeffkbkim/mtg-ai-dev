@@ -1,0 +1,92 @@
+--- a/Mage.Web.Client/src/app/match/Overlays.tsx
++++ b/Mage.Web.Client/src/app/match/Overlays.tsx
+@@ -449,6 +449,7 @@
+ /** A zone's cards laid out to read (graveyard, exile, revealed). */
+ export function ZoneViewer({ title, cards, note, counts, onClose }: { title: string; cards: CardView[]; note?: string; counts?: Record<string, number>; onClose(): void }) {
+   const keyboard = useChoiceKeyboard();
++  const setZoom = useMatchUi((state) => state.setZoom);
+   return (
+     <div ref={keyboard} tabIndex={-1} className={styles.scrim} role="dialog" aria-modal="true" aria-label={title} onClick={onClose}>
+       <div className={styles.panel} onClick={(event) => event.stopPropagation()}>
+@@ -460,7 +461,14 @@
+         {cards.length === 0 ? <p className={styles.panelText}>Empty.</p> : (
+           <div className={styles.grid}>
+             {cards.map((card) => (
+-              <div key={card.id} className={styles.pick} data-card-id={card.id}>
++              <div
++                key={card.id}
++                className={styles.pick}
++                data-card-id={card.id}
++                // mtg-ai: hovered, the card shows large (a Room turned sideways), as on the table
++                onPointerEnter={(event) => setZoom({ card, x: event.clientX, y: event.clientY, anchor: event.currentTarget })}
++                onPointerLeave={() => setZoom(null)}
++              >
+                 <CardFace card={card} size="normal" />
+                 {/* mtg-ai: copies of this card in the zone */}
+                 {(counts?.[card.id!] ?? 1) > 1 && <span className={styles.viewerCount} aria-label={`${counts![card.id!]} copies`}>×{counts![card.id!]}</span>}
+--- a/Mage.Web.Client/src/app/match/Overlays.test.tsx
++++ b/Mage.Web.Client/src/app/match/Overlays.test.tsx
+@@ -431,6 +431,15 @@
+     expect(onClose).toHaveBeenCalledTimes(3);
+   });
+ 
++  test('hovering a card shows it large', () => {
++    render(<ZoneViewer title="Their graveyard" cards={[card('j', 'Jump Scare')]} onClose={vi.fn()} />);
++    const jump = document.querySelector('[data-card-id="j"]')!;
++    fireEvent.pointerEnter(jump, { clientX: 50, clientY: 50 });
++    expect(useMatchUi.getState().zoom?.card.id).toBe('j');
++    fireEvent.pointerLeave(jump);
++    expect(useMatchUi.getState().zoom).toBeNull();
++  });
++
+   test('says when the zone is empty', () => {
+     render(<ZoneViewer title="Exile" cards={[]} onClose={vi.fn()} />);
+     expect(screen.getByText('Empty.')).toBeTruthy();
+--- a/Mage.Web.Client/src/core/game/autoPass.ts
++++ b/Mage.Web.Client/src/core/game/autoPass.ts
+@@ -133,7 +133,11 @@
+         return attackEnablers(view).length === 0 ? 'pass' : null;
+       }
+       if (!settings.autoPass) return null;
+-      if (combatStopHere(view, settings.combatStops)) return null;
++      // mtg-ai: a combat stop the player set holds only when there is something to do there (any non-mana play,
++      // a permanent's ability included); full control (above) still stops everywhere
++      if (combatStopHere(view, settings.combatStops)) {
++        return meaningfulPlays(view, true).length > 0 || handAbilities(view).length > 0 ? null : 'pass';
++      }
+       // like Arena: when no creature attacks, the rest of combat goes by even with instants in hand
+       if (settings.autoSkipCombat && noCombat(view)) return 'pass';
+       if (meaningfulPlays(view, myTurn || settings.abilitiesOnTheirTurn).length > 0) return null;
+--- a/Mage.Web.Client/src/core/game/autoPass.test.ts
++++ b/Mage.Web.Client/src/core/game/autoPass.test.ts
+@@ -50,6 +50,15 @@
+     // the same ability on a permanent still follows the setting
+     expect(autoAnswer({ ...base, myHand: {}, step: 'END_TURN' }, priority, on)).toBe('pass');
+   });
++  it('a combat stop the player set holds only with something to do there', () => {
++    const stops = { yourTurn: { attackers: false, blockers: false }, opponentTurn: { attackers: false, blockers: true } };
++    const combat = { step: 'DECLARE_BLOCKERS', activePlayerId: 'them', combat: [{ attackers: { centipede: {} } }] } as unknown as GameView;
++    const empty: GameView = { ...view({}), ...combat };
++    expect(autoAnswer(empty, priority, { ...on, combatStops: stops })).toBe('pass');
++    const ability: GameView = { ...view({ gym: { other: [{ value: '{2}: Something useful' }] } }), ...combat };
++    expect(autoAnswer(ability, priority, { ...on, combatStops: stops })).toBeNull();
++    expect(autoAnswer(empty, priority, { ...on, combatStops: stops, fullControl: true })).toBeNull();
++  });
+   it("stops on the opponent's turn to turn a face-down creature up (a morph after blocks)", () => {
+     const morph = { other: [{ value: '{0}: Turn this face-down permanent face up' }] };
+     expect(autoAnswer({ ...view({ proteus: morph }), activePlayerId: 'them' }, priority, on)).toBeNull();
+@@ -109,8 +118,12 @@
+ 
+   it('stops in a combat step the player marked, once creatures attack', () => {
+     expect(combatStopHere(attacking, stops)).toBe(true);
+-    expect(autoAnswer(attacking, priority, { ...on, combatStops: stops })).toBeNull();
+-    // without the stop, nothing to cast means pass
++    // mtg-ai: the stop holds when there is something to do there, a permanent's ability included
++    const withAbility = { ...attacking, canPlayObjects: { objects: { map: { other: [{ value: '{T}, Sacrifice: search...' }] } } } } as GameView;
++    expect(autoAnswer(withAbility, priority, { ...on, combatStops: stops })).toBeNull();
++    expect(autoAnswer(withAbility, priority, on)).toBe('pass');
++    // with nothing to do it passes, stop or not
++    expect(autoAnswer(attacking, priority, { ...on, combatStops: stops })).toBe('pass');
+     expect(autoAnswer(attacking, priority, on)).toBe('pass');
+     // the stop is per side and per step
+     expect(combatStopHere({ ...attacking, activePlayerId: 'me' }, stops)).toBe(false);
