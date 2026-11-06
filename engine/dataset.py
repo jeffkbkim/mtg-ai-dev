@@ -136,13 +136,23 @@ def _is_pregame(row: dict) -> bool:
     return prompt.startswith("Mulligan") or "bottom of your library" in prompt
 
 
-def _build_chunk(chunk: Path, out: Path, labels: tuple[str, ...]) -> dict:
+def load_outcomes(path: Path) -> dict[str, dict]:
+    """Game id ("g<replay row>") -> its 17lands result: won (the user's seat, seat A), on_play, num_turns.
+
+    Collected from each replay batch's sample.parquet (one line per game); turn_replay's rows don't carry the result.
+    """
+    with gzip.open(path, "rt") as f:
+        return {o["game"]: o for o in map(json.loads, f)}
+
+
+def _build_chunk(chunk: Path, out: Path, labels: tuple[str, ...], outcomes: Path | None = None) -> dict:
     """One chunk -> train-/val-/test-<chunk>.pt. Runs in its own process when building with workers.
 
     Each row is encoded as soon as it is read and the raw row dropped: holding a chunk's raw rows took ~5 GB.
     The rows already carry lands_played, so encoding one at a time loses nothing.
     """
     vocab = Vocab.load()
+    results = load_outcomes(outcomes) if outcomes else None
     stored: dict[str, list[dict]] = {s: [] for s in SPLITS}
     drafts: dict[str, set] = {s: set() for s in SPLITS}
     skipped: Counter = Counter()
@@ -155,12 +165,17 @@ def _build_chunk(chunk: Path, out: Path, labels: tuple[str, ...]) -> dict:
             if r.get("turn") == 0 and not _is_pregame(r):
                 skipped["turn 0 past the record (replay filler)"] += 1
                 continue
+            if results is not None and r["game"] not in results:
+                skipped["no 17lands result for the game"] += 1   # never guess a result
+                continue
             split = draft_split(r["draft_id"])
             drafts[split].add(r["draft_id"])
             examples, problems = encode_decisions([r], vocab, keep=("game", "draft_id", "label", "turn"))
             skipped.update(problems)
             for x in examples:
                 x.label_set, x.weight = list(r.get("consistent") or []), float(r.get("world_share", 1.0))
+                if results is not None:
+                    x.won = float(results[r["game"]]["won"])
             stored[split] += [_stored(x) for x in examples]
     files = {}
     for split, rows in stored.items():
@@ -171,7 +186,8 @@ def _build_chunk(chunk: Path, out: Path, labels: tuple[str, ...]) -> dict:
     return {"files": files, "drafts": drafts, "skipped": skipped}
 
 
-def build_17lands(chunks: list[Path], out: Path, labels: tuple[str, ...] = LABELS_17LANDS, workers: int = 1) -> dict:
+def build_17lands(chunks: list[Path], out: Path, labels: tuple[str, ...] = LABELS_17LANDS, workers: int = 1,
+                  outcomes: Path | None = None) -> dict:
     """17lands turn-replay rows -> one cache file per chunk and split: train-dsk50k-b0000.pt, val-dsk50k-b0000.pt, ...
 
     One file per chunk because the whole train split doesn't fit in memory once there are many chunks: the train
@@ -184,16 +200,18 @@ def build_17lands(chunks: list[Path], out: Path, labels: tuple[str, ...] = LABEL
     out.mkdir(parents=True, exist_ok=True)
     if workers > 1:
         with ProcessPoolExecutor(workers) as pool:
-            results = list(pool.map(_build_chunk, chunks, [out] * len(chunks), [labels] * len(chunks)))
+            results = list(pool.map(_build_chunk, chunks, [out] * len(chunks), [labels] * len(chunks),
+                                    [outcomes] * len(chunks)))
     else:
-        results = [_build_chunk(c, out, labels) for c in chunks]
+        results = [_build_chunk(c, out, labels, outcomes) for c in chunks]
     files = {k: v for r in results for k, v in r["files"].items()}
     drafts = {s: set().union(*(r["drafts"][s] for r in results)) for s in SPLITS}
     skipped = sum((r["skipped"] for r in results), Counter())
     decisions = {s: sum(n for k, n in files.items() if k.startswith(f"{s}-")) for s in SPLITS}
     summary = {"source": "17lands turn replay", "labels": list(labels), "chunks": [str(c) for c in chunks],
                "drafts": {s: len(d) for s, d in drafts.items()}, "decisions": decisions,
-               "skipped": sum(skipped.values()), "skipped_by_reason": dict(skipped.most_common()), "files": files}
+               "skipped": sum(skipped.values()), "skipped_by_reason": dict(skipped.most_common()), "files": files,
+               "outcomes": str(outcomes) if outcomes else None}
     (out / "summary.json").write_text(json.dumps(summary, indent=1) + "\n")
     return summary
 
@@ -269,7 +287,9 @@ def make_loaders(cache: str | Path, batch_size: int = 64, seed: int = 0, workers
     summary = json.loads((cache / "summary.json").read_text()) if (cache / "summary.json").exists() else {}
     # batches carry label_set and weight only for a cache built with set labels; other caches' batches don't change
     with_sets = bool(set(summary.get("labels", [])) & set(SET_LABELS))
-    common = {"batch_size": batch_size, "collate_fn": partial(collate, label_sets=with_sets), "num_workers": workers}
+    # batches carry `won` only for a cache built with --outcomes
+    collate_fn = partial(collate, label_sets=with_sets, outcomes=bool(summary.get("outcomes")))
+    common = {"batch_size": batch_size, "collate_fn": collate_fn, "num_workers": workers}
     fixed = {**common, "persistent_workers": workers > 0}
     if not (cache / "train.pt").exists():
         files = summary["files"]
@@ -302,9 +322,11 @@ def main() -> None:
     c.add_argument("--labels", nargs="+", default=list(LABELS_17LANDS),
                    help="row labels to keep (recorded, unique, ambiguous, not_recorded)")
     c.add_argument("--workers", type=int, default=4, help="chunks built at once, one process each")
+    c.add_argument("--outcomes", type=Path, default=None,
+                   help="outcomes.jsonl.gz (game -> 17lands result): adds `won` to every example, for a value head")
     args = ap.parse_args()
     if args.cmd == "build-17lands":
-        s = build_17lands(args.chunks, args.out, tuple(args.labels), args.workers)
+        s = build_17lands(args.chunks, args.out, tuple(args.labels), args.workers, args.outcomes)
         print(json.dumps({k: v for k, v in s.items() if k not in ("files", "chunks")}, indent=1))
         return
     s = build(args.manifest, args.out, args.verdict, args.games_root, tuple(args.train_also))

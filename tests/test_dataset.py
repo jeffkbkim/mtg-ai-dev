@@ -223,3 +223,25 @@ def test_17lands_set_labels_reach_the_batch_only_when_built_in(tmp_path):
     batch = next(iter(make_loaders(tmp_path / "sets", batch_size=8)[split]))
     assert batch["label_set"][:, :2].tolist() == [[True, True], [False, True], [True, False]]
     assert batch["weight"].tolist() == [1.0, 0.5, 1.0]
+
+
+def test_17lands_outcomes_reach_the_batch_and_games_without_one_are_skipped(tmp_path):
+    """--outcomes adds the game's result (seat A won?) to every example; a game with no result is skipped, not guessed."""
+    lines = [json.loads(line) for line in FIXTURE.read_text().splitlines()]
+    base = {"draft_id": "draft0", "seat": "A", "turn": 3, "label": "recorded"}
+    rows = [{**d, **base, "game": "g1"} for d in lines[:4]] + [{**d, **base, "game": "g2"} for d in lines[4:6]]
+    p = tmp_path / "run" / "b0000" / "decisions.jsonl.gz"
+    p.parent.mkdir(parents=True)
+    with gzip.open(p, "wt") as f:
+        f.writelines(json.dumps(r) + "\n" for r in rows)
+    outcomes = tmp_path / "outcomes.jsonl.gz"
+    with gzip.open(outcomes, "wt") as f:
+        f.write(json.dumps({"game": "g1", "draft_id": "draft0", "won": True, "on_play": True, "num_turns": 9}) + "\n")
+
+    summary = build_17lands([p], tmp_path / "cache", outcomes=outcomes)
+    assert summary["skipped_by_reason"]["no 17lands result for the game"] == 2
+    batch = next(iter(make_loaders(tmp_path / "cache", batch_size=8)[draft_split("draft0")]))
+    assert batch["won"].tolist() == [1.0] * 4
+
+    build_17lands([p], tmp_path / "plain")
+    assert "won" not in next(iter(make_loaders(tmp_path / "plain", batch_size=8)[draft_split("draft0")]))

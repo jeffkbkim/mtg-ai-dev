@@ -287,6 +287,7 @@ class Example:
     # every option that fits the record (17lands "ambiguous_set" rows); empty means just `label`
     label_set: list[int] = field(default_factory=list)
     weight: float = 1.0  # the decision's share of its turn's readings (turn_replay's world_share)
+    won: float = -1.0  # did the deciding seat win the game: 1 or 0, -1 unknown (a cache built without --outcomes)
 
 
 def encode_decision(d: dict, vocab: Vocab) -> Example:
@@ -383,7 +384,7 @@ def _chosen_modes(e: dict, vocab: Vocab) -> list[int]:
     return found
 
 
-def collate(examples: list[Example], label_sets: bool = False) -> dict[str, Tensor]:
+def collate(examples: list[Example], label_sets: bool = False, outcomes: bool = False) -> dict[str, Tensor]:
     """Pad a list of examples into contract tensors. Card j -> entry 1 + j, ability k -> entry 1 + N + k."""
     B = len(examples)
     N = max(len(x.card_ids) for x in examples)
@@ -452,6 +453,9 @@ def collate(examples: list[Example], label_sets: bool = False) -> dict[str, Tens
         out["weight"] = torch.tensor([x.weight for x in examples])
         for b, x in enumerate(examples):
             out["label_set"][b, x.label_set or [x.label]] = True
+    if outcomes:
+        # opt-in (a cache built with --outcomes): the game's result for the deciding seat, the target of a value head
+        out["won"] = torch.tensor([x.won for x in examples])
     return out
 
 
