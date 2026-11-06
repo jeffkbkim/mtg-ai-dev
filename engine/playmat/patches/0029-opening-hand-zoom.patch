@@ -1,0 +1,124 @@
+--- a/Mage.Web.Client/src/app/match/CardZoom.tsx
++++ b/Mage.Web.Client/src/app/match/CardZoom.tsx
+@@ -70,7 +70,9 @@
+     : pointerRight ? point.x - (sideways ? span : ZOOM_WIDTH) - 60 : point.x + 60;
+   const top = large
+     ? Math.max(EDGE, (stage.height - height) / 2 - 40)
+-    : Math.max(EDGE, Math.min(stage.height - height - EDGE, point.y - height / 2));
++    : Math.max(EDGE, Math.min(stage.height - height - EDGE, point.y - height / 2,
++      // mtg-ai: a zoom from an overlay (the opening hand) stays above that overlay's buttons
++      shown.above !== undefined ? toStagePoint(stage, shown.x, shown.above).y - height - 12 : Infinity));
+ 
+   // mtg-ai: the panel goes on the side of the card away from the pointer (toward the middle of the table when large)
+   const panelWidth = large ? LARGE_PANEL_WIDTH : PANEL_WIDTH;
+--- a/Mage.Web.Client/src/app/match/matchUi.ts
++++ b/Mage.Web.Client/src/app/match/matchUi.ts
+@@ -6,7 +6,7 @@
+ interface MatchUiState {
+   /** card shown large next to the pointer */
+   /** `anchor`: the hovered element, when it isn't the card's own (a card named in the game log) */
+-  zoom: { card: CardView; x: number; y: number; sleeve?: string; anchor?: Element } | null;
++  zoom: { card: CardView; x: number; y: number; sleeve?: string; anchor?: Element; /** mtg-ai: a client y the zoom ends above */ above?: number } | null;
+   /** pointer position in stage coordinates (for the targeting arrow) */
+   pointer: { x: number; y: number } | null;
+   /** source of the current targeting arrow, in stage coordinates */
+--- a/Mage.Web.Client/src/app/match/Overlays.tsx
++++ b/Mage.Web.Client/src/app/match/Overlays.tsx
+@@ -1,4 +1,4 @@
+-import { useEffect, useMemo, useState, type ReactNode } from 'react';
++import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+ import type { Command, Interaction } from '../../core/game/interaction';
+ import type { Prompt } from '../../core/game/prompt';
+ import { abilityChooserSource, stripMarkup } from '../../core/game/prompt';
+@@ -32,6 +32,8 @@
+   const prompt = interaction.prompt;
+   const keyboard = useChoiceKeyboard(prompt?.kind === 'ask');
+   const hints = useKeyboardHints();
++  const setZoom = useMatchUi((state) => state.setZoom);
++  const buttonsRef = useRef<HTMLDivElement>(null);
+   if (!prompt || prompt.kind !== 'ask') return null;
+   return (
+     <div ref={keyboard} tabIndex={-1} className={styles.scrim} role="dialog" aria-modal="true" aria-labelledby="mulligan-title">
+@@ -40,12 +42,22 @@
+         <p className={styles.subtitle}>{prompt.text}</p>
+         <div className={styles.handRow}>
+           {hand.map((card) => (
+-            <div key={card.id} className={styles.handCard} data-card-id={card.id}>
++            // mtg-ai: hovered, the card shows large (a Room turned sideways), as on the table
++            <div
++              key={card.id}
++              className={styles.handCard}
++              data-card-id={card.id}
++              onPointerEnter={(event) => setZoom({
++                card, x: event.clientX, y: event.clientY, sleeve, anchor: event.currentTarget,
++                above: buttonsRef.current?.getBoundingClientRect().top,
++              })}
++              onPointerLeave={() => setZoom(null)}
++            >
+               <CardFace card={card} sleeve={sleeve} size="normal" />
+             </div>
+           ))}
+         </div>
+-        <div className={styles.buttons}>
++        <div ref={buttonsRef} className={styles.buttons}>
+           <Button data-secondary aria-keyshortcuts="Alt+Enter Alt+1" variant="print" size="lg" onClick={() => onCommand({ type: 'boolean', value: true })}>{prompt.yesLabel}{hints && <kbd aria-hidden="true">Alt+1</kbd>}</Button>
+           <Button data-primary variant="decision" size="xl" onClick={() => onCommand({ type: 'boolean', value: false })}>{prompt.noLabel}</Button>
+         </div>
+@@ -79,6 +91,7 @@
+   const choosable = cards.filter((card) => interaction.clickable.has(card.id!) || interaction.selected.has(card.id!));
+   const others = cards.length - choosable.length;
+   const shown = showAll ? cards : choosable;
++  const setZoom = useMatchUi((state) => state.setZoom);
+   if (hidden) {
+     return (
+       <div className={styles.peek}>
+@@ -118,6 +131,9 @@
+                 data-card-id={id}
+                 aria-label={`${name}${selected ? ', chosen' : ''}`}
+                 onClick={() => onCommand({ type: 'uuid', id })}
++                // mtg-ai: hovered, the card shows large (choosing the cards to bottom after a mulligan, say)
++                onPointerEnter={(event) => !ability && setZoom({ card, x: event.clientX, y: event.clientY, sleeve, anchor: event.currentTarget })}
++                onPointerLeave={() => setZoom(null)}
+               >
+                 {ability ? <AbilityCard ability={ability} sleeve={sleeve} /> : <CardFace card={card} sleeve={sleeve} size="normal" />}
+               </button>
+--- a/Mage.Web.Client/src/app/match/Overlays.test.tsx
++++ b/Mage.Web.Client/src/app/match/Overlays.test.tsx
+@@ -54,6 +54,24 @@
+     fireEvent.click(button('Keep'));
+     fireEvent.click(button('Mulligan'));
+     expect(sent).toEqual([{ type: 'boolean', value: false }, { type: 'boolean', value: true }]);
++  });
++
++  test('hovering a card of the opening hand shows it large, above the buttons', () => {
++    render(
++      <MulliganOverlay
++        hand={[card('a', 'Forest'), card('b', 'Bottomless Pool // Locker Room')]}
++        interaction={interaction({ mode: 'mulligan', prompt })}
++        sleeve="default"
++        onCommand={vi.fn()}
++      />,
++    );
++    const room = document.querySelector('[data-card-id="b"]')!;
++    fireEvent.pointerEnter(room, { clientX: 300, clientY: 200 });
++    const zoom = useMatchUi.getState().zoom;
++    expect(zoom?.card.id).toBe('b');
++    expect(zoom?.above).toBeTypeOf('number');
++    fireEvent.pointerLeave(room);
++    expect(useMatchUi.getState().zoom).toBeNull();
+   });
+ 
+   test('renders nothing without an ask prompt', () => {
+@@ -92,6 +110,12 @@
+     const island = within(picker).getByRole('button', { name: 'Island' }) as HTMLButtonElement;
+     expect(island.disabled).toBe(true);
+ 
++    // hovered, a card shows large; it is still chosen by a click
++    fireEvent.pointerEnter(forest, { clientX: 10, clientY: 10 });
++    expect(useMatchUi.getState().zoom?.card.id).toBe('f');
++    fireEvent.pointerLeave(forest);
++    expect(useMatchUi.getState().zoom).toBeNull();
++
+     fireEvent.click(forest);
+     fireEvent.click(island);
+     fireEvent.click(button('Done'));
