@@ -13,6 +13,10 @@ mkdir -p $N
 cd $REPO
 git pull -q --ff-only origin main || { print "SKIPPED\n\ngit pull failed in $REPO (local changes or diverged branch)" > $N/latest.md; exit 1; }
 HEAD=$(git rev-parse --short HEAD)
+# no heavy jobs alongside each other (AGENTS.md): a 17lands replay run takes the mini for days, so wait for it
+if pgrep -f "seventeenlands/replay_batches.py" > /dev/null; then
+  print "SKIPPED\n\nA 17lands replay run is going (replay_batches.py); the soak waits for it (main is $HEAD)." > $N/latest.md; exit 0
+fi
 LAST=$(cat $N/last_commit 2>/dev/null)
 if [[ -n $LAST ]] && git diff --quiet $LAST HEAD -- engine/xmage experiments/coverage_soak; then
   print "SKIPPED\n\nNo seat or soak change since $LAST (main is $HEAD)." > $N/latest.md; exit 0
