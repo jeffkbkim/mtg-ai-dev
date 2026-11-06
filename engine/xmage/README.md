@@ -6,7 +6,11 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
 
 - `PySeat.java`: the seat. Subclasses XMage's `ComputerPlayer`, sends each real decision as one JSON line
   over a localhost socket and plays the option Python picks. Forced decisions (only one legal option) are
-  answered in Java. Rejected moves and unmapped abilities are logged, never hidden.
+  answered in Java. Rejected moves and unmapped abilities are logged, never hidden. Three behaviours are switched on
+  only by `TwoSeatMatch` (the Claude games, since 2026-11-06), so 17lands replays and policy evaluations stay
+  comparable: `payerV2` (restricted mana first, lands before other permanents, never the paid ability's own source,
+  colours kept open, my permanents' ability costs counted), `askX` (decision kind `X`) and `keepBeforeBottom`
+  (London mulligan: keep or mulligan on the new seven, then the bottom cards; XMage asks bottom first).
 - `Observer.java`: builds the observation from XMage's per-seat view (`GameView`, what a human client sees),
   entries in contract order `[global | cards | stack abilities]`, plus edges. Checks every message against the
   full game state for hidden-information leaks. A card being revealed is an entry with zone `REVEALED`; a card an
@@ -40,7 +44,8 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
 - `ManaCheck.java`: regression checks for automatic mana payment: lands before creatures (Enduring Vitality lets
   creatures tap for mana), Overgrown Zealot's any-colour mana pays spells (not its face-up-only mana) while its
   face-up-only mana pays for turning a manifest face up, and generic costs don't spend the colour an instant in hand
-  needs. Prints PASS or FAIL.
+  needs. The same boards also run with `payerV2`, plus two from the batch 01-04 reviews (a generic cost leaves a
+  second colour open; Creeping Peeper's restricted mana pays for turning a manifest face up). Prints PASS or FAIL.
 - `TargetCheck.java`: regression check that picking one of "one or two" targets and then DONE takes two prompts
   (XMage re-asks after any call that added a target; DONE used to be asked twice). Prints PASS or FAIL.
 - `PlayableCheck.java`: regression check that two copies of a permanent each offer their activated ability (XMage's
@@ -49,7 +54,8 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
 - `FaceDownRoomCheck.java`: regression check for that patch: a face-down Room is a vanilla 2/2, a gained ability
   stays, and a face-up Room keeps only its unlocked doors' abilities. Prints PASS or FAIL.
 - `XSpellCheck.java`: regression check that a {X}{X} spell (Valgavoth's Onslaught) is cast with the largest affordable
-  X (XMage's AI counted X once, asked for too much mana and the cast was refused). Prints PASS or FAIL.
+  X (XMage's AI counted X once, asked for too much mana and the cast was refused), and that with `askX` the player
+  is asked (options X = 0 to that most) and its X is used. Prints PASS or FAIL.
 - `ColorChoiceCheck.java`: regression check that "As this land enters, choose a color" (Valgavoth's Lair) is asked of
   the player (XMage flags every colour choice as a mana colour choice, which the seat answers in Java). Prints PASS or
   FAIL.

@@ -36,8 +36,9 @@ graveyards, exile, the stack, and counts of the opponent's hand and library. Pla
 How the game talks to you:
 - Each message is one decision: the current state as numbered entries, then numbered options.
 - Mana is paid automatically. Decisions with only one legal option are answered for you.
-- Before the game you decide whether to mulligan (YES: shuffle the hand away and draw a new seven, then put one card
-  on the bottom of your library for each mulligan taken).
+- Before the game you decide whether to mulligan (YES: shuffle the hand away and draw a new seven). After a mulligan
+  you decide again on the new seven; when you keep, you then put one card on the bottom of your library for each
+  mulligan taken, one decision per card.
 - PRIORITY: PASS means do nothing now and let the game move on (to the next step, or let the top of the stack resolve).
   Casting a spell and choosing its targets are separate decisions; targets come right after you pick the cast.
 - ATTACK and BLOCK are declared one creature at a time; pick DONE when finished. Decide the whole attack (or block)
@@ -46,6 +47,8 @@ How the game talks to you:
   its combat damage, one decision per blocker: how much that blocker gets ("(lethal)" marks enough to destroy it).
   Without trample any split is allowed. With trample each blocker must get lethal damage first, and whatever is not
   assigned to blockers goes to the defending player.
+- X: a spell or ability with {X} in its cost asks for X once you choose it; the options go up to the most your
+  untapped mana can pay.
 - "choice" is the option number listed under "Decision:", never an [entry] number from the state.
 - You may be asked about the same window several times (e.g. after each spell you cast resolves).
 - Each message starts with what changed since your previous decision (life, cards entering or leaving zones).

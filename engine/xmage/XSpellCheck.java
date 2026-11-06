@@ -14,12 +14,20 @@ import java.util.*;
  * value the untapped mana sources cover), but its formula assumes one X: with 7 Forests, Valgavoth's Onslaught
  * ({X}{X}{G}) got X = 6, needing 13 mana, so every cast was refused (seen by the batch-2 reviewer in two games).
  * Board in our precombat main: 7 Forest; hand: Valgavoth's Onslaught. Casting it must put it on the stack with X = 3.
+ * With PySeat.askX the player is asked for X instead (options X = 0 to 3); picking "X = 1" must put it on the stack
+ * with X = 1.
  * Prints PASS or FAIL and exits 1 on FAIL.
  */
 public class XSpellCheck {
     public static void main(String[] args) throws Exception {
         mage.cards.repository.RepositoryUtil.bootstrapLocalDb();
         mage.cards.repository.CardScanner.scan();
+        boolean ok = run(false, 3) & run(true, 1);
+        System.out.println(ok ? "PASS" : "FAIL");
+        System.exit(ok ? 0 : 1);
+    }
+
+    static boolean run(boolean askX, int want) throws Exception {
         PipedInputStream seatIn = new PipedInputStream(), fromSeat = new PipedInputStream();
         PrintWriter toSeat = new PrintWriter(new PipedOutputStream(seatIn), true);
         PySeat.Link link = new PySeat.Link(seatIn, new PipedOutputStream(fromSeat));
@@ -32,7 +40,7 @@ public class XSpellCheck {
                     asked.add(m.get("kind").getAsString() + ": " + m.get("prompt").getAsString());
                     int pick = 0;
                     for (int i = 0; i < opts.size(); i++)
-                        if (opts.get(i).getAsJsonObject().get("label").getAsString().contains("Cast Valgavoth's Onslaught")) pick = i;
+                        if (opts.get(i).getAsJsonObject().get("label").getAsString().matches(".*Cast Valgavoth's Onslaught.*|X = 1")) pick = i;
                     toSeat.println("{\"choice\":" + pick + "}");
                 }
             } catch (IOException ignored) { }
@@ -43,6 +51,7 @@ public class XSpellCheck {
         Game game = new TwoPlayerDuel(MultiplayerAttackOption.LEFT, RangeOfInfluence.ONE, MulliganType.GAME_DEFAULT.getMulligan(0), 40, 20, 7);
         game.setGameOptions(new GameOptions());
         PySeat py = new PySeat("PY", link);
+        py.askX = askX;
         ComputerPlayer7 ai = new ComputerPlayer7("AI", RangeOfInfluence.ONE, 2);
         mage.game.match.Match match = new TwoPlayerMatch(new mage.game.match.MatchOptions("x spell check", "Two Player Duel", false));
         for (mage.players.Player p : new mage.players.Player[]{py, ai}) {
@@ -72,9 +81,8 @@ public class XSpellCheck {
         Object tag = spell == null ? null : spell.getSpellAbility().getCostsTagMap() == null ? null : spell.getSpellAbility().getCostsTagMap().get("X");
         int x = tag instanceof Integer ? (Integer) tag : -1;
         System.out.println("asked " + asked);
-        System.out.println("on the stack: " + (spell != null) + ", X = " + x + " (want 3)" + refused);
-        boolean ok = spell != null && x == 3;
-        System.out.println(ok ? "PASS" : "FAIL");
-        System.exit(ok ? 0 : 1);
+        System.out.println((askX ? "askX: " : "") + "on the stack: " + (spell != null) + ", X = " + x + " (want " + want + ")" + refused);
+        boolean askedX = asked.stream().anyMatch(a -> a.startsWith("X:"));
+        return spell != null && x == want && askedX == askX;
     }
 }

@@ -29,6 +29,10 @@ import java.util.*;
  * games, where a colour-demand count still chose badly: {2}{W} from 3 Plains + 2 Mountain holding Jump Scare ({W}),
  * Irreverent Gremlin ({1}{R}) and Vengeful Possession ({2}{R}) must leave a Plains and a Mountain; {4}{G} from
  * 4 Forest + 3 Island holding House Cartographer ({1}{G}) and two {3}{U} instants must leave a Forest.
+ * payerV2 (PySeat): every check above also runs with it, plus two boards from batch 01-04 reviews: {2}{R} from
+ * 4 Mountain + 2 Plains with an empty hand must leave a Plains (Vicious Clown took both); turning a manifested Cryptid
+ * Inspector face up ({2}{G}) with Creeping Peeper (mana only for enchantments, doors and turning face up) and 3 Forest
+ * must tap the Peeper and leave a Forest.
  * Prints PASS or FAIL and exits 1 on FAIL.
  */
 public class ManaCheck {
@@ -73,6 +77,7 @@ public class ManaCheck {
     }
 
     static String[] hand = {};
+    static boolean v2 = false;  // PySeat.payerV2
     static boolean faceUp = false;  // pay for turning a manifested Cryptid Inspector face up instead of for a spell
     static List<String> untapped = new ArrayList<>();  // land names left untapped by the last trial
 
@@ -81,6 +86,7 @@ public class ManaCheck {
         PySeat.Link link = link();
         Game game = new TwoPlayerDuel(MultiplayerAttackOption.LEFT, RangeOfInfluence.ONE, MulliganType.GAME_DEFAULT.getMulligan(0), 40, 20, 7);
         PySeat py = new PySeat("PY", link);
+        py.payerV2 = v2;
         ComputerPlayer7 ai = new ComputerPlayer7("AI", RangeOfInfluence.ONE, 2);
         mage.game.match.Match match = new TwoPlayerMatch(new mage.game.match.MatchOptions("mana check", "Two Player Duel", false));
         for (mage.players.Player p : new mage.players.Player[]{py, ai}) {
@@ -127,7 +133,9 @@ public class ManaCheck {
         String[] vitality = {"Enduring Vitality", "Bashful Beastie", "Bashful Beastie", "Bashful Beastie",
                 "Strangled Cemetery", "Strangled Cemetery", "Forest", "Forest"};
         int trials = 20, badFour = 0, unpaid = 0, badSix = 0, zealotUnpaid = 0, faceUpUnpaid = 0, islandSpent = 0, badKeep = 0;
-        for (int t = 0; t < trials; t++) {
+        int clownBad = 0, peeperBad = 0;
+        for (int t = 0; t < 2 * trials; t++) {
+            v2 = t >= trials;
             int[] r = trial("{4}", vitality);
             if (r[2] == 0) unpaid++;
             else if (r[0] > 0) badFour++;
@@ -149,7 +157,18 @@ public class ManaCheck {
             int[] g = trial("{4}{G}", "Forest", "Forest", "Forest", "Forest", "Island", "Island", "Island");
             if (g[2] == 0 || !untapped.contains("Forest")) badKeep++;
             hand = new String[]{};
+            if (v2) {
+                int[] c = trial("{2}{R}", "Mountain", "Mountain", "Mountain", "Mountain", "Plains", "Plains");
+                if (c[2] == 0 || !untapped.contains("Plains")) clownBad++;
+                faceUp = true;
+                int[] q = trial("{2}{G}", "Creeping Peeper", "Forest", "Forest", "Forest");
+                faceUp = false;
+                if (q[2] == 0 || q[0] != 1 || !untapped.contains("Forest")) peeperBad++;
+            }
         }
+        trials *= 2;  // each check above ran with and without payerV2
+        System.out.println("payerV2: {2}{R} from 4 Mountain + 2 Plains left no Plains (or unpaid) in " + clownBad + "/" + (trials / 2) + " trials");
+        System.out.println("payerV2: face-up {2}{G} with Creeping Peeper + 3 Forest: Peeper unused or no Forest left in " + peeperBad + "/" + (trials / 2) + " trials");
         System.out.println("{4} with 4 lands: a creature was tapped in " + badFour + "/" + trials + " trials");
         System.out.println("{6} with 4 lands: not exactly 4 lands + 2 creatures in " + badSix + "/" + trials + " trials; unpaid " + unpaid);
         System.out.println("{2}{G} with Overgrown Zealot + 2 Swamps: unpaid in " + zealotUnpaid + "/" + trials + " trials");
@@ -157,7 +176,7 @@ public class ManaCheck {
         System.out.println("{1}{G} from Island + 3 Forest holding a blue instant: Island spent (or unpaid) in " + islandSpent + "/" + trials + " trials");
         System.out.println("batch-2 boards: the colour a card in hand needs was spent in " + badKeep + "/" + (2 * trials) + " trials");
         System.out.println("asked Python: " + new TreeSet<>(asked));
-        boolean ok = badFour == 0 && badSix == 0 && unpaid == 0 && zealotUnpaid == 0 && faceUpUnpaid == 0 && islandSpent == 0 && badKeep == 0;
+        boolean ok = badFour == 0 && badSix == 0 && unpaid == 0 && zealotUnpaid == 0 && faceUpUnpaid == 0 && islandSpent == 0 && badKeep == 0 && clownBad == 0 && peeperBad == 0;
         System.out.println(ok ? "PASS" : "FAIL");
         System.exit(ok ? 0 : 1);
     }

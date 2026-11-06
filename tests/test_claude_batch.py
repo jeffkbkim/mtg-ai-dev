@@ -160,3 +160,13 @@ def test_targets_the_game_chose_itself_are_skipped():
     m2 = {**m, "options": [opt("PASS"), opt("Play land | Swamp | Play Swamp", 1)]}   # no TARGET was asked
     k, step = batch.next_choice(plan, m2, option_label)
     assert k == 1 and step["label"] == "Play Swamp"
+
+
+def test_card_picking_decisions_are_never_batched():
+    # batch 04: on the London mulligan's bottom choice a player listed option numbers as "targets" (entries), and the
+    # plan bottomed a second Plains instead of Unsettling Twins
+    es = entries(card("Plains", zone="HAND"), card("Plains", zone="HAND"), card("Twins", zone="HAND"), step="null")
+    m = {"kind": "TARGET", "prompt": "Select a card (2 more) to put on the bottom of your library", "obs": {"entries": es},
+         "options": [opt("Plains", None, {"entry": 1}, "TARGET"), opt("Plains", None, {"entry": 2}, "TARGET"),
+                     opt("Twins", None, {"entry": 3}, "TARGET")]}
+    assert batch.make_plan(m, 0, {"choice": 0, "targets": [1, 2]}, option_label) is None

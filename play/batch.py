@@ -85,7 +85,11 @@ def make_plan(msg, choice, reply, label_of):
         if opt["label"] != "DONE":
             steps.append({"kind": "BLOCK", "done": True})
     else:
-        for t in reply.get("targets") or []:
+        # "targets" belongs to a spell or ability just chosen. On a decision that itself picks cards (a London
+        # mulligan's bottom cards, a multi-card choice) players listed option numbers as entries (batch 04: both
+        # Plains went to the bottom instead of Plains + Twins), so those picks are always asked one by one.
+        picks = msg["kind"] in ("TARGET", "TARGET_CARDS", "CHOOSE", "CHOOSE_CARDS")
+        for t in ([] if picks else reply.get("targets") or []):
             tr = _target_ref(entries, t)
             if tr is None:
                 raise ValueError(f"targets names {t}, which isn't there")

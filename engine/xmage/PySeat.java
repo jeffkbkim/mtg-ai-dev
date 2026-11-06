@@ -89,7 +89,20 @@ public class PySeat extends ComputerPlayer {
     public PySeat(final PySeat player) {
         super(player);
         this.link = player.link;
+        this.payerV2 = player.payerV2;
+        this.askX = player.askX;
+        this.keepBeforeBottom = player.keepBeforeBottom;
     }
+
+    /**
+     * Seat behaviours added for the Claude games after batch 04 (TwoSeatMatch turns them on; ReplaySeat, EvalMatch and
+     * the checks written before them keep the old behaviour, so replays and policy evaluations stay comparable):
+     * payerV2 pays restricted mana first, lands before other permanents, never taps the paid ability's own source,
+     * and keeps colours open (planPayment); askX asks the player for X (decision kind X) instead of taking the most
+     * the mana covers; keepBeforeBottom asks keep-or-mulligan on the seven new cards before the London mulligan's
+     * bottom choice (XMage asks bottom first).
+     */
+    public transient boolean payerV2 = false, askX = false, keepBeforeBottom = false;
 
     @Override
     public PySeat copy() {
@@ -147,7 +160,9 @@ public class PySeat extends ComputerPlayer {
         boolean outer = payingMana;
         payingMana = true;
         try {
-            if (payStep(ability, unpaid, game, false) || payStep(ability, unpaid, game, true)) return true;
+            if (payerV2 ? payRestricted(ability, unpaid, game) || payStep(ability, unpaid, game, 0) || payStep(ability, unpaid, game, 1)
+                    || payStep(ability, unpaid, game, 2)
+                    : payStep(ability, unpaid, game, 0) || payStep(ability, unpaid, game, 1)) return true;
             skipCreatureMana = true;
             try {
                 if (super.playManaHandling(ability, unpaid, game)) return true;  // false means nothing was activated
@@ -166,12 +181,48 @@ public class PySeat extends ComputerPlayer {
         return m.getAny() > 0 ? 1 : m.getColor(c);
     }
 
-    private boolean payStep(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game, boolean creatures) {
+    /** The unpaid symbols this payer handles, coloured before generic. */
+    private static List<mage.abilities.costs.mana.ManaCost> unpaidSymbols(mage.abilities.costs.mana.ManaCost unpaid) {
         List<mage.abilities.costs.mana.ManaCost> symbols = new ArrayList<>();
         if (unpaid instanceof mage.abilities.costs.mana.ManaCosts) symbols.addAll((mage.abilities.costs.mana.ManaCosts<mage.abilities.costs.mana.ManaCost>) unpaid);
         else symbols.add(unpaid);
         symbols.removeIf(c -> c.isPaid() || c instanceof mage.abilities.costs.mana.VariableManaCost || c.isPhyrexian());
         symbols.sort(Comparator.comparingInt(c -> c instanceof mage.abilities.costs.mana.GenericManaCost ? 1 : 0));
+        return symbols;
+    }
+
+    /** Payment tiers: v1 noncreatures (0) then creatures (1); v2 lands (0), other noncreatures (1), creatures (2). */
+    private boolean inTier(MageObject o, int tier, Game game) {
+        if (!payerV2) return o.isCreature(game) == (tier == 1) && tier < 2;
+        return tier == (o.isLand(game) ? 0 : o.isCreature(game) ? 2 : 1);
+    }
+
+    /**
+     * payerV2, before anything else: mana that may only be spent on some things (Creeping Peeper's "only to cast an
+     * enchantment spell, unlock a door, or turn a permanent face up", Overgrown Zealot's face-up-only {G}{G}) is spent
+     * whenever this ability may spend it, since it can pay little else. The batch 01-04 reviewers flagged games where
+     * the player planned to use it and the payer tapped lands instead, leaving a creature spell uncastable. Noncreature
+     * sources first; an ability making more mana than is still owed is skipped (the rest would be lost).
+     */
+    private boolean payRestricted(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game) {
+        List<mage.abilities.costs.mana.ManaCost> symbols = unpaidSymbols(unpaid);
+        int owed = unpaid.getMana().count();
+        List<MageObject> sources = new ArrayList<>(super.getAvailableManaProducers(game));
+        sources.removeIf(o -> o.getId().equals(ability.getSourceId()));
+        sources.sort(Comparator.comparingInt(o -> o.isCreature(game) ? 1 : 0));
+        for (mage.abilities.costs.mana.ManaCost symbol : symbols)
+            for (MageObject o : sources)
+                for (mage.abilities.mana.ActivatedManaAbilityImpl ma : o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game)) {
+                    mage.ConditionalMana r = restrictedMana(ma, game);
+                    if (r == null || !r.apply(ability, game, playerId, symbol)) continue;
+                    for (mage.Mana net : ma.getNetMana(game))
+                        if (net.count() <= owed && symbol.testPay(net) && activateAbility(ma, game)) return true;
+                }
+        return false;
+    }
+
+    private boolean payStep(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game, int tier) {
+        List<mage.abilities.costs.mana.ManaCost> symbols = unpaidSymbols(unpaid);
         if (symbols.isEmpty()) return false;
         boolean tapsSource = ability.getCosts().stream().anyMatch(c -> c instanceof mage.abilities.costs.common.TapSourceCost);
         int[] need = new int[COLOURS.length];  // coloured symbols of the other cards in hand, per colour
@@ -183,8 +234,9 @@ public class PySeat extends ComputerPlayer {
         Map<MageObject, int[]> keys = new HashMap<>();  // [need of its colours, colours it makes]
         List<MageObject> sources = new ArrayList<>();
         for (MageObject o : super.getAvailableManaProducers(game)) {
-            if (o.isCreature(game) != creatures) continue;
-            if (tapsSource && o.getId().equals(ability.getSourceId())) continue;
+            if (!inTier(o, tier, game)) continue;
+            // v2: never the paid ability's own source (Haunted Screen paid its own {7} and couldn't attack as a 7/7)
+            if ((tapsSource || payerV2) && o.getId().equals(ability.getSourceId())) continue;
             int needed = 0, colours = 0;
             for (int i = 0; i < COLOURS.length; i++) {
                 final int k = i;
@@ -325,6 +377,18 @@ public class PySeat extends ComputerPlayer {
             hand.add(costs);
             weights.add(c.isInstant(game) || c.getAbilities(game).containsClass(mage.abilities.keyword.FlashAbility.class) ? 3 : 1);
         }
+        // v2: what my permanents can still pay for counts too (unlocking a Room door, turning a face-down permanent
+        // up, equip, other activated abilities): reviewers saw generic costs paid with the colour such a plan needed
+        if (payerV2)
+            for (Permanent p : game.getBattlefield().getAllActivePermanents(playerId))
+                for (Ability a : p.getAbilities(game)) {
+                    if (!(a instanceof ActivatedAbility) || a.isManaAbility() || a.getId().equals(ability.getId())) continue;
+                    if (a.getSourceId().equals(ability.getSourceId()) && a.getRule().equals(ability.getRule())) continue;
+                    int[] wc = split(a.getManaCosts());
+                    if (wc == null || Arrays.stream(wc).sum() == 0) continue;
+                    hand.add(Collections.singletonList(wc));
+                    weights.add(1);
+                }
         int n = sources.size();
         long best = Long.MIN_VALUE;
         int bestSet = -1;
@@ -343,7 +407,12 @@ public class PySeat extends ComputerPlayer {
             int keep = 0;
             for (int h = 0; h < hand.size(); h++)
                 if (hand.get(h).stream().anyMatch(way -> canPay(way, rest))) keep += weights.get(h);
-            long score = ((long) keep << 32) - ((long) neededSum << 16) - coloursSum;
+            // v2: then the most colours still open, for plays the planner can't see (a card castable from exile or
+            // the graveyard, a card drawn this turn): Vicious Clown ({2}{R}) took both Plains with four Mountains open
+            int open = 0;
+            for (int m : rest) open |= m;
+            long score = payerV2 ? ((long) keep << 40) + ((long) Integer.bitCount(open) << 32) - ((long) neededSum << 16) - coloursSum
+                    : ((long) keep << 32) - ((long) neededSum << 16) - coloursSum;
             if (score > best) { best = score; bestSet = set; }
         }
         if (bestSet < 0) return Collections.emptySet();
@@ -625,6 +694,31 @@ public class PySeat extends ComputerPlayer {
     @Override
     public boolean chooseTarget(Outcome outcome, Target target, Ability source, Game game) {
         if (simulated(game)) return super.chooseTarget(outcome, target, source, game);
+        if (keepBeforeBottom && source == null && game.getTurnNum() <= 1 && game.getStep() == null
+                && target instanceof mage.target.common.TargetCardInHand && target.getMessage(game).contains("bottom of your library")) {
+            // XMage's London mulligan has the player bottom cards from the new seven before asking keep or mulligan
+            // (reviewers flagged it in three games). Ask keep first, on the seven; after a mulligan the bottom
+            // choice doesn't matter (the hand is shuffled away), so those cards go without asking. XMage asks for
+            // the bottom cards one call at a time, so the answer holds until chooseMulligan takes it.
+            if (bottomTo < 0 && (game.getMulligan() == null || game.getMulligan().canTakeMulligan(game, this))) {
+                int n = target.getMaxNumberOfTargets();
+                boolean[] mull = {false};
+                List<Option> opts = List.of(
+                        new Option("YES mulligan", null, null, () -> mull[0] = true).as("YES"),
+                        new Option("NO keep this hand", null, null, () -> {}).as("NO"));
+                pick("USE", "Mulligan? Your hand has " + getHand().size() + " cards (if you keep, you then put " + n
+                        + " of them on the bottom of your library)", game, opts, null);
+                mulliganAnswer = mull[0];
+                bottomTo = getHand().size() - n;
+            }
+            if (Boolean.TRUE.equals(mulliganAnswer)) {
+                for (UUID id : target.possibleTargets(playerId, null, game)) {
+                    if (target.getTargets().size() >= target.getMaxNumberOfTargets()) break;
+                    target.addTarget(id, null, game);
+                }
+                return target.isChosen(game);
+            }
+        }
         return chooseTargets("TARGET", target, source, game, true, null);
     }
 
@@ -868,9 +962,19 @@ public class PySeat extends ComputerPlayer {
         link.fallback.merge(kind, 1, Integer::sum);
     }
 
+    /** keepBeforeBottom: the keep-or-mulligan answer already given at the bottom step, for XMage's next chooseMulligan. */
+    private transient Boolean mulliganAnswer = null;
+    private transient int bottomTo = -1;  // hand size once the current bottom step is done, while it lasts
+
     @Override
     public boolean chooseMulligan(Game game) {
         if (simulated(game)) return super.chooseMulligan(game);
+        if (mulliganAnswer != null) {
+            boolean m = mulliganAnswer;
+            mulliganAnswer = null;
+            bottomTo = -1;
+            return m;
+        }
         // sent as a yes/no decision (USE) so it fits the existing decision and action vocabularies
         boolean[] mulligan = {false};
         List<Option> opts = List.of(
@@ -890,13 +994,25 @@ public class PySeat extends ComputerPlayer {
      */
     @Override
     public int announceX(int min, int max, String message, Game game, Ability source, boolean isManaPay) {
-        fallback("ANNOUNCE_X");
+        boolean ask = askX && isManaPay && source != null && !simulated(game);
+        if (!ask) fallback("ANNOUNCE_X");
         int x = super.announceX(min, max, message, game, source, isManaPay);
         if (!isManaPay || source == null) return x;
         int instances = 0;
         for (mage.abilities.costs.VariableCost v : source.getManaCostsToPay().getVariableCosts())
             if (v instanceof mage.abilities.costs.mana.VariableManaCost) instances += ((mage.abilities.costs.mana.VariableManaCost) v).getXInstancesCount();
-        return instances > 1 ? Math.max(min, x / instances) : x;
+        int most = instances > 1 ? Math.max(min, x / instances) : x;
+        if (!ask) return most;
+        // askX: X from min up to the most the untapped sources cover (XMage's own pick); in batch 03-04 the most was
+        // taken 27 times without asking, once decking the player with Valgavoth's Onslaught at X = 4
+        int[] picked = {Math.min(most, Math.max(min, 0))};
+        List<Option> opts = new ArrayList<>();
+        for (int k = Math.max(min, 0); k <= Math.max(most, Math.max(min, 0)); k++) {
+            int value = k;
+            opts.add(new Option("X = " + k, source.getSourceId(), null, () -> picked[0] = value).as("X").choice("x:" + k));
+        }
+        pick("X", "choose X for " + label(game, source.getSourceId()) + " (" + source.getManaCostsToPay().getText() + ")", game, opts, null);
+        return picked[0];
     }
 
     @Override
