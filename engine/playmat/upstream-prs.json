@@ -3,124 +3,127 @@
   "checks": [
    "SUCCESS"
   ],
-  "closedAt": null,
+  "closedAt": "2026-10-30T23:26:16Z",
   "comments": 0,
   "lastActivity": null,
-  "mergeable": "MERGEABLE",
-  "mergedAt": null,
+  "mergeable": "UNKNOWN",
+  "mergedAt": "2026-10-30T23:26:16Z",
   "others": [],
   "reviews": 0,
-  "state": "OPEN",
+  "state": "MERGED",
   "title": "Match: dim tapped permanents and count open lands on land stacks"
  },
  "106": {
   "checks": [
    "SUCCESS"
   ],
-  "closedAt": null,
+  "closedAt": "2026-10-30T23:26:21Z",
   "comments": 0,
   "lastActivity": null,
-  "mergeable": "MERGEABLE",
-  "mergedAt": null,
+  "mergeable": "UNKNOWN",
+  "mergedAt": "2026-10-30T23:26:20Z",
   "others": [],
   "reviews": 0,
-  "state": "OPEN",
+  "state": "MERGED",
   "title": "Launcher: accept extra browser origins from PLAYMAT_EXTRA_ORIGINS"
  },
  "107": {
   "checks": [
    "SUCCESS"
   ],
-  "closedAt": null,
+  "closedAt": "2026-10-30T23:30:46Z",
   "comments": 0,
   "lastActivity": null,
-  "mergeable": "MERGEABLE",
-  "mergedAt": null,
+  "mergeable": "UNKNOWN",
+  "mergedAt": "2026-10-30T23:30:46Z",
   "others": [],
   "reviews": 0,
-  "state": "OPEN",
+  "state": "MERGED",
   "title": "Deck builder: lay out the deck in columns by mana value"
  },
  "108": {
   "checks": [
    "SUCCESS"
   ],
-  "closedAt": null,
+  "closedAt": "2026-10-30T23:32:50Z",
   "comments": 0,
   "lastActivity": null,
-  "mergeable": "CONFLICTING",
-  "mergedAt": null,
+  "mergeable": "UNKNOWN",
+  "mergedAt": "2026-10-30T23:32:50Z",
   "others": [],
   "reviews": 0,
-  "state": "OPEN",
+  "state": "MERGED",
   "title": "Match: estimate combat while declaring attackers and blockers"
  },
  "109": {
   "checks": [
    "SUCCESS"
   ],
-  "closedAt": null,
+  "closedAt": "2026-10-30T23:27:57Z",
   "comments": 0,
   "lastActivity": null,
-  "mergeable": "MERGEABLE",
-  "mergedAt": null,
+  "mergeable": "UNKNOWN",
+  "mergedAt": "2026-10-30T23:27:57Z",
   "others": [],
   "reviews": 0,
-  "state": "OPEN",
+  "state": "MERGED",
   "title": "Match: warn about unblocked must-be-blocked attackers, and log the ser"
  },
  "110": {
   "checks": [
    "SUCCESS"
   ],
-  "closedAt": null,
+  "closedAt": "2026-10-30T23:29:06Z",
   "comments": 0,
   "lastActivity": null,
-  "mergeable": "MERGEABLE",
-  "mergedAt": null,
+  "mergeable": "UNKNOWN",
+  "mergedAt": "2026-10-30T23:29:05Z",
   "others": [],
   "reviews": 0,
-  "state": "OPEN",
+  "state": "MERGED",
   "title": "Match: signal triggered abilities on the board"
  },
  "111": {
   "checks": [
    "SUCCESS"
   ],
-  "closedAt": null,
+  "closedAt": "2026-10-30T23:42:31Z",
   "comments": 0,
   "lastActivity": null,
-  "mergeable": "MERGEABLE",
-  "mergedAt": null,
+  "mergeable": "UNKNOWN",
+  "mergedAt": "2026-10-30T23:42:30Z",
   "others": [],
   "reviews": 0,
-  "state": "OPEN",
+  "state": "MERGED",
   "title": "Match: explain keywords where they are printed, and show counters as s"
  },
  "112": {
   "checks": [
    "SUCCESS"
   ],
-  "closedAt": null,
+  "closedAt": "2026-10-30T23:49:08Z",
   "comments": 0,
   "lastActivity": null,
-  "mergeable": "MERGEABLE",
-  "mergedAt": null,
+  "mergeable": "UNKNOWN",
+  "mergedAt": "2026-10-30T23:49:07Z",
   "others": [],
   "reviews": 0,
-  "state": "OPEN",
+  "state": "MERGED",
   "title": "Match: keep revealed hand cards known and show a Room's unlocked doors"
  },
  "113": {
   "checks": [
+   "FAILURE",
    "SUCCESS"
   ],
   "closedAt": null,
-  "comments": 0,
-  "lastActivity": null,
-  "mergeable": "MERGEABLE",
+  "comments": 1,
+  "lastActivity": "2026-11-03T21:07:02Z",
+  "mergeable": "CONFLICTING",
   "mergedAt": null,
-  "others": [],
+  "others": [
+   "arcanite24"
+  ],
   "reviews": 0,
   "state": "OPEN",
   "title": "Match: library list, mana available and an AI thinking timer"

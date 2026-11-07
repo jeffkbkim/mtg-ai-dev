@@ -17,7 +17,7 @@ echo "pin $PIN"
 echo "new $NEW ($(git log -1 --format='%cd %s' --date=short "$NEW"))"
 [ "$PIN" = "$NEW" ] && { echo "no new commits"; exit 0; }
 echo "commits: $(git rev-list --count "$PIN..$NEW")"
-git log --format='  %h %ad %s' --date=short "$PIN..$NEW" | head -60
+git log --format='  %h %ad %s' --date=short "$PIN..$NEW" | sed -n '1,60p'
 
 area() {  # name, then paths
   local name=$1; shift

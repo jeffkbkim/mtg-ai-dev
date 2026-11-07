@@ -2,6 +2,31 @@
 
 Newest first. Written by the daily review (UPDATE.md).
 
+## 2026-11-07 (daily review) — HELD
+- PRs (check_upstream_prs.sh): #105-#112 MERGED upstream (dim tapped/open lands, extra origins, deck columns,
+  combat estimate, must-be-blocked warning, trigger signal, keyword help/counters, revealed hand/Rooms).
+  #113 (library list, mana available, AI thinking timer) OPEN, now CONFLICTING, CI failing (build jdk17, check);
+  1 comment from arcanite24 (2026-11-03): thanks for the PRs, contributors get a "debug duck" pet, asks for the
+  account name on playmat.deimos.studio to add it. No reply sent (waits for Jeff).
+- a33fb65 → dd3e223 (Playmat master, 2026-11-06): 729 commits, too many for one line each; areas: a new Rust engine
+  and Rust AI (rust/, shadow replays vs Java, ~27% of files), cards (392 card files, many XMage upstream fixes),
+  rules engine Mage/src/main (103 Java files, 97 commits: GameImpl, GameState, ZonesHandler, Exile, targets and
+  target pointers, Spell, PermanentImpl, NumberOfTriggersEvent, ZoneChangeGroupEvent removed, draft pick suggest,
+  DecisionLog/RustAiBridge traces, set ratings), XMage AI (ComputerPlayer -232 lines, ComputerPlayer6, RustHumanPlayer),
+  server (websocket APIs, TrustedHeaderAuth, accounts, support), web client (178 files, incl. our merged PRs),
+  launcher (Network.java), ops/web (Docker, Caddy, entrypoint, updater).
+- Gate: HOLD. (1) Rules-relevant changes under Mage/src/main (zones, exile, targets, triggers, game state).
+  (2) Two DSK cards we play changed: RootwiseSurvivor (75f4f1ae3d: becomes-creature keeps prior types) and
+  VeteranSurvivor (34ef616cd4, fix #16482: exile zone id by zone change counter); both look like fixes but change
+  rules behaviour. (3) Patch series: 0001-0002 apply, 0003 conflicts (stores/play.ts), 0004-0032 unchecked; with
+  #105-#112 merged upstream several patches likely duplicate upstream code and need Jeff to decide what to drop.
+  (4) Security pass not cleared: new TrustedHeaderAuth (login via proxy header), new outbound deck-import fetches
+  (rust playmat-platform deckimport: archidekt, mtgtop8, tcgplayer, manabox), Docker/Caddy/entrypoint/updater changes,
+  new AI module dependency (mage-player-human, provided). Need a proper read before moving the pin.
+- Also: update_upstream.sh died with SIGPIPE (exit 141) on `git log | head -60` under pipefail with >60 commits;
+  changed to `sed -n '1,60p'`.
+- No build, no tests, not deployed. Pin stays a33fb65.
+
 ## 2026-10-24 (by hand, Jeff asked)
 - 95974c0 → a33fb65 (Playmat master, 2026-10-23), 22 commits: keyboard play shortcuts and choice navigation,
   accidental-keyboard-choice guard, mana choices as symbol buttons (single mana abilities keep their confirmation),
