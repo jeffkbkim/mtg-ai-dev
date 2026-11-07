@@ -25,6 +25,23 @@ with 16 GB unified memory; GPU rental may be used later.
 
 Keep large data, checkpoints and secrets outside Git. Record experiment configuration, dataset version, seed and code commit. Update docs/plan.md and docs/decisions.md when material decisions change. Use separate branches for concurrent tasks.
 
+## Code style
+
+- Conventional (hanging) indentation, never visual alignment. When a call, literal or signature doesn't fit on one
+  line, break right after the opening bracket, indent the contents one level (4 spaces), one item per line when it
+  helps, and put the closing bracket on its own line at the indent of the line that opened it:
+
+      context_aware_actions = torch.cat(
+          (
+              action_embs,
+              action_ability,
+          ),
+          dim=-1,
+      )
+
+  Not continuation lines lined up under the opening bracket (`foo(a,` then `    b)` aligned to `a`), and not
+  f-strings split across lines aligned to the first one (Jeff, 2026-11-07).
+
 ## Mac mini heavy jobs
 
 The mini has 16 GB. On 2026-10-28 four 17lands turn-replay processes reached ~13 GB each while loading the replay data, and WindowServer hung, which logged the user out.
