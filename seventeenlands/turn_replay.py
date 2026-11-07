@@ -860,7 +860,7 @@ def run(args):
                 log.rename(log.with_suffix(f".failed{attempt}.log"))
                 time.sleep(random.uniform(5, 20))
             srv = socket.socket(); srv.bind(("127.0.0.1", 0)); srv.listen(1)
-            jvm = subprocess.Popen(["java", "-Xmx4g", "-Djava.awt.headless=true", "--add-opens=java.base/java.lang=ALL-UNNAMED", "-cp", cp,
+            jvm = subprocess.Popen(["java", *os.environ.get("REPLAY_JVM_OPTS", "").split(), "-Xmx4g", "-Djava.awt.headless=true", "--add-opens=java.base/java.lang=ALL-UNNAMED", "-cp", cp,
                                     "ReplayMatch", str(srv.getsockname()[1]), str(path)],
                                    cwd=RUNTIME, stdout=open(log, "w"), stderr=subprocess.STDOUT)
             srv.settimeout(5)
@@ -883,7 +883,9 @@ def run(args):
 
     def lines():
         for k in range(0, len(specs), args.chunk):
+            t = time.time()
             jvm, f = open_jvm(k // args.chunk, specs[k:k + args.chunk])
+            stats["t_jvm_start"] += time.time() - t
             CHAN["f"], CHAN["jvm"] = f, jvm
             for line in f:
                 yield line
@@ -1184,8 +1186,11 @@ def run(args):
     # 41 hours on one game. The rest of that JVM's chunk is given up (its games count as lost) and the run goes on.
     signal.signal(signal.SIGALRM, on_alarm)
     t0 = time.time()
+    t_wait = time.time()
     for line in lines():
+        stats["t_engine"] += time.time() - t_wait   # waiting on XMage (or starting it), per message
         signal.alarm(args.stall)
+        t_py = time.time()
         try:
             handle(line)
         except Stalled:
@@ -1194,6 +1199,9 @@ def run(args):
             CHAN["jvm"].kill()
         finally:
             signal.alarm(0)
+            stats["t_python"] += time.time() - t_py
+            stats["messages"] += 1
+            t_wait = time.time()
     finish()
 
 
