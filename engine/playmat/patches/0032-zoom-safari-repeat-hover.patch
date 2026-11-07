@@ -1,0 +1,76 @@
+--- a/Mage.Web.Client/src/app/ui/CardFace.tsx
++++ b/Mage.Web.Client/src/app/ui/CardFace.tsx
+@@ -93,7 +93,9 @@
+                 className={styles.image}
+                 src={src}
+                 alt={name}
+-                loading="lazy"
++                // mtg-ai: a large face is a zoom or detail, shown on purpose: Safari can leave a lazy picture in a
++                // floating layer unloaded
++                loading={size === 'large' ? 'eager' : 'lazy'}
+                 decoding="async"
+                 draggable={false}
+                 onLoad={() => {
+--- a/Mage.Web.Client/src/app/match/CardZoom.tsx
++++ b/Mage.Web.Client/src/app/match/CardZoom.tsx
+@@ -52,7 +52,10 @@
+     ?? (shown?.card.id ? stage.element?.querySelector(`[data-object-id="${CSS.escape(shown.card.id)}"]`) : null);
+   // a finger doesn't hover: on touch the card opens with a long press instead (the detail view)
+   const touch = lastPointerType() === 'touch';
+-  if (!shown || touch || detailOpen || !element || !element.isConnected || !element.matches(':hover')) return null;
++  // mtg-ai: a zoom anchored to its element (overlays, viewers, the log) ends with that element's pointerleave or its
++  // removal; Safari can leave ':hover' stale after an overlay opens or closes under a still pointer
++  const pointerOn = shown?.anchor ? true : !!element?.matches(':hover');
++  if (!shown || touch || detailOpen || !element || !element.isConnected || !pointerOn) return null;
+   const card = shown.card as PermanentView;
+   const back = card.secondCardFace;
+   const extra = details(card);
+--- /dev/null
++++ b/Mage.Web.Client/src/app/match/CardZoom.test.tsx
+@@ -0,0 +1,46 @@
++import { act, render } from '@testing-library/react';
++import { afterEach, describe, expect, test, vi } from 'vitest';
++import type { CardView } from '../../protocol/generated/views';
++import { CardZoom } from './CardZoom';
++import { useMatchUi } from './matchUi';
++
++// mtg-ai: the zoom for an anchored element (opening hand, zone viewers) shows on every hover, not only the first
++describe('CardZoom', () => {
++  afterEach(() => {
++    vi.useRealTimers();
++    act(() => useMatchUi.setState({ zoom: null }));
++  });
++
++  test('shows again on a second hover of the same card, without relying on :hover', () => {
++    vi.useFakeTimers();
++    const anchor = document.createElement('div');
++    document.body.appendChild(anchor);
++    // jsdom (like Safari after an overlay change) may not report :hover; an anchored zoom must not need it
++    anchor.matches = () => false;
++    const card = { id: 'b', name: 'Bear Trap', expansionSetCode: 'DSK', cardNumber: '243' } as CardView;
++    const { container } = render(<CardZoom />);
++    for (let round = 0; round < 3; round++) {
++      act(() => useMatchUi.getState().setZoom({ card, x: 100, y: 100, anchor }));
++      act(() => { vi.advanceTimersByTime(400); });
++      expect(container.querySelector('img, [class*="sleeve"]')).toBeTruthy();
++      act(() => useMatchUi.getState().setZoom(null));
++      expect(container.innerHTML).toBe('');
++    }
++    anchor.remove();
++  });
++
++  test('hides when the anchor is gone', () => {
++    vi.useFakeTimers();
++    const anchor = document.createElement('div');
++    document.body.appendChild(anchor);
++    const card = { id: 'c', name: 'Murder' } as CardView;
++    const { container } = render(<CardZoom />);
++    act(() => useMatchUi.getState().setZoom({ card, x: 10, y: 10, anchor }));
++    act(() => { vi.advanceTimersByTime(400); });
++    expect(container.innerHTML).not.toBe('');
++    act(() => anchor.remove());
++    act(() => useMatchUi.getState().setZoom({ card, x: 11, y: 11, anchor }));
++    act(() => { vi.advanceTimersByTime(400); });
++    expect(container.innerHTML).toBe('');
++  });
++});
