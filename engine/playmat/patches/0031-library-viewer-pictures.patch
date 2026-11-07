@@ -1,0 +1,118 @@
+--- a/Mage.Web.Client/src/core/game/libraryList.ts
++++ b/Mage.Web.Client/src/core/game/libraryList.ts
+@@ -19,3 +19,43 @@
+   return entries;
+ }
+ 
++/**
++ * mtg-ai: a printing for each library card, which the server leaves out (names only): the same card seen elsewhere
++ * in the game (battlefield, graveyard, exile), else its number in the set the player's other cards come from
++ * (public/data/set-numbers.json: DSK and FDN, from engine/vocab). Without one the picture is looked up by name, one
++ * request per card, which Scryfall may refuse when a whole library asks at once.
++ */
++export type SetNumbers = Readonly<Record<string, Readonly<Record<string, string>>>>;
++
++export interface Printing {
++  expansionSetCode: string;
++  cardNumber: string;
++}
++
++export function libraryPrinting(name: string, seen: ReadonlyMap<string, Printing>, numbers: SetNumbers | null, set: string | null): Printing | null {
++  const known = seen.get(name);
++  if (known) return known;
++  const number = set ? numbers?.[set]?.[name] : undefined;
++  return set && number ? { expansionSetCode: set, cardNumber: number } : null;
++}
++
++/** The set most of these printings come from (the player's deck), if any. */
++export function mainSet(printings: Iterable<Printing>): string | null {
++  const counts = new Map<string, number>();
++  for (const p of printings) counts.set(p.expansionSetCode, (counts.get(p.expansionSetCode) ?? 0) + 1);
++  let best: string | null = null;
++  for (const [set, n] of counts) if (best === null || n > (counts.get(best) ?? 0)) best = set;
++  return best;
++}
++
++let numbersPromise: Promise<SetNumbers | null> | null = null;
++let numbers: SetNumbers | null = null;
++
++/** The set-number table, fetched once (null until it arrives, or if it can't be had). */
++export function setNumbers(): SetNumbers | null {
++  numbersPromise ??= fetch('/data/set-numbers.json')
++    .then((response) => (response.ok ? response.json() as Promise<SetNumbers> : null))
++    .catch(() => null)
++    .then((table) => (numbers = table));
++  return numbers;
++}
+--- a/Mage.Web.Client/src/core/game/libraryList.test.ts
++++ b/Mage.Web.Client/src/core/game/libraryList.test.ts
+@@ -1,5 +1,5 @@
+ import { describe, expect, it } from 'vitest';
+-import { shuffledLibrary } from './libraryList';
++import { libraryPrinting, mainSet, shuffledLibrary } from './libraryList';
+ 
+ describe('shuffledLibrary (mtg-ai)', () => {
+   it('keeps every name and count, drops empty ones', () => {
+@@ -19,3 +19,17 @@
+   });
+ });
+ 
++describe('libraryPrinting (mtg-ai)', () => {
++  const numbers = { DSK: { 'Bear Trap': '243', Swamp: '274' } };
++  it('prefers the printing seen elsewhere in the game, else the set table', () => {
++    const seen = new Map([['Bear Trap', { expansionSetCode: 'DSK', cardNumber: '999' }]]);
++    expect(libraryPrinting('Bear Trap', seen, numbers, 'DSK')).toEqual({ expansionSetCode: 'DSK', cardNumber: '999' });
++    expect(libraryPrinting('Swamp', seen, numbers, 'DSK')).toEqual({ expansionSetCode: 'DSK', cardNumber: '274' });
++    expect(libraryPrinting('Unknown', seen, numbers, 'DSK')).toBeNull();
++    expect(libraryPrinting('Swamp', new Map(), null, 'DSK')).toBeNull();
++  });
++  it('takes the set most of the printings come from', () => {
++    expect(mainSet([{ expansionSetCode: 'DSK', cardNumber: '1' }, { expansionSetCode: 'DSK', cardNumber: '2' }, { expansionSetCode: 'FDN', cardNumber: '3' }])).toBe('DSK');
++    expect(mainSet([])).toBeNull();
++  });
++});
+--- a/Mage.Web.Client/src/app/match/Piles.tsx
++++ b/Mage.Web.Client/src/app/match/Piles.tsx
+@@ -7,7 +7,7 @@
+ import './matchMessages';
+ import { CardFace } from '../ui/CardFace';
+ import { cardKey } from './boardModel';
+-import { LIBRARY_ORDER_NOTE, shuffledLibrary } from '../../core/game/libraryList';
++import { LIBRARY_ORDER_NOTE, libraryPrinting, mainSet, setNumbers, shuffledLibrary, type Printing } from '../../core/game/libraryList';
+ import { useFlip, useFlipOrigin } from './flip';
+ import { useMatchUi } from './matchUi';
+ import styles from './Piles.module.css';
+@@ -25,6 +25,7 @@
+   const t = useT();
+   const openViewer = useMatchUi((state) => state.openViewer);
+   const libraryRef = useRef<HTMLButtonElement>(null);
++  if (isMe) setNumbers(); // mtg-ai: fetched once, ready before the library is opened
+   useFlipOrigin(`library:${player.playerId}`, libraryRef);
+   const graveyard = Object.values(player.graveyard ?? {});
+   const exile = Object.values(player.exile ?? {});
+@@ -33,7 +34,19 @@
+   // mtg-ai: your own library's cards (names and counts only, sent to you alone), shuffled on every opening
+   const openLibrary = () => {
+     const entries = shuffledLibrary(player.libraryCards);
+-    const cards = entries.map((entry, i): CardView => ({ id: `library-list-${i}`, name: entry.name, displayName: entry.name }));
++    // mtg-ai: a printing for each, so the pictures load like the other zones' (libraryList.ts)
++    const seen = new Map<string, Printing>();
++    for (const card of [...Object.values(player.battlefield ?? {}), ...graveyard, ...exile] as CardView[]) {
++      if (card.name && card.expansionSetCode && card.cardNumber && !card.isToken) seen.set(card.name, { expansionSetCode: card.expansionSetCode, cardNumber: card.cardNumber });
++    }
++    const set = mainSet(seen.values()) ?? 'DSK';
++    const table = setNumbers();
++    const cards = entries.map((entry, i): CardView => ({
++      id: `library-list-${i}`, name: entry.name, displayName: entry.name,
++      ...libraryPrinting(entry.name, seen, table, set),
++      // a Room is printed sideways (the zoom turns it)
++      ...(entry.name.includes(' // ') && set === 'DSK' ? { subTypes: ['ROOM'] } : {}),
++    }));
+     const counts = Object.fromEntries(entries.map((entry, i) => [`library-list-${i}`, entry.count]));
+     const top = player.topCard?.name ? ` · top card revealed: ${player.topCard.name}` : '';
+     openViewer({ title: `${name} library (${player.libraryCount ?? 0} cards)`, cards, counts, note: LIBRARY_ORDER_NOTE + top });
+--- /dev/null
++++ b/Mage.Web.Client/public/data/set-numbers.json
+@@ -0,0 +1 @@
++{"DSK":{"Abandoned Campground":"255","Abhorrent Oculus":"42","Acrobatic Cheerleader":"1","Altanak, the Thrice-Called":"166","Anthropede":"167","Appendage Amalgam":"83","Arabella, Abandoned Doll":"208","Attack-in-the-Box":"242","Balemurk Leech":"84","Balustrade Wurm":"168","Baseball Bat":"209","Bashful Beastie":"169","Bear Trap":"243","Beastie Beatdown":"210","Bedhead Beastie":"125","Betrayer's Bargain":"126","Blazemire Verge":"256","Bleeding Woods":"257","Boilerbilges Ripper":"127","Bottomless Pool // Locker Room":"43","Break Down the Door":"170","Broodspinner":"211","Cackling Slasher":"85","Cathartic Parting":"171","Cautious Survivor":"172","Central Elevator // Promising Stairs":"44","Chainsaw":"128","Charred Foyer // Warped Space":"129","Clammy Prowler":"45","Clockwork Percussionist":"130","Come Back Wrong":"86","Commune with Evil":"87","Conductive Machete":"244","Coordinated Clobbering":"173","Cracked Skull":"88","Creeping Peeper":"46","Cryptid Inspector":"174","Cult Healer":"2","Cursed Recording":"131","Cursed Windbreaker":"47","Cynical Loner":"89","Daggermaw Megalodon":"48","Dashing Bloodsucker":"90","Dazzling Theater // Prop Room":"3","Defiant Survivor":"175","Defiled Crypt // Cadaver Lab":"91","Demonic Counsel":"92","Derelict Attic // Widow's Walk":"93","Dissection Tools":"245","Disturbing Mirth":"212","Diversion Specialist":"132","Dollmaker's Shop // Porcelain Gallery":"4","Don't Make a Sound":"49","Doomsday Excruciator":"94","Drag to the Roots":"213","Duskmourn's Domination":"50","Emerge from the Cocoon":"5","Enduring Courage":"133","Enduring Curiosity":"51","Enduring Innocence":"6","Enduring Tenacity":"95","Enduring Vitality":"176","Enter the Enigma":"52","Entity Tracker":"53","Erratic Apparition":"54","Etched Cornfield":"258","Ethereal Armor":"7","Exorcise":"8","Fanatic of the Harrowing":"96","Fear of Abduction":"9","Fear of Being Hunted":"134","Fear of Burning Alive":"135","Fear of Exposure":"177","Fear of Failed Tests":"55","Fear of Falling":"56","Fear of Immobility":"10","Fear of Impostors":"57","Fear of Infinity":"214","Fear of Isolation":"58","Fear of Lost Teeth":"97","Fear of Missing Out":"136","Fear of Surveillance":"11","Fear of the Dark":"98","Final Vengeance":"99","Flesh Burrower":"178","Floodfarm Verge":"259","Floodpits Drowner":"59","Forest":"276","Found Footage":"246","Frantic Strength":"179","Friendly Ghost":"12","Friendly Teddy":"247","Funeral Room // Awakening Hall":"100","Get Out":"60","Ghost Vacuum":"248","Ghostly Dancers":"13","Ghostly Keybearer":"61","Give In to Violence":"101","Glassworks // Shattered Yard":"137","Glimmer Seeker":"14","Glimmerburst":"62","Glimmerlight":"249","Gloomlake Verge":"260","Grab the Prize":"138","Grand Entryway // Elegant Rotunda":"15","Grasping Longneck":"180","Greenhouse // Rickety Gazebo":"181","Gremlin Tamer":"215","Grievous Wound":"102","Growing Dread":"216","Hand That Feeds":"139","Hardened Escort":"16","Haunted Screen":"250","Hauntwoods Shrieker":"182","Hedge Shredder":"183","Horrid Vigor":"184","House Cartographer":"185","Hushwood Verge":"261","Impossible Inferno":"140","Infernal Phantom":"141","Innocuous Rat":"103","Inquisitive Glimmer":"217","Insidious Fungus":"186","Intruding Soulrager":"218","Irreverent Gremlin":"142","Island":"273","Jump Scare":"17","Kaito, Bane of Nightmares":"220","Keys to the House":"251","Killer's Mask":"104","Kona, Rescue Beastie":"187","Lakeside Shack":"262","Let's Play a Game":"105","Leyline of Hope":"18","Leyline of Mutation":"188","Leyline of Resonance":"143","Leyline of Transformation":"63","Leyline of the Void":"106","Lionheart Glimmer":"19","Live or Die":"107","Living Phone":"20","Malevolent Chandelier":"252","Manifest Dread":"189","Marina Vendrell":"221","Marina Vendrell's Grimoire":"64","Marvin, Murderous Mimic":"253","Meat Locker // Drowned Diner":"65","Meathook Massacre II":"108","Miasma Demon":"109","Midnight Mayhem":"222","Mirror Room // Fractured Realm":"67","Moldering Gym // Weight Room":"190","Monstrous Emergence":"191","Most Valuable Slayer":"144","Mountain":"275","Murder":"110","Murky Sewer":"263","Nashi, Searcher in the Dark":"223","Neglected Manor":"264","Niko, Light of Hope":"224","Norin, Swift Survivalist":"145","Nowhere to Run":"111","Oblivious Bookworm":"225","Omnivorous Flytrap":"192","Optimistic Scavenger":"21","Orphans of the Wheat":"22","Osseous Sticktwister":"112","Overgrown Zealot":"193","Overlord of the Balemurk":"113","Overlord of the Boilerbilges":"146","Overlord of the Floodpits":"68","Overlord of the Hauntwoods":"194","Overlord of the Mistmoors":"23","Painter's Studio // Defaced Gallery":"147","Paranormal Analyst":"69","Patched Plaything":"24","Patchwork Beastie":"195","Peculiar Lighthouse":"265","Peer Past the Veil":"226","Piggy Bank":"148","Piranha Fly":"70","Plains":"272","Popular Egotist":"114","Possessed Goat":"25","Pyroclasm":"149","Ragged Playmate":"150","Rampaging Soulrager":"151","Raucous Carnival":"266","Razorkin Hordecaller":"152","Razorkin Needlehead":"153","Razortrap Gorge":"267","Reluctant Role Model":"26","Restricted Office // Lecture Hall":"227","Resurrected Cultist":"115","Rip, Spawn Hunter":"228","Ripchain Razorkin":"154","Rite of the Moth":"229","Roaring Furnace // Steaming Sauna":"230","Rootwise Survivor":"196","Savior of the Small":"27","Saw":"254","Sawblade Skinripper":"231","Say Its Name":"197","Scorching Dragonfire":"156","Scrabbling Skullcrab":"71","Screaming Nemesis":"157","Seized from Slumber":"28","Shardmage's Rescue":"29","Sheltered by Ghosts":"30","Shepherding Spirits":"31","Shrewd Storyteller":"232","Shroudstomper":"233","Silent Hallcreeper":"72","Skullsnap Nuisance":"234","Slavering Branchsnapper":"198","Smoky Lounge // Misty Salon":"235","Spectral Snatcher":"116","Spineseeker Centipede":"199","Split Up":"32","Splitskin Doll":"33","Sporogenic Infection":"117","Stalked Researcher":"73","Stay Hidden, Stay Silent":"74","Strangled Cemetery":"268","Surgical Suite // Hospital Room":"34","Swamp":"274","Terramorphic Expanse":"269","The Jolly Balloon Man":"219","The Mindskinner":"66","The Rollercrusher Ride":"155","The Swarmweaver":"236","The Tale of Tamiyo":"75","The Wandering Rescuer":"41","Thornspire Verge":"270","Threats Around Every Corner":"200","Ticket Booth // Tunnel of Hate":"158","Toby, Beastie Befriender":"35","Trapped in the Screen":"36","Trial of Agony":"159","Tunnel Surveyor":"76","Turn Inside Out":"160","Twist Reality":"77","Twitching Doll":"201","Tyvar, the Pummeler":"202","Unable to Scream":"78","Undead Sprinter":"237","Under the Skin":"203","Underwater Tunnel // Slimy Aquarium":"79","Unholy Annex // Ritual Chamber":"118","Unidentified Hovership":"37","Unnerving Grasp":"80","Unsettling Twins":"38","Unstoppable Slasher":"119","Untimely Malfunction":"161","Unwanted Remake":"39","Unwilling Vessel":"81","Valgavoth's Faithful":"121","Valgavoth's Lair":"271","Valgavoth's Onslaught":"204","Valgavoth, Terror Eater":"120","Vanish from Sight":"82","Vengeful Possession":"162","Veteran Survivor":"40","Vicious Clown":"163","Victor, Valgavoth's Seneschal":"238","Vile Mutilator":"122","Violent Urge":"164","Walk-In Closet // Forgotten Cellar":"205","Waltz of Rage":"165","Wary Watchdog":"206","Wickerfolk Thresher":"207","Wildfire Wickerfolk":"239","Winter's Intervention":"123","Winter, Misanthropic Guide":"240","Withering Torment":"124","Zimone, All-Questioning":"241"},"FDN":{"Abrade":"188","Abyssal Harvester":"54","Adventuring Gear":"249","Aegis Turtle":"150","Aetherize":"151","Affectionate Indrik":"211","Ajani's Pridemate":"135","Ajani, Caller of the Pride":"134","Akroma's Memorial":"SPG:81","Alesha, Who Laughs at Fate":"115","Ambush Wolf":"98","An Offer You Can't Refuse":"160","Angel of Finality":"136","Anthem of Champions":"116","Apothecary Stomper":"99","Arahbo, the First Fang":"2","Arbiter of Woe":"55","Arcane Epiphany":"29","Archmage of Runes":"30","Armasaur Guide":"3","Ashroot Animist":"117","Authority of the Consuls":"137","Axgard Cavalry":"189","Bake into a Pie":"169","Balmor, Battlemage Captain":"237","Banishing Light":"138","Banner of Kinship":"127","Battlesong Berserker":"78","Beast-Kin Ranger":"100","Bigfin Bouncer":"31","Billowing Shriekmass":"56","Bite Down":"212","Blanchwood Armor":"213","Blasphemous Edict":"57","Bloodfell Caves":"259","Bloodthirsty Conqueror":"58","Bloom Tender":"SPG:79","Blossoming Sands":"260","Boltwave":"79","Brass's Bounty":"190","Brazen Scourge":"191","Brineborn Cutthroat":"152","Broken Wings":"214","Bulk Up":"80","Burglar Rat":"170","Burnished Hart":"250","Burst Lightning":"192","Bushwhack":"215","Cackling Prowler":"101","Campus Guide":"251","Cat Collector":"4","Cathar Commando":"139","Celestial Armor":"5","Cephalid Inkmage":"32","Chandra, Flameshaper":"81","Claws Out":"6","Clinquant Skymage":"33","Condemn":"SPG:74","Consuming Aberration":"238","Courageous Goblin":"82","Crackling Cyclops":"83","Crypt Feaster":"59","Crystal Barricade":"7","Curator of Destinies":"34","Dauntless Veteran":"8","Day of Judgment":"140","Dazzling Angel":"9","Diregraf Ghoul":"171","Dismal Backwater":"261","Divine Resilience":"10","Doubling Season":"216","Dragon Trainer":"84","Drake Hatcher":"35","Drakuseth, Maw of Flames":"193","Dreadwing Scavenger":"118","Dwynen's Elite":"218","Dwynen, Gilt-Leaf Daen":"217","Eager Trufflesnout":"102","Eaten Alive":"172","Electroduplicate":"85","Elementalist Adept":"36","Elenda, Saint of Dusk":"119","Elfsworn Giant":"103","Elvish Archdruid":"219","Elvish Regrower":"104","Embercleave":"SPG:77","Empyrean Eagle":"239","Erudite Wizard":"37","Essence Scatter":"153","Etali, Primal Storm":"194","Evolving Wilds":"262","Exemplar of Light":"11","Exsanguinate":"173","Extravagant Replication":"154","Faebloom Trick":"38","Fake Your Own Death":"174","Fanatical Firebrand":"195","Felidar Savior":"12","Felling Blow":"105","Fiend Artisan":"SPG:83","Fiendish Panda":"120","Fiery Annihilation":"86","Firebrand Archer":"196","Firespitter Whelp":"197","Fishing Pole":"128","Flamewake Phoenix":"198","Fleeting Distraction":"155","Fleeting Flight":"13","Forest":"280","Frenzied Goblin":"199","Garruk's Uprising":"220","Genesis Wave":"221","Ghalta, Primal Hunger":"222","Giada, Font of Hope":"141","Giant Growth":"223","Gleaming Barrier":"252","Gnarlid Colony":"224","Goblin Boarders":"87","Goblin Bushwhacker":"SPG:78","Goblin Negotiation":"88","Goblin Surprise":"200","Goldvein Pick":"253","Good-Fortune Unicorn":"240","Gorehorn Raider":"89","Grappling Kraken":"39","Grim Tutor":"SPG:76","Grow from the Ashes":"225","Guarded Heir":"14","Gutless Plunderer":"60","Hare Apparent":"15","Healer's Hawk":"142","Heartfire Immolator":"201","Helpful Hunter":"16","Herald of Eternal Dawn":"17","Heraldic Banner":"254","Hero's Downfall":"175","Heroic Reinforcements":"241","Hidetsugu's Second Rite":"202","High Fae Trickster":"40","High-Society Hunter":"61","Homunculus Horde":"41","Hungry Ghoul":"62","Icewind Elemental":"42","Imprisoned in the Moon":"156","Incinerating Blast":"90","Infernal Vessel":"63","Infestation Sage":"64","Inspiration from Beyond":"43","Inspiring Call":"226","Inspiring Paladin":"18","Involuntary Employment":"203","Island":"274","Joust Through":"19","Juggernaut":"255","Jungle Hollow":"263","Kaito, Cunning Infiltrator":"44","Kellan, Planar Trailblazer":"91","Kiora, the Rising Tide":"45","Koma, World-Eater":"121","Krenko, Mob Boss":"204","Kykar, Zephyr Awakener":"122","Lathril, Blade of the Elves":"242","Leyline Axe":"129","Lightshell Duo":"157","Liliana, Dreadhorde General":"176","Llanowar Elves":"227","Loot, Exuberant Explorer":"106","Luminous Rebuke":"20","Lunar Insight":"46","Macabre Waltz":"177","Make Your Move":"143","Marauding Blight-Priest":"178","Meteor Golem":"256","Micromancer":"158","Midnight Snack":"65","Mild-Mannered Librarian":"228","Mischievous Mystic":"47","Mischievous Pup":"144","Mocking Sprite":"159","Mossborn Hydra":"107","Mountain":"278","Muldrotha, the Gravetide":"243","Needletooth Pack":"108","Nessian Hornbeetle":"229","Nine-Lives Familiar":"66","Niv-Mizzet, Visionary":"123","Omniscience":"161","Overrun":"230","Painful Quandary":"179","Paradise Druid":"SPG:80","Perforating Artist":"124","Phyrexian Arena":"180","Pilfer":"181","Plains":"272","Preposterous Proportions":"109","Prideful Parent":"21","Progenitus":"244","Quakestrider Ceratops":"110","Quick-Draw Katana":"130","Quilled Greatwurm":"111","Raise the Past":"22","Ravenous Amulet":"131","Reassembling Skeleton":"182","Reclamation Sage":"231","Refute":"48","Resolute Reinforcements":"145","Revenge of the Rats":"67","Rise of the Dark Realms":"183","Rite of the Dragoncaller":"92","Rogue's Passage":"264","Ruby, Daring Tracker":"245","Rugged Highlands":"265","Run Away Together":"162","Rune-Scarred Demon":"184","Rune-Sealed Wall":"49","Sanguine Syphoner":"68","Savannah Lions":"146","Scavenging Ooze":"232","Scoured Barrens":"266","Scrawling Crawler":"132","Searslicer Goblin":"93","Secluded Courtyard":"267","Seeker's Folly":"69","Seismic Rupture":"205","Self-Reflection":"163","Serra Angel":"147","Shivan Dragon":"206","Sire of Seven Deaths":"1","Skyknight Squire":"23","Skyship Buccaneer":"50","Slagstorm":"207","Slumbering Cerberus":"94","Snakeskin Veil":"233","Solemn Simulacrum":"257","Soul-Shackled Zombie":"70","Soulstone Sanctuary":"133","Sower of Chaos":"95","Spectral Sailor":"164","Sphinx of Forgotten Lore":"51","Sphinx's Tutelage":"SPG:75","Spinner of Souls":"112","Spitfire Lagac":"208","Squad Rallier":"24","Stab":"71","Strix Lookout":"52","Stroke of Midnight":"148","Stromkirk Bloodthief":"185","Strongbox Raider":"96","Sun-Blessed Healer":"25","Sure Strike":"209","Swamp":"276","Swiftblade Vindicator":"246","Swiftfoot Boots":"258","Swiftwater Cliffs":"268","Sylvan Scavenging":"113","Tatyova, Benthic Druid":"247","Temporal Manipulation":"SPG:82","Think Twice":"165","Thornwood Falls":"269","Thousand-Year Storm":"248","Thrill of Possibility":"210","Time Stop":"166","Tinybones, Bauble Burglar":"72","Tolarian Terror":"167","Tragic Banshee":"73","Tranquil Cove":"270","Treetop Snarespinner":"114","Twinblade Blessing":"26","Twinflame Tyrant":"97","Uncharted Voyage":"53","Valkyrie's Call":"27","Vampire Gourmand":"74","Vampire Nighthawk":"186","Vampire Soulcaller":"75","Vanguard Seraph":"28","Vengeful Bloodwitch":"76","Vivien Reid":"234","Wardens of the Cycle":"125","Wary Thespian":"235","Wildwood Scourge":"236","Wind-Scarred Crag":"271","Witness Protection":"168","Youthful Valkyrie":"149","Zimone, Paradox Sculptor":"126","Zombify":"187","Zul Ashur, Lich Lord":"77"}}
+\ No newline at end of file
