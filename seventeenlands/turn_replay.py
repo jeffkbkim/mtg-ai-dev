@@ -1127,6 +1127,12 @@ def run(args):
                 sc_ = cur["sc"]
                 before = len(sc_.taken) if sc_ is not None else 0
                 reply["choice"] = answer(msg, cur["sc"], cur["rec"], names)
+                # B (the opponent) with nothing left to do this turn: it only passes, so let the engine pass its later
+                # priorities itself (A's passes stay: they are training rows)
+                if (msg["kind"] == "PRIORITY" and msg["seat"] == "B" and sc_ is not None
+                        and msg["options"][reply["choice"]].get("action") == "PASS"
+                        and not any(+sc_.todo["B"][k] for k in ("lands", "spells", "abilities"))):
+                    reply["idle"] = True
                 fixed_label = EXTRA.pop("_label", None)
                 reply.update(EXTRA)
                 if args.rows and msg["seat"] == "A":

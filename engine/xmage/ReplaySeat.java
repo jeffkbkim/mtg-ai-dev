@@ -21,6 +21,8 @@ import java.util.*;
  *  - sync points: at the active player's first priority in upkeep a {"type":"turn_start"} message, and in the end
  *    step a {"type":"eot"} message carrying the true state of both players (hands, battlefields, life ...) for
  *    Python to compare with the recorded end of turn. These go out even when the seat has nothing to decide;
+ *  - idle: a reply with {"idle": true} to a priority decision passes this seat's later priorities this turn without
+ *    asking (until a rewind), when the record has nothing left for it to do.
  *  - end: a reply with {"concede": "A"} makes that seat concede at the next priority, once the record has run out.
  *  - rewind: a reply with {"rollback": true} sends the game back to the start of the current turn (XMage's own
  *    turn rollback), so Python can try another reading of the record.
@@ -37,6 +39,7 @@ public class ReplaySeat extends PySeat {
         Map<String, List<String>> queue = new HashMap<>();   // seat name -> names it draws next, in order
         Map<String, Integer> pos = new HashMap<>();
         Set<String> resetOnShuffle = new HashSet<>();
+        Set<String> idle = new HashSet<>();                // "seat/turn/rollbacks": pass that seat's priority without asking
         boolean started;                                   // first priority reached: mulligans are over
         long seed;                                         // XMage's random generator is reseeded from this each turn
         String gameId = "";                                // the record's id, sent with every message
@@ -91,6 +94,7 @@ public class ReplaySeat extends PySeat {
         if (reply.has("rollback") && reply.get("rollback").getAsBoolean()) shared.rollback = true;
         if (reply.has("fix")) fix(reply.getAsJsonObject("fix"), game);
         if (reply.has("concede")) shared.concede = reply.get("concede").getAsString();
+        if (reply.has("idle") && reply.get("idle").getAsBoolean()) shared.idle.add(getName() + "/" + game.getTurnNum() + "/" + shared.rollbacks);
     }
 
     /**
@@ -385,6 +389,14 @@ public class ReplaySeat extends PySeat {
                 onReply(send(msg), game);
                 if (shared.rollback) return priority(game);
             }
+        }
+        // the record has nothing left for this seat this turn, and Python said so: pass without listing its moves or
+        // building an observation, which is most of XMage's time (profile 2026-11-07). A rewind changes the key.
+        if (shared.idle.contains(getName() + "/" + game.getTurnNum() + "/" + shared.rollbacks)) {
+            game.getState().setPriorityPlayerId(playerId);
+            game.firePriorityEvent(playerId);
+            pass(game);
+            return false;
         }
         return super.priority(game);
     }

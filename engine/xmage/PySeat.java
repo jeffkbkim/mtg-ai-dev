@@ -600,11 +600,12 @@ public class PySeat extends ComputerPlayer {
      * are added back after its list; cards in hand and elsewhere are listed as before.
      */
     private List<ActivatedAbility> playable(Game game) {
-        List<ActivatedAbility> list = new ArrayList<>(getPlayable(game, true));
+        // one call with duplicates kept (it used to be a deduplicated call plus this one, and each call costs a full
+        // pass over every card and mana option: half of XMage's time in the replay, profile 2026-11-07)
+        List<ActivatedAbility> list = new ArrayList<>();
         Set<UUID> ids = new HashSet<>();
-        for (ActivatedAbility a : list) ids.add(a.getId());
         for (ActivatedAbility a : getPlayable(game, true, mage.constants.Zone.ALL, false))
-            if (game.getPermanent(a.getSourceId()) != null && ids.add(a.getId())) list.add(a);
+            if (ids.add(a.getId())) list.add(a);
         return list;
     }
 

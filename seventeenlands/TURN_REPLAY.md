@@ -298,3 +298,28 @@ block search; combat_pairing from batch ~3 on). No filler: turn-0 rows are mulli
 from batch 55 (each batch slowed from ~68 to ~83 min, so 4 barely helps). With the first two runs, after dropping their
 filler: about 3.2M real rows from 150k games. Replay is paused after this run (`turn_replay/NO_NEXT_RUN`) so the mini is
 free for policy evaluation.
+
+## Speedups, 2026-11-07 (A/B on the same 60 games, seed 8888, one worker beside a 3-worker run)
+
+Profile (Java Flight Recorder, 20 games): 94% of the time waits on XMage. Inside it, about half listed legal moves
+(`PySeat.playable` called `getPlayable` twice per priority), 17% built observations, 11% was starting a JVM every
+10 games, under 5% was rewinds. Changes:
+1. `PySeat.playable`: one `getPlayable(ALL, keep duplicates)` call instead of a deduplicated call plus that one.
+   Shared by the replay, Claude-vs-Claude and Playmat's Claude seat.
+2. The opponent (seat B) with nothing left in the record this turn: Python replies `idle`, and `ReplaySeat` passes
+   its later priorities itself. The 17lands player's passes are training rows, so A is always asked.
+3. `--chunk 25`: a new JVM every 25 games instead of 10.
+
+| | old | new |
+|---|---:|---:|
+| Wall time, 60 games | 561 s | 416 s (-26%, 1.35x) |
+| Starting JVMs | 90 s | 52 s |
+| Messages | 139,423 | 132,614 |
+| Turns reproduced, clean | 90% | 90% |
+| Turn outcomes identical | | 975 of 991 |
+| Legal-move lists identical (matched positions) | | 1,926 of 1,931 |
+
+The replay isn't exactly repeatable (XMage's ids and library order are random): two runs of the old code on the same
+20 games differed in 3 games. The 5 differing legal-move lists are one game where a card cast from exile was a
+different random card. No rules difference was found. After the changes: 37% legal moves, 25% observations,
+25% the engine's own game loop.
