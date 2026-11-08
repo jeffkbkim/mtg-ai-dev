@@ -35,7 +35,7 @@ public class TwoSeatMatch {
                 MulliganType.GAME_DEFAULT.getMulligan(0), 40, 20, 7);
             Match match = new TwoPlayerMatch(new MatchOptions("two seat match", "Two Player Duel", false));
             PySeat[] seats = {new PySeat("A", links[0]), new PySeat("B", links[1])};
-            for (PySeat seat : seats) seat.payerV2 = seat.askX = seat.keepBeforeBottom = true;  // see PySeat.payerV2
+            for (PySeat seat : seats) seat.payerV2 = seat.askX = seat.keepBeforeBottom = seat.costlyManaAsk = true;  // see PySeat.payerV2, costlyManaAsk
             String[] decks = {deckA, deckB};
             for (int s = 0; s < 2; s++) {
                 seats[s].setTestMode(true);

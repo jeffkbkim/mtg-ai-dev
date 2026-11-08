@@ -223,6 +223,10 @@ public final class Observer {
             g.addProperty(who + "_hand", p.getHandCount());
             g.addProperty(who + "_library", p.getLibraryCount());
             g.addProperty(who + "_graveyard", p.getGraveyard().size());
+            // mana floating in the pool (public); only when there is some, so other observations stay as they were
+            mage.players.Player pl = game.getPlayer(p.getPlayerId());
+            String pool = pl == null ? "" : poolText(pl.getManaPool());
+            if (!pool.isEmpty()) g.addProperty(who + "_pool", pool);
         }
         g.addProperty("stack_size", view.getStack().size());
         // lands the active player has played this turn (land drops, not lands put onto the battlefield by effects)
@@ -530,6 +534,17 @@ public final class Observer {
     static String withoutTypeOption(String text, String type) {
         String quoted = java.util.regex.Pattern.quote(type);
         return text.replaceAll("\"label\"\\s*:\\s*\"" + quoted + "\"", "").replaceAll("\"choice:" + quoted + "\"", "");
+    }
+
+    /** The pool as mana symbols, e.g. "{B}{B}{B}"; restricted mana is marked "(restricted)". Empty when empty. */
+    static String poolText(mage.players.ManaPool pool) {
+        StringBuilder sb = new StringBuilder();
+        mage.Mana m = pool.getMana();
+        String[] sym = {"W", "U", "B", "R", "G", "C"};
+        int[] n = {m.getWhite(), m.getBlue(), m.getBlack(), m.getRed(), m.getGreen(), m.getColorless()};
+        for (int i = 0; i < sym.length; i++) for (int k = 0; k < n[i]; k++) sb.append('{').append(sym[i]).append('}');
+        for (mage.ConditionalMana c : pool.getConditionalMana()) sb.append(sb.length() > 0 ? " " : "").append(c.toString()).append(" (restricted)");
+        return sb.toString();
     }
 
     private static Set<String> rulesWords;

@@ -38,6 +38,13 @@ using as extra training data or as an opponent.
   any non-PASS choice while either player is at 8 life or less, the player is asked (same conversation) for the
   opponent's best answer and a final choice. Each such decision records `self_check` (first choice, whether it
   changed); about 19% of model decisions in the plan-pairs batches would have been checked.
+- Arena Powered Cube (2025 run): `cube_deck_pool.py` writes `engine/xmage/decks/cube-2025/` (decks of 17lands drafters
+  with a long-run win rate bucket >= 0.60, at most 3 per colour combination) and, with `--plans`, a short game plan per
+  deck written once by Claude (`cube_NN.plan.md`, put at the end of that seat's system prompt). A deck whose name line
+  starts with `cube` is a Cube deck (`deck_set`): primer `primer/cube_meta_v2.md` (v2 only; no card roles; reminder
+  text kept), Cube mana rules (`CUBE_RULES`: Black Lotus-style mana is the player's to activate), no DSK opponent-tricks
+  line in Facts. Card text: `engine/vocab/cube_card_text.json` (both faces, loyalty). Research and coverage:
+  `/mnt/project-files/notes/arena-cube/README.md`.
 - `summarize.py`: results, and per decision / per game time, tokens and cost.
 - `deck_pool.py`: builds real drafted decks from 17lands game data (`engine/xmage/decks/17lands/`, `17lands-r2/`).
 - `ab_report.py`: compares player variants (e.g. lessons on vs off) across runs: wins with a 95% interval, per

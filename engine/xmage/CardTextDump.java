@@ -22,9 +22,23 @@ public class CardTextDump {
             c.addProperty("types", ci.getTypes().toString() + (ci.getSubTypes().isEmpty() ? "" : " - " + ci.getSubTypes()));
             c.addProperty("rarity", String.valueOf(ci.getRarity()));
             if (card.isCreature()) c.addProperty("pt", card.getPower().getValue() + "/" + card.getToughness().getValue());
+            if (card.isPlaneswalker() && card.getStartingLoyalty() >= 0) c.addProperty("loyalty", card.getStartingLoyalty());
             JsonArray rules = new JsonArray();
             for (String r : card.getRules()) rules.add(r.replaceAll("<[^>]+>", "").replace("&mdash;", "-"));
             c.add("rules", rules);
+            Card back = card.getSecondCardFace();  // transforming and modal double-faced cards (Cube): the other face
+            if (back != null) {
+                JsonObject b = new JsonObject();
+                b.addProperty("name", back.getName());
+                b.addProperty("cost", back.getManaCost().getText());
+                b.addProperty("types", back.getCardType().toString() + (back.getSubtype().isEmpty() ? "" : " - " + back.getSubtype()));
+                if (back.isCreature()) b.addProperty("pt", back.getPower().getValue() + "/" + back.getToughness().getValue());
+                if (back.isPlaneswalker() && back.getStartingLoyalty() >= 0) b.addProperty("loyalty", back.getStartingLoyalty());
+                JsonArray br = new JsonArray();
+                for (String r : back.getRules()) br.add(r.replaceAll("<[^>]+>", "").replace("&mdash;", "-"));
+                b.add("rules", br);
+                c.add("back", b);
+            }
             if (card instanceof mage.cards.SplitCard) {
                 mage.cards.SplitCard s = (mage.cards.SplitCard) card;
                 for (Card half : new Card[]{s.getLeftHalfCard(), s.getRightHalfCard()}) {

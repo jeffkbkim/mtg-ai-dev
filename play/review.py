@@ -15,7 +15,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from players import SET_NAMES, deck_set, read_deck
+from players import CUBE_RULES, SET_NAMES, deck_set, read_deck
 from render import card_text, clean, load_card_text, names_in, option_label, render
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -68,6 +68,8 @@ def review_rules(deck_path):
     """REVIEW_RULES naming the set of the deck (written for DSK, identical for DSK decks) and its sha."""
     s = deck_set(deck_path)
     rules = REVIEW_RULES.replace("Duskmourn (DSK)", f"{SET_NAMES[s]} ({s})")
+    if s == "CUBE":  # the player was told this about mana; the reviewer needs it too
+        rules = rules.replace("Mana is paid automatically, and", "Mana is paid automatically (see below), and") + "\n\n" + CUBE_RULES
     return rules, hashlib.sha256(rules.encode()).hexdigest()[:12]
 
 

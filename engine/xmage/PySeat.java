@@ -92,6 +92,7 @@ public class PySeat extends ComputerPlayer {
         this.payerV2 = player.payerV2;
         this.askX = player.askX;
         this.keepBeforeBottom = player.keepBeforeBottom;
+        this.costlyManaAsk = player.costlyManaAsk;
     }
 
     /**
@@ -103,6 +104,50 @@ public class PySeat extends ComputerPlayer {
      * bottom choice (XMage asks bottom first).
      */
     public transient boolean payerV2 = false, askX = false, keepBeforeBottom = false;
+
+    /**
+     * Cube (Arena Powered Cube) seats: mana abilities with a cost beyond {T} and mana (Black Lotus, Lotus Petal, Lion's
+     * Eye Diamond, Chromatic Star, Treasure, exert, counters: manaCostClass 2) are never used by the automatic payer;
+     * they are offered at priority as ACTIVATE options instead, so the player decides when to spend them and the mana
+     * waits in the pool. Painful mana (pay life, or damage to you: Talismans, Ancient Tomb, Mana Confluence; class 1)
+     * is used only when painless sources can't pay. Without it the payer sacrificed whatever made the mana it needed.
+     */
+    public transient boolean costlyManaAsk = false;
+    private transient int manaCostLimit = 2;  // while paying: the highest manaCostClass the payer may use
+    private transient boolean choosingOwnMana = false;
+    private transient boolean noOverpay = false;  // costlyManaAsk pass: skip mana abilities making more than is owed  // activating a playerManaAbility: its colour choice is the player's
+
+    /** 0: only {T} (and mana) as cost and no damage to you; 1: pay life or damage to you; 2: any other cost. */
+    static int manaCostClass(mage.abilities.mana.ActivatedManaAbilityImpl ma) {
+        int k = 0;
+        for (mage.abilities.costs.Cost c : ma.getCosts()) {
+            if (c instanceof mage.abilities.costs.common.TapSourceCost || c instanceof mage.abilities.costs.mana.ManaCost) continue;
+            if (c instanceof mage.abilities.costs.common.PayLifeCost) { k = 1; continue; }
+            return 2;
+        }
+        for (mage.abilities.effects.Effect e : ma.getEffects())
+            if (e instanceof mage.abilities.effects.common.DamageControllerEffect) k = 1;
+        return k;
+    }
+
+    /** Whether the automatic payer may use this mana ability now. */
+    private boolean payerMayUse(mage.abilities.mana.ActivatedManaAbilityImpl ma) {
+        return !costlyManaAsk || manaCostClass(ma) <= manaCostLimit;
+    }
+
+    /** A mana ability the player activates by choice (offered at priority) rather than the payer. */
+    private boolean playerManaAbility(ActivatedAbility a) {
+        return costlyManaAsk && a instanceof mage.abilities.mana.ActivatedManaAbilityImpl
+                && manaCostClass((mage.abilities.mana.ActivatedManaAbilityImpl) a) == 2;
+    }
+
+    /** The source has a mana ability the payer may use. */
+    private boolean payerMayUse(MageObject o, Game game) {
+        if (!costlyManaAsk) return true;
+        for (mage.abilities.mana.ActivatedManaAbilityImpl ma : o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game))
+            if (payerMayUse(ma)) return true;
+        return false;
+    }
 
     @Override
     public PySeat copy() {
@@ -160,7 +205,19 @@ public class PySeat extends ComputerPlayer {
         boolean outer = payingMana;
         payingMana = true;
         try {
-            if (payerV2 ? payRestricted(ability, unpaid, game) || payStep(ability, unpaid, game, 0) || payStep(ability, unpaid, game, 1)
+            if (costlyManaAsk) {
+                // painless sources first, then painful ones; class-2 mana is never the payer's (manaCostClass)
+                // and, at each, first without making more mana than is owed (Sol Ring, Mana Vault for {1})
+                for (int pass = 0; pass < 4; pass++) {
+                    manaCostLimit = pass / 2;
+                    noOverpay = pass % 2 == 0;
+                    if (payRestricted(ability, unpaid, game) || noOverpay && payExact(ability, unpaid, game)
+                            || payStep(ability, unpaid, game, 0) || payStep(ability, unpaid, game, 1)
+                            || payStep(ability, unpaid, game, 2)) return true;
+                }
+                manaCostLimit = 1;  // XMage's payer below sees only sources with mana the payer may use
+                noOverpay = false;
+            } else if (payerV2 ? payRestricted(ability, unpaid, game) || payStep(ability, unpaid, game, 0) || payStep(ability, unpaid, game, 1)
                     || payStep(ability, unpaid, game, 2)
                     : payStep(ability, unpaid, game, 0) || payStep(ability, unpaid, game, 1)) return true;
             skipCreatureMana = true;
@@ -172,6 +229,8 @@ public class PySeat extends ComputerPlayer {
             return super.playManaHandling(ability, unpaid, game);
         } finally {
             payingMana = outer;
+            manaCostLimit = 2;
+            noOverpay = false;
         }
     }
 
@@ -213,11 +272,30 @@ public class PySeat extends ComputerPlayer {
         for (mage.abilities.costs.mana.ManaCost symbol : symbols)
             for (MageObject o : sources)
                 for (mage.abilities.mana.ActivatedManaAbilityImpl ma : o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game)) {
+                    if (!payerMayUse(ma)) continue;
                     mage.ConditionalMana r = restrictedMana(ma, game);
                     if (r == null || !r.apply(ability, game, playerId, symbol)) continue;
                     for (mage.Mana net : ma.getNetMana(game))
                         if (net.count() <= owed && symbol.testPay(net) && activateAbility(ma, game)) return true;
                 }
+        return false;
+    }
+
+    /**
+     * costlyManaAsk: an all-generic cost of two or more paid by one ability making exactly that much (Sol Ring for {2},
+     * Mana Vault for {3}), so lands stay untapped; lands-first tiers otherwise took a Plains, then the Sol Ring.
+     */
+    private boolean payExact(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game) {
+        int owed = unpaid.getMana().count();
+        if (owed < 2 || unpaid.getMana().getGeneric() != owed) return false;
+        for (MageObject o : super.getAvailableManaProducers(game)) {
+            if (o.getId().equals(ability.getSourceId())) continue;
+            for (mage.abilities.mana.ActivatedManaAbilityImpl ma : o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game)) {
+                if (!payerMayUse(ma) || restrictedMana(ma, game) != null) continue;
+                for (mage.Mana net : ma.getNetMana(game))
+                    if (net.count() == owed && !(net instanceof mage.ConditionalMana) && activateAbility(ma, game)) return true;
+            }
+        }
         return false;
     }
 
@@ -234,14 +312,14 @@ public class PySeat extends ComputerPlayer {
         Map<MageObject, int[]> keys = new HashMap<>();  // [need of its colours, colours it makes]
         List<MageObject> sources = new ArrayList<>();
         for (MageObject o : super.getAvailableManaProducers(game)) {
-            if (!inTier(o, tier, game)) continue;
+            if (!inTier(o, tier, game) || !payerMayUse(o, game)) continue;
             // v2: never the paid ability's own source (Haunted Screen paid its own {7} and couldn't attack as a 7/7)
             if ((tapsSource || payerV2) && o.getId().equals(ability.getSourceId())) continue;
             int needed = 0, colours = 0;
             for (int i = 0; i < COLOURS.length; i++) {
                 final int k = i;
                 boolean makes = o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game).stream()
-                        .anyMatch(ma -> ma.getNetMana(game).stream().anyMatch(m -> amount(m, COLOURS[k]) > 0));
+                        .anyMatch(ma -> payerMayUse(ma) && ma.getNetMana(game).stream().anyMatch(m -> amount(m, COLOURS[k]) > 0));
                 if (makes) { needed += need[i]; colours++; }
             }
             keys.put(o, new int[]{needed, colours});
@@ -255,6 +333,7 @@ public class PySeat extends ComputerPlayer {
                 List<mage.abilities.mana.ActivatedManaAbilityImpl> abilities = new ArrayList<>();
                 Set<mage.abilities.mana.ActivatedManaAbilityImpl> restricted = Collections.newSetFromMap(new IdentityHashMap<>());
                 for (mage.abilities.mana.ActivatedManaAbilityImpl ma : o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game)) {
+                    if (!payerMayUse(ma)) continue;
                     mage.ConditionalMana r = restrictedMana(ma, game);
                     if (r != null && !r.apply(ability, game, playerId, symbol)) continue;
                     if (r != null) restricted.add(ma);
@@ -268,6 +347,7 @@ public class PySeat extends ComputerPlayer {
                     for (mage.Mana net : ma.getNetMana(game)) {
                         if (net instanceof mage.ConditionalMana && !((mage.ConditionalMana) net).apply(ability, game, playerId, symbol)) continue;
                         if (!symbol.testPay(net)) continue;
+                        if (noOverpay && net.count() > unpaid.getMana().count()) continue;
                         if (activateAbility(ma, game)) return true;
                     }
                 }
@@ -280,6 +360,7 @@ public class PySeat extends ComputerPlayer {
     private int colourMask(MageObject o, Ability ability, mage.abilities.costs.mana.ManaCost symbol, Game game) {
         int mask = 0;
         for (mage.abilities.mana.ActivatedManaAbilityImpl ma : o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game)) {
+            if (!payerMayUse(ma)) continue;
             mage.ConditionalMana r = restrictedMana(ma, game);
             if (r != null && !r.apply(ability, game, playerId, symbol)) continue;
             for (mage.Mana net : ma.getNetMana(game)) {
@@ -425,6 +506,7 @@ public class PySeat extends ComputerPlayer {
     public List<MageObject> getAvailableManaProducers(Game game) {
         List<MageObject> producers = super.getAvailableManaProducers(game);
         if (skipCreatureMana) producers.removeIf(o -> o.isCreature(game));
+        if (payingMana && costlyManaAsk) producers.removeIf(o -> !payerMayUse(o, game));
         return producers;
     }
 
@@ -432,6 +514,7 @@ public class PySeat extends ComputerPlayer {
     public List<Permanent> getAvailableManaProducersWithCost(Game game) {
         List<Permanent> producers = super.getAvailableManaProducersWithCost(game);
         if (skipCreatureMana) producers.removeIf(o -> o.isCreature(game));
+        if (payingMana && costlyManaAsk) producers.removeIf(o -> !payerMayUse(o, game));
         return producers;
     }
 
@@ -561,7 +644,7 @@ public class PySeat extends ComputerPlayer {
         ActivatedAbility[] chosen = {null};
         opts.add(new Option("PASS", null, null, () -> passed[0] = true).as("PASS"));
         for (ActivatedAbility a : playable(game)) {
-            if (a.isManaAbility() || failedThisWindow.contains(moveKey(a))) continue;
+            if ((a.isManaAbility() && !playerManaAbility(a)) || failedThisWindow.contains(moveKey(a))) continue;
             if (resources(game).equals(refusedAt.get(moveKey(a)))) continue;
             if (a instanceof mage.abilities.keyword.CrewAbility && !canCrew(a, game)) continue;
             Option o = new Option(a.getAbilityType() + " | " + label(game, a.getSourceId()) + " | " + a, a.getSourceId(), null, () -> chosen[0] = a);
@@ -583,7 +666,14 @@ public class PySeat extends ComputerPlayer {
         }
         String before = resources(game);
         int askedBefore = link.asked.values().stream().mapToInt(Integer::intValue).sum();
-        if (!activateAbility(chosen[0], game)) {
+        boolean activated;
+        choosingOwnMana = playerManaAbility(chosen[0]);
+        try {
+            activated = activateAbility(chosen[0], game);
+        } finally {
+            choosingOwnMana = false;
+        }
+        if (!activated) {
             boolean askedSomething = link.asked.values().stream().mapToInt(Integer::intValue).sum() > askedBefore;
             // refused after this seat made choices (a target, a cost option): another choice might work, so only
             // drop it for this window. Refused with no choices: it can't work until something changes.
@@ -761,7 +851,8 @@ public class PySeat extends ComputerPlayer {
         // mana colour choices belong to the autopayer (v1: autotap). XMage flags every colour choice as a mana one
         // (ChoiceColor sets it), so tell them apart by what asks: a mana effect (PutManaInPool) or our payer. "As
         // this land enters, choose a color" (Valgavoth's Lair) is the player's (ColorChoiceCheck)
-        if (outcome == Outcome.PutManaInPool || payingMana || choice.getMessage() != null && choice.getMessage().toLowerCase().contains("mana")) {
+        // a mana ability the player activated itself (costlyManaAsk: Black Lotus' colour) is the player's choice
+        if (payingMana || !choosingOwnMana && (outcome == Outcome.PutManaInPool || choice.getMessage() != null && choice.getMessage().toLowerCase().contains("mana"))) {
             link.fallback.merge("CHOICE (mana)", 1, Integer::sum);
             return super.choose(outcome, choice, game);
         }

@@ -10,7 +10,10 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   only by `TwoSeatMatch` (the Claude games, since 2026-11-06), so 17lands replays and policy evaluations stay
   comparable: `payerV2` (restricted mana first, lands before other permanents, never the paid ability's own source,
   colours kept open, my permanents' ability costs counted), `askX` (decision kind `X`) and `keepBeforeBottom`
-  (London mulligan: keep or mulligan on the new seven, then the bottom cards; XMage asks bottom first).
+  (London mulligan: keep or mulligan on the new seven, then the bottom cards; XMage asks bottom first), and since
+  2026-11-08 `costlyManaAsk` (the automatic payer never uses mana abilities that cost more than {T}, like Black
+  Lotus, Lotus Petal or Treasure: they are offered as priority moves and their colour is asked; pain mana only when
+  painless can't pay; an all-generic cost is paid by one exact source like Sol Ring before lands).
 - `Observer.java`: builds the observation from XMage's per-seat view (`GameView`, what a human client sees),
   entries in contract order `[global | cards | stack abilities]`, plus edges. Checks every message against the
   full game state for hidden-information leaks. A card being revealed is an entry with zone `REVEALED`; a card an
@@ -19,7 +22,8 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   remembers them per game and seat, and forgets them when the card changes zone, the game ends or the turn is rolled
   back). A modal spell or ability on the stack lists its chosen modes as `"modes": ["<card name>#mode<i>", ...]`
   (modes are announced, so this is public). The global entry has `"lands_played"`: land drops the active player
-  has made this turn (0 during mulligans).
+  has made this turn (0 during mulligans), and `"my_pool"` / `"opp_pool"` (e.g. `"{B}{B}{B}"`) only while that
+  player has mana floating.
 - `AbilityKeys.java`: stable ability keys `"<card name>#<i>"` (printed) and `"<card name>#g<i>"` (granted to
   another object or put on a token), and named choices: `alt_cost:none` / `alt_cost:ImpendingAbility` for an
   alternative-cost prompt, `"<card name>#mode<i>"` for a mode of a modal card (printed order), `choice:<text>`
@@ -29,13 +33,16 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   after the printed and granted ones so existing ids stay put. `named_options` (colours, counter types) and token
   names come from recorded games and are kept from the existing file.
 - `SetCards.java`: the cards one set's draft can open (DSK, FDN: the set's play-booster cards plus its 10 Special
-  Guests). VocabDump, CardTextDump and `SetNumbers.java` (number<TAB>name, `engine/vocab/<set>_numbers.tsv`) take the
+  Guests; CUBE: Arena Powered Cube, 2025 run, the names in `CubeList.java`, one printing each). VocabDump, CardTextDump and `SetNumbers.java` (number<TAB>name, `engine/vocab/<set>_numbers.tsv`) take the
   set from `-Dmtg.set=FDN` or `$MTG_SET`, DSK when neither is given. The leak checker knows every supported set's names.
 - `SeatSpike.java`: runs N games, our seat vs XMage's AI.
 - `TwoSeatMatch.java`: runs N games with both seats driven from Python (used by `play/match.py`).
 - `EvalMatch.java`: plays a schedule of games (deck A, deck B, who starts) with seat A driven from Python and seat B
   either Python or XMage's AI (used by `play/eval_games.py`, see `experiments/policy_v1/README.md`).
-- `CardTextDump.java`: writes `engine/vocab/dsk_card_text.json` (rules text of every DSK card as XMage implements it).
+- `CardTextDump.java`: writes `engine/vocab/<set>_card_text.json` (rules text of every card of the set as XMage
+  implements it; planeswalkers' `loyalty`, and a double-faced card's other face as `back`).
+- `CubeList.java`: the 2025 Arena Powered Cube as 17lands lists it (539 names XMage has, basics included) and the six
+  Arena-only cube cards XMage lacks. Source and per-card coverage: `/mnt/project-files/notes/arena-cube/`.
 - `run_games.py`: Python side, a random-move bot that records every decision to JSON lines.
 - `SeatChoiceCheck.java`: regression check that a cost an opponent's ability makes this seat pay (Osseous Sticktwister's
   discard) offers this seat's own hand. Prints PASS or FAIL.
@@ -74,6 +81,10 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
 - `DamageCheck.java`: regression check that an attacker blocked by two creatures lets its player divide the damage
   (DAMAGE decisions, one per blocker), without trample (any split) and with trample (lethal to each blocker first,
   the rest to the player). Prints PASS or FAIL.
+- `CostlyManaCheck.java`: regression check for `costlyManaAsk` (Cube seats): the automatic payer never spends Black
+  Lotus or Lotus Petal (it did before), uses Talisman pain only when painless mana can't pay, doesn't overpay with
+  Sol Ring, offers Black Lotus at priority, asks its colour and pays the next spell from the pool, and the
+  observation shows the pool. Prints PASS or FAIL.
 - `BlockCheck.java`: builds a combat board directly and asks XMage's AI to block (for chasing block bugs).
 - `decks/`: smoke-test decks; `dsk_ug_modal.dck` swaps in modal spells to exercise MODE prompts.
 
@@ -123,6 +134,7 @@ VocabDump keeps the `tokens` list already in the file (token names come from rec
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP RevealCheck)      # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP PlaneswalkerAttackCheck) # expect PASS
 (cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP DamageCheck)             # expect PASS
+(cd $R && java -Djava.awt.headless=true -cp /tmp/xmage-cls:$CP CostlyManaCheck)         # expect PASS
 ```
 
 Same seed does not reproduce the same game (XMage's own randomness), so every action is logged.

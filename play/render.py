@@ -2,14 +2,14 @@
 
 Only fields of the seat's own observation are used, so the text carries no more than the seat may know.
 Card rules text comes from engine/vocab/<set>_card_text.json (public card text, as XMage implements it), every set
-we support merged (DSK, FDN: no shared names except basics).
+we support merged (DSK, FDN, CUBE: the Cube shares some cards with DSK and FDN, with the same text).
 """
 import html, json, re
 from pathlib import Path
 
 VOCAB_DIR = Path(__file__).resolve().parent.parent / "engine" / "vocab"
 CARD_TEXT_PATH = VOCAB_DIR / "dsk_card_text.json"
-SETS = ("DSK", "FDN")
+SETS = ("DSK", "FDN", "CUBE")
 
 
 def card_text_path(set_code):
@@ -26,13 +26,20 @@ def clean(text):
 
 def load_card_text(path=None):
     """Name -> card text. path: one set's file; default every set's file merged."""
-    paths = [path] if path else [card_text_path(s) for s in SETS]
+    # the Cube first, so a set's own file wins for a card both have (they differ only in rarity)
+    paths = [path] if path else [card_text_path(s) for s in sorted(SETS, key=lambda s: s != "CUBE")]
     return {c["name"]: c for p in paths for c in json.loads(Path(p).read_text())}
 
 
 def card_text(c):
     """One card's rules text, e.g. 'Gremlin Tamer {W}{U} [Creature] - [Human, Scout] 2/2: Eerie - ...'."""
-    head = f"{c['name']} {c['cost']} {c['types']}" + (f" {c['pt']}" if "pt" in c else "")
+    head = (f"{c['name']} {c['cost']} {c['types']}" + (f" {c['pt']}" if "pt" in c else "")
+            + (f" loyalty {c['loyalty']}" if "loyalty" in c else ""))
+    if "back" in c:  # transforming / modal double-faced card (Cube)
+        b = c["back"]
+        back = (f"{b['name']} {b['cost']} {b['types']}".replace("  ", " ") + (f" {b['pt']}" if "pt" in b else "")
+                + (f" loyalty {b['loyalty']}" if "loyalty" in b else ""))
+        return head + ": " + " ".join(c["rules"]) + f" // other face: {back}: " + " ".join(b["rules"])
     if "left" in c:
         doors = [f"door {h['name']} {h['cost']}: {' '.join(h['rules'])}" for h in (c["left"], c["right"])]
         return head + ". " + " | ".join(doors)
@@ -62,7 +69,9 @@ def _entry(e, entries=()):
                 f"{_untapped_lands(entries, True)}. "
                 f"Opponent: life {e['opp_life']}, hand {e['opp_hand']}, library {e['opp_library']}, graveyard {e['opp_graveyard']}, "
                 f"{_untapped_lands(entries, False)}. "
-                f"Stack size {e['stack_size']}." + warn)
+                f"Stack size {e['stack_size']}." + warn
+                + (f" Mana in your pool: {e['my_pool']} (lost at the end of this step)." if e.get("my_pool") else "")
+                + (f" Mana in the opponent's pool: {e['opp_pool']}." if e.get("opp_pool") else ""))
     if e["kind"] == "ability":
         return f"{'my' if e['mine'] else 'opp'} STACK ability of {e['source_name']}: {clean(e['text'])}"
     who = "my" if e["mine"] else "opp"

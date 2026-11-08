@@ -167,7 +167,7 @@ def opponent_tricks(entries, limit=6):
 
 
 def _opp_tricks_lines(entries, g, multi):
-    if not g.get("opp_hand"):
+    if not g.get("opp_hand") or not _OPP_TRICKS_ON[0]:
         return []
     n, have, ok = opponent_tricks(entries)
     if not ok:
@@ -287,6 +287,10 @@ def _outcome(att, blockers):
     if att.first and not any(b.first for b in blockers) and dead:
         parts.append("first strike: those deal no damage")
     return "; ".join(parts)
+
+
+# the opponent's possible tricks are DSK's pool (OPP_TRICKS); other sets' games leave that line out (facts_block)
+_OPP_TRICKS_ON = [True]
 
 
 def facts(msg):
@@ -436,6 +440,11 @@ def facts(msg):
     return out
 
 
-def facts_block(msg):
-    lines = facts(msg)
+def facts_block(msg, set_code="DSK"):
+    """set_code: the seat's deck set; the opponent's-tricks line lists DSK cards, so it is only given in DSK games."""
+    _OPP_TRICKS_ON[0] = set_code == "DSK"
+    try:
+        lines = facts(msg)
+    finally:
+        _OPP_TRICKS_ON[0] = True
     return ([f"Facts ({CAVEAT}):"] + ["- " + x for x in lines]) if lines else []

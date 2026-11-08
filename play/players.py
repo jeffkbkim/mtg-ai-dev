@@ -141,13 +141,17 @@ def card_roles(path=PRIMER_DIR / "dsk_card_roles.json"):
     return json.loads(Path(path).read_text())
 
 
-SET_NAMES = {"DSK": "Duskmourn", "FDN": "Foundations"}
+SET_NAMES = {"DSK": "Duskmourn", "FDN": "Foundations", "CUBE": "Arena Powered Cube"}
 
 
 def deck_set(deck_path):
     """The set a .dck file is from: the set code its cards are listed under ("4 [FDN:276] Swamp"), Special Guests
-    (SPG) aside. DSK when nothing else is found."""
-    codes = re.findall(r"^\d+ \[(\w+):", Path(deck_path).read_text(), re.M)
+    (SPG) aside. DSK when nothing else is found. Cube decks (cards from many sets) say so in their name line
+    ("NAME:cube_07 ...", play/cube_deck_pool.py)."""
+    text = Path(deck_path).read_text()
+    if re.search(r"^NAME:cube", text, re.M | re.I):
+        return "CUBE"
+    codes = re.findall(r"^\d+ \[(\w+):", text, re.M)
     sets = {c for c in codes if c in SET_NAMES}
     if len(sets) > 1:
         raise ValueError(f"deck mixes sets {sorted(sets)}: {deck_path}")
@@ -165,19 +169,40 @@ def system_prompt(deck_path, texts, lessons=None, plan=False, facts=False, prime
         raise ValueError(f"primer must be one of {PRIMERS}, not {primer!r}")
     deck = read_deck(deck_path)
     rules = RULES.replace("Duskmourn (DSK)", f"{SET_NAMES[s]} ({s})")
+    if s == "CUBE":
+        rules += "\n\n" + CUBE_RULES
     if s != "DSK" and primer != "v2":
         raise ValueError(f"{s} has only primer v2 (play/primer/{s.lower()}_meta_v2.md), not {primer!r}")
     if primer == "v2":
-        roles = card_roles(PRIMER_DIR / f"{s.lower()}_card_roles.json")
-        # reminder text in parentheses is dropped: the primer explains the set's mechanics
-        deck_lines = [f"{n}x {re.sub(r' ?[(][^()]*[)]', '', card_text(texts[name])) if name in texts else name}"
+        roles_path = PRIMER_DIR / f"{s.lower()}_card_roles.json"
+        roles = card_roles(roles_path) if roles_path.exists() or s != "CUBE" else {}  # the Cube has deck plans instead
+        plan_text = deck_plan(deck_path)
+        # reminder text in parentheses is dropped: the primer explains the set's mechanics (the Cube's are too many
+        # for its primer, so its reminder text stays)
+        strip = (lambda t: t) if s == "CUBE" else (lambda t: re.sub(r' ?[(][^()]*[)]', '', t))
+        deck_lines = [f"{n}x {strip(card_text(texts[name])) if name in texts else name}"
                       + (f" -- role: {roles[name]}" if name in roles else "") for n, name in deck]
         return "\n\n".join([rules] + ([PLAN_RULES] if plan else []) + ([FACTS_RULES] if facts else []) + ([lessons] if lessons else [])
                             + [(PRIMER_DIR / f"{s.lower()}_meta_v2.md").read_text().strip(),
-                               "Your deck (the opponent's deck is unknown to you):\n" + "\n".join(deck_lines)])
+                               "Your deck (the opponent's deck is unknown to you):\n" + "\n".join(deck_lines)]
+                            + ([f"Your deck's plan (written before the game from the deck list):\n{plan_text}"] if plan_text else []))
     deck_lines = [f"{n}x {card_text(texts[name])}" if name in texts else f"{n}x {name}" for n, name in deck]
     return "\n\n".join([rules] + ([PLAN_RULES] if plan else []) + ([FACTS_RULES] if facts else []) + ([lessons] if lessons else []) + [(PRIMER_DIR / "dsk_meta.md").read_text(), gih_table(),
                         "Your deck (the opponent's deck is unknown to you):\n" + "\n".join(deck_lines)])
+
+
+CUBE_RULES = """Mana in the Cube: mana sources whose cost is more than tapping (Black Lotus, Lotus Petal, Lion's Eye Diamond,
+Chromatic Star, Treasure tokens, exert, removing counters) are never used by the automatic payment. They are offered
+as ACTIVATE options at priority: activate one yourself before you cast the spell it is for; its mana waits in your
+mana pool (shown in the state) until the end of the step, and spells are paid from the pool first. Painful mana
+(paying life, or a source that deals damage to you: Talismans, Ancient Tomb, Mana Confluence, painlands) is used
+automatically only when painless sources can't pay."""
+
+
+def deck_plan(deck_path):
+    """The deck's plan (play/cube_deck_pool.py writes <deck>.plan.md next to a Cube deck), or None."""
+    p = Path(deck_path).with_suffix(".plan.md")
+    return p.read_text().strip() if p.exists() else None
 
 
 CONCEDE_RULES = """## Conceding
@@ -220,6 +245,7 @@ class ClaudePlayer:
         self.check = check  # a second look at combat and near-lethal decisions (_check_gate)
         self.name = f"claude:{model}:{effort}" + (f":{Path(lessons).stem}" if lessons else "") + (":plan" if plan else "") + (":facts" if facts else "") + (":check" if check else "") + (":primer2" if self.primer == "v2" else "")
         self.texts = load_card_text()
+        self.set_code = "DSK"  # the deck's set, from start_game
         self.proc = None
         self.fresh = False  # the process was started before the game's first decision (prewarm) and has seen nothing
         self.warm = None
@@ -239,6 +265,7 @@ class ClaudePlayer:
         self.batch = None          # the decisions planned by the last answer (batch.py), or None
         self.batch_dropped = None  # why the last plan stopped early, for the next asked decision's record
         self.workdir = tempfile.mkdtemp(prefix="claude-seat-")
+        self.set_code = deck_set(deck_path)
         system = system_prompt(deck_path, self.texts, self.lessons, self.plan_mode, self.facts, self.primer)
         if self.concede:
             system += "\n\n" + CONCEDE_RULES
@@ -446,7 +473,7 @@ class ClaudePlayer:
         plan = ""
         if self.plan_mode:
             plan = ("Your current plan: " + json.dumps(self.plan) if self.plan else "You have no plan yet: write one.") + "\n"
-        return head + "\n" + plan + render(msg, new, facts_block(msg) if self.facts else ())
+        return head + "\n" + plan + render(msg, new, facts_block(msg, self.set_code) if self.facts else ())
 
     def choose(self, msg):
         g = msg["obs"]["entries"][0]
