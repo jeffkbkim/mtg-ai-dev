@@ -20,7 +20,8 @@ import java.util.*;
  * observation's mana pool ("my_pool") after three black mana are added. At priority in our main phase the Lotus is
  * offered as a move (the Plains' mana is not); activating it asks the colour and floats {B}{B}{B}, and {1}{B} is then
  * paid from the pool, leaving {B} and the Plains untapped. No waste: {1} from Sol Ring + Plains taps the Plains,
- * {2} taps the Sol Ring.
+ * {2} taps the Sol Ring. Coloured symbols before generic: {4}{R} from Talisman of Indulgence, Mox Sapphire, Mox Pearl,
+ * Ancient Tomb, Island and Mightstone (its mana can't pay a nonartifact spell) is paid, with the Talisman's {R}.
  * Prints PASS or FAIL and exits 1 on FAIL.
  */
 public class CostlyManaCheck {
@@ -172,6 +173,9 @@ public class CostlyManaCheck {
             if (!trial(true, "{1}", "Sol Ring", "Plains") || !tapped("Plains") || tapped("Sol Ring")
                     || !trial(true, "{2}", "Sol Ring", "Plains") || !tapped("Sol Ring") || tapped("Plains"))
                 fails.add("Sol Ring + Plains: {1} should tap the Plains, {2} the Sol Ring");
+        for (int t = 0; t < trials; t++)  // cube pilot: Talisman's painless {C} paid generic and its {R} was then missing
+            if (!trial(true, "{4}{R}", "Talisman of Indulgence", "Mox Sapphire", "Mox Pearl", "Ancient Tomb", "Island", "The Mightstone and Weakstone"))
+                fails.add("{4}{R} (Pyrokinesis) from Talisman, two Moxen, Ancient Tomb, Island, Mightstone: unpaid");
         trial(false, "{2}", "Black Lotus", "Plains");
         boolean oldSpends = !onBattlefield("Black Lotus");  // the fault this check is for, seen without the flag
         int lotus = costClass("Black Lotus"), confluence = costClass("Mana Confluence"), talisman = costClass("Talisman of Progress"), forest = costClass("Forest");
@@ -183,7 +187,7 @@ public class CostlyManaCheck {
         py.getManaPool().addMana(mage.Mana.BlackMana(3), game, src);
         String pool = Observer.build(game, py.getId(), Collections.emptyList()).entries.get(0).toString();
         if (!pool.contains("\"my_pool\":\"{B}{B}{B}\"")) fails.add("observation pool: " + pool);
-        System.out.println("COSTLY_MANA old payer spent the Lotus for {2}: " + oldSpends + "; failures " + fails.size() + "/" + (6 * trials + 3));
+        System.out.println("COSTLY_MANA old payer spent the Lotus for {2}: " + oldSpends + "; failures " + fails.size() + "/" + (7 * trials + 3));
         fails.stream().distinct().forEach(f -> System.out.println("  " + f));
         System.out.println(fails.isEmpty() ? "PASS" : "FAIL");
         System.exit(fails.isEmpty() ? 0 : 1);

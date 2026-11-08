@@ -115,7 +115,8 @@ public class PySeat extends ComputerPlayer {
     public transient boolean costlyManaAsk = false;
     private transient int manaCostLimit = 2;  // while paying: the highest manaCostClass the payer may use
     private transient boolean choosingOwnMana = false;
-    private transient boolean noOverpay = false;  // costlyManaAsk pass: skip mana abilities making more than is owed  // activating a playerManaAbility: its colour choice is the player's
+    private transient boolean noOverpay = false;  // costlyManaAsk pass: skip mana abilities making more than is owed
+    private transient boolean colouredOnly = false;  // costlyManaAsk pass: pay only the coloured symbols  // activating a playerManaAbility: its colour choice is the player's
 
     /** 0: only {T} (and mana) as cost and no damage to you; 1: pay life or damage to you; 2: any other cost. */
     static int manaCostClass(mage.abilities.mana.ActivatedManaAbilityImpl ma) {
@@ -206,8 +207,16 @@ public class PySeat extends ComputerPlayer {
         payingMana = true;
         try {
             if (costlyManaAsk) {
-                // painless sources first, then painful ones; class-2 mana is never the payer's (manaCostClass)
-                // and, at each, first without making more mana than is owed (Sol Ring, Mana Vault for {1})
+                // painless sources first, then painful ones; class-2 mana is never the payer's (manaCostClass).
+                // Coloured symbols first at both levels: painless-first alone let Talisman's {C} pay generic, and
+                // its painful {R} was then gone for Pyrokinesis' {R} (cube pilot). Then generic symbols, first
+                // without making more mana than is owed (Sol Ring, Mana Vault for {1})
+                colouredOnly = true;
+                for (int limit = 0; limit <= 1; limit++) {
+                    manaCostLimit = limit;
+                    if (payStep(ability, unpaid, game, 0) || payStep(ability, unpaid, game, 1) || payStep(ability, unpaid, game, 2)) return true;
+                }
+                colouredOnly = false;
                 for (int pass = 0; pass < 4; pass++) {
                     manaCostLimit = pass / 2;
                     noOverpay = pass % 2 == 0;
@@ -231,6 +240,7 @@ public class PySeat extends ComputerPlayer {
             payingMana = outer;
             manaCostLimit = 2;
             noOverpay = false;
+            colouredOnly = false;
         }
     }
 
@@ -301,6 +311,7 @@ public class PySeat extends ComputerPlayer {
 
     private boolean payStep(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game, int tier) {
         List<mage.abilities.costs.mana.ManaCost> symbols = unpaidSymbols(unpaid);
+        if (colouredOnly) symbols.removeIf(c -> c instanceof mage.abilities.costs.mana.GenericManaCost);
         if (symbols.isEmpty()) return false;
         boolean tapsSource = ability.getCosts().stream().anyMatch(c -> c instanceof mage.abilities.costs.common.TapSourceCost);
         int[] need = new int[COLOURS.length];  // coloured symbols of the other cards in hand, per colour
