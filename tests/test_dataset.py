@@ -245,3 +245,8 @@ def test_17lands_outcomes_reach_the_batch_and_games_without_one_are_skipped(tmp_
 
     build_17lands([p], tmp_path / "plain")
     assert "won" not in next(iter(make_loaders(tmp_path / "plain", batch_size=8)[draft_split("draft0")]))
+
+
+def test_make_loaders_names_a_missing_cache(tmp_path):
+    with pytest.raises(FileNotFoundError, match="no cache at"):
+        make_loaders(tmp_path / "not-built")

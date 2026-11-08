@@ -284,6 +284,8 @@ def make_loaders(cache: str | Path, batch_size: int = 64, seed: int = 0, workers
     """
     vocab = Vocab.load()
     cache = Path(cache)
+    if not (cache / "summary.json").exists() and not (cache / "train.pt").exists():
+        raise FileNotFoundError(f"no cache at {cache}: expected summary.json (build-17lands) or train.pt (build)")
     summary = json.loads((cache / "summary.json").read_text()) if (cache / "summary.json").exists() else {}
     # batches carry label_set and weight only for a cache built with set labels; other caches' batches don't change
     with_sets = bool(set(summary.get("labels", [])) & set(SET_LABELS))
