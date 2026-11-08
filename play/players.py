@@ -4,10 +4,16 @@ from pathlib import Path
 
 import batch
 from facts import facts_block
+from functools import lru_cache
 from render import BASICS, card_text, clean, events, load_card_text, names_in, option_label, render
 
 PRIMER_DIR = Path(__file__).resolve().parent / "primer"
 
+
+
+@lru_cache(maxsize=None)
+def _card_texts():
+    return load_card_text()
 
 class RandomPlayer:
     """Same policy as engine/xmage/run_games.py: take a non-PASS/DONE option 80% of the time when there is one."""
@@ -347,7 +353,7 @@ class ClaudePlayer:
             # Jeff 2026-10-29: in the effort batch 847 of these were asked, nearly always answered PASS ("wait for the
             # draw"); the turn's conversation restart made them the first, costliest call of the turn
             return "own_upkeep_draw"
-        if self._flip_only_on_their_ability(msg):
+        if self._flip_only_skip(msg, g):
             return "flip_only"
         if not self.pass_until:
             return None
@@ -385,25 +391,36 @@ class ClaudePlayer:
     _FLIP = "Turn this face-down permanent face up"
     _HARMFUL = re.compile(r"damage|destroy|exile|sacrifice|-\d+/-\d+|return [^.]* to [^.]*hand|tap target|stun", re.I)
 
-    def _flip_only_on_their_ability(self, msg):
-        """Jeff 2026-11-01: an opponent's triggered or activated ability on the stack, outside combat, when the only
-        thing to do besides passing is turning a face-down permanent up (41 such windows took ~220 s, all passed).
-        Still asked: any spell on the stack, combat, an empty stack, and an ability that targets one of my
-        permanents or could hurt them (flipping in response can matter then)."""
+    def _flip_only_skip(self, msg, g):
+        """Jeff 2026-11-08: a window where the only thing to do besides passing is turning a face-down permanent up is
+        asked only where flips happen (the recordings since October: the opponent's end step 7/7, combat 5/22, my
+        precombat main 2/9; never anywhere else): the opponent's end step, combat once attackers are declared, my
+        precombat main phase, and an opponent spell or ability that targets my permanents or could hurt them
+        without targeting (flipping in response can matter then). Everywhere else it is passed without asking."""
         entries = msg["obs"]["entries"]
         rest = [o["label"] for o in msg["options"][1:]]
         if not rest or not all(self._FLIP in x for x in rest):
             return False
+        if not g["my_turn"] and g["step"] == "End Turn":
+            return False
+        if g["step"] in ("Declare Attackers", "Declare Blockers") and any(e.get("attacking") for e in entries[1:]):
+            return False
+        if g["my_turn"] and g["step"] == "Precombat Main":
+            return False
         stack = [e for e in entries[1:] if e.get("zone") == "STACK"]
-        if not stack or any(e.get("kind") != "ability" or e.get("mine") for e in stack):
-            return False
-        if any(e.get("attacking") or e.get("blocking") for e in entries[1:]):
-            return False
+        theirs = [e for e in stack if not e.get("mine")]
         mine = {e["i"] for e in entries[1:] if e.get("mine") and e.get("zone") == "BATTLEFIELD"}
-        on_stack = {e["i"] for e in stack}
+        on_stack = {e["i"] for e in theirs}
         if any(t == "targets" and a in on_stack and b in mine for t, a, b in msg["obs"].get("edges", [])):
             return False
-        return not any(self._HARMFUL.search(e.get("text") or "") for e in stack)
+        return not any(self._HARMFUL.search(self._stack_text(e)) for e in theirs)
+
+    def _stack_text(self, e):
+        """An object's rules text on the stack: an ability's own text, a spell's card text."""
+        if e.get("text"):
+            return e["text"]
+        c = _card_texts().get(e.get("name") or "")
+        return " ".join(c.get("rules", [])) if isinstance(c, dict) else ""
 
     def _prompt(self, msg, g):
         """This decision's text; starts a conversation (with the game log) if none is running."""
