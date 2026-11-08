@@ -2,6 +2,21 @@
 
 Newest first. Written by the daily review (UPDATE.md).
 
+## 2026-11-08 (daily review) — HELD
+- PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
+  arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
+- a33fb65 → 690a718 (Playmat master, 2026-11-07): 743 commits, 14 new since yesterday's dd3e223. The new ones: Rust
+  AI (diverge logging, mana color questions, parallel test games, per-game CPU cost), Rust engine tier31 meta decks,
+  GameHost/Ai plans and docs, signature spell VFX and token art (web client, #226), a public Rust-port tracker site
+  (site/rust, .github/workflows/site.yml), server support/PlayerLook and RustAi tweaks, Mage/ game/trace
+  GameTrace and RustAiBridge (tracing, not rules).
+- Gate: HOLD, same reasons as 2026-11-07, all still open: rules changes under Mage/src/main across the whole range;
+  DSK cards RootwiseSurvivor and VeteranSurvivor changed; patch 0003 conflicts (stores/play.ts), 0004-0033
+  unchecked, and several likely duplicate merged #105-#112; security pass not cleared (TrustedHeaderAuth, outbound
+  deck-import fetches to archidekt/mtgtop8/tcgplayer/manabox, Docker/Caddy/entrypoint/updater, plus a new CI
+  workflow for the site today). Needs Jeff to plan the rebase onto the new upstream.
+- No build, no tests, not deployed. Pin stays a33fb65.
+
 ## 2026-11-07 (daily review) — HELD
 - PRs (check_upstream_prs.sh): #105-#112 MERGED upstream (dim tapped/open lands, extra origins, deck columns,
   combat estimate, must-be-blocked warning, trigger signal, keyword help/counters, revealed hand/Rooms).
