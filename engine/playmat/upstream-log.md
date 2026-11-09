@@ -2,6 +2,23 @@
 
 Newest first. Written by the daily review (UPDATE.md).
 
+## 2026-11-09 (daily review) — HELD
+- PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
+  arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
+- a33fb65 → fb45469 (Playmat master, 2026-11-08): 828 commits, 85 new since yesterday's 690a718. The new ones: Rust
+  views vs Java (Views: stack, combat, exile, rooms, tokens...), Rust game host step D (AI duels on the Rust engine
+  through the gateway), Rust meta decks and tracker; OIDC sign-in (#215) and GitHub/OIDC sign-in hardening (account
+  takeover by email, login CSRF, state replay; #252); phone layouts (#247); web client match size/zoom keys, revealed
+  cards kept for the turn, deck-builder magnifier, gauntlet fixes; AI batch (never counter own spells, no attacks with
+  fully prevented damage, per-turn action cap); rules batch (#255) touching Mage/src/main ContinuousEffects,
+  PreventionEffectImpl and several common effects; server lists mana sources when paying without priority;
+  Mage.Server/pom.xml +8 (OIDC dependency).
+- Gate: HOLD, same open reasons as 2026-11-07/08 plus today's rules batch under Mage/src/main (continuous and
+  prevention effects); DSK cards RootwiseSurvivor and VeteranSurvivor changed in range; patch 0003 conflicts
+  (stores/play.ts), 0004-0033 unchecked; security pass not cleared (now also OIDC/auth code and a new server
+  dependency, on top of TrustedHeaderAuth, deck-import fetches, Docker/Caddy/updater). Needs Jeff to plan the rebase.
+- No build, no tests, not deployed. Pin stays a33fb65.
+
 ## 2026-11-08 (daily review) — HELD
 - PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
   arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
