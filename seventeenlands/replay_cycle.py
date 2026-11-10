@@ -23,6 +23,9 @@ TR = Path.home() / "mtg-data/17lands/DSK/turn_replay"
 BATCHES = 100
 SLOW_HOURS = 2.5          # a batch normally takes about an hour
 JAVA = "/opt/homebrew/opt/openjdk@21/bin"
+WORKERS = 4                                                   # 4 with the faster engine build (2026-11-07 speedups)
+CLASSES = Path.home() / "mtg-data/xmage-cls-fast"             # engine classes built from ad543a1 or later
+STATUS = REPO / "seventeenlands/replay_status.md"              # notes, committed and pushed so the project can post them
 
 
 def runs():
@@ -102,7 +105,7 @@ def report() -> str:
             if isinstance(v, (int, float)) and not isinstance(v, bool):
                 tot[k] = tot.get(k, 0) + v
     rate = lambda k: f"{tot.get(k + '_ok', 0) / max(1, tot.get(k + '_turns', 0)):.1%} (n = {tot.get(k + '_turns', 0):,})"
-    labels = ["recorded", "unique", "ambiguous", "not_recorded"]
+    labels = sorted(k[len("rows_"):] for k in tot if k.startswith("rows_"))
     rows = sum(tot.get(f"rows_{l}", 0) for l in labels)
     mb = sum(p.stat().st_size for p in d.glob("b*/decisions.jsonl.gz")) / 1e6
     free = [int(m) for m in re.findall(r"free=(\d+)%", (d / "metrics.log").read_text())] if (d / "metrics.log").exists() else []
@@ -120,7 +123,8 @@ def launch(name: str, seed: int, exclude: Path | None):
     d = TR / name
     d.mkdir(parents=True, exist_ok=True)
     cmd = (f"uv run --group data python seventeenlands/replay_batches.py --name {name} --sample 50000 --seed {seed} "
-           f"--batch 500 --workers 3 -- --probe 30 --rows" + (f" --exclude {exclude}" if exclude else ""))
+           f"--batch 500 --workers {WORKERS} --classes {CLASSES} -- --probe 30 --rows --chunk 25"
+           + (f" --exclude {exclude}" if exclude else ""))
     if not (d / "README.txt").exists():
         code = subprocess.run(["git", "-C", str(REPO), "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()
         (d / "README.txt").write_text(
@@ -144,8 +148,17 @@ def note(text: str):
     old = f.read_text() if f.exists() else ""
     if text in old:
         return
+    line = f"- {time.strftime('%Y-%m-%d %H:%M')} {text}\n"
     with open(f, "a") as out:
-        out.write(f"- {time.strftime('%Y-%m-%d %H:%M')} {text}\n")
+        out.write(line)
+    # the same line in the repo, so a project check reading GitHub can post it to Jeff (a scheduled task on the mini
+    # can't reach the project thread, and its push notifications only show on the mini)
+    git("pull", "-q", "--no-rebase", "origin", "main")
+    with open(STATUS, "a") as out:
+        out.write(line)
+    git("add", str(STATUS))
+    if git("commit", "-q", "-m", "Replay status: " + text[:60] + "\n\nCo-Authored-By: Claude <noreply@anthropic.com>").returncode == 0:
+        git("push", "-q", "origin", "main")
 
 
 def git(*args) -> subprocess.CompletedProcess:
