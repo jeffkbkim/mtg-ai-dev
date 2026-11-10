@@ -10,6 +10,11 @@ with 16 GB unified memory; GPU rental may be used later.
 - For research, setup, data download/parsing, integration and routine infrastructure, implement directly when requested.
 - The user drives model design. Do not write design docs, diagrams, proposed architectures or option tables for the model unless explicitly asked; answer the question asked and let the user make each decision.
 - Explain design tradeoffs in plain language. Treat architecture choices as hypotheses, not established winners.
+- When the user asks a question about ML theory, model architecture or data (why a loss, estimator, architecture,
+  algorithm or data choice works; not how to wire the code), answer it, then append one line to the end of
+  `## Questions` in `~/dev/ml-study/pool.md`:
+  `- YYYY-MM-DD — <the question, in the user's words> — keywords: <1–3 concepts, e.g. MCTS> — source: <file,
+  commit or session>`. Don't edit anything else there; keywords from your replies are collected separately.
 
 ## Scope and correctness
 
