@@ -14,7 +14,7 @@ cd $REPO
 git pull -q --ff-only origin main || { print "SKIPPED\n\ngit pull failed in $REPO (local changes or diverged branch)" > $N/latest.md; exit 1; }
 HEAD=$(git rev-parse --short HEAD)
 # no heavy jobs alongside each other (AGENTS.md): a 17lands replay run takes the mini for days, so wait for it
-if pgrep -f "seventeenlands/replay_batches.py" > /dev/null; then
+if pgrep -f '^[^ ]*python[0-9.]* [^ ]*seventeenlands/replay_batches\.py' > /dev/null; then   # the driver itself, not a shell mentioning it
   print "SKIPPED\n\nA 17lands replay run is going (replay_batches.py); the soak waits for it (main is $HEAD)." > $N/latest.md; exit 0
 fi
 LAST=$(cat $N/last_commit 2>/dev/null)

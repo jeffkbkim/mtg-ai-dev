@@ -128,7 +128,7 @@ def launch(name: str, seed: int, exclude: Path | None):
     if not (d / "README.txt").exists():
         code = subprocess.run(["git", "-C", str(REPO), "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()
         (d / "README.txt").write_text(
-            f"code {code} (engine classes ~/mtg-data/xmage-cls-replay); {cmd}; started {time.ctime()} by replay_cycle.py\n"
+            f"code {code} (engine classes {CLASSES}); {cmd}; started {time.ctime()} by replay_cycle.py\n"
             f"stop: kill $(pgrep -f 'replay_batches.py --name {name}' | head -1); "
             f"resume: uv run --group data python seventeenlands/replay_cycle.py resume\n")
     else:

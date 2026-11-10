@@ -53,7 +53,8 @@ def main():
     a = ap.parse_args()
     (DATA / a.name).mkdir(parents=True, exist_ok=True)
     # no heavy jobs alongside each other (AGENTS.md): if the nightly soak (~2.5 h) is running, wait for it to end
-    while subprocess.run(["pgrep", "-f", "coverage_soak/soak.py"], capture_output=True).returncode == 0:
+    # anchored on the python executable: a shell whose command text merely mentions soak.py must not count
+    while subprocess.run(["pgrep", "-f", r"^[^ ]*python[0-9.]* [^ ]*coverage_soak/soak\.py"], capture_output=True).returncode == 0:
         with open(DATA / a.name / "progress.log", "a") as p:
             p.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} waiting: the nightly soak is running\n")
         time.sleep(600)
