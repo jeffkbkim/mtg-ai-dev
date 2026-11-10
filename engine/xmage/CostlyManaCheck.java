@@ -22,6 +22,9 @@ import java.util.*;
  * paid from the pool, leaving {B} and the Plains untapped. No waste: {1} from Sol Ring + Plains taps the Plains,
  * {2} taps the Sol Ring. Coloured symbols before generic: {4}{R} from Talisman of Indulgence, Mox Sapphire, Mox Pearl,
  * Ancient Tomb, Island and Mightstone (its mana can't pay a nonartifact spell) is paid, with the Talisman's {R}.
+ * Delve is the player's: Murderous Cut with five Swamps and six cards in the graveyard, the player exiling four, taps
+ * one Swamp. Generic from noncreatures weighed together: {1} from Mountain, Mox Sapphire and Sol Ring with Pyrokinesis
+ * in hand taps the Mox. Sol Ring (two mana at once) is offered at priority too.
  * Prints PASS or FAIL and exits 1 on FAIL.
  */
 public class CostlyManaCheck {
@@ -42,6 +45,7 @@ public class CostlyManaCheck {
 
     static Game game;
     static PySeat py;
+    static String[] handCards = {};  // put in the seat's hand by trial (the payer plans for them)
     static int lifeBefore;
 
     static int lifeLost() {
@@ -63,6 +67,11 @@ public class CostlyManaCheck {
             match.addPlayer(p, deck);
         }
         for (String n : cards) put(game, n, py.getId());
+        for (String n : handCards) {
+            Card c = make(game, n, py.getId());
+            py.getHand().add(c);
+            game.getState().setZone(c.getId(), Zone.HAND);
+        }
         for (mage.players.Player p : new mage.players.Player[]{py, ai}) p.beginTurn(game);
         game.getState().setActivePlayerId(py.getId());
         game.applyEffects();
@@ -126,6 +135,7 @@ public class CostlyManaCheck {
         }
         put(game, "Black Lotus", py.getId());
         put(game, "Plains", py.getId());
+        put(game, "Sol Ring", py.getId());
         for (mage.players.Player p : new mage.players.Player[]{py, ai}) p.beginTurn(game);
         game.getState().setActivePlayerId(py.getId());
         mage.game.turn.Phase main = game.getState().getTurn().getPhase(TurnPhase.PRECOMBAT_MAIN);
@@ -137,16 +147,82 @@ public class CostlyManaCheck {
         String pool = Observer.poolText(py.getManaPool());
         boolean asked = seen.stream().anyMatch(l -> l.startsWith("CHOICE") && l.endsWith("Black"));
         boolean offeredPlains = seen.stream().anyMatch(l -> l.startsWith("PRIORITY") && l.contains("Plains") && !l.contains("Play"));
+        boolean offeredRing = seen.stream().anyMatch(l -> l.startsWith("PRIORITY") && l.contains("Sol Ring"));  // makes two at once
         // a spell is then paid from the pool first: {1}{B} leaves {B} floating and the Plains untapped
         Card spell = make(game, "Lightning Bolt", py.getId());
         mage.abilities.Ability sa = spell.getSpellAbility();
         sa.setControllerId(py.getId());
         boolean paid = new ManaCostsImpl<ManaCost>("{1}{B}").pay(sa, game, sa, py.getId(), false, null);
         String after = Observer.poolText(py.getManaPool());
-        if (pool.equals("{B}{B}{B}") && !onBattlefield("Black Lotus") && asked && !offeredPlains && paid && after.equals("{B}") && !tapped("Plains")) return "";
+        if (pool.equals("{B}{B}{B}") && !onBattlefield("Black Lotus") && asked && !offeredPlains && offeredRing && paid && after.equals("{B}") && !tapped("Plains")) return "";
         return "Lotus at priority: pool '" + pool + "', Lotus " + (onBattlefield("Black Lotus") ? "still there" : "gone")
-                + ", colour asked " + asked + ", Plains mana offered " + offeredPlains + ", {1}{B} paid " + paid + " leaving '" + after
+                + ", colour asked " + asked + ", Plains mana offered " + offeredPlains + ", Sol Ring offered " + offeredRing + ", {1}{B} paid " + paid + " leaving '" + after
                 + "', Plains tapped " + tapped("Plains") + "; seen " + seen;
+    }
+
+    /** Murderous Cut ({4}{B}, delve) with five Swamps and six cards in the graveyard; Python exiles cards whenever the
+     *  prompt is about delve. Returns "" when it is paid with four cards exiled and one Swamp tapped. */
+    static String delve() throws Exception {
+        java.io.PipedInputStream seatIn = new java.io.PipedInputStream(), fromSeat = new java.io.PipedInputStream();
+        java.io.PrintWriter toSeat = new java.io.PrintWriter(new java.io.PipedOutputStream(seatIn), true);
+        PySeat.Link link = new PySeat.Link(seatIn, new java.io.PipedOutputStream(fromSeat));
+        List<String> prompts = Collections.synchronizedList(new ArrayList<>());
+        Thread python = new Thread(() -> {
+            try (java.io.BufferedReader r = new java.io.BufferedReader(new java.io.InputStreamReader(fromSeat))) {
+                for (String line; (line = r.readLine()) != null; ) {
+                    com.google.gson.JsonObject m = com.google.gson.JsonParser.parseString(line).getAsJsonObject();
+                    String prompt = m.get("prompt").getAsString();
+                    prompts.add(m.get("kind").getAsString() + ": " + prompt);
+                    com.google.gson.JsonArray opts = m.getAsJsonArray("options");
+                    int pick = 0;
+                    if (prompt.contains("Delve"))
+                        for (int i = 0; i < opts.size(); i++)
+                            if (!opts.get(i).getAsJsonObject().get("label").getAsString().equals("DONE")) { pick = i; break; }
+                    toSeat.println("{\"choice\":" + pick + "}");
+                }
+            } catch (java.io.IOException ignored) { }
+        });
+        python.setDaemon(true);
+        python.start();
+        game = new TwoPlayerDuel(MultiplayerAttackOption.LEFT, RangeOfInfluence.ONE, MulliganType.GAME_DEFAULT.getMulligan(0), 40, 20, 7);
+        game.setGameOptions(new GameOptions());
+        py = new PySeat("PY", link);
+        py.payerV2 = py.costlyManaAsk = true;
+        ComputerPlayer7 ai = new ComputerPlayer7("AI", RangeOfInfluence.ONE, 2);
+        mage.game.match.Match match = new TwoPlayerMatch(new mage.game.match.MatchOptions("costly mana check", "Two Player Duel", false));
+        for (mage.players.Player p : new mage.players.Player[]{py, ai}) {
+            p.setTestMode(true);
+            mage.cards.decks.Deck deck = new mage.cards.decks.Deck();
+            game.addPlayer(p, deck);
+            match.addPlayer(p, deck);
+        }
+        for (int k = 0; k < 5; k++) put(game, "Swamp", py.getId());
+        for (String n : new String[]{"Lightning Bolt", "Counterspell", "Dark Ritual", "Brainstorm", "Ponder", "Duress"}) {
+            Card c = make(game, n, py.getId());
+            py.getGraveyard().add(c);
+            game.getState().setZone(c.getId(), Zone.GRAVEYARD);
+        }
+        for (mage.players.Player p : new mage.players.Player[]{py, ai}) p.beginTurn(game);
+        game.getState().setActivePlayerId(py.getId());
+        mage.game.turn.Phase main = game.getState().getTurn().getPhase(TurnPhase.PRECOMBAT_MAIN);
+        main.setStep(new mage.game.turn.PreCombatMainStep());
+        game.getState().getTurn().setPhase(main);
+        game.applyEffects();
+        Card cut = make(game, "Murderous Cut", py.getId());
+        mage.abilities.SpellAbility sa = cut.getSpellAbility();
+        sa.setControllerId(py.getId());
+        game.getStack().push(game, new mage.game.stack.Spell(cut, sa, py.getId(), Zone.HAND, game));  // paid while on the stack
+        game.getState().setZone(cut.getId(), Zone.STACK);
+        boolean paid;
+        try {
+            paid = new ManaCostsImpl<ManaCost>("{4}{B}").pay(sa, game, sa, py.getId(), false, null);
+        } catch (RuntimeException e) {
+            return "delve: " + e + "; asked " + prompts;
+        }
+        long swampsTapped = game.getBattlefield().getAllActivePermanents(py.getId()).stream().filter(Permanent::isTapped).count();
+        int left = py.getGraveyard().size();
+        if (paid && swampsTapped == 1 && left == 2 && prompts.stream().anyMatch(l -> l.contains("Delve"))) return "";
+        return "delve: Murderous Cut paid " + paid + ", Swamps tapped " + swampsTapped + ", graveyard left " + left + "; asked " + prompts;
     }
 
     public static void main(String[] args) throws Exception {
@@ -173,6 +249,13 @@ public class CostlyManaCheck {
             if (!trial(true, "{1}", "Sol Ring", "Plains") || !tapped("Plains") || tapped("Sol Ring")
                     || !trial(true, "{2}", "Sol Ring", "Plains") || !tapped("Sol Ring") || tapped("Plains"))
                 fails.add("Sol Ring + Plains: {1} should tap the Plains, {2} the Sol Ring");
+        String delveRun = delve();  // cube pilot: delve was never used
+        if (!delveRun.isEmpty()) fails.add(delveRun);
+        handCards = new String[]{"Pyrokinesis"};
+        for (int t = 0; t < trials; t++)  // cube pilot: Chromatic Star's {1} took a Mountain while Moxen were untapped
+            if (!trial(true, "{1}", "Mountain", "Mox Sapphire", "Sol Ring") || tapped("Mountain") || tapped("Sol Ring"))
+                fails.add("{1} from Mountain, Mox Sapphire, Sol Ring with Pyrokinesis in hand: should tap the Mox");
+        handCards = new String[]{};
         for (int t = 0; t < trials; t++)  // cube pilot: Talisman's painless {C} paid generic and its {R} was then missing
             if (!trial(true, "{4}{R}", "Talisman of Indulgence", "Mox Sapphire", "Mox Pearl", "Ancient Tomb", "Island", "The Mightstone and Weakstone"))
                 fails.add("{4}{R} (Pyrokinesis) from Talisman, two Moxen, Ancient Tomb, Island, Mightstone: unpaid");
@@ -187,7 +270,7 @@ public class CostlyManaCheck {
         py.getManaPool().addMana(mage.Mana.BlackMana(3), game, src);
         String pool = Observer.build(game, py.getId(), Collections.emptyList()).entries.get(0).toString();
         if (!pool.contains("\"my_pool\":\"{B}{B}{B}\"")) fails.add("observation pool: " + pool);
-        System.out.println("COSTLY_MANA old payer spent the Lotus for {2}: " + oldSpends + "; failures " + fails.size() + "/" + (7 * trials + 3));
+        System.out.println("COSTLY_MANA old payer spent the Lotus for {2}: " + oldSpends + "; failures " + fails.size() + "/" + (8 * trials + 4));
         fails.stream().distinct().forEach(f -> System.out.println("  " + f));
         System.out.println(fails.isEmpty() ? "PASS" : "FAIL");
         System.exit(fails.isEmpty() ? 0 : 1);

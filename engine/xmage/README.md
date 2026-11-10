@@ -13,7 +13,8 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   (London mulligan: keep or mulligan on the new seven, then the bottom cards; XMage asks bottom first), and since
   2026-11-08 `costlyManaAsk` (the automatic payer never uses mana abilities that cost more than {T}, like Black
   Lotus, Lotus Petal or Treasure: they are offered as priority moves and their colour is asked; pain mana only when
-  painless can't pay; an all-generic cost is paid by one exact source like Sol Ring before lands).
+  painless can't pay; an all-generic cost is paid by one exact source like Sol Ring before lands; lands and Moxen
+  weighed together for generic; Sol Ring-like sources also offered at priority; delve cards are the player's choice).
 - `Observer.java`: builds the observation from XMage's per-seat view (`GameView`, what a human client sees),
   entries in contract order `[global | cards | stack abilities]`, plus edges. Checks every message against the
   full game state for hidden-information leaks. A card being revealed is an entry with zone `REVEALED`; a card an
@@ -83,8 +84,9 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   the rest to the player). Prints PASS or FAIL.
 - `CostlyManaCheck.java`: regression check for `costlyManaAsk` (Cube seats): the automatic payer never spends Black
   Lotus or Lotus Petal (it did before), uses Talisman pain only when painless mana can't pay, doesn't overpay with
-  Sol Ring, offers Black Lotus at priority, asks its colour and pays the next spell from the pool, and the
-  observation shows the pool. Prints PASS or FAIL.
+  Sol Ring, offers Black Lotus and Sol Ring at priority, asks the Lotus' colour and pays the next spell from the pool,
+  pays Pyrokinesis' {R} from a Talisman, taps a Mox rather than a needed Mountain, lets the player delve for Murderous
+  Cut, and the observation shows the pool. Prints PASS or FAIL.
 - `BlockCheck.java`: builds a combat board directly and asks XMage's AI to block (for chasing block bugs).
 - `decks/`: smoke-test decks; `dsk_ug_modal.dck` swaps in modal spells to exercise MODE prompts.
 

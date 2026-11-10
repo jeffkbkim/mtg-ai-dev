@@ -116,7 +116,12 @@ public class PySeat extends ComputerPlayer {
     private transient int manaCostLimit = 2;  // while paying: the highest manaCostClass the payer may use
     private transient boolean choosingOwnMana = false;
     private transient boolean noOverpay = false;  // costlyManaAsk pass: skip mana abilities making more than is owed
-    private transient boolean colouredOnly = false;  // costlyManaAsk pass: pay only the coloured symbols  // activating a playerManaAbility: its colour choice is the player's
+    private transient boolean colouredOnly = false;  // costlyManaAsk pass: pay only the coloured symbols
+    private transient UUID delveFor;  // costlyManaAsk: the ability whose delve cards were asked (cleared at priority)
+    private transient List<UUID> delveCards = new ArrayList<>();  // the graveyard cards the player chose to exile for it
+    private transient boolean delveAnswering = false;  // delve's own cost is choosing those cards: answered from delveCards
+    private transient int genericReserve = 0;  // generic left unpaid by mana, for delve
+    private transient String promptNote;  // put before the next target prompt (what a delve choice is for)
 
     /** 0: only {T} (and mana) as cost and no damage to you; 1: pay life or damage to you; 2: any other cost. */
     static int manaCostClass(mage.abilities.mana.ActivatedManaAbilityImpl ma) {
@@ -136,10 +141,16 @@ public class PySeat extends ComputerPlayer {
         return !costlyManaAsk || manaCostClass(ma) <= manaCostLimit;
     }
 
-    /** A mana ability the player activates by choice (offered at priority) rather than the payer. */
-    private boolean playerManaAbility(ActivatedAbility a) {
-        return costlyManaAsk && a instanceof mage.abilities.mana.ActivatedManaAbilityImpl
-                && manaCostClass((mage.abilities.mana.ActivatedManaAbilityImpl) a) == 2;
+    /**
+     * A mana ability the player activates by choice (offered at priority): class 2 ones only the player uses; ones
+     * making two or more mana at once (Sol Ring, Mana Vault, Ancient Tomb) the payer uses too, but its noOverpay rule
+     * keeps them for big costs. Offered so the player can float their mana for two spells in a turn: in the cube pilot
+     * Fear of Missing Out ({1}{R}) took Swamp + Mountain with Mana Vault untapped, and Caustic Bronco couldn't be cast.
+     */
+    private boolean playerManaAbility(ActivatedAbility a, Game game) {
+        if (!costlyManaAsk || !(a instanceof mage.abilities.mana.ActivatedManaAbilityImpl)) return false;
+        mage.abilities.mana.ActivatedManaAbilityImpl ma = (mage.abilities.mana.ActivatedManaAbilityImpl) a;
+        return manaCostClass(ma) == 2 || ma.getNetMana(game).stream().anyMatch(m -> m.count() >= 2);
     }
 
     /** The source has a mana ability the payer may use. */
@@ -175,7 +186,7 @@ public class PySeat extends ComputerPlayer {
      * symbols before generic, from the source that matters least: lands before creatures (creatures only when nothing
      * else can pay, and never the permanent whose own {T} the ability needs), then the source whose colours the
      * other cards in hand need least, then the one with fewer colours. Mana that can't be spent on this ability is
-     * skipped, and a source's restricted mana that this ability may spend is used before its other mana. Anything this can't pay (X, phyrexian, convoke, ...) falls back to XMage's payer, lands first.
+     * skipped, and a source's restricted mana that this ability may spend is used before its other mana. Anything this can't pay (X, phyrexian, ...) falls back to XMage's payer, lands first; with costlyManaAsk delve is the player's (delveReserve).
      */
     private transient boolean skipCreatureMana = false;
     private transient boolean payingMana = false;  // colour choices of the mana abilities it activates are the payer's
@@ -207,6 +218,20 @@ public class PySeat extends ComputerPlayer {
         payingMana = true;
         try {
             if (costlyManaAsk) {
+                genericReserve = delveReserve(ability, unpaid, game);
+                if (genericReserve > 0 && unpaid.getMana().count() <= genericReserve) {
+                    // only what delve pays is left: exile the chosen cards (after this, XMage allows no mana abilities)
+                    mage.abilities.SpecialAction sa = delveAction(ability, game);
+                    String before = resources(game);
+                    delveAnswering = true;
+                    try {
+                        if (sa != null && activateAbility(sa, game) && !resources(game).equals(before)) return true;
+                    } finally {
+                        delveAnswering = false;
+                        delveCards.clear();
+                        genericReserve = 0;
+                    }
+                }
                 // painless sources first, then painful ones; class-2 mana is never the payer's (manaCostClass).
                 // Coloured symbols first at both levels: painless-first alone let Talisman's {C} pay generic, and
                 // its painful {R} was then gone for Pyrokinesis' {R} (cube pilot). Then generic symbols, first
@@ -241,6 +266,7 @@ public class PySeat extends ComputerPlayer {
             manaCostLimit = 2;
             noOverpay = false;
             colouredOnly = false;
+            genericReserve = 0;
         }
     }
 
@@ -263,7 +289,47 @@ public class PySeat extends ComputerPlayer {
     /** Payment tiers: v1 noncreatures (0) then creatures (1); v2 lands (0), other noncreatures (1), creatures (2). */
     private boolean inTier(MageObject o, int tier, Game game) {
         if (!payerV2) return o.isCreature(game) == (tier == 1) && tier < 2;
+        // costlyManaAsk: lands and other noncreatures together, so the planner weighs a Mox against a land; lands
+        // first spent the only other Mountain on Chromatic Star's {1} with Moxen untapped (cube pilot)
+        if (costlyManaAsk) return tier == (o.isCreature(game) ? 2 : 0);
         return tier == (o.isLand(game) ? 0 : o.isCreature(game) ? 2 : 1);
+    }
+
+    /**
+     * costlyManaAsk: delve is the player's choice. Without this the payer never used it: Murderous Cut with six cards in
+     * the graveyard took four lands and a Mox (cube pilot). XMage allows no mana abilities once delve is used (its
+     * ActivationManaAbilityStep.AFTER), so the player first chooses which graveyard cards to exile (a CHOOSE decision;
+     * DONE pays the rest with mana), the payer leaves that much generic unpaid, and delve's special action then exiles
+     * those cards. Returns the generic mana to leave for delve. Asked once per cast (cleared at priority).
+     */
+    private int delveReserve(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game) {
+        if (game.isSimulation()) return 0;
+        if (!ability.getId().equals(delveFor)) {
+            delveFor = ability.getId();
+            delveCards.clear();
+            int max = Math.min(unpaid.getMana().getGeneric(), getGraveyard().size());
+            if (max > 0 && delveAction(ability, game) != null) {
+                mage.target.common.TargetCardInYourGraveyard t = new mage.target.common.TargetCardInYourGraveyard(
+                        0, max, new mage.filter.FilterCard("cards from your graveyard to exile"), true);
+                promptNote = "Delve: each card you exile from your graveyard pays {1} of " + label(game, ability.getSourceId())
+                        + " (cost " + unpaid.getText() + "; DONE pays the rest with mana). ";
+                try {
+                    chooseTargets("CHOOSE", t, ability, game, false, null);
+                } finally {
+                    promptNote = null;
+                }
+                delveCards.addAll(t.getTargets());
+            }
+        }
+        delveCards.removeIf(id -> game.getState().getZone(id) != mage.constants.Zone.GRAVEYARD);
+        return delveAction(ability, game) == null ? 0 : Math.min(delveCards.size(), unpaid.getMana().getGeneric());
+    }
+
+    /** XMage's delve special action for this payment, present while the spell is paid. */
+    private mage.abilities.SpecialAction delveAction(Ability ability, Game game) {
+        for (mage.abilities.SpecialAction sa : game.getState().getSpecialActions().getControlledBy(playerId, true).values())
+            if (ability.getSourceId().equals(sa.getSourceId()) && sa.getClass().getSimpleName().equals("DelveSpecialAction")) return sa;
+        return null;
     }
 
     /**
@@ -275,7 +341,9 @@ public class PySeat extends ComputerPlayer {
      */
     private boolean payRestricted(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game) {
         List<mage.abilities.costs.mana.ManaCost> symbols = unpaidSymbols(unpaid);
-        int owed = unpaid.getMana().count();
+        int owed = unpaid.getMana().count() - genericReserve;
+        if (genericReserve > 0 && unpaid.getMana().getGeneric() <= genericReserve)
+            symbols.removeIf(c -> c instanceof mage.abilities.costs.mana.GenericManaCost);
         List<MageObject> sources = new ArrayList<>(super.getAvailableManaProducers(game));
         sources.removeIf(o -> o.getId().equals(ability.getSourceId()));
         sources.sort(Comparator.comparingInt(o -> o.isCreature(game) ? 1 : 0));
@@ -296,8 +364,8 @@ public class PySeat extends ComputerPlayer {
      * Mana Vault for {3}), so lands stay untapped; lands-first tiers otherwise took a Plains, then the Sol Ring.
      */
     private boolean payExact(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game) {
-        int owed = unpaid.getMana().count();
-        if (owed < 2 || unpaid.getMana().getGeneric() != owed) return false;
+        int owed = unpaid.getMana().count() - genericReserve;
+        if (owed < 2 || unpaid.getMana().getGeneric() - genericReserve != owed) return false;
         for (MageObject o : super.getAvailableManaProducers(game)) {
             if (o.getId().equals(ability.getSourceId())) continue;
             for (mage.abilities.mana.ActivatedManaAbilityImpl ma : o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game)) {
@@ -311,7 +379,8 @@ public class PySeat extends ComputerPlayer {
 
     private boolean payStep(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game, int tier) {
         List<mage.abilities.costs.mana.ManaCost> symbols = unpaidSymbols(unpaid);
-        if (colouredOnly) symbols.removeIf(c -> c instanceof mage.abilities.costs.mana.GenericManaCost);
+        if (colouredOnly || genericReserve > 0 && unpaid.getMana().getGeneric() <= genericReserve)
+            symbols.removeIf(c -> c instanceof mage.abilities.costs.mana.GenericManaCost);
         if (symbols.isEmpty()) return false;
         boolean tapsSource = ability.getCosts().stream().anyMatch(c -> c instanceof mage.abilities.costs.common.TapSourceCost);
         int[] need = new int[COLOURS.length];  // coloured symbols of the other cards in hand, per colour
@@ -358,7 +427,7 @@ public class PySeat extends ComputerPlayer {
                     for (mage.Mana net : ma.getNetMana(game)) {
                         if (net instanceof mage.ConditionalMana && !((mage.ConditionalMana) net).apply(ability, game, playerId, symbol)) continue;
                         if (!symbol.testPay(net)) continue;
-                        if (noOverpay && net.count() > unpaid.getMana().count()) continue;
+                        if (noOverpay && net.count() > unpaid.getMana().count() - genericReserve) continue;
                         if (activateAbility(ma, game)) return true;
                     }
                 }
@@ -444,15 +513,22 @@ public class PySeat extends ComputerPlayer {
     private Set<MageObject> planPayment(Ability ability, List<mage.abilities.costs.mana.ManaCost> symbols, List<MageObject> sources,
                                         Map<MageObject, int[]> keys, Game game) {
         int[] cost = split(symbols);
-        if (cost == null || sources.size() > 14) return Collections.emptySet();
-        int total = Arrays.stream(cost).sum();
-        if (total == 0 || total > sources.size()) return Collections.emptySet();
+        if (cost == null) return Collections.emptySet();
         List<Integer> masks = new ArrayList<>();
-        for (MageObject o : sources) {
+        List<MageObject> all = sources;
+        sources = new ArrayList<>();
+        for (MageObject o : all) {
             int m = colourMask(o, ability, symbols.get(0), game);
-            if (m < 0) return Collections.emptySet();
+            if (m < 0) {
+                // costlyManaAsk: plan without it (a Sol Ring is on most cube boards); the payer reaches it later
+                if (costlyManaAsk) continue;
+                return Collections.emptySet();
+            }
+            sources.add(o);
             masks.add(m);
         }
+        int total = Arrays.stream(cost).sum();
+        if (sources.size() > 14 || total == 0 || total > sources.size()) return Collections.emptySet();
         List<List<int[]>> hand = new ArrayList<>();  // per other card in hand: the costs of its ways to be cast
         List<Integer> weights = new ArrayList<>();
         for (Card c : getHand().getCards(game)) {
@@ -643,6 +719,7 @@ public class PySeat extends ComputerPlayer {
     @Override
     public boolean priority(Game game) {
         if (simulated(game)) return super.priority(game);
+        delveFor = null;
         game.getState().setPriorityPlayerId(playerId);
         game.firePriorityEvent(playerId);
         String key = game.getTurnNum() + "/" + game.getTurnStepType() + "/" + game.getStack().size();
@@ -655,7 +732,7 @@ public class PySeat extends ComputerPlayer {
         ActivatedAbility[] chosen = {null};
         opts.add(new Option("PASS", null, null, () -> passed[0] = true).as("PASS"));
         for (ActivatedAbility a : playable(game)) {
-            if ((a.isManaAbility() && !playerManaAbility(a)) || failedThisWindow.contains(moveKey(a))) continue;
+            if ((a.isManaAbility() && !playerManaAbility(a, game)) || failedThisWindow.contains(moveKey(a))) continue;
             if (resources(game).equals(refusedAt.get(moveKey(a)))) continue;
             if (a instanceof mage.abilities.keyword.CrewAbility && !canCrew(a, game)) continue;
             Option o = new Option(a.getAbilityType() + " | " + label(game, a.getSourceId()) + " | " + a, a.getSourceId(), null, () -> chosen[0] = a);
@@ -678,7 +755,7 @@ public class PySeat extends ComputerPlayer {
         String before = resources(game);
         int askedBefore = link.asked.values().stream().mapToInt(Integer::intValue).sum();
         boolean activated;
-        choosingOwnMana = playerManaAbility(chosen[0]);
+        choosingOwnMana = playerManaAbility(chosen[0], game);
         try {
             activated = activateAbility(chosen[0], game);
         } finally {
@@ -757,6 +834,12 @@ public class PySeat extends ComputerPlayer {
     private transient int doneSize = -1;
 
     private boolean chooseTargets(String kind, Target target, Ability source, Game game, boolean isTargeting, Cards fromCards) {
+        if (delveAnswering && target instanceof mage.target.common.TargetCardInYourGraveyard) {  // see delveReserve
+            Set<UUID> possible = target.possibleTargets(playerId, source, game);
+            for (UUID id : delveCards)
+                if (target.getTargets().size() < target.getMaxNumberOfTargets() && possible.contains(id)) target.add(id, game);
+            return target.isChosen(game);
+        }
         if (target == doneTarget && target.getTargets().size() == doneSize) {
             doneTarget = null;
             return target.isChosen(game);
@@ -784,7 +867,7 @@ public class PySeat extends ComputerPlayer {
                     else target.add(id, game);
                 }).as(kind));
             }
-            pick(kind, target.getMessage(game), game, opts, fromCards);
+            pick(kind, (promptNote == null ? "" : promptNote) + target.getMessage(game), game, opts, fromCards);
             if (done[0]) {
                 if (target.getTargets().size() > sizeBefore) { doneTarget = target; doneSize = target.getTargets().size(); }
                 break;

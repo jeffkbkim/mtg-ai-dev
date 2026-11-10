@@ -196,7 +196,10 @@ Chromatic Star, Treasure tokens, exert, removing counters) are never used by the
 as ACTIVATE options at priority: activate one yourself before you cast the spell it is for; its mana waits in your
 mana pool (shown in the state) until the end of the step, and spells are paid from the pool first. Painful mana
 (paying life, or a source that deals damage to you: Talismans, Ancient Tomb, Mana Confluence, painlands) is used
-automatically only when painless sources can't pay."""
+automatically only when painless sources can't pay. Sources making two or more mana at once (Sol Ring, Mana Vault,
+Ancient Tomb) are also offered at priority: the automatic payment doesn't use them for a cost smaller than their mana,
+so activate one yourself first when you plan to spend its mana on two spells this step. Delve: when you cast a delve
+spell you are asked which graveyard cards to exile; the rest is paid with mana."""
 
 
 def deck_plan(deck_path):
