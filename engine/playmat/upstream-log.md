@@ -2,6 +2,23 @@
 
 Newest first. Written by the daily review (UPDATE.md).
 
+## 2026-11-10 (daily review) — HELD
+- PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
+  arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
+- a33fb65 → 00c2043 (Playmat master, 2026-11-09): 842 commits, 14 new since yesterday's fb45469. The new ones: Rust
+  game host rollout step E (hosted-game metrics, XMAGE_RUST_HOST_USERS), priority timers, best-of-three matches,
+  per-game records + host-replay (gateway/host, RustHost.java, GameApi), Modern tier34 meta decks and transpiled
+  cards (rust engine rules.rs/state.rs/card.rs), "skip empty target prompts" (#265: HumanPlayer.chooseTarget returns
+  early when nothing is choosable; RelicOfProgenitus checks canChoose; no DSK card), web client headless bot/Rust host
+  live tests; ops: .env.example/docker-compose/server-entrypoint.sh add XMAGE_RUST_HOST_RECORDS(_KEEP), local paths
+  only, no new URLs or dependencies today.
+- Gate: HOLD, same open reasons as 2026-11-07..09 across the whole range: rules changes under Mage/src/main (incl.
+  the #255 rules batch); DSK cards RootwiseSurvivor and VeteranSurvivor changed; patch 0003 conflicts
+  (stores/play.ts), 0004-0033 unchecked; security pass not cleared (TrustedHeaderAuth, OIDC sign-in and its new
+  server dependency, deck-import fetches, Docker/Caddy/updater). Today's commits add nothing new to clear or block.
+  Needs Jeff to plan the rebase.
+- No build, no tests, not deployed. Pin stays a33fb65.
+
 ## 2026-11-09 (daily review) — HELD
 - PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
   arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
