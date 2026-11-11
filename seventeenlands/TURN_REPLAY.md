@@ -323,3 +323,10 @@ The replay isn't exactly repeatable (XMage's ids and library order are random): 
 20 games differed in 3 games. The 5 differing legal-move lists are one game where a card cast from exile was a
 different random card. No rules difference was found. After the changes: 37% legal moves, 25% observations,
 25% the engine's own game loop.
+
+## Run dsk50k-4: 50,000 games, 2,310,483 decision rows (258 MB gz)
+
+- Turns reproduced: clean 89.4% (n = 439,152), from an exact start 75.8% (n = 786,629), after a reset 53.6% (n = 381,204)
+- Rows: alternative 765,514 (33.1%), alternative_unprobed 492,798 (21.3%), ambiguous 7 (0.0%), ambiguous_set 330,273 (14.3%), not_recorded 11,422 (0.5%), recorded 577,204 (25.0%), unique 133,263 (5.8%), unprobed 2 (0.0%)
+- Stalls 0, games lost 0, games conceded at record end 15,046
+- Lowest free memory 46%
