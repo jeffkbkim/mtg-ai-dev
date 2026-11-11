@@ -2,6 +2,26 @@
 
 Newest first. Written by the daily review (UPDATE.md).
 
+## 2026-11-11 (daily review) — HELD
+- PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
+  arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
+- a33fb65 → eb69627 (Playmat master, 2026-11-10): 896 commits, 54 new since yesterday's 00c2043 (36 non-merge). The
+  new ones: Rust engine parity (poison/704.5c, granted deathtouch/defender in combat, 514.3a cleanup priority,
+  delve/convoke/improvise while paying, effect-added subtypes, infinite-loop draw, looked-at cards, library search
+  view); Rust host (spectators/chat/emotes, undo tap and rollbacks, mana payment modes, hold priority, replays, Career
+  payouts, printings, leyline in opening hand, view templates); Rust engine opt-in setting (UserData.useRustEngine,
+  XMAGE_RUST_OPT_IN, chip on the board); web client warms card pictures before a match, deck-builder binder tiles fix
+  (#277/#279); CI pre-push ops/ci/check.sh and faster workflows. Mage/src/main today: PlayerImpl.getPlayable no longer
+  skips while in pay-mana mode (mana sources for costs paid while attacking, e.g. Propaganda), UserData opt-in field,
+  trace/ShadowStart.java. Security: new Rust dependency flate2 (playmat-host, replay compression), CI workflow edits,
+  entrypoint opt-in switch; no new outbound URLs today.
+- Gate: HOLD, same open reasons as 2026-11-07..10 across the whole range: rules changes under Mage/src/main (incl.
+  the #255 rules batch, and today's getPlayable change in pay-mana mode); DSK cards RootwiseSurvivor and
+  VeteranSurvivor changed; patch 0003 conflicts (stores/play.ts), 0004-0033 unchecked; security pass not cleared
+  (TrustedHeaderAuth, OIDC sign-in and its server dependency, deck-import fetches, Docker/Caddy/updater, CI changes).
+  Needs Jeff to plan the rebase.
+- No build, no tests, not deployed. Pin stays a33fb65.
+
 ## 2026-11-10 (daily review) — HELD
 - PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
   arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
