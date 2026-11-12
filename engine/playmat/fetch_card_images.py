@@ -8,6 +8,7 @@ Writes <out>/<set>/<collector number>.webp and <out>/index.json (the "set/number
 reads to know what it can serve locally).
 """
 import argparse, json, re, time, urllib.error, urllib.request
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -48,26 +49,37 @@ def main():
         folder.mkdir(parents=True, exist_ok=True)
         for line in (ROOT / "engine" / "vocab" / f"{s.lower()}_numbers.tsv").read_text().splitlines():
             number, name = line.split("\t", 1)
-            target = folder / f"{number}.webp"
+            card_set = s
+            if ":" in number:  # a card from another set in this one's packs (FDN's Special Guests: "SPG:80")
+                card_set, number = number.split(":", 1)
+            target = a.out / card_set.lower() / f"{number}.webp"
+            target.parent.mkdir(parents=True, exist_ok=True)
             if target.exists():
                 continue
             image = None
             for slug in slugs(name):
-                code, page = get(f"https://gatherer.wizards.com/{s}/en-us/{number}/{slug}")
+                code, page = get(f"https://gatherer.wizards.com/{card_set}/en-us/{number}/{slug}")
                 time.sleep(a.pause)
                 m = re.search(rb'og:image" content="([^"]+)"', page) if code == 200 else None
                 if m:
                     image = m.group(1).decode()
                     break
+                if code == 200:  # some pages have no og:image: the picture named most often next to the card's name
+                    text = page.decode("utf8", "ignore")
+                    near = Counter(h for k in re.finditer(re.escape(name.split(" // ")[0]), text)
+                                   for h in re.findall(r"Cards/medium/([0-9A-F]{64})", text[max(0, k.start() - 600):k.start() + 600]))
+                    if near:
+                        image = f"https://gatherer-static.wizards.com/Cards/medium/{near.most_common(1)[0][0]}.webp"
+                        break
             if not image:
-                missing.append(f"{s} {number} {name}")
+                missing.append(f"{card_set} {number} {name}")
                 continue
             code, data = get(image)
             time.sleep(a.pause)
             if code == 200 and data:
                 target.write_bytes(data)
             else:
-                missing.append(f"{s} {number} {name} (image)")
+                missing.append(f"{card_set} {number} {name} (image)")
     keys = sorted(f"{p.parent.name}/{p.stem}" for p in a.out.glob("*/*.webp"))
     (a.out / "index.json").write_text(json.dumps(keys))
     print(f"{len(keys)} pictures cached; missing {len(missing)}")
