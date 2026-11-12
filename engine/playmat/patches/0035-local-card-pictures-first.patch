@@ -65,13 +65,14 @@
      const exception = exceptionLink(card, face, this.links);
      if (exception) return toImageLink(exception, size);
      if (isTokenImage(card)) {
-@@ -215,6 +236,20 @@
+@@ -215,6 +236,21 @@
      return this.options.now() - entry.fetchedAt > this.options.maxAgeMs;
    }
  
 +  private ensureLocal(): void {
 +    if (this.local || this.localPromise || !this.options.localIndexUrl) return;
-+    this.localPromise = this.options.fetch(this.options.localIndexUrl)
++    // the site serves it with an hour's max-age; a picture cached since then must show on the next load
++    this.localPromise = this.options.fetch(this.options.localIndexUrl, { cache: 'no-cache' })
 +      .then((response) => (response.ok ? response.json() : []))
 +      .then((keys: unknown) => {
 +        this.local = new Set(Array.isArray(keys) ? keys.map(String) : []);
