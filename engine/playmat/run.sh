@@ -13,6 +13,9 @@
 # Quick Draft: the draft-brain service (play/draft_brain) on $DRAFT_BRAIN_PORT (default 17190); drafts are recorded under
 # $MTGAI_DRAFT_DIR (default ~/mtg-data/playmat-drafts).
 set -euo pipefail
+# Jeff 2026-11-12: started from a Claude Code session, the services would inherit its auth (ANTHROPIC_BASE_URL,
+# CLAUDE_CODE_*), and the Claude seat's calls fail "Not logged in" once that session is gone: use the Mac's own login
+for v in $(compgen -e | grep -E '^(CLAUDE|ANTHROPIC)' || true); do unset "$v"; done
 
 HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(cd "$HERE/../.." && pwd)

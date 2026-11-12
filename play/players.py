@@ -276,7 +276,10 @@ class ClaudePlayer:
         Path(self.workdir, "system.txt").write_text(system)
 
     def _env(self):
-        env = {k: v for k, v in os.environ.items() if k not in ("CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_REMOTE_SESSION_ID")}
+        # Jeff 2026-11-12: a service started from a Claude Code session inherits that session's auth (ANTHROPIC_BASE_URL,
+        # CLAUDE_CODE_* host-auth settings); once the session is gone every call fails "Not logged in". The seat's
+        # claude must use the Mac's own login, so none of those are passed on.
+        env = {k: v for k, v in os.environ.items() if not k.startswith(("CLAUDE", "ANTHROPIC"))}
         env["CLAUDE_EFFORT"] = self.effort  # an inherited default (e.g. a cloud session's "medium") must not compete with --effort
         # each seat calls again within seconds (batch 2's longest wait was under 5 min), and 5-minute cache writes cost
         # 1.25x input where 1-hour ones (the subscription default) cost 2x

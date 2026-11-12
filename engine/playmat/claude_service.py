@@ -49,6 +49,14 @@ def own_stack(msg):
 
 
 
+
+def safe_choice(msg):
+    """The answer when the model can't be asked (Jeff 2026-11-12): keep the opening hand rather than mulligan; every
+    other decision takes its first option, which is PASS at priority and DONE (no attackers, no blockers) in combat."""
+    if msg["kind"] == "USE" and msg.get("prompt", "").startswith("Mulligan"):
+        return next((k for k, o in enumerate(msg["options"]) if o.get("label", "").upper().startswith("NO")), 0)
+    return 0
+
 def offline_reason(error):
     """A short, player-facing reason a model call failed (the full traceback goes to errors.log)."""
     text = str(error)
@@ -143,7 +151,7 @@ def serve_seat(conn, args, log):
                     choice, info = player.choose(msg)
                     offline = None  # answering again: a later outage is announced again
                 except Exception as error:
-                    choice, info = 0, {"service_error": True}
+                    choice, info = safe_choice(msg), {"service_error": True}
                     # Jeff 2026-11-12: say so in the game, once per outage, instead of a silent first-option answer
                     reason = offline_reason(error)
                     if reason != offline:
