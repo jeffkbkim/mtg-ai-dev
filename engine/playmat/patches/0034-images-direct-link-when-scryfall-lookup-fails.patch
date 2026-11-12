@@ -1,0 +1,93 @@
+--- a/Mage.Web.Client/src/core/images/ImageResolver.ts
++++ b/Mage.Web.Client/src/core/images/ImageResolver.ts
+@@ -2,6 +2,7 @@
+   exceptionLink,
+   isTokenImage,
+   namedImageLink,
++  printingImageLink,
+   printingKey,
+   setCodeOf,
+   normalizeCollectorNumber,
+@@ -20,6 +21,8 @@
+   front?: ImageUris;
+   back?: ImageUris;
+   notFound?: boolean;
++  /** mtg-ai: the lookup failed (Scryfall down, network trouble), not a printing Scryfall doesn't know */
++  failed?: boolean;
+   fetchedAt: number;
+ }
+ 
+@@ -187,7 +190,9 @@
+ 
+     const cached = this.memory.get(key);
+     if (cached && !this.isStale(cached)) {
+-      if (cached.notFound) return namedImageLink(card, face, size);
++      // mtg-ai: when the batch lookup failed (Scryfall's collection and name lookups were down while the per-printing
++      // image links still worked, 2026-11-12), link the printing directly rather than looking the card up by name
++      if (cached.notFound) return (cached.failed ? printingImageLink(card, face, size) : null) ?? namedImageLink(card, face, size);
+       const uris = face === 'back' ? cached.back ?? cached.front : cached.front;
+       return uris?.[size] ?? uris?.normal ?? uris?.large ?? namedImageLink(card, face, size);
+     }
+@@ -327,7 +332,7 @@
+   /** Network trouble: fall back to direct links for this session, retry on the next visit. */
+   private giveUp(batch: { key: string }[]): void {
+     for (const item of batch) {
+-      this.memory.set(item.key, { notFound: true, fetchedAt: this.options.now() - this.options.maxAgeMs + 60_000 });
++      this.memory.set(item.key, { notFound: true, failed: true, fetchedAt: this.options.now() - this.options.maxAgeMs + 60_000 });
+       this.inFlight.delete(item.key);
+     }
+     this.notify(batch.map((item) => item.key));
+--- a/Mage.Web.Client/src/core/images/ImageResolver.test.ts
++++ b/Mage.Web.Client/src/core/images/ImageResolver.test.ts
+@@ -133,6 +133,19 @@
+     expect(lookups).toBe(3);
+   });
+ 
++  // mtg-ai 2026-11-12: Scryfall's collection and name lookups answered 503 while per-printing image links worked
++  test('when Scryfall keeps failing, links the printing directly instead of looking it up by name', async () => {
++    const fetchImpl = vi.fn(async (url: RequestInfo | URL) => {
++      if (String(url).endsWith('scryfall-links.json')) return jsonResponse(LINKS);
++      return jsonResponse({}, 503);
++    }) as unknown as typeof fetch;
++    const resolver = new ImageResolver({ fetch: fetchImpl, store: memoryStore(), batchDelayMs: 1, minRequestIntervalMs: 0, retryDelayMs: 1 });
++    const bolt = { name: 'Lightning Bolt', expansionSetCode: 'M10', cardNumber: '146' };
++    resolver.resolve(bolt);
++    await vi.waitFor(() => expect(resolver.resolve(bolt)).toContain('/cards/m10/146'));
++    expect(resolver.resolve(bolt)).not.toContain('named');
++  });
++
+   test('reads the persistent cache before the network', async () => {
+     const store = memoryStore({ 'm10/146': { front: { normal: 'cached' }, fetchedAt: Date.now() } });
+     const fetchImpl = vi.fn(async () => jsonResponse(LINKS)) as unknown as typeof fetch;
+@@ -312,7 +325,7 @@
+       resolver.subscribeCard(DELVER, delver);
+       resolver.resolve(BOLT);
+       resolver.resolve(DELVER);
+-      await vi.waitFor(() => expect(resolver.resolve(DELVER)).toContain('cards/named'));
++      await vi.waitFor(() => expect(resolver.resolve(DELVER)).toContain('/cards/isd/51'));
+       expect(gone).not.toHaveBeenCalled();
+       expect(delver).toHaveBeenCalled();
+     });
+--- a/Mage.Web.Client/src/core/images/useCardImage.test.tsx
++++ b/Mage.Web.Client/src/core/images/useCardImage.test.tsx
+@@ -17,16 +17,16 @@
+ 
+ describe('useCardImage', () => {
+   test('a card re-renders when its own picture resolves, not when other cards do', async () => {
+-    // fetch answers 404 (see setupDom): every printing falls back to a name link once its lookup fails
++    // fetch answers 404 (see setupDom): every printing falls back to its direct link once its lookup fails (mtg-ai)
+     const { rerender } = render(<><Probe card={BOLT} /><Probe card={BEAR} /></>);
+-    await waitFor(() => expect(screen.getByTestId('Lightning Bolt').textContent).toContain('cards/named'));
+-    await waitFor(() => expect(screen.getByTestId('Grizzly Bears').textContent).toContain('cards/named'));
++    await waitFor(() => expect(screen.getByTestId('Lightning Bolt').textContent).toContain('api.scryfall.com/cards/'));
++    await waitFor(() => expect(screen.getByTestId('Grizzly Bears').textContent).toContain('api.scryfall.com/cards/'));
+     const bolt = renders.get('Lightning Bolt')!;
+     const bear = renders.get('Grizzly Bears')!;
+ 
+     // a third card mounts and resolves: the first two hear nothing
+     rerender(<><Probe card={BOLT} /><Probe card={BEAR} /><Probe card={OPT} /></>);
+-    await waitFor(() => expect(screen.getByTestId('Opt').textContent).toContain('cards/named'));
++    await waitFor(() => expect(screen.getByTestId('Opt').textContent).toContain('api.scryfall.com/cards/'));
+     // the rerender itself renders each probe once more, nothing beyond that
+     expect(renders.get('Lightning Bolt')).toBe(bolt + 1);
+     expect(renders.get('Grizzly Bears')).toBe(bear + 1);
