@@ -70,8 +70,15 @@ A decision is a set of **entries**: `[global | cards | stack abilities]`.
 
 ### Next: value head and search
 
-- **Value head (in progress).** A win-probability head on the global entry's encoder output, trained on each game's
-  17lands result, which is already joined into the dataset (`build-17lands --outcomes`; base rate 54.3% wins).
+- **Value head (in progress, not yet on main).** Current state of the implementation:
+  - *Done:* the encoder is split into a shared `Trunk` (embeddings, edge bias, transformer) with two heads on top.
+    `forward` returns `ModelOutput(logits, value)`, and the ONNX export carries both outputs.
+  - *Design:* the value head starts as a **probe**: an MLP on the global entry's encoder output, detached, so it
+    reads the policy's representation without changing it. That measures how much win information the policy
+    trunk already holds. Next steps are a shared trunk with a weighted value loss, then a separate value trunk.
+  - *Data:* each training row carries its game's 17lands result (`build-17lands --outcomes`, joined exactly by
+    game; base rate 54.3% wins). Value targets are one label per game, so overfitting to games is the main risk.
+  - *Not done yet:* the value loss in the trainer, training runs, and calibration and accuracy numbers on held-out games.
 - **Search (planned).** PUCT-style MCTS with the policy as prior and the value head at the leaves, then search visit
   counts as policy targets and real results as value targets (search as teacher, then self-play). Magic needs more
   than board-game MCTS: hidden hands and libraries, several decisions in a row by the same player, and long chains
