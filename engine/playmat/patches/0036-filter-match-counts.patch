@@ -1,0 +1,118 @@
+--- a/Mage.Web.Client/src/app/quickdraft/filter.ts
++++ b/Mage.Web.Client/src/app/quickdraft/filter.ts
+@@ -72,10 +72,19 @@
+     return true;
+   };
+ 
++  // how many of the pool each box would keep, shown on the box (whatever else is ticked), and how many match now
++  const typeCounts = Object.fromEntries(TYPE_BOXES.map((type) => [type, pool.filter((card) => typesOf(card).has(type)).length])) as Record<TypeBox, number>;
++  const colorCounts = Object.fromEntries(COLOR_BOXES.map((color) => [color, pool.filter((card) => colorsOf(card).includes(color)).length])) as Record<ColorBox, number>;
++  const matching = active ? pool.filter(matches).length : pool.length;
++
+   return {
+     state,
+     active,
+     matches,
++    typeCounts,
++    colorCounts,
++    matching,
++    total: pool.length,
+     toggleType: (type: TypeBox) => update({ ...state, types: state.types.includes(type) ? state.types.filter((t) => t !== type) : [...state.types, type] }),
+     toggleColor: (color: ColorBox) => update({ ...state, colors: state.colors.includes(color) ? state.colors.filter((c) => c !== color) : [...state.colors, color] }),
+     setHide: (hide: boolean) => update({ ...state, hide }),
+--- a/Mage.Web.Client/src/app/quickdraft/PoolBoard.tsx
++++ b/Mage.Web.Client/src/app/quickdraft/PoolBoard.tsx
+@@ -103,7 +103,7 @@
+             className={[draft.column, styles.column, column.items.length === 0 && column.label !== SIDEBOARD ? styles.emptyColumn : '',
+               column.label === SIDEBOARD ? styles.sideColumn : '', moving ? styles.dropTarget : '', over === column.label ? styles.dropOver : ''].join(' ')}
+           >
+-            <span className={draft.columnLabel}>{column.label} <small>({column.items.length})</small></span>
++            <span className={draft.columnLabel}>{column.label} <small>({column.items.length}{filter?.active ? ` · ${column.items.filter((at) => filter.matches(pool[at])).length} match` : ''})</small></span>
+             <div data-stack className={draft.columnCards} style={{ height: `calc(var(--pick-w) * (1.4 + 0.3 * ${Math.max(0, shownOf(column).length - 1)}))` }}>
+               {shownOf(column).map((at, index) => {
+                 const card = pool[at];
+@@ -177,7 +177,7 @@
+       {TYPE_BOXES.map((type) => (
+         <label key={type} className={[styles.filterBox, filter.state.types.includes(type) ? styles.filterOn : ''].join(' ')}>
+           <input type="checkbox" checked={filter.state.types.includes(type)} onChange={() => filter.toggleType(type)} />
+-          {type}
++          {type} <small className={styles.filterCount}>{filter.typeCounts[type]}</small>
+         </label>
+       ))}
+       <span className={styles.filterGap} aria-hidden="true" />
+@@ -185,6 +185,7 @@
+         <label key={color} className={[styles.filterBox, filter.state.colors.includes(color) ? styles.filterOn : ''].join(' ')} title={COLOR_NAMES[color]}>
+           <input type="checkbox" checked={filter.state.colors.includes(color)} onChange={() => filter.toggleColor(color)} aria-label={COLOR_NAMES[color]} />
+           {color === 'C' || color === 'M' ? <span className={styles.filterLetter}>{color === 'C' ? '◇' : 'Multi'}</span> : <i className={`ms ms-cost ms-${color.toLowerCase()}`} aria-hidden="true" />}
++          <small className={styles.filterCount}>{filter.colorCounts[color]}</small>
+         </label>
+       ))}
+       <span className={styles.filterGap} aria-hidden="true" />
+@@ -192,6 +193,7 @@
+         <input type="checkbox" checked={filter.state.hide} onChange={(event) => filter.setHide(event.target.checked)} />
+         Hide others
+       </label>
++      {filter.active && <span className={styles.filterMatching} role="status">{filter.matching} of {filter.total} match</span>}
+       {filter.active && <button type="button" className={styles.suggest} onClick={filter.clear}>Clear</button>}
+     </div>
+   );
+--- a/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css
++++ b/Mage.Web.Client/src/app/quickdraft/QuickDraft.module.css
+@@ -774,4 +774,18 @@
+   .pass {
+     display: none;
+   }
++}
++
++/* mtg-ai: how many cards each filter box would keep, and how many match now */
++.filterCount {
++  margin-left: 4px;
++  color: var(--ink-3, rgb(255 255 255 / 0.55));
++  font-size: 0.85em;
++  font-variant-numeric: tabular-nums;
+ }
++
++.filterMatching {
++  font-size: 0.85rem;
++  color: var(--ink-2, rgb(255 255 255 / 0.8));
++  font-variant-numeric: tabular-nums;
++}
+diff --git a/Mage.Web.Client/src/app/quickdraft/FilterBar.test.tsx b/Mage.Web.Client/src/app/quickdraft/FilterBar.test.tsx
+new file mode 100644
+index 0000000000..0e40ef32c3
+--- /dev/null
++++ b/Mage.Web.Client/src/app/quickdraft/FilterBar.test.tsx
+@@ -0,0 +1,33 @@
++import { fireEvent, render, screen } from '@testing-library/react';
++import { describe, expect, test, vi } from 'vitest';
++import { COLOR_BOXES, TYPE_BOXES, type CardFilter } from './filter';
++import { FilterBar } from './PoolBoard';
++
++// mtg-ai: each box shows how many pool cards it keeps, and an active filter says how many match
++function fakeFilter(active: boolean): CardFilter {
++  const zeros = <K extends string>(keys: readonly K[]) => Object.fromEntries(keys.map((key) => [key, 0])) as Record<K, number>;
++  return {
++    state: { types: active ? ['Creature'] : [], colors: [], hide: false },
++    active,
++    matches: () => true,
++    typeCounts: { ...zeros(TYPE_BOXES), Creature: 13 },
++    colorCounts: { ...zeros(COLOR_BOXES), G: 9 },
++    matching: 13,
++    total: 42,
++    toggleType: vi.fn(),
++    toggleColor: vi.fn(),
++    setHide: vi.fn(),
++    clear: vi.fn(),
++  };
++}
++
++describe('FilterBar', () => {
++  test('shows each box count, and how many match when a filter is on', () => {
++    const { rerender } = render(<FilterBar filter={fakeFilter(false)} />);
++    expect(screen.getByText('Creature').parentElement?.textContent).toContain('13');
++    expect(screen.queryByRole('status')).toBeNull();
++    rerender(<FilterBar filter={fakeFilter(true)} />);
++    expect(screen.getByRole('status').textContent).toBe('13 of 42 match');
++    fireEvent.click(screen.getByRole('button', { name: 'Clear' }));
++  });
++});

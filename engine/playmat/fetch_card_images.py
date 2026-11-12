@@ -37,18 +37,44 @@ def slugs(name):
     return list(dict.fromkeys([one, two]))
 
 
+
+XMAGE_SETS = {"DSK": "DuskmournHouseOfHorror.java", "FDN": "Foundations.java"}
+
+
+def printings(code, xmage):
+    """(collector number, name) of every printing of a set: XMage's own list (games and drafts use any of them, e.g.
+    showcase Rip, Spawn Hunter 362 and the extra basic lands), plus engine/vocab's table (Special Guests "SPG:n")."""
+    seen = []
+    java = xmage / XMAGE_SETS.get(code, "")
+    if java.is_file():
+        seen += [(n, name.replace('\\"', '"')) for name, n in
+                 re.findall(r'SetCardInfo\("((?:[^"\\]|\\.)*)", "?([0-9A-Za-z*]+)"?,', java.read_text())]
+    table = ROOT / "engine" / "vocab" / f"{code.lower()}_numbers.tsv"
+    seen += [tuple(line.split("\t", 1)) for line in table.read_text().splitlines()] if table.exists() else []
+    return list(dict.fromkeys(seen))
+
+
+def write_index(out):
+    keys = sorted(f"{p.parent.name}/{p.stem}" for p in out.glob("*/*.webp"))
+    tmp = out / "index.json.tmp"
+    tmp.write_text(json.dumps(keys))
+    tmp.replace(out / "index.json")
+    return keys
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path, default=Path.home() / "mtg-data" / "card-images")
     ap.add_argument("--sets", nargs="+", default=["DSK", "FDN"])
     ap.add_argument("--pause", type=float, default=0.5)
+    ap.add_argument("--xmage", type=Path, default=Path.home() / "dev" / "playmat" / "Mage.Sets" / "src" / "mage" / "sets",
+                    help="XMage's set lists: every printing a game or draft can use (showcase, extra basics...)")
     a = ap.parse_args()
     missing = []
+    fetched = 0
     for s in a.sets:
         folder = a.out / s.lower()
         folder.mkdir(parents=True, exist_ok=True)
-        for line in (ROOT / "engine" / "vocab" / f"{s.lower()}_numbers.tsv").read_text().splitlines():
-            number, name = line.split("\t", 1)
+        for number, name in printings(s, a.xmage):
             card_set = s
             if ":" in number:  # a card from another set in this one's packs (FDN's Special Guests: "SPG:80")
                 card_set, number = number.split(":", 1)
@@ -78,10 +104,12 @@ def main():
             time.sleep(a.pause)
             if code == 200 and data:
                 target.write_bytes(data)
+                fetched += 1
+                if fetched % 20 == 0:  # the site picks up what has arrived so far
+                    write_index(a.out)
             else:
                 missing.append(f"{card_set} {number} {name} (image)")
-    keys = sorted(f"{p.parent.name}/{p.stem}" for p in a.out.glob("*/*.webp"))
-    (a.out / "index.json").write_text(json.dumps(keys))
+    keys = write_index(a.out)
     print(f"{len(keys)} pictures cached; missing {len(missing)}")
     for m in missing:
         print("  missing", m)
