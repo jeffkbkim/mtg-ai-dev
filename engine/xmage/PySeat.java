@@ -122,6 +122,26 @@ public class PySeat extends ComputerPlayer {
     private transient boolean delveAnswering = false;  // delve's own cost is choosing those cards: answered from delveCards
     private transient int genericReserve = 0;  // generic left unpaid by mana, for delve
     private transient String promptNote;  // put before the next target prompt (what a delve choice is for)
+    private transient boolean publicOptions = false;  // the next pick's option labels are public names (card-name choice)
+    private transient Set<String> formatNames;
+
+    /** The card names of this game's format: the set or name list (DSK, FDN, CUBE) holding most of my own cards. The JVM
+     *  runs with the default set even in Cube games, so SetCards.current() can't tell. */
+    private Set<String> formatNames(Game game) {
+        if (formatNames != null) return formatNames;
+        Set<String> mine = new HashSet<>();
+        for (Card c : game.getCards()) if (playerId.equals(c.getOwnerId())) mine.add(c.getName());
+        Set<String> sets = new TreeSet<>(SetCards.SPECIAL_GUESTS.keySet());
+        sets.addAll(SetCards.NAME_LISTS.keySet());
+        int best = -1;
+        for (String set : sets) {
+            Set<String> names = SetCards.byName(set, false).keySet();
+            int k = 0;
+            for (String n : mine) if (names.contains(n)) k++;
+            if (k > best) { best = k; formatNames = names; }
+        }
+        return formatNames;
+    }
 
     /** 0: only {T} (and mana) as cost and no damage to you; 1: pay life or damage to you; 2: any other cost. */
     static int manaCostClass(mage.abilities.mana.ActivatedManaAbilityImpl ma) {
@@ -674,7 +694,11 @@ public class PySeat extends ComputerPlayer {
         msg.add("options", opts);
         String text = link.gson.toJson(msg);
         List<String> leaks = new ArrayList<>(obs.violations);
-        leaks.addAll(Observer.scanText(text, game, obs));
+        if (publicOptions) {  // the options are names anyone may say (a card-name choice): scan the rest only
+            JsonObject rest = msg.deepCopy();
+            rest.remove("options");
+            leaks.addAll(Observer.scanText(link.gson.toJson(rest), game, obs));
+        } else leaks.addAll(Observer.scanText(text, game, obs));
         for (String l : leaks) link.leaks.merge(l, 1, Integer::sum);
         msg.add("leaks", link.gson.toJsonTree(leaks));
         decorate(msg, game);
@@ -856,6 +880,14 @@ public class PySeat extends ComputerPlayer {
                     ? target.possibleTargets(controller, source, game)
                     : target.possibleTargets(controller, source, game, fromCards));
             possible.removeAll(target.getTargets());
+            // a card in another player's hand is never offered unless the cards were given (a revealed hand): XMage's
+            // TargetCard(Zone.HAND) lists every hand in range and its client hides the others' (Chrome Mox's imprint
+            // listed the opponent's hand; the leak check stopped the game, cube02)
+            if (fromCards == null) possible.removeIf(id -> {
+                if (game.getState().getZone(id) != mage.constants.Zone.HAND) return false;
+                Card c = game.getCard(id);
+                return c != null && !c.getOwnerId().equals(playerId);
+            });
             if (possible.isEmpty()) break;
             boolean canStop = target.getTargets().size() >= target.getMinNumberOfTargets();
             List<Option> opts = new ArrayList<>();
@@ -972,6 +1004,21 @@ public class PySeat extends ComputerPlayer {
                 if (key == null) link.unmappedChoices.merge("alt cost: " + text.replaceAll("<[^>]+>", ""), 1, Integer::sum);
                 opts.add(new Option(text, cardId, null, () -> choice.setChoiceByKey(e.getKey())).as("CHOICE").choice(key));
             }
+        } else if (!choice.isKeyChoice() && choice.getChoices().size() > 200) {
+            // a card name (Phyrexian Revoker, Pithing Needle): XMage offers every card name it knows. Offer the names
+            // of this format's cards (the set or the cube list is public), not tens of thousands; the leak check skips
+            // these labels, which name cards anyone may say (cube pilot: Revoker's list named the library's cards)
+            Set<String> pool = formatNames(game);
+            for (String c : choice.getChoices())
+                if (pool.contains(c)) opts.add(new Option(c, null, null, () -> choice.setChoice(c)).as("CHOICE").choice("choice:" + c));
+            if (opts.isEmpty()) return super.choose(outcome, choice, game);
+            publicOptions = true;
+            try {
+                pick("CHOICE", choice.getMessage(), game, opts, null);
+            } finally {
+                publicOptions = false;
+            }
+            return choice.isChosen();
         } else if (choice.isKeyChoice()) {
             for (Map.Entry<String, String> e : choice.getKeyChoices().entrySet())
                 opts.add(new Option(e.getValue(), null, null, () -> choice.setChoiceByKey(e.getKey())).as("CHOICE").choice("choice:" + e.getValue()));

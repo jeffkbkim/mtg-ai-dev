@@ -87,6 +87,10 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   Sol Ring, offers Black Lotus and Sol Ring at priority, asks the Lotus' colour and pays the next spell from the pool,
   pays Pyrokinesis' {R} from a Talisman, taps a Mox rather than a needed Mountain, lets the player delve for Murderous
   Cut, and the observation shows the pool. Prints PASS or FAIL.
+- `CubeLeakCheck.java`: hidden-information regressions from the cube02 batch: Chrome Mox's imprint (a hand
+  `TargetCard`) offers only my own hand, a card-name choice (Phyrexian Revoker) offers the format's names without a
+  leak flag, and the leak check no longer flags a keyword ("Flash") or a name inside a visible name (Phlage's "Fury").
+  Prints PASS or FAIL.
 - `BlockCheck.java`: builds a combat board directly and asks XMage's AI to block (for chasing block bugs).
 - `decks/`: smoke-test decks; `dsk_ug_modal.dck` swaps in modal spells to exercise MODE prompts.
 

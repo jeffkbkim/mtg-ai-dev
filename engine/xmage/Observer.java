@@ -506,12 +506,18 @@ public final class Observer {
                 if (c != null) secret.put(c.getName(), "opponent face-down");
             }
         }
+        // keyword lists hold rules words, not card names ("keywords":["Flash"] named the card Flash, cube02); a visible
+        // name hides the names inside it ("Phlage, Titan of Fire's Fury" is not Fury). Gson escapes ' as \u0027
+        text = text.replaceAll("\"keywords\"\\s*:\\s*\\[[^\\]]*\\]", "");
         List<String> hits = new ArrayList<>();
         for (Map.Entry<String, String> s : secret.entrySet()) {
             String name = s.getKey();
             if (name.isEmpty() || visible.contains(name) || isBasic(name)) continue;
             // a card named like a creature type (Juggernaut) is one of the options of "Choose a creature type"
             String scanned = creatureTypes().contains(name) ? withoutTypeOption(text, name) : text;
+            for (String v : visible)  // only visible names containing this one: "Bolt" must not hide "Lightning Bolt"
+                if (v.length() > name.length() && v.contains(name))
+                    scanned = scanned.replace(v, " ").replace(v.replace("'", "\\u0027"), " ");
             boolean hit = rulesWords().contains(name) ? containsAsValue(scanned, name) : containsName(scanned, name);
             if (hit) hits.add(s.getValue() + " name in message: " + name);
         }

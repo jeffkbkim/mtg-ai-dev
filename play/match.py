@@ -47,6 +47,8 @@ def seat_loop(seat, conn, player, deck, local, out, lock, results, write_games, 
                 continue
             if msg.get("leaks"):
                 # fail closed: a decision the engine flagged as exposing hidden information never reaches a player
+                with open(out / "leak.json", "a") as lf:  # kept to debug the leak check (it is never shown to a player)
+                    lf.write(json.dumps({"seat": seat, "game": game, "idx": idx, "msg": msg}) + "\n")
                 raise RuntimeError(f"hidden-information leak flagged by the engine: {msg['leaks']}")
             if not started:
                 player.start_game(game, deck)
