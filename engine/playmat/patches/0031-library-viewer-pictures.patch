@@ -1,9 +1,10 @@
 --- a/Mage.Web.Client/src/core/game/libraryList.ts
 +++ b/Mage.Web.Client/src/core/game/libraryList.ts
-@@ -19,3 +19,43 @@
+@@ -18,3 +18,44 @@
+   }
    return entries;
  }
- 
++
 +/**
 + * mtg-ai: a printing for each library card, which the server leaves out (names only): the same card seen elsewhere
 + * in the game (battlefield, graveyard, exile), else its number in the set the player's other cards come from
@@ -53,10 +54,11 @@
  
  describe('shuffledLibrary (mtg-ai)', () => {
    it('keeps every name and count, drops empty ones', () => {
-@@ -19,3 +19,17 @@
+@@ -18,3 +18,18 @@
+     expect(shuffledLibrary(undefined)).toEqual([]);
    });
  });
- 
++
 +describe('libraryPrinting (mtg-ai)', () => {
 +  const numbers = { DSK: { 'Bear Trap': '243', Swamp: '274' } };
 +  it('prefers the printing seen elsewhere in the game, else the set table', () => {
@@ -111,6 +113,9 @@
      const counts = Object.fromEntries(entries.map((entry, i) => [`library-list-${i}`, entry.count]));
      const top = player.topCard?.name ? ` · top card revealed: ${player.topCard.name}` : '';
      openViewer({ title: `${name} library (${player.libraryCount ?? 0} cards)`, cards, counts, note: LIBRARY_ORDER_NOTE + top });
+diff --git a/Mage.Web.Client/public/data/set-numbers.json b/Mage.Web.Client/public/data/set-numbers.json
+new file mode 100644
+index 0000000000..37d6363ef1
 --- /dev/null
 +++ b/Mage.Web.Client/public/data/set-numbers.json
 @@ -0,0 +1 @@
