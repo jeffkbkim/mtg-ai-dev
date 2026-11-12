@@ -37,4 +37,8 @@ and on the draw). XMage 1.4.62, harness commit 2b5697f. 95% intervals.
 - The policy loses to the random bot and does worse than the random bot against XMage's AI.
 - It passes its own first main phase with a land drop available 17-21% of the time (random bot 6%).
 - Random fallbacks (decisions the encoder can't map, DAMAGE): 0.1-0.2% of the policy's decisions.
-- Raw runs (configs, schedules, per-decision logs): `/mnt/project-files/evals/2026-11-05/`.
+- Raw runs (configs, schedules, per-decision logs) are kept outside Git, like the other datasets and checkpoints.
+
+![Held-out agreement and win rates](results-200-l1.png)
+
+Figure: `plot_results.py`, drawn from the two JSON files above.
