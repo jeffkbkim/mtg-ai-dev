@@ -2,6 +2,27 @@
 
 Newest first. Written by the daily review (UPDATE.md).
 
+## 2026-11-12 (daily review) — HELD
+- PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
+  arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
+- a33fb65 → 59de56f (Playmat master, 2026-11-11): 942 commits, 46 new since yesterday's eb69627 (29 non-merge). The
+  new ones: Rust engine shadow fixes (cleanup with SBAs asks priority, Roles leaving a noncreature, Valgavoth, tap
+  costs, damage replacement order, Giada, combat damage step powers, ward/valiant waiting on triggers, kicker
+  counters, Room triggers keeping their face, Lessons); Rust host games between people (#189), Career payouts and
+  economy calls in Rust (XMAGE_ROUTE_CAREERPAYOUTS), Rust AI policy interface/MCTS/Archbench (PLAYMAT_AI_POLICY),
+  phase 4 gate numbers and 10,000 shadow games; gateway counters that survive deploys (GET /totals, their gateway
+  port 17180 — same number as our Claude service, only matters if we ever run their gateway); web client: cached card
+  pictures show on the first frame (#288), hand discards on Rust, first strike lunges once (#291); docs/gitignore/CI
+  clippy fixes. Mage/src/main today: PreparedSpellCopy getter, GameOptions.hostedLine, trace DecisionLog/ShadowStart
+  (no rules behaviour). Security: new Rust dependency sha2 0.10 (playmat-platform), entrypoint/compose payout and
+  gateway-totals settings; no new outbound URLs today.
+- Gate: HOLD, same open reasons as 2026-11-07..11 across the whole range: rules changes under Mage/src/main (incl.
+  the #255 rules batch and 11-11's getPlayable pay-mana change); DSK cards RootwiseSurvivor and VeteranSurvivor
+  changed; patch 0003 conflicts (stores/play.ts), 0004-0037 unchecked; security pass not cleared (TrustedHeaderAuth,
+  OIDC sign-in and its server dependency, deck-import fetches, Docker/Caddy/updater, CI changes). Needs Jeff to plan
+  the rebase.
+- No build, no tests, not deployed. Pin stays a33fb65.
+
 ## 2026-11-11 (daily review) — HELD
 - PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
   arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
