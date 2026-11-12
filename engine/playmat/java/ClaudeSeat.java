@@ -157,6 +157,12 @@ public class ClaudeSeat extends PySeat {
     protected void onReply(JsonObject reply, Game game) {
         GameRecorder r = GameRecorder.find(game);
         if (r != null && reply.has("player")) r.setPlayerName(r.seat(playerId), reply.get("player").getAsString());
+        if (reply.has("offline") && !game.isSimulation()) {
+            // mtg-ai (Jeff 2026-11-12): the model can't be reached (logged out, usage limit): say so in the game log,
+            // once per outage, instead of letting its first-option fallback look like a decision
+            game.informPlayers(getLogName() + OFFLINE_TEXT + reply.get("offline").getAsString()
+                    + " - until then it takes the first option (e.g. mulligans, passes)");
+        }
         if (reply.has("concede") && reply.get("concede").getAsBoolean() && !game.isSimulation()) {
             // the model conceded after its own second look: the game ends at the next check, as a click on Concede does
             game.informPlayers(getLogName() + CONCEDE_TEXT);
@@ -166,6 +172,8 @@ public class ClaudeSeat extends PySeat {
 
     /** The log text of a Claude concession (GameRecorder marks the result "ended_by": "concede"). */
     static final String CONCEDE_TEXT = " concedes: no realistic way to win";
+    /** The log text when the Claude service can't reach the model. */
+    static final String OFFLINE_TEXT = " is offline: ";
 
     void sendRollback(int toTurn) {
         JsonObject rb = new JsonObject();

@@ -48,6 +48,16 @@ def own_stack(msg):
             and all(e.get("mine") for e in stack) and msg["options"][0]["label"] == "PASS")
 
 
+
+def offline_reason(error):
+    """A short, player-facing reason a model call failed (the full traceback goes to errors.log)."""
+    text = str(error)
+    if "Not logged in" in text or "/login" in text:
+        return "not logged in (run `claude`, then /login, on the Mac mini)"
+    if "rate limit" in text.lower() or "usage limit" in text.lower():
+        return "usage limit reached"
+    return "its model call failed (" + (text.splitlines()[0][:80] if text else type(error).__name__) + ")"
+
 def serve_seat(conn, args, log):
     f = conn.makefile("rw")
     model, effort = args.model, args.effort
@@ -57,6 +67,7 @@ def serve_seat(conn, args, log):
     folder, seat, idx, started = None, None, 0, False
     warmed = None  # (deck cards, prewarm info) of a model started before the game's first decision
     prewarm = None  # that info, until the first decision the model is asked
+    offline = None  # the reason last announced in the game while model calls fail (offline_reason)
     try:
         for line in f:
             msg = json.loads(line)
@@ -130,8 +141,13 @@ def serve_seat(conn, args, log):
                     info0, prewarm = {**prewarm, **player.warm_info()}, None
                 try:
                     choice, info = player.choose(msg)
-                except Exception:
+                    offline = None  # answering again: a later outage is announced again
+                except Exception as error:
                     choice, info = 0, {"service_error": True}
+                    # Jeff 2026-11-12: say so in the game, once per outage, instead of a silent first-option answer
+                    reason = offline_reason(error)
+                    if reason != offline:
+                        offline = info["offline"] = reason
                     (folder / "errors.log").open("a").write(f"seat {seat} decision {idx}:\n{traceback.format_exc()}\n")
                     player.end_game({})  # a fresh conversation for the next decision
                     player.start_game(0, start["deck"] if start else str(folder / f"deck-{seat}.dck"))
@@ -144,7 +160,8 @@ def serve_seat(conn, args, log):
             idx += 1
             with (folder / f"seat-{seat}.jsonl").open("a") as g:
                 g.write(json.dumps(rec) + "\n")
-            f.write(json.dumps({"choice": choice, "player": player.name, **({"concede": True} if info.get("concede") else {})}) + "\n")
+            f.write(json.dumps({"choice": choice, "player": player.name, **({"concede": True} if info.get("concede") else {}),
+                                **({"offline": info["offline"]} if info.get("offline") else {})}) + "\n")
             f.flush()
     except Exception:
         log(f"seat {seat} stopped:\n{traceback.format_exc()}")
