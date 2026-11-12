@@ -12,7 +12,7 @@ from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-AGENT = {"User-Agent": "Mozilla/5.0 (mtg-ai card cache)"}
+AGENT = {"User-Agent": "Mozilla/5.0 (mtg-ai card cache)", "Accept": "*/*"}  # Scryfall answers 400 without an Accept header
 
 
 def get(url, tries=3):
