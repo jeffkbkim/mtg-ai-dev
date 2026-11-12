@@ -1,0 +1,31 @@
+--- a/Mage.Web.Client/src/core/images/ImageResolver.ts
++++ b/Mage.Web.Client/src/core/images/ImageResolver.ts
+@@ -196,6 +196,9 @@
+       if (key && this.local.has(key)) return `${LOCAL_PREFIX}/${key}.webp`;
+     }
+     const exception = exceptionLink(card, face, this.links);
++    // mtg-ai: tokens (and other listed exceptions) point at a Scryfall printing like tdsk/3: the site's copy first
++    const listed = exception?.match(/\/cards\/([a-z0-9]+)\/([0-9a-z]+)/);
++    if (listed && this.local?.has(`${listed[1]}/${listed[2]}`)) return `${LOCAL_PREFIX}/${listed[1]}/${listed[2]}.webp`;
+     if (exception) return toImageLink(exception, size);
+     if (isTokenImage(card)) {
+       // tokens without a mapped picture have no reliable Scryfall printing
+--- a/Mage.Web.Client/src/core/images/ImageResolver.test.ts
++++ b/Mage.Web.Client/src/core/images/ImageResolver.test.ts
+@@ -150,13 +150,15 @@
+   test("serves a printing from the site's own card pictures when its index lists it", async () => {
+     const fetchImpl = vi.fn(async (url: RequestInfo | URL) => {
+       if (String(url).endsWith('scryfall-links.json')) return jsonResponse(LINKS);
+-      if (String(url).endsWith('/card-images/index.json')) return jsonResponse(['dsk/243']);
++      if (String(url).endsWith('/card-images/index.json')) return jsonResponse(['dsk/243', 'trix/4']);
+       return jsonResponse({}, 503);
+     }) as unknown as typeof fetch;
+     const resolver = new ImageResolver({ fetch: fetchImpl, store: memoryStore(), batchDelayMs: 1, minRequestIntervalMs: 0, retryDelayMs: 1, localIndexUrl: '/card-images/index.json' });
+     const trap = { name: 'Bear Trap', expansionSetCode: 'DSK', cardNumber: '243' };
+     expect(resolver.resolve(trap)).toBeNull(); // the index is loading
+     await vi.waitFor(() => expect(resolver.resolve(trap)).toBe('/card-images/dsk/243.webp'));
++    // a token listed in the exported token list (Golem: trix/4) is served locally when the site has it
++    expect(resolver.resolve({ name: 'Golem', expansionSetCode: 'RIX', isToken: true })).toBe('/card-images/trix/4.webp');
+     // a printing it doesn't have still goes to Scryfall
+     const other = { name: 'Lightning Bolt', expansionSetCode: 'M10', cardNumber: '146' };
+     await vi.waitFor(() => expect(resolver.resolve(other)).toContain('/cards/m10/146'));

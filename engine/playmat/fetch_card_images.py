@@ -61,11 +61,43 @@ def write_index(out):
     tmp.replace(out / "index.json")
     return keys
 
+
+def fetch_tokens(out, sets, links_file, pause):
+    """Tokens (Glimmer, Gremlin, Insect...) of the sets, from Scryfall: the web client's token list
+    (data/scryfall-links.json) points each at a Scryfall printing like tdsk/3, cached as <out>/tdsk/3.webp."""
+    import subprocess, tempfile
+    if not links_file.exists():
+        return []
+    tokens = json.loads(links_file.read_text()).get("tokens", {})
+    missing = []
+    for key, link in sorted(tokens.items()):
+        if key.split("/")[0] not in sets:
+            continue
+        m = re.search(r"/cards/([a-z0-9]+)/([0-9a-z]+)", link)
+        if not m:
+            continue
+        target = out / m.group(1) / f"{m.group(2)}.webp"
+        if target.exists():
+            continue
+        target.parent.mkdir(parents=True, exist_ok=True)
+        code, data = get(f"https://api.scryfall.com/cards/{m.group(1)}/{m.group(2)}?format=image&version=normal")
+        time.sleep(pause)
+        if code != 200 or not data:
+            missing.append(f"token {key} ({m.group(1)}/{m.group(2)})")
+            continue
+        with tempfile.NamedTemporaryFile(suffix=".jpg") as jpg:
+            jpg.write(data)
+            jpg.flush()
+            if subprocess.run(["cwebp", "-quiet", "-q", "85", jpg.name, "-o", str(target)]).returncode != 0:
+                missing.append(f"token {key} (convert)")
+    return missing
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path, default=Path.home() / "mtg-data" / "card-images")
     ap.add_argument("--sets", nargs="+", default=["DSK", "FDN"])
     ap.add_argument("--pause", type=float, default=0.5)
+    ap.add_argument("--links", type=Path, default=Path.home() / "playmat-run" / "build" / "app" / "web" / "data" / "scryfall-links.json")
     ap.add_argument("--xmage", type=Path, default=Path.home() / "dev" / "playmat" / "Mage.Sets" / "src" / "mage" / "sets",
                     help="XMage's set lists: every printing a game or draft can use (showcase, extra basics...)")
     a = ap.parse_args()
@@ -109,6 +141,7 @@ def main():
                     write_index(a.out)
             else:
                 missing.append(f"{card_set} {number} {name} (image)")
+    missing += fetch_tokens(a.out, set(a.sets), a.links, a.pause)
     keys = write_index(a.out)
     print(f"{len(keys)} pictures cached; missing {len(missing)}")
     for m in missing:
