@@ -32,7 +32,7 @@ cd "$PLAYMAT"
 git cat-file -e "$SHA^{commit}" 2>/dev/null || git fetch -q origin
 git checkout -q -f --detach "$SHA"
 # files a previous build's patches added (sources only: node_modules and target/ stay for incremental builds)
-git clean -fdq -- Mage.Web.Client/public/starter-decks Mage.Web.Client/src Mage/src Mage.Common/src Mage.Server/src Mage.Sets/src
+git clean -fdq -- Mage.Web.Client/public/starter-decks Mage.Web.Client/public/data Mage.Web.Client/src Mage/src Mage.Common/src Mage.Server/src Mage.Sets/src
 for p in "$HERE"/patches/*.patch; do git apply "$p"; done
 cp "$ROOT/engine/xmage/BecomesFaceDownCreatureEffect.java" Mage/src/main/java/mage/abilities/effects/common/continuous/
 cp "$ROOT/engine/xmage/VeteranSurvivor.java" Mage.Sets/src/mage/cards/v/
