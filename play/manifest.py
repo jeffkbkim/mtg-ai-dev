@@ -122,6 +122,12 @@ def one_game(part, cfg, end, counters, part_games, root):
     if cfg.get("resumed_from_turn") is not None:
         row["cautions"].append({"source": "take_back", "level": "caution",
                                 "what": f"carries on {cfg.get('resumed_from') or 'an unrecorded game'} from turn {cfg['resumed_from_turn']}"})
+    # model calls that failed (Jeff 2026-11-12: logged out, usage limit): those decisions are the service's first-option
+    # fallback, not the player's, so the game is left out of training sets and of the win-rate stats
+    failed = Counter(r.get("seat") for r in recs if r.get("service_error"))
+    for seat, n in sorted(failed.items()):
+        row["reasons"].append({"source": "service", "seat": seat, "level": "unusable",
+                               "what": f"{n} of seat {seat}'s decisions were the service's fallback: the model call failed"})
     # seat version
     for fix, level, when, what in FIXES:
         if fixed_in(commit, fix):
