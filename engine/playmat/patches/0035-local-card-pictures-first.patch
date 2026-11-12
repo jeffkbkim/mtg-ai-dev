@@ -1,0 +1,113 @@
+--- a/Mage.Web.Client/src/core/images/ImageResolver.ts
++++ b/Mage.Web.Client/src/core/images/ImageResolver.ts
+@@ -17,6 +17,10 @@
+ type ImageUris = Partial<Record<ImageSize, string>>;
+ 
+ /** Image links of one printing, as returned by Scryfall. */
++/** mtg-ai: where this site serves its own card pictures (see ImageResolverOptions.localIndexUrl) */
++const LOCAL_PREFIX = '/card-images';
++const LOCAL_INDEX_URL = `${LOCAL_PREFIX}/index.json`;
++
+ export interface PrintingImages {
+   front?: ImageUris;
+   back?: ImageUris;
+@@ -38,6 +42,11 @@
+   fetch?: typeof fetch;
+   store?: ImageLinkStore;
+   linksUrl?: string;
++  /**
++   * mtg-ai: the list of card pictures served from this site ("set/number" keys), or null for none. Pictures there are
++   * shown first, so a Scryfall outage doesn't blank the cards (engine/playmat/fetch_card_images.py fills it).
++   */
++  localIndexUrl?: string | null;
+   /** Scryfall asks clients to stay under 10 requests per second */
+   minRequestIntervalMs?: number;
+   batchDelayMs?: number;
+@@ -72,7 +81,8 @@
+  * downloaded twice and a full board costs one or two API requests instead of one per card.
+  */
+ export class ImageResolver {
+-  private readonly options: Required<Omit<ImageResolverOptions, 'store' | 'imageProxy'>> & {
++  private readonly options: Required<Omit<ImageResolverOptions, 'store' | 'imageProxy' | 'localIndexUrl'>> & {
++    localIndexUrl: string | null;
+     store: ImageLinkStore | null;
+     imageProxy: string | undefined;
+   };
+@@ -83,6 +93,9 @@
+   private readonly keyListeners = new Map<string, Set<() => void>>();
+   private readonly linkListeners = new Set<() => void>();
+   private links: ScryfallLinks | null = null;
++  /** mtg-ai: the pictures this site serves, once its index has loaded */
++  private local: Set<string> | null = null;
++  private localPromise: Promise<void> | null = null;
+   private linksPromise: Promise<void> | null = null;
+   private batchTimer: ReturnType<typeof setTimeout> | null = null;
+   private draining = false;
+@@ -94,6 +107,7 @@
+       fetch: options.fetch ?? ((...args) => fetch(...args)),
+       store: options.store ?? null,
+       linksUrl: options.linksUrl ?? '/data/scryfall-links.json',
++      localIndexUrl: 'localIndexUrl' in options ? options.localIndexUrl ?? null : (import.meta.env?.MODE === 'test' ? null : LOCAL_INDEX_URL),
+       minRequestIntervalMs: options.minRequestIntervalMs ?? 120,
+       batchDelayMs: options.batchDelayMs ?? 40,
+       retryDelayMs: options.retryDelayMs ?? 1000,
+@@ -174,6 +188,13 @@
+   /** {@link resolve} before the proxy rewrite: Scryfall's own links. */
+   private resolveDirect(card: CardImageRef, face: CardFace, size: ImageSize): string | null | undefined {
+     this.ensureLinks();
++    // mtg-ai: this site's own copy of the picture comes first (front faces of the cached sets)
++    if (this.options.localIndexUrl) {
++      this.ensureLocal();
++      if (!this.local) return null;
++      const key = !isTokenImage(card) && face === 'front' ? printingKey(card) : null;
++      if (key && this.local.has(key)) return `${LOCAL_PREFIX}/${key}.webp`;
++    }
+     const exception = exceptionLink(card, face, this.links);
+     if (exception) return toImageLink(exception, size);
+     if (isTokenImage(card)) {
+@@ -215,6 +236,20 @@
+     return this.options.now() - entry.fetchedAt > this.options.maxAgeMs;
+   }
+ 
++  private ensureLocal(): void {
++    if (this.local || this.localPromise || !this.options.localIndexUrl) return;
++    this.localPromise = this.options.fetch(this.options.localIndexUrl)
++      .then((response) => (response.ok ? response.json() : []))
++      .then((keys: unknown) => {
++        this.local = new Set(Array.isArray(keys) ? keys.map(String) : []);
++        this.notify(null);
++      })
++      .catch(() => {
++        this.local = new Set();
++        this.notify(null);
++      });
++  }
++
+   private ensureLinks(): void {
+     if (this.links || this.linksPromise) return;
+     this.linksPromise = this.options.fetch(this.options.linksUrl)
+--- a/Mage.Web.Client/src/core/images/ImageResolver.test.ts
++++ b/Mage.Web.Client/src/core/images/ImageResolver.test.ts
+@@ -144,6 +144,22 @@
+     resolver.resolve(bolt);
+     await vi.waitFor(() => expect(resolver.resolve(bolt)).toContain('/cards/m10/146'));
+     expect(resolver.resolve(bolt)).not.toContain('named');
++  });
++
++  // mtg-ai: pictures cached on the site (engine/playmat/fetch_card_images.py) come before Scryfall
++  test("serves a printing from the site's own card pictures when its index lists it", async () => {
++    const fetchImpl = vi.fn(async (url: RequestInfo | URL) => {
++      if (String(url).endsWith('scryfall-links.json')) return jsonResponse(LINKS);
++      if (String(url).endsWith('/card-images/index.json')) return jsonResponse(['dsk/243']);
++      return jsonResponse({}, 503);
++    }) as unknown as typeof fetch;
++    const resolver = new ImageResolver({ fetch: fetchImpl, store: memoryStore(), batchDelayMs: 1, minRequestIntervalMs: 0, retryDelayMs: 1, localIndexUrl: '/card-images/index.json' });
++    const trap = { name: 'Bear Trap', expansionSetCode: 'DSK', cardNumber: '243' };
++    expect(resolver.resolve(trap)).toBeNull(); // the index is loading
++    await vi.waitFor(() => expect(resolver.resolve(trap)).toBe('/card-images/dsk/243.webp'));
++    // a printing it doesn't have still goes to Scryfall
++    const other = { name: 'Lightning Bolt', expansionSetCode: 'M10', cardNumber: '146' };
++    await vi.waitFor(() => expect(resolver.resolve(other)).toContain('/cards/m10/146'));
+   });
+ 
+   test('reads the persistent cache before the network', async () => {

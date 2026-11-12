@@ -71,4 +71,6 @@ assert n == 1, "config.xml: Human and Computer - mad entries not found"
 open(p, "w").write(s)
 EOF
 grep -n "playerType " "$APP/server/config/config.xml"
+# card pictures served by the site itself (fetch_card_images.py), so a Scryfall outage doesn't blank the cards
+ln -sfn "${CARD_IMAGES:-$HOME/mtg-data/card-images}" "$APP/web/card-images"
 echo "built $APP (Playmat ${SHA:0:7}, mtg-ai $(git -C "$ROOT" rev-parse --short HEAD))"
