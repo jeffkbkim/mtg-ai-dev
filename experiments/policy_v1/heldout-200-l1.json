@@ -85,7 +85,7 @@
   "torch": "2.14.1",
   "onnxruntime": "1.31.1",
   "check": {
-   "sample": "/Users/jkim/dev/mtg-ai/tests/fixtures/xmage_decisions_sample.jsonl",
+   "sample": "tests/fixtures/xmage_decisions_sample.jsonl",
    "decisions": 18,
    "max_abs_diff": 1.9073486328125e-06
   }
