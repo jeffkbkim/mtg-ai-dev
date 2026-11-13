@@ -337,3 +337,10 @@ different random card. No rules difference was found. After the changes: 37% leg
 - Rows: alternative 764,521 (33.2%), alternative_unprobed 490,131 (21.3%), ambiguous 11 (0.0%), ambiguous_set 328,847 (14.3%), not_recorded 11,216 (0.5%), recorded 572,831 (24.9%), unique 132,933 (5.8%)
 - Stalls 0, games lost 0, games conceded at record end 15,006
 - Lowest free memory 43%
+
+## Run dsk50k-6: 50,000 games, 2,306,657 decision rows (259 MB gz)
+
+- Turns reproduced: clean 89.3% (n = 438,134), from an exact start 75.7% (n = 787,152), after a reset 53.5% (n = 382,988)
+- Rows: alternative 764,827 (33.2%), alternative_unprobed 496,550 (21.5%), ambiguous 12 (0.0%), ambiguous_set 330,338 (14.3%), not_recorded 11,307 (0.5%), recorded 572,300 (24.8%), unique 131,323 (5.7%)
+- Stalls 0, games lost 0, games conceded at record end 14,992
+- Lowest free memory 14%
