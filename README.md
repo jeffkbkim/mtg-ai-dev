@@ -14,12 +14,24 @@ reported as measured, including the ones that went badly.
 | | |
 |---|---|
 | Engine | XMage 1.4.62 release jars plus our own Java seat classes, driven from Python; every observation checked for hidden-information leaks |
-| Data | 1.01M public 17lands DSK games; **200,000 replayed** in XMage so far into decision rows with exact / inferred / set labels (another 50k in progress) |
+| Data | 1.01M public 17lands DSK games; **250,000 replayed** in XMage so far into decision rows with exact / inferred / set labels (another 50k in progress) |
 | Model (v1) | 1-layer transformer, 30.9k parameters, masked softmax over legal actions |
 | Held-out agreement | **88.3%** top-1 on 146k test decisions (best non-learned baseline 77.4%) |
 | Games | 36.2% vs a random bot, 8.2% vs XMage's AI (400 seat-balanced games each). **Worse than random**; cause found, fix in training |
 
 Full numbers: [experiments/policy_v1/results.md](experiments/policy_v1/results.md).
+
+![Policy v1: held-out move agreement per decision kind against two baselines, and win rates with 95% intervals](experiments/policy_v1/results-200-l1.png)
+
+### Status and next steps
+
+| Stage | Status |
+|---|---|
+| Engine integration, hidden-information checks, 17lands turn replay | Done; replay keeps running in 50k-game batches |
+| Policy v1 (imitation, 1 layer) | Trained and evaluated (above) |
+| Policy retrain on every reading of ambiguous turns | Next; fixes the skipped land drops behind the low win rate |
+| Value head | In progress: model and export done, value loss and training not yet ([details](#next-value-head-and-search)) |
+| Search: information-set MCTS over a frozen value head | Planned, not built |
 
 ## Architecture
 
@@ -79,8 +91,13 @@ A decision is a set of **entries**: `[global | cards | stack abilities]`.
   - *Data:* each training row carries its game's 17lands result (`build-17lands --outcomes`, joined exactly by
     game; base rate 54.3% wins). Value targets are one label per game, so overfitting to games is the main risk.
   - *Not done yet:* the value loss in the trainer, training runs, and calibration and accuracy numbers on held-out games.
-- **Search (planned).** PUCT-style MCTS with the policy as prior and the value head at the leaves, then search visit
-  counts as policy targets and real results as value targets (search as teacher, then self-play). Magic needs more
+- **Search (planned, not built).** The first search experiment asks when more search wins more games and when it
+  only raises the evaluator's own score. Information-set MCTS (players can't see each other's hands) runs over a
+  frozen value head trained on real game outcomes, with the policy as prior. The search budget varies while the
+  policy, the evaluator and the opponents stay fixed, and predicted value is compared with actual wins at each budget.
+  Evaluators with deliberately planted errors, where the true answer is known, separate "search exploits the
+  evaluator's mistakes" from "search patches a weak policy". Later: search visit counts as policy targets and real
+  results as value targets (search as teacher, then self-play). Magic needs more
   than board-game MCTS: hidden hands and libraries, several decisions in a row by the same player, and long chains
   of small priority decisions. An interactive walkthrough of the search, built for this project:
   [MCTS by Hand](https://claude.ai/artifact/FGoe49qtNsweZf5FCdghtm).
@@ -105,8 +122,9 @@ A decision is a set of **entries**: `[global | cards | stack abilities]`.
 - **Labels carry their certainty.** `recorded` (the record decides it), `unique` (searched, and an ambiguity probe
   proved no other choice fits), `ambiguous_set` (every option consistent with the record) and `alternative`
   (decisions along the other readings of the turn, each reading weighted 1/n so a turn counts once).
-- **Scale.** 200,000 games replayed so far in four 50k runs (~2.3M decision rows per run). The first three were
-  re-replayed to add set labels. A fifth run is in progress.
+- **Scale.** 250,000 games replayed so far in five 50k runs (~2.3M decision rows per run). The first three were
+  re-replayed to add set labels. A sixth run is in progress
+  ([seventeenlands/replay_status.md](seventeenlands/replay_status.md)).
 - **Hidden information.** The seat only gets what that player could see. Every message is checked against the full
   game state for leaks of the opponent's hand, face-down identities and library order. Planted leaks are caught, and
   the checker found a real one: our seat was offered the opponent's hand when the opponent paid a discard cost
@@ -129,6 +147,10 @@ Two measurements, because agreement with humans is not playing strength
    per game on CPU.
 
 ### v1 baseline (checkpoint 200-l1)
+
+Raw results: [heldout-200-l1.json](experiments/policy_v1/heldout-200-l1.json) and
+[games-200-l1-2026-11-05.json](experiments/policy_v1/games-200-l1-2026-11-05.json). The figure above is drawn from
+them by [plot_results.py](experiments/policy_v1/plot_results.py).
 
 | kind | n | random legal | most-frequent prior | policy |
 |---|---:|---:|---:|---:|
