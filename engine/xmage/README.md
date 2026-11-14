@@ -63,7 +63,8 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   stays, and a face-up Room keeps only its unlocked doors' abilities. Prints PASS or FAIL.
 - `XSpellCheck.java`: regression check that a {X}{X} spell (Valgavoth's Onslaught) is cast with the largest affordable
   X (XMage's AI counted X once, asked for too much mana and the cast was refused), and that with `askX` the player
-  is asked (options X = 0 to that most) and its X is used. Prints PASS or FAIL.
+  is asked (options X = 0 to that most) and its X is used; floating mana in the pool counts toward that most.
+  Prints PASS or FAIL.
 - `ColorChoiceCheck.java`: regression check that "As this land enters, choose a color" (Valgavoth's Lair) is asked of
   the player (XMage flags every colour choice as a mana colour choice, which the seat answers in Java). Prints PASS or
   FAIL.
@@ -86,7 +87,8 @@ with ours (see "Our patches to XMage"; Jeff chose to patch on 2026-10-22).
   Lotus or Lotus Petal (it did before), uses Talisman pain only when painless mana can't pay, doesn't overpay with
   Sol Ring, offers Black Lotus and Sol Ring at priority, asks the Lotus' colour and pays the next spell from the pool,
   pays Pyrokinesis' {R} from a Talisman, taps a Mox rather than a needed Mountain, lets the player delve for Murderous
-  Cut, and the observation shows the pool. Prints PASS or FAIL.
+  Cut, and the observation shows the pool. Each source pays a symbol the rest can't, with and without the flag: {U}{B}
+  from Watery Grave + Celestial Colonnade is paid (the Grave paid {U} and the cast was refused). Prints PASS or FAIL.
 - `CubeLeakCheck.java`: hidden-information regressions from the cube02 batch: Chrome Mox's imprint (a hand
   `TargetCard`) offers only my own hand, a card-name choice (Phyrexian Revoker) offers the format's names without a
   leak flag, and the leak check no longer flags a keyword ("Flash") or a name inside a visible name (Phlage's "Fury").

@@ -428,8 +428,19 @@ public class PySeat extends ComputerPlayer {
         Set<MageObject> plan = planPayment(ability, symbols, sources, keys, game);
         if (plan.isEmpty()) sources.sort(Comparator.<MageObject>comparingInt(o -> keys.get(o)[0]).thenComparingInt(o -> keys.get(o)[1]));
         else sources.sort(Comparator.<MageObject>comparingInt(o -> plan.contains(o) ? 0 : 1).thenComparingInt(o -> keys.get(o)[1]));
+        // Which symbol each source pays: only a pair that leaves the rest of the cost payable by every source the payer
+        // may still use (all tiers, painful ones too). The plan picked the sources but not the symbols: {U}{B} from
+        // Watery Grave + Celestial Colonnade paid {U} with the Grave and was refused; and painless-first spent Tundra
+        // on {W} of {1}{W}{U} when Talisman of Unity could pay only {W} (cube02 review). Plan sources come first.
+        int[] owed = split(unpaidSymbols(unpaid));
+        Map<UUID, Integer> usable = owed == null ? null : usableMasks(ability, symbols.get(0), tapsSource, game);
+        if (owed != null) owed[COLOURS.length] = Math.max(0, owed[COLOURS.length] - genericReserve);
+        boolean guard = usable != null && canPay(owed, new ArrayList<>(usable.values()));
+        for (int pass = plan.isEmpty() ? 1 : 0; pass < 2; pass++)
         for (mage.abilities.costs.mana.ManaCost symbol : symbols) {
             for (MageObject o : sources) {
+                if (pass == 0 && !plan.contains(o)) continue;
+                if (guard && !leavesPayable(owed, usable, symbol, o)) continue;
                 List<mage.abilities.mana.ActivatedManaAbilityImpl> abilities = new ArrayList<>();
                 Set<mage.abilities.mana.ActivatedManaAbilityImpl> restricted = Collections.newSetFromMap(new IdentityHashMap<>());
                 for (mage.abilities.mana.ActivatedManaAbilityImpl ma : o.getAbilities().getAvailableActivatedManaAbilities(mage.constants.Zone.BATTLEFIELD, playerId, game)) {
@@ -454,6 +465,40 @@ public class PySeat extends ComputerPlayer {
             }
         }
         return false;
+    }
+
+    /**
+     * Colour masks (as colourMask) of every untapped source the payer may use for this ability at its highest limit,
+     * by id; a source making two or more mana at once counts as one colourless.
+     */
+    private Map<UUID, Integer> usableMasks(Ability ability, mage.abilities.costs.mana.ManaCost symbol, boolean tapsSource, Game game) {
+        int limit = manaCostLimit;
+        if (costlyManaAsk) manaCostLimit = 1;  // class 2 (Lotus, Petal) is never the payer's
+        try {
+            Map<UUID, Integer> r = new LinkedHashMap<>();
+            for (MageObject o : super.getAvailableManaProducers(game)) {
+                if (!payerMayUse(o, game)) continue;
+                if ((tapsSource || payerV2) && o.getId().equals(ability.getSourceId())) continue;
+                r.put(o.getId(), Math.max(0, colourMask(o, ability, symbol, game)));
+            }
+            return r;
+        } finally {
+            manaCostLimit = limit;
+        }
+    }
+
+    /** Paying one mana of symbol with source o leaves the rest of owed payable by the other usable sources. */
+    private static boolean leavesPayable(int[] owed, Map<UUID, Integer> usable, mage.abilities.costs.mana.ManaCost symbol, MageObject o) {
+        if (!usable.containsKey(o.getId())) return true;
+        int[] paid = split(Collections.singletonList(symbol));
+        if (paid == null) return true;
+        int[] rest = owed.clone();
+        int k = COLOURS.length;
+        for (int i = 0; i < COLOURS.length; i++) if (paid[i] > 0) k = i;
+        rest[k] = Math.max(0, rest[k] - 1);
+        List<Integer> others = new ArrayList<>();
+        for (Map.Entry<UUID, Integer> e : usable.entrySet()) if (!e.getKey().equals(o.getId())) others.add(e.getValue());
+        return canPay(rest, others);
     }
 
     /** Colours a source can make for this ability as a bitmask (W U B R G), or -1 if it makes more than one mana at once. */
@@ -1234,6 +1279,10 @@ public class PySeat extends ComputerPlayer {
         int instances = 0;
         for (mage.abilities.costs.VariableCost v : source.getManaCostsToPay().getVariableCosts())
             if (v instanceof mage.abilities.costs.mana.VariableManaCost) instances += ((mage.abilities.costs.mana.VariableManaCost) v).getXInstancesCount();
+        // floating mana counts too: XMage's estimate is untapped sources minus the rest of the cost, so with a Lotus'
+        // {B}{B}{B} in the pool X was capped below what could be paid (cube02 review, 4 flags)
+        int floating = getManaPool().getMana().count();
+        if (floating > 0) x = Math.min(max, Math.max(x, getAvailableManaProducers(game).size() + floating - source.getManaCosts().manaValue()));
         int most = instances > 1 ? Math.max(min, x / instances) : x;
         if (!ask) return most;
         // askX: X from min up to the most the untapped sources cover (XMage's own pick); in batch 03-04 the most was

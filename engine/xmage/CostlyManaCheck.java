@@ -24,7 +24,9 @@ import java.util.*;
  * Ancient Tomb, Island and Mightstone (its mana can't pay a nonartifact spell) is paid, with the Talisman's {R}.
  * Delve is the player's: Murderous Cut with five Swamps and six cards in the graveyard, the player exiling four, taps
  * one Swamp. Generic from noncreatures weighed together: {1} from Mountain, Mox Sapphire and Sol Ring with Pyrokinesis
- * in hand taps the Mox. Sol Ring (two mana at once) is offered at priority too.
+ * in hand taps the Mox. Sol Ring (two mana at once) is offered at priority too. Each source pays a symbol the rest
+ * can't: {U}{B} from Watery Grave + Celestial Colonnade is paid (the Grave paid {U} and the cast was refused), and so is
+ * {1}{W}{U} from Tundra, Talisman of Progress, Taiga and Swamp, for 1 life (painless-first spent Tundra on {W}).
  * Prints PASS or FAIL and exits 1 on FAIL.
  */
 public class CostlyManaCheck {
@@ -259,6 +261,13 @@ public class CostlyManaCheck {
         for (int t = 0; t < trials; t++)  // cube pilot: Talisman's painless {C} paid generic and its {R} was then missing
             if (!trial(true, "{4}{R}", "Talisman of Indulgence", "Mox Sapphire", "Mox Pearl", "Ancient Tomb", "Island", "The Mightstone and Weakstone"))
                 fails.add("{4}{R} (Pyrokinesis) from Talisman, two Moxen, Ancient Tomb, Island, Mightstone: unpaid");
+        for (int t = 0; t < trials; t++)  // cube02 review: the plan's sources paid the wrong symbols, then the cast was refused
+            for (boolean costly : new boolean[]{true, false}) {
+                if (!trial(costly, "{U}{B}", "Watery Grave", "Celestial Colonnade"))
+                    fails.add("{U}{B} from Watery Grave + Celestial Colonnade (costly " + costly + "): unpaid");
+                if (!trial(costly, "{1}{W}{U}", "Tundra", "Talisman of Progress", "Taiga", "Swamp") || lifeLost() != 1)
+                    fails.add("{1}{W}{U} from Tundra, Talisman of Progress, Taiga, Swamp (costly " + costly + "): unpaid or life lost " + lifeLost());
+            }
         trial(false, "{2}", "Black Lotus", "Plains");
         boolean oldSpends = !onBattlefield("Black Lotus");  // the fault this check is for, seen without the flag
         int lotus = costClass("Black Lotus"), confluence = costClass("Mana Confluence"), talisman = costClass("Talisman of Progress"), forest = costClass("Forest");
@@ -270,7 +279,7 @@ public class CostlyManaCheck {
         py.getManaPool().addMana(mage.Mana.BlackMana(3), game, src);
         String pool = Observer.build(game, py.getId(), Collections.emptyList()).entries.get(0).toString();
         if (!pool.contains("\"my_pool\":\"{B}{B}{B}\"")) fails.add("observation pool: " + pool);
-        System.out.println("COSTLY_MANA old payer spent the Lotus for {2}: " + oldSpends + "; failures " + fails.size() + "/" + (8 * trials + 4));
+        System.out.println("COSTLY_MANA old payer spent the Lotus for {2}: " + oldSpends + "; failures " + fails.size() + "/" + (12 * trials + 4));
         fails.stream().distinct().forEach(f -> System.out.println("  " + f));
         System.out.println(fails.isEmpty() ? "PASS" : "FAIL");
         System.exit(fails.isEmpty() ? 0 : 1);
