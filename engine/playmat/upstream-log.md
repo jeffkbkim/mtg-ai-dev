@@ -2,6 +2,25 @@
 
 Newest first. Written by the daily review (UPDATE.md).
 
+## 2026-11-14 (daily review) — HELD
+- PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
+  arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
+- a33fb65 → 629e3175 (Playmat master, 2026-11-14): 1399 commits, 457 new since the last reviewed 59de56f (383
+  non-merge; no 11-13 entry). The new ones: mostly Rust engine waves 6-7 (per-card handlers, transpiler forms, cost
+  adjusters, bestow/reconfigure/craft/station/escalate etc., shadow games, ~11,129 cards verified, phase 4 gate 9,949
+  of 10,000); server: shared decks (#137), player directory, appear offline, Discord join posts, account-search LIKE
+  escape; web client: Arena-style pass-turn button, deck covers/tags/filters (#167/#200), "only these colors" filter
+  (#198), notification kinds and table-join alerts. Mage/src/main since 59de56f: GameImpl (+3), trace DecisionLog and
+  RustAiBridge (logging; no rules behaviour seen). Security: Mage.Server/pom.xml only adds three classes to a list (no
+  new dependency); backup.sh adds web_presence.db; DiscordNotifier gains table-join posts (off unless
+  xmage.discordWebhook is set); no new outbound hosts beyond github.com links.
+- Gate: HOLD, same open reasons as 2026-11-07..12 across the whole range: rules changes under Mage/src/main (incl.
+  the #255 rules batch and the getPlayable pay-mana change); DSK cards RootwiseSurvivor and VeteranSurvivor changed;
+  patch 0003 conflicts (i18n en/core.ts, es.ts, stores/play.ts), 0004-0037 unchecked; security pass not cleared for
+  the whole range (TrustedHeaderAuth, OIDC sign-in, deck-import fetches, Docker/Caddy/updater, CI). Needs Jeff to plan
+  the rebase.
+- No build, no tests, not deployed. Pin stays a33fb65.
+
 ## 2026-11-12 (daily review) — HELD
 - PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
   arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
