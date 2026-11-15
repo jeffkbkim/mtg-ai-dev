@@ -2,6 +2,24 @@
 
 Newest first. Written by the daily review (UPDATE.md).
 
+## 2026-11-15 (daily review) — HELD
+- PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
+  arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
+- a33fb65 → c90c8b79 (Playmat master, 2026-11-15, #395): 1703 commits, 304 new since yesterday's 629e3175 (262
+  non-merge). The new ones: nearly all Rust engine waves 7-13 (stack targets, dungeons/cipher, copy, exile/graveyard
+  play permissions, MDFC backs, meld/phasing, mutate, tribute/exploit, speed/max speed, per-card handlers, shadow
+  games; 12,390 of 12,665 verified); Career shop (packs of every set, buy in batches); match: attack with N of the
+  same creature; Homelands rarity fix, VerifyCardDataTest skips Star Trek boosters. Mage/src/main today: ZonesHandler
+  carries enter-with counters to the face that actually enters (Esper Origins' finality counter) — a zones/counters
+  rules change; trace ShadowStart/StateFingerprint (logging). No DSK/SPG card or set file changed today. Security
+  (today's delta): no package.json/pom.xml/Cargo/CI/script/Docker changes, no new outbound URLs.
+- Gate: HOLD. Today: the ZonesHandler rules change. Still open across the whole range (as 2026-11-07..14): rules
+  changes under Mage/src/main (#255 batch, getPlayable pay-mana change); DSK cards RootwiseSurvivor and
+  VeteranSurvivor changed; patch 0003 conflicts (i18n en/core.ts, es.ts, stores/play.ts), 0004-0037 unchecked;
+  security pass not cleared for the whole range (TrustedHeaderAuth, OIDC sign-in, deck-import fetches,
+  Docker/Caddy/updater, CI). Needs Jeff to plan the rebase.
+- No build, no tests, not deployed. Pin stays a33fb65.
+
 ## 2026-11-14 (daily review) — HELD
 - PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
   arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
