@@ -2,6 +2,25 @@
 
 Newest first. Written by the daily review (UPDATE.md).
 
+## 2026-11-16 (daily review) — HELD
+- PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
+  arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
+- a33fb65 → 67a1da92 (Playmat master, 2026-11-15, #406): 2219 commits, 516 new since yesterday's c90c8b79 (466
+  non-merge). The new ones: nearly all Rust engine waves 15-16 (per-card rules fixes such as ward costs, retargeting,
+  saga lore counters, player protection; transpiler forms; 14,000 verified cards) and the Rust tracker page; web
+  client: show dungeons, find Alchemy-only cards; server: events stop abandoned events, unfreeze stuck waits,
+  re-send a draft's start, attack-tax payment doesn't reuse the attackers question's playables. Mage/src/main today:
+  new PerpetuallyBoostSourceEffect (addition for YDMU/YBRO Diminished Returner and Gixian Recycler, nothing in DSK
+  calls it), TournamentImpl/SingleElimination/Swiss abort and bot-construct-failure handling (events, not game
+  rules), trace StateFingerprint (logging). No DSK/SPG card or set file changed today. Security (today's delta): no
+  package.json/pom.xml/Cargo/CI/script/Docker changes; new URLs only a scryfall.com comment and github.com links.
+- Gate: HOLD. Nothing new today blocks on its own; still open across the whole range (as 2026-11-07..15): rules
+  changes under Mage/src/main (#255 batch, getPlayable pay-mana change, 11-15 ZonesHandler enter-with counters); DSK
+  cards RootwiseSurvivor and VeteranSurvivor changed; patch 0003 conflicts (i18n en/core.ts, es.ts, stores/play.ts),
+  0004-0037 unchecked; security pass not cleared for the whole range (TrustedHeaderAuth, OIDC sign-in, deck-import
+  fetches, Docker/Caddy/updater, CI). Needs Jeff to plan the rebase.
+- No build, no tests, not deployed. Pin stays a33fb65.
+
 ## 2026-11-15 (daily review) — HELD
 - PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
   arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
