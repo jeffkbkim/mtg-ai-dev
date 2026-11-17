@@ -2,6 +2,24 @@
 
 Newest first. Written by the daily review (UPDATE.md).
 
+## 2026-11-17 (daily review) — HELD
+- PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
+  arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
+- a33fb65 → 54c8cb26 (Playmat master, 2026-11-16, #393): 2260 commits, 41 new since yesterday's 67a1da92 (35
+  non-merge). The new ones are all Rust AI and docs: M1-M7 (constructed/tactics benchmarks, SPRT, hidden-card
+  playouts, fitted eval, combat plans), self-play network (#390 Track B), round 2 transformer/Gumbel/rollouts, ismcts
+  tree search (default cpuct 300), rl/ PyTorch training scripts (rounds.py, train.py, cardtext.py), archbench
+  tactics-2 puzzles, Rust AI declines replicate, playmat-host host-results bin; ops/web README lists the new
+  PLAYMAT_AI_POLICY values. Nothing under Mage/, Mage.Sets, Mage.Server*, Mage.Common or Mage.Web.Client today; no
+  DSK/SPG card or set file. Security (today's delta): no package.json/pom.xml/Cargo/CI/script/Docker changes, no new
+  URLs; rl/rounds.py and selfplay.py subprocess-run the local Rust release binaries only.
+- Gate: HOLD. Nothing new today blocks on its own; still open across the whole range (as 2026-11-07..16): rules
+  changes under Mage/src/main (#255 batch, getPlayable pay-mana change, 11-15 ZonesHandler enter-with counters); DSK
+  cards RootwiseSurvivor and VeteranSurvivor changed; patch 0003 conflicts (i18n en/core.ts, es.ts, stores/play.ts),
+  0004-0037 unchecked; security pass not cleared for the whole range (TrustedHeaderAuth, OIDC sign-in, deck-import
+  fetches, Docker/Caddy/updater, CI). Needs Jeff to plan the rebase.
+- No build, no tests, not deployed. Pin stays a33fb65.
+
 ## 2026-11-16 (daily review) — HELD
 - PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
   arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
