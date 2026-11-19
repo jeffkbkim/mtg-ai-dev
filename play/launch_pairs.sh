@@ -7,7 +7,8 @@
 # PARTS="31 32 35" (env) reruns only those parts with the same arguments. CLASSES (env) is the engine build (default /tmp/xmage-cls).
 # Logs go to /tmp/claude-0/TAG_N.out; /tmp/claude-0/TAG_batch.done appears when every part has finished.
 # Each deck pair is two parts of GAMES games (default 2) with the same seats and decks, the variant on seat A in one part and on seat B in
-# the other, so each variant plays each deck once on the play and once on the draw. 6 parts at a time.
+# the other, so each variant plays each deck once on the play and once on the draw. PAR (env, default 6) parts at a time.
+# touch /tmp/claude-0/TAG.stop to start no more parts; the running ones finish.
 cd /home/claude/mtg-ai
 VARIANT=${VARIANT-plan}  # only when unset: VARIANT="" means no variant
 GAMES=${GAMES:-2}  # games per part; GAMES=1 with 25 pairs gives a 50-game batch (seat A is on the play in each game 0)
@@ -24,7 +25,8 @@ for pair in "$@"; do
 done
 run_part() {
   IFS=: read p a b s i <<< "$1"
-  [ $i -le 6 ] && sleep $(( (i-1) * 5 ))  # stagger the first JVM boots (shared card database lock)
+  [ -f /tmp/claude-0/${TAG}.stop ] && return  # STOP: touch this file to start no more parts (running ones finish)
+  [ $i -le ${PAR:-6} ] && sleep $(( (i-1) * 5 ))  # stagger the first JVM boots (shared card database lock)
   o=$([ $s = a ] && echo b || echo a)
   F=""; for v in $VARIANT; do F="$F --${v%%=*}-$s"; [[ $v == *=* ]] && F="$F ${v#*=}"; done
   for v in $BOTH; do for t in $s $o; do F="$F --${v%%=*}-$t"; [[ $v == *=* ]] && F="$F ${v#*=}"; done; done
@@ -33,6 +35,6 @@ run_part() {
     --out $RUN/part$(printf %02d $p) > /tmp/claude-0/${TAG}_$p.out 2>&1
   echo "DONE $?" >> /tmp/claude-0/${TAG}_$p.out
 }
-export -f run_part; export RUN D SEED TAG VARIANT BOTH GAMES CLASSES
-echo $specs | tr ' ' '\n' | xargs -P 6 -I{} bash -c 'run_part {}; sleep 2'
+export -f run_part; export RUN D SEED TAG VARIANT BOTH GAMES CLASSES PAR
+echo $specs | tr ' ' '\n' | xargs -P ${PAR:-6} -I{} bash -c 'run_part {}; sleep 2'
 echo "BATCH DONE" > /tmp/claude-0/${TAG}_batch.done

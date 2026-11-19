@@ -7,7 +7,7 @@
 #   engine/playmat/run.sh stop
 #
 # PLAY_DRAW=rule (default: Claude always plays first) or claude (the model chooses).
-# PRIMER=v2 (default since 2026-10-24, after the puzzle test in notes/puzzles-v1-vs-v2-2026-10-24.md) or v1.
+# PRIMER=v2 (default since 2026-10-24, after the puzzle test in docs/notes/puzzles-v1-vs-v2-2026-10-24.md) or v1.
 # Data: $PLAYMAT_DATA (default ~/playmat-run/data): accounts off (sign in with a name), server and service logs.
 # Recordings: $MTGAI_RECORD_DIR (default ~/mtg-data/playmat-games)/<date>/<game id>/ (see java/GameRecorder.java).
 # Quick Draft: the draft-brain service (play/draft_brain) on $DRAFT_BRAIN_PORT (default 17190); drafts are recorded under

@@ -1,5 +1,7 @@
 # mtg-ai
 
+[![tests](https://github.com/jeffkbkim/mtg-ai/actions/workflows/tests.yml/badge.svg)](https://github.com/jeffkbkim/mtg-ai/actions/workflows/tests.yml)
+
 A Magic: The Gathering gameplay agent for **Duskmourn: House of Horror (DSK) Limited**, trained from scratch in PyTorch.
 The policy is a small transformer over the visible game state that scores the engine's legal actions directly.
 It learns by imitation from human games: public 17lands game summaries, replayed turn by turn in the XMage rules engine
@@ -9,12 +11,12 @@ The project covers the whole loop: rules-engine integration with hidden-informat
 lossy human records, model training, and evaluation in real games with confidence intervals. Results below are
 reported as measured, including the ones that went badly.
 
-## Current state (2026-11-12)
+## Current state (2026-11-19)
 
 | | |
 |---|---|
 | Engine | XMage 1.4.62 release jars plus our own Java seat classes, driven from Python; every observation checked for hidden-information leaks |
-| Data | 1.01M public 17lands DSK games; **250,000 replayed** in XMage so far into decision rows with exact / inferred / set labels (another 50k in progress) |
+| Data | 1.01M public 17lands DSK games; **~450,000 replayed** in XMage into decision rows with exact / inferred / set labels; another 50k in progress |
 | Model (v1) | 1-layer transformer, 30.9k parameters, masked softmax over legal actions |
 | Held-out agreement | **88.3%** top-1 on 146k test decisions (best non-learned baseline 77.4%) |
 | Games | 36.2% vs a random bot, 8.2% vs XMage's AI (400 seat-balanced games each). **Worse than random**; cause found, fix in training |
@@ -122,8 +124,8 @@ A decision is a set of **entries**: `[global | cards | stack abilities]`.
 - **Labels carry their certainty.** `recorded` (the record decides it), `unique` (searched, and an ambiguity probe
   proved no other choice fits), `ambiguous_set` (every option consistent with the record) and `alternative`
   (decisions along the other readings of the turn, each reading weighted 1/n so a turn counts once).
-- **Scale.** 250,000 games replayed so far in five 50k runs (~2.3M decision rows per run). The first three were
-  re-replayed to add set labels. A sixth run is in progress
+- **Scale.** About 450,000 games replayed so far (449,954) in nine 50k runs (~2.3M decision rows per run). The first
+  three were re-replayed to add set labels. A tenth run is in progress
   ([seventeenlands/replay_status.md](seventeenlands/replay_status.md)).
 - **Hidden information.** The seat only gets what that player could see. Every message is checked against the full
   game state for leaks of the opponent's hand, face-down identities and library order. Planted leaks are caught, and
@@ -202,6 +204,15 @@ uv run pytest     # tests
 
 Datasets, caches and checkpoints are kept out of Git. Every run records its config, dataset version, seed and commit.
 
+## How this was built
+
+I designed the model and wrote the model, loss and training code (`model/`, `training/trainer.py`), and made the
+design calls recorded in [docs/decisions.md](docs/decisions.md): what the network sees, how ambiguous labels are
+used, and what counts as success. The engine integration, data pipeline, evaluation harness and most other
+infrastructure were written with [Claude Code](https://claude.com/claude-code) as a coding agent working under my
+direction; its standing instructions are in [AGENTS.md](AGENTS.md). Every result in this README comes from runs
+recorded with config, dataset version, seed and commit.
+
 ## Credits
 
 - Game data: [17lands public datasets](https://www.17lands.com/public_datasets), licensed CC BY 4.0. Deck lists
@@ -210,3 +221,5 @@ Datasets, caches and checkpoints are kept out of Git. Every run records its conf
   classpath and keep their original license headers.
 - Not affiliated with or endorsed by Wizards of the Coast. Magic: The Gathering and card names are trademarks of
   Wizards of the Coast.
+
+Code in this repository is released under the [MIT License](LICENSE).
