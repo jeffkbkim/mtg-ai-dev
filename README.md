@@ -14,7 +14,7 @@ reported as measured, including the ones that went badly.
 | | |
 |---|---|
 | Engine | XMage 1.4.62 release jars plus our own Java seat classes, driven from Python; every observation checked for hidden-information leaks |
-| Data | 1.01M public 17lands DSK games; **250,000 replayed** in XMage so far into decision rows with exact / inferred / set labels (another 50k in progress) |
+| Data | 1.01M public 17lands DSK games; **~450,000 replayed** in XMage (as of 2026-11-19) into decision rows with exact / inferred / set labels; another 50k in progress |
 | Model (v1) | 1-layer transformer, 30.9k parameters, masked softmax over legal actions |
 | Held-out agreement | **88.3%** top-1 on 146k test decisions (best non-learned baseline 77.4%) |
 | Games | 36.2% vs a random bot, 8.2% vs XMage's AI (400 seat-balanced games each). **Worse than random**; cause found, fix in training |
@@ -122,8 +122,8 @@ A decision is a set of **entries**: `[global | cards | stack abilities]`.
 - **Labels carry their certainty.** `recorded` (the record decides it), `unique` (searched, and an ambiguity probe
   proved no other choice fits), `ambiguous_set` (every option consistent with the record) and `alternative`
   (decisions along the other readings of the turn, each reading weighted 1/n so a turn counts once).
-- **Scale.** 250,000 games replayed so far in five 50k runs (~2.3M decision rows per run). The first three were
-  re-replayed to add set labels. A sixth run is in progress
+- **Scale.** About 450,000 games replayed so far (449,954) in nine 50k runs (~2.3M decision rows per run). The first
+  three were re-replayed to add set labels. A tenth run is in progress
   ([seventeenlands/replay_status.md](seventeenlands/replay_status.md)).
 - **Hidden information.** The seat only gets what that player could see. Every message is checked against the full
   game state for leaks of the opponent's hand, face-down identities and library order. Planted leaks are caught, and
