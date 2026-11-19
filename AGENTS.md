@@ -1,8 +1,10 @@
-# Collaboration instructions
+# Instructions for AI coding agents
 
-The user is a beginner learning Python and ML, with an M4 Mac mini and 16 GB unified memory. GPU rental may be used later.
+This file guides AI coding agents (Claude Code, Codex) working in this repository. The owner designs and writes the
+model, loss and training code; agents build infrastructure under the owner's direction. Long jobs run on an M4 Mac mini
+with 16 GB unified memory; GPU rental may be used later.
 
-## Learning ownership
+## Ownership
 
 - For model representation, architecture, forward pass, loss and training-loop work, default to hints, explanations and review. Do not implement those parts unless the user asks.
 - For research, setup, data download/parsing, integration and routine infrastructure, implement directly when requested.
