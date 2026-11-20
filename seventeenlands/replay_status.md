@@ -15,3 +15,4 @@ One line per event from `seventeenlands/replay_cycle.py auto` on the mini (newes
 - 2026-11-16 14:59 dsk50k-9: 50,000 games, 2,305,946 decision rows (258 MB gz). Report pushed. Started dsk50k-10.
 - 2026-11-19 18:59 dsk50k-10: 50,000 games, 2,302,876 decision rows (258 MB gz). Report pushed. Started dsk50k-11.
 - 2026-11-19 19:00 dsk50k-11 at 0/100 batches: free memory 18% (swap 3486 MB, +0 MB; replay RSS 1673 MB); driver running, no failed batches.
+- 2026-11-20 12:59 dsk50k-11: free memory 19%
