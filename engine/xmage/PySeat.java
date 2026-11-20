@@ -290,7 +290,7 @@ public class PySeat extends ComputerPlayer {
             } finally {
                 skipCreatureMana = false;
             }
-            return super.playManaHandling(ability, unpaid, game);
+            return super.playManaHandling(ability, unpaid, game) || costlyManaAsk && payLifeMana(ability, unpaid, game);
         } finally {
             payingMana = outer;
             manaCostLimit = 2;
@@ -298,6 +298,41 @@ public class PySeat extends ComputerPlayer {
             colouredOnly = false;
             genericReserve = 0;
         }
+    }
+
+    /**
+     * Channel ("until end of turn, any time you could activate a mana ability, you may pay 1 life; if you do, add
+     * {C}"): XMage makes it a SpecialAction of type SPECIAL_MANA_PAYMENT kept in the game state, not on any object, so
+     * getPlayable never lists it, ComputerPlayer's payer never uses it and the available mana never counts it; its mana
+     * was unusable and Emrakul/Ulamog were never offered (cube02 review). Those actions controlled by this seat that can
+     * be activated now: offered at priority (float {C}), counted as available mana (life - 1, so a spell they pay for is
+     * offered) and, with costlyManaAsk, used by the payer like painful mana, last: only when nothing else can pay.
+     */
+    private List<mage.abilities.SpecialAction> lifeManaActions(Game game) {
+        List<mage.abilities.SpecialAction> out = new ArrayList<>();
+        for (mage.abilities.SpecialAction sa : game.getState().getSpecialActions().getControlledBy(playerId, false).values())
+            if (sa.getAbilityType() == mage.constants.AbilityType.SPECIAL_MANA_PAYMENT && sa.canActivate(playerId, game).canActivate())
+                out.add(sa);
+        return out;
+    }
+
+    /** Pays one generic (or {C}) symbol with a Channel action; never pays this seat's last life. */
+    private boolean payLifeMana(Ability ability, mage.abilities.costs.mana.ManaCost unpaid, Game game) {
+        mage.Mana owed = unpaid.getMana();
+        if (getLife() <= 1 || owed.getGeneric() - genericReserve <= 0 && owed.getColorless() == 0) return false;
+        String before = resources(game);
+        for (mage.abilities.SpecialAction sa : lifeManaActions(game))
+            if (activateAbility(sa, game) && !resources(game).equals(before)) return true;
+        return false;
+    }
+
+    @Override
+    public mage.abilities.mana.ManaOptions getManaAvailable(Game game) {
+        mage.abilities.mana.ManaOptions options = super.getManaAvailable(game);
+        if (!costlyManaAsk || getLife() <= 1 || lifeManaActions(game).isEmpty()) return options;  // getPlayable passes a simulation copy
+        if (options.isEmpty()) options.add(new mage.Mana());
+        options.addMana(mage.Mana.ColorlessMana(getLife() - 1));
+        return options;
     }
 
     private static final mage.constants.ColoredManaSymbol[] COLOURS = mage.constants.ColoredManaSymbol.values();
@@ -810,7 +845,9 @@ public class PySeat extends ComputerPlayer {
         boolean[] passed = {false};
         ActivatedAbility[] chosen = {null};
         opts.add(new Option("PASS", null, null, () -> passed[0] = true).as("PASS"));
-        for (ActivatedAbility a : playable(game)) {
+        List<ActivatedAbility> moves = playable(game);
+        for (ActivatedAbility a : lifeManaActions(game)) if (moves.stream().noneMatch(m -> m.getId().equals(a.getId()))) moves.add(a);
+        for (ActivatedAbility a : moves) {
             if ((a.isManaAbility() && !playerManaAbility(a, game)) || failedThisWindow.contains(moveKey(a))) continue;
             if (resources(game).equals(refusedAt.get(moveKey(a)))) continue;
             if (a instanceof mage.abilities.keyword.CrewAbility && !canCrew(a, game)) continue;
@@ -818,7 +855,7 @@ public class PySeat extends ComputerPlayer {
             switch (a.getAbilityType()) {
                 case PLAY_LAND: o.as("PLAY_LAND"); break;
                 case SPELL: o.as("CAST"); break;
-                case SPECIAL_ACTION: o.as("SPECIAL"); break;
+                case SPECIAL_ACTION: case SPECIAL_MANA_PAYMENT: o.as("SPECIAL"); break;
                 default:
                     o.as("ACTIVATE");
                     o.key(AbilityKeys.key(game, a));
@@ -1100,6 +1137,11 @@ public class PySeat extends ComputerPlayer {
         }
         Mode[] picked = {null};
         List<Option> opts = new ArrayList<>();
+        // "choose one or more" (escalate: Collective Brutality): once the minimum is chosen the player may stop.
+        // Modes.choose asks again until the maximum and takes null as done; without DONE every further mode was
+        // forced, and with escalate's discards unpayable the cast was refused (cube02 part54, Brutality alone in hand)
+        if (!modes.getSelectedModes().isEmpty() && modes.getSelectedModes().size() >= modes.getMinModes())
+            opts.add(new Option("DONE", source.getSourceId(), null, () -> {}).as("DONE"));
         for (Mode m : modes.getAvailableModes(source, game)) {
             if ((modes.isMayChooseSameModeMoreThanOnce() || !modes.getSelectedModes().contains(m.getId()))
                     && m.getTargets().canChoose(source.getControllerId(), source, game)) {
@@ -1108,7 +1150,7 @@ public class PySeat extends ComputerPlayer {
                 opts.add(new Option(m.getEffects().getText(m), source.getSourceId(), null, () -> picked[0] = m).as("MODE").choice(key));
             }
         }
-        if (opts.isEmpty()) return null;
+        if (opts.isEmpty() || opts.size() == 1 && "DONE".equals(opts.get(0).action)) return null;
         pick("MODE", "choose a mode", game, opts, null);
         return picked[0];
     }
