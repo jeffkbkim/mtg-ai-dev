@@ -6,11 +6,14 @@ import pytest
 
 pytest.importorskip("polars")  # turn_replay needs the data group: uv run --group data pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "seventeenlands"))
-from turn_replay import alternative_rows, consistent_sets, world_counts, world_share  # noqa: E402
+from turn_replay import alternative_rows, consistent_sets, option_indices, world_counts, world_share  # noqa: E402
 
 
-def row(point, choice, step="Precombat Main", at=0, **kw):
-    return {"point": point, "choice": choice, "step": step, "at": at, "fixed_label": None, **kw}
+OPTIONS = [{"label": "PASS"}, {"label": "Play land | Plains | Play Plains"}, {"label": "Spell | Rat | Cast Rat"}]
+
+
+def row(point, choice, step="Precombat Main", at=0, options=OPTIONS, **kw):
+    return {"point": point, "choice": choice, "step": step, "at": at, "fixed_label": None, "options": options, **kw}
 
 
 # Turn: main 1 is choice point 0 (play the land now, option 1, or wait, option 0). The reproducing path played it.
@@ -20,7 +23,7 @@ WORLDS = {(0, 1): [row(None, 0, "Upkeep"), row(0, 0), row(None, 2, "Postcombat M
 
 
 def test_consistent_sets_lists_the_other_reproducing_options():
-    assert consistent_sets(POINTS, WORLDS) == {0: {0}}
+    assert consistent_sets(POINTS, WORLDS) == {0: {"PASS"}}
 
 
 def test_consistent_sets_skips_points_not_fully_probed():
@@ -56,3 +59,16 @@ def test_opponent_departures_do_not_split_the_users_share():
     """A departure at the opponent's choice point (no user row at that point) writes nothing, so it isn't a split."""
     opp = [{**POINTS[0], "point": "B DECLARE_BLOCKERS play"}]
     assert world_counts(opp, {(0, 1): [row(None, 0, at=1)]}) == {}
+
+
+def test_option_indices_follow_labels_not_the_other_attempts_order():
+    """XMage can list options in another order on another attempt: the set is matched by label."""
+    reordered = [OPTIONS[1], OPTIONS[0], OPTIONS[2]]
+    other = {(0, 1): [row(0, 0, options=reordered)]}       # the departure picked index 0 = Plains in its own order
+    labels = consistent_sets(POINTS, other)[0]
+    assert labels == {"Play land | Plains | Play Plains"}
+    assert option_indices(row(0, 0), labels) == [0, 1]       # this row's own PASS (its choice) and Plains
+
+
+def test_option_indices_refuse_a_label_the_row_does_not_offer():
+    assert option_indices(row(0, 0), {"Spell | Ghost | Cast Ghost"}) is None

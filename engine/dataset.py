@@ -165,6 +165,11 @@ def _build_chunk(chunk: Path, out: Path, labels: tuple[str, ...], outcomes: Path
             if r.get("turn") == 0 and not _is_pregame(r):
                 skipped["turn 0 past the record (replay filler)"] += 1
                 continue
+            if any(i >= len(r["options"]) for i in r.get("consistent") or []):
+                # replays before the fix matched consistent options by index across attempts, whose option order can
+                # differ: an index past the row's options is surely wrong, so the row is dropped, never guessed
+                skipped["consistent set index out of range"] += 1
+                continue
             if results is not None and r["game"] not in results:
                 skipped["no 17lands result for the game"] += 1   # never guess a result
                 continue

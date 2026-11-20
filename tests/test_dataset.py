@@ -250,3 +250,17 @@ def test_17lands_outcomes_reach_the_batch_and_games_without_one_are_skipped(tmp_
 def test_make_loaders_names_a_missing_cache(tmp_path):
     with pytest.raises(FileNotFoundError, match="no cache at"):
         make_loaders(tmp_path / "not-built")
+
+
+def test_17lands_build_drops_set_rows_with_an_index_past_the_options(tmp_path):
+    lines = [json.loads(line) for line in FIXTURE.read_text().splitlines()]
+    d = next(x for x in lines if len(x["options"]) >= 2)
+    base = {"draft_id": "draft0", "game": "draft0/1", "seat": "A", "turn": 3, "label": "ambiguous_set", "choice": 0}
+    rows = [{**d, **base, "consistent": [0, 1]}, {**d, **base, "consistent": [0, len(d["options"])]}]
+    p = tmp_path / "run" / "b0000" / "decisions.jsonl.gz"
+    p.parent.mkdir(parents=True)
+    with gzip.open(p, "wt") as f:
+        f.writelines(json.dumps(r) + "\n" for r in rows)
+    summary = build_17lands([p], tmp_path / "cache", labels=("ambiguous_set",))
+    assert summary["skipped_by_reason"]["consistent set index out of range"] == 1
+    assert sum(summary["decisions"].values()) == 1

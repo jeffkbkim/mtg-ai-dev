@@ -766,19 +766,32 @@ def sampled_rows(seed: int, games: int, path: Path, sample: int = 0, offset: int
     return pl.read_parquet(path)
 
 
-def consistent_sets(points: list[dict], worlds: dict) -> dict[int, set[int]]:
-    """Choice point -> the option indices (besides the reproducing path's own) that also reproduce the turn.
+def consistent_sets(points: list[dict], worlds: dict) -> dict[int, set[str]]:
+    """Choice point -> the labels of the options (besides the reproducing path's own) that also reproduce the turn.
 
     Only for points whose every alternative was tried (fully_probed): there the set is complete, so a row can say
     "any of these fits the record" instead of being dropped as ambiguous. worlds maps (point, alternative) of each
-    reproducing departure to its decisions; the departing decision is the one row with that point.
+    reproducing departure to its decisions; the departing decision is the one row with that point. Labels, not
+    indices: XMage orders options by object id, which can differ between the attempts of one turn.
     """
     out = {}
     for j, p in enumerate(points):
         if not (p["ambiguous"] and p["fully_probed"]):
             continue
-        out[j] = {r["choice"] for (pj, _), rows in worlds.items() if pj == j for r in rows if r["point"] == j}
+        out[j] = {
+            r["options"][r["choice"]]["label"]
+            for (pj, _), rows in worlds.items() if pj == j
+            for r in rows if r["point"] == j
+        }
     return out
+
+
+def option_indices(row: dict, labels: set[str]) -> list[int] | None:
+    """The row's option indices with these labels, or None if one of them isn't among the row's options."""
+    own = [o["label"] for o in row["options"]]
+    if not labels <= set(own):
+        return None
+    return sorted({own.index(lab) for lab in labels} | {row["choice"]})
 
 
 def alternative_rows(points: list[dict], worlds: dict) -> list[dict]:
@@ -964,9 +977,9 @@ def run(args):
                     label = "not_recorded"        # an answer the replay fixes itself (surveil, scry)
                 elif row["point"] is None:
                     label = "recorded"            # the record decides it (attacks, blocks, the only legal reading)
-                elif row["point"] in sets:
+                elif row["point"] in sets and option_indices(row, sets[row["point"]]) is not None:
                     label = "ambiguous_set"       # every option that reproduces the turn is known: row["consistent"]
-                    row["consistent"] = sorted(sets[row["point"]] | {row["choice"]})
+                    row["consistent"] = option_indices(row, sets[row["point"]])
                 elif row["point"] in amb:
                     label = "ambiguous" if amb[row["point"]] else "unique"
                 else:
