@@ -93,6 +93,7 @@ public class PySeat extends ComputerPlayer {
         this.askX = player.askX;
         this.keepBeforeBottom = player.keepBeforeBottom;
         this.costlyManaAsk = player.costlyManaAsk;
+        this.askAmounts = player.askAmounts;
     }
 
     /**
@@ -104,6 +105,15 @@ public class PySeat extends ComputerPlayer {
      * bottom choice (XMage asks bottom first).
      */
     public transient boolean payerV2 = false, askX = false, keepBeforeBottom = false;
+
+    /**
+     * Amounts are the player's (decision kind AMOUNT, and X for a non-mana X): getAmount (Galvanic Discharge's energy),
+     * a non-mana announceX (Toxic Deluge's and Fire Covenant's life), damage divided among targets (chooseTargetAmount:
+     * Fire Covenant, Pyrokinesis; a TARGET then an AMOUNT per target) and other multi-amount dialogues (Manamorphose's
+     * colours; one AMOUNT per entry). Before, XMage's AI chose them: about 40 bug flags in the cube02/03 reviews and
+     * half of those games suspect. TwoSeatMatch turns it on.
+     */
+    public transient boolean askAmounts = false;
 
     /**
      * Cube (Arena Powered Cube) seats: mana abilities with a cost beyond {T} and mana (Black Lotus, Lotus Petal, Lion's
@@ -1192,8 +1202,25 @@ public class PySeat extends ComputerPlayer {
             }
         }
         if (attacker == null) {
-            fallback("MULTI_AMOUNT (" + type.getTitle() + ")");
-            return super.getMultiAmountWithIndividualConstraints(outcome, messages, totalMin, totalMax, type, game);
+            if (!askAmounts) {
+                fallback("MULTI_AMOUNT (" + type.getTitle() + ")");
+                return super.getMultiAmountWithIndividualConstraints(outcome, messages, totalMin, totalMax, type, game);
+            }
+            // other dialogues (Manamorphose's two mana in any colours): one AMOUNT per entry, within what is left
+            List<Integer> amounts = new ArrayList<>();
+            int assigned = 0, n = messages.size();
+            for (int i = 0; i < n; i++) {
+                int restLo = 0, restHi = 0;
+                for (int j = i + 1; j < n; j++) { restLo += messages.get(j).min; restHi += messages.get(j).max; }
+                int from = Math.max(messages.get(i).min, totalMin - assigned - restHi), to = Math.min(messages.get(i).max, totalMax - assigned - restLo);
+                if (from > to) throw new IllegalStateException("no legal amount for entry " + (i + 1) + " of " + n + ": " + messages);
+                String entry = messages.get(i).message.replaceAll("<[^>]+>", "");
+                int k = from == to ? from : askAmount("AMOUNT", String.format("%s: %s (entry %d of %d, %d to %d in total, %d so far)",
+                        type.getTitle(), entry, i + 1, n, totalMin, totalMax, assigned), from, to, null, null, v -> v + " " + entry, game);
+                amounts.add(k);
+                assigned += k;
+            }
+            return amounts;
         }
         boolean trample = type.getTitle().contains("trample");
         int n = blockers.size();
@@ -1263,7 +1290,31 @@ public class PySeat extends ComputerPlayer {
     }
 
     @Override
-    public boolean chooseTargetAmount(Outcome outcome, mage.target.TargetAmount target, Ability source, Game game) { fallback("TARGET_AMOUNT"); return super.chooseTargetAmount(outcome, target, source, game); }
+    public boolean chooseTargetAmount(Outcome outcome, mage.target.TargetAmount target, Ability source, Game game) {
+        if (!askAmounts || simulated(game) || source == null) {
+            fallback("TARGET_AMOUNT");
+            return super.chooseTargetAmount(outcome, target, source, game);
+        }
+        // XMage calls this once per target until the amount is all divided (TargetAmount.chooseTarget): each call
+        // asks which target (TARGET) and then how much of what is left it gets (AMOUNT)
+        int left = target.getAmountRemaining();
+        if (left <= 0) return false;
+        List<UUID> chosen = target.getTargets();
+        List<UUID> possible = new ArrayList<>();
+        for (UUID id : target.possibleTargets(playerId, source, game))
+            if (!chosen.contains(id) && target.canTarget(playerId, id, source, game)) possible.add(id);
+        if (possible.isEmpty() || chosen.size() >= target.getMaxNumberOfTargets() && target.getMaxNumberOfTargets() > 0) return false;
+        UUID[] at = {null};
+        List<Option> opts = new ArrayList<>();
+        for (UUID id : possible) opts.add(new Option(label(game, id), source.getSourceId(), id, () -> at[0] = id).as("TARGET"));
+        String what = label(game, source.getSourceId()) + ": " + target.getMessage(game);
+        pick("TARGET", what + " (" + left + " left to divide" + (chosen.isEmpty() ? "" : ", " + chosen.size() + " target(s) chosen") + ")", game, opts, possible);
+        boolean lastTarget = possible.size() == 1 || target.getMaxNumberOfTargets() > 0 && chosen.size() + 1 >= target.getMaxNumberOfTargets();
+        int amount = lastTarget ? left : askAmount("AMOUNT", what + ": how much of the " + left + " left goes to " + label(game, at[0]),
+                1, left, source.getSourceId(), at[0], k -> k + " to " + label(game, at[0]), game);
+        target.addTarget(at[0], amount, source, game, false);
+        return true;
+    }
 
     /**
      * X for a mana cost is still XMage's AI choice (the most the untapped sources cover), but its formula takes X =
@@ -1272,6 +1323,9 @@ public class PySeat extends ComputerPlayer {
      */
     @Override
     public int announceX(int min, int max, String message, Game game, Ability source, boolean isManaPay) {
+        if (askAmounts && !isManaPay && max > min && !simulated(game))  // X life (Toxic Deluge, Fire Covenant)
+            return askAmount("X", "choose X for " + (source == null ? "" : label(game, source.getSourceId()) + ": ") + message,
+                    Math.max(min, 0), max, source == null ? null : source.getSourceId(), null, k -> "X = " + k, game);
         boolean ask = askX && isManaPay && source != null && !simulated(game);
         if (!ask) fallback("ANNOUNCE_X");
         int x = super.announceX(min, max, message, game, source, isManaPay);
@@ -1298,7 +1352,28 @@ public class PySeat extends ComputerPlayer {
     }
 
     @Override
-    public int getAmount(int min, int max, String message, Ability source, Game game) { fallback("AMOUNT"); return super.getAmount(min, max, message, source, game); }
+    public int getAmount(int min, int max, String message, Ability source, Game game) {
+        if (!askAmounts || simulated(game) || max <= min) {
+            if (max > min) fallback("AMOUNT");
+            return super.getAmount(min, max, message, source, game);
+        }
+        return askAmount("AMOUNT", message + (source == null ? "" : " (" + label(game, source.getSourceId()) + ")"), min, max,
+                source == null ? null : source.getSourceId(), null, k -> k + "", game);
+    }
+
+    /** Asks for a number from min to max (at most 61 options: min..min+59 and max) as one decision of this kind. */
+    private int askAmount(String kind, String prompt, int min, int max, UUID source, UUID target,
+                          java.util.function.IntFunction<String> labelOf, Game game) {
+        int[] picked = {min};
+        List<Option> opts = new ArrayList<>();
+        for (int k = min; k <= max; k++) {
+            if (k > min + 59 && k < max) continue;
+            int value = k;
+            opts.add(new Option(labelOf.apply(k), source, target, () -> picked[0] = value).as(kind).choice((kind.equals("X") ? "x:" : "amount:") + k));
+        }
+        pick(kind, prompt, game, opts, null);
+        return picked[0];
+    }
 
     @Override
     public int chooseReplacementEffect(Map<String, String> effectsMap, Map<String, MageObject> objectsMap, Game game) { fallback("REPLACEMENT"); return super.chooseReplacementEffect(effectsMap, objectsMap, game); }
