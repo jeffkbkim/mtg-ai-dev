@@ -2,6 +2,26 @@
 
 Newest first. Written by the daily review (UPDATE.md).
 
+## 2026-11-21 (daily review) — HELD
+- PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
+  arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
+- a33fb65 → 2d45a02e (Playmat master, 2026-11-20, #458): 2343 commits, 83 new since the last review's 54c8cb26 (53
+  non-merge; no runs 11-18..11-20). The new ones: web client Home widgets (#432), combat arrows/lunges, animation
+  perf; server Ranked ladder bots, Open and Bo3 queues, Limited rank, ladder Modern, seasons and boards (#429/#434/
+  #435), League (packs, budget decks, builder), bot generations; ops: solo.db/career.db compaction and backups, deploy
+  fails loudly, AUTH_TRUSTED_PROXIES no longer falls back to UPSTREAM_PROXIES (#457, tighter); Java4Shell
+  (CVE-2026-114938, x86-64 AVX-512 Base64): Temurin 17 image pinned by digest and -XX:-UseBASE64Intrinsics in the
+  entrypoint and desktop launcher (the mini is ARM, not affected). Mage/src/main today: only BeholdType made
+  Serializable plus a log-message fix (behold is not in DSK). No Mage.Sets or DSK/SPG file changed today. Security
+  (today's delta): pom.xml only adds shaded API classes; deploy.yml pipefail/result check; server-entrypoint season
+  env validation; new URLs are Google Fonts in site/docs/ladder.html, a calif.io advisory link in site/docs, github.com.
+- Gate: HOLD. Nothing new today blocks on its own; still open across the whole range (as 2026-11-07..17): rules
+  changes under Mage/src/main (#255 batch, getPlayable pay-mana change, 11-15 ZonesHandler enter-with counters); DSK
+  cards RootwiseSurvivor and VeteranSurvivor changed; patch 0003 conflicts (i18n en/core.ts, es.ts, stores/play.ts),
+  0004-0037 unchecked; security pass not cleared for the whole range (TrustedHeaderAuth, OIDC sign-in, deck-import
+  fetches, Docker/Caddy/updater, CI). Needs Jeff to plan the rebase.
+- No build, no tests, not deployed. Pin stays a33fb65.
+
 ## 2026-11-17 (daily review) — HELD
 - PRs (check_upstream_prs.sh): no PR changes. #105-#112 MERGED; #113 OPEN, CONFLICTING, CI failing, 1 comment from
   arcanite24 (the 2026-11-03 "debug duck" note, still unanswered, waits for Jeff).
